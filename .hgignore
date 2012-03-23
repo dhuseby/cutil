@@ -1,8 +1,8 @@
 syntax: glob
 stage/
 autobuild-parabuild-bootstrap/
-cutil/.sconsign.dblite
-cutil/src/*.o
-cutil/src/*.a
-cutil/test/*.o
-cutil/test/test_all
+.sconsign.dblite
+src/*.o
+src/*.a
+test/*.o
+test/test_all
