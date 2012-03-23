@@ -1,0 +1,8 @@
+env = Environment(CC='gcc', CCFLAGS='-O0 -gstabs+ -Isrc')
+env.Program(target = 'test_all', 
+		source = ['test_all.c',
+				  'test_array.c',
+				  'test_hashtable.c'],
+		LIBS   = ['cunit',
+				  'cutil'],
+		LIBPATH = ['../src/'])
