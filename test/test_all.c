@@ -24,8 +24,8 @@
 
 #include <CUnit/Basic.h>
 
-#include <debug.h>
-#include <macros.h>
+#include <cutil/debug.h>
+#include <cutil/macros.h>
 
 #include "test_array.h"
 #include "test_hashtable.h"

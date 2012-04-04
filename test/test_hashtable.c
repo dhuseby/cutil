@@ -24,9 +24,9 @@
 
 #include <CUnit/Basic.h>
 
-#include <debug.h>
-#include <macros.h>
-#include <hashtable.h>
+#include <cutil/debug.h>
+#include <cutil/macros.h>
+#include <cutil/hashtable.h>
 
 #include "test_hashtable.h"
 

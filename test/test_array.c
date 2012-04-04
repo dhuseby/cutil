@@ -24,9 +24,9 @@
 
 #include <CUnit/Basic.h>
 
-#include <debug.h>
-#include <macros.h>
-#include <array.h>
+#include <cutil/debug.h>
+#include <cutil/macros.h>
+#include <cutil/array.h>
 
 #include "test_array.h"
 
