@@ -1,3 +1,0 @@
-env = Environment(CC='gcc', CCFLAGS='-O0 -gstabs+')
-env.Library('cutil', ['array.c',
-					  'hashtable.c'])
