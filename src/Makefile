@@ -21,6 +21,8 @@ all: $(OUT)
 $(OUT): $(OBJ)
 	ar rcs $(OUT) $(OBJ)
 	ln -s . cutil
+	ln -s . include
+	ln -s . lib
 
 install: all
 	mkdir -p $(PREFIX)/include/cutil
@@ -33,15 +35,13 @@ uninstall:
 	rm -rf $(PREFIX)/lib/$(OUT)
 
 test: all
-	mkdir -p ../include/cutil
-	mkdir -p ../lib/
-	cp *.h ../include/cutil
-	cp *.a ../lib/
 
 clean:
 	rm -rf ../include
 	rm -rf ../lib
 	rm -rf cutil
+	rm -rf include
+	rm -rf lib
 	rm -rf $(OBJ)
 	rm -rf $(OUT)
 

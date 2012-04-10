@@ -4,9 +4,10 @@ SHELL=/bin/sh
 SRC=test_all.c test_array.c test_hashtable.c
 OBJ=$(SRC:.c=.o)
 OUT=test_all
-CFLAGS=-O3 -gstabs+ -I../include
-LDFLAGS=-gstabs+ -L../lib
 LIBS=-lcutil -lcunit
+CUTILS_ROOT=../src
+CFLAGS=-O3 -gstabs+ -I$(CUTILS_ROOT)/include
+LDFLAGS=-gstabs+ -L$(CUTILS_ROOT)/lib
 
 all:
 
