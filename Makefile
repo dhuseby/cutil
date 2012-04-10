@@ -9,6 +9,7 @@ INSTALL_DATA=$(INSTALL) -m 644
 DIRS = src test
 BUILDDIRS = $(DIRS:%=build-%)
 INSTALLDIRS = $(DIRS:%=install-%)
+UNINSTALLDIRS = $(DIRS:%=uninstall-%)
 CLEANDIRS = $(DIRS:%=clean-%)
 TESTDIRS = $(DIRS:%=test-%)
 
@@ -21,6 +22,10 @@ install: $(INSTALLDIRS) all
 $(INSTALLDIRS):
 	$(MAKE) -C $(@:install-%=%) install
 
+uninstall: $(UNINSTALLDIRS) all
+$(UNINSTALLDIRS):
+	$(MAKE) -C $(@:uninstall-%=%) uninstall
+
 test: $(TESTDIRS) all
 $(TESTDIRS):
 	$(MAKE) -C $(@:test-%=%) test
@@ -32,7 +37,8 @@ $(CLEANDIRS):
 .PHONY: subdirs $(DIRS)
 .PHONY: subdirs $(BUILDDIRS)
 .PHONY: subdirs $(INSTALLDIRS)
+.PHONY: subdirs $(UNINSTALL)
 .PHONY: subdirs $(TESTDIRS)
 .PHONY: subdirs $(CLEANDIRS)
-.PHONY: all install clean test
+.PHONY: all install uninstall clean test
 

@@ -21,6 +21,8 @@ $(OUT): $(OBJ)
 
 install:
 
+uninstall:
+
 clean:
 	rm -rf $(OBJ)
 	rm -rf $(OUT)
