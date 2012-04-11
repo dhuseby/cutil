@@ -28,5 +28,5 @@ clean:
 	rm -rf $(OBJ)
 	rm -rf $(OUT)
 
-.PHONY: all install clean test
+.PHONY: all install uninstall clean test
 

@@ -37,13 +37,11 @@ uninstall:
 test: all
 
 clean:
-	rm -rf ../include
-	rm -rf ../lib
 	rm -rf cutil
 	rm -rf include
 	rm -rf lib
 	rm -rf $(OBJ)
 	rm -rf $(OUT)
 
-.PHONY: all install clean test
+.PHONY: all install uninstall clean test
 
