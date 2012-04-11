@@ -5,8 +5,12 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 ASSERT	src/macros.h	34;"	d
+BIT	src/bitset.c	23;"	d	file:
+BUILDDIRS	Makefile	/^BUILDDIRS = $(DIRS:%=build-%)$/;"	m
 C	src/macros.h	62;"	d
 CALLOC	src/macros.h	51;"	d
+CFLAGS	src/Makefile	/^CFLAGS=-O3 -gstabs+$/;"	m
+CFLAGS	test/Makefile	/^CFLAGS=-O3 -gstabs+ -I$(CUTILS_ROOT)\/include$/;"	m
 CHECK	src/macros.h	40;"	d
 CHECK_MSG	src/macros.h	41;"	d
 CHECK_PTR	src/macros.h	44;"	d
@@ -15,35 +19,94 @@ CHECK_PTR_RET	src/macros.h	46;"	d
 CHECK_PTR_RET_MSG	src/macros.h	47;"	d
 CHECK_RET	src/macros.h	42;"	d
 CHECK_RET_MSG	src/macros.h	43;"	d
+CLEANDIRS	Makefile	/^CLEANDIRS = $(DIRS:%=clean-%)$/;"	m
+CUTILS_ROOT	test/Makefile	/^CUTILS_ROOT=..\/src$/;"	m
 DEBUG	src/debug.h	17;"	d
 DEBUG	src/debug.h	20;"	d
 DEBUG	src/debug.h	22;"	d
 DEBUG_ON	src/debug.h	25;"	d
+DIRS	Makefile	/^DIRS = src test$/;"	m
+DWORDS_NEEDED	src/bitset.c	21;"	d	file:
+DWORD_INDEX	src/bitset.c	22;"	d	file:
+EVT_BAD_PTR	src/events.h	/^	EVT_BAD_PTR = -1,$/;"	e	enum:evt_ret_e
+EVT_ERROR	src/events.h	/^	EVT_ERROR = -2$/;"	e	enum:evt_ret_e
+EVT_IO	src/events.h	/^	EVT_IO$/;"	e	enum:evt_type_e
+EVT_IO_READ	src/events.h	/^	EVT_IO_READ =  0x01,$/;"	e	enum:evt_io_type_e
+EVT_IO_WRITE	src/events.h	/^	EVT_IO_WRITE = 0x02$/;"	e	enum:evt_io_type_e
+EVT_OK	src/events.h	/^	EVT_OK = 1,$/;"	e	enum:evt_ret_e
+EVT_SIGNAL	src/events.h	/^	EVT_SIGNAL,$/;"	e	enum:evt_type_e
+EV_MULTIPLICITY	src/events.c	18;"	d	file:
+EV_STANDALONE	src/events.c	17;"	d	file:
 FAIL	src/macros.h	37;"	d
 FALSE	src/macros.h	30;"	d
 FREE	src/macros.h	53;"	d
+HDR	src/Makefile	/^HDR=array.h bitset.h debug.h hashtable.h macros.h$/;"	m
+INSTALL	Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
+INSTALL	src/Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
+INSTALLDIRS	Makefile	/^INSTALLDIRS = $(DIRS:%=install-%)$/;"	m
+INSTALL_DATA	Makefile	/^INSTALL_DATA=$(INSTALL) -m 644$/;"	m
+INSTALL_DATA	src/Makefile	/^INSTALL_DATA=$(INSTALL) -m 644$/;"	m
+INSTALL_PROGRAM	Makefile	/^INSTALL_PROGRAM=$(INSTALL)$/;"	m
+INSTALL_PROGRAM	src/Makefile	/^INSTALL_PROGRAM=$(INSTALL)$/;"	m
+IPv4	src/socket.h	/^typedef struct in_addr IPv4;$/;"	t	typeref:struct:in_addr
+LDFLAGS	test/Makefile	/^LDFLAGS=-gstabs+ -L$(CUTILS_ROOT)\/lib$/;"	m
+LIBS	test/Makefile	/^LIBS=-lcutil -lcunit$/;"	m
 LOG	src/macros.h	36;"	d
 MALLOC	src/macros.h	50;"	d
 MEMCMP	src/macros.h	55;"	d
 MEMCPY	src/macros.h	54;"	d
 MEMSET	src/macros.h	56;"	d
+NAME	src/Makefile	/^NAME=cutil$/;"	m
+OBJ	src/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
+OBJ	test/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
+OUT	src/Makefile	/^OUT=lib$(NAME).a$/;"	m
+OUT	test/Makefile	/^OUT=test_all$/;"	m
+PREFIX	src/Makefile	/^PREFIX=\/usr\/local$/;"	m
 REALLOC	src/macros.h	52;"	d
+SHELL	Makefile	/^SHELL=\/bin\/sh$/;"	m
+SHELL	src/Makefile	/^SHELL=\/bin\/sh$/;"	m
+SHELL	test/Makefile	/^SHELL=\/bin\/sh$/;"	m
+SOCKET_BADHOSTNAME	src/socket.h	/^    SOCKET_BADHOSTNAME  = -3,$/;"	e	enum:socket_ret_e
+SOCKET_BADPARAM	src/socket.h	/^    SOCKET_BADPARAM     = -2,$/;"	e	enum:socket_ret_e
+SOCKET_CONNECTED	src/socket.h	/^	SOCKET_CONNECTED    = -7$/;"	e	enum:socket_ret_e
+SOCKET_ERROR	src/socket.h	/^    SOCKET_ERROR        = -1,$/;"	e	enum:socket_ret_e
+SOCKET_INPUT	src/socket.h	/^    SOCKET_INPUT        = 2,$/;"	e	enum:socket_ret_e
+SOCKET_INVALIDPORT	src/socket.h	/^    SOCKET_INVALIDPORT  = -4,$/;"	e	enum:socket_ret_e
+SOCKET_OK	src/socket.h	/^    SOCKET_OK           = 1,$/;"	e	enum:socket_ret_e
+SOCKET_OUTPUT	src/socket.h	/^    SOCKET_OUTPUT       = 3,$/;"	e	enum:socket_ret_e
+SOCKET_POLLERR	src/socket.h	/^    SOCKET_POLLERR      = -6,$/;"	e	enum:socket_ret_e
+SOCKET_SCTP	src/socket.h	/^    SOCKET_SCTP$/;"	e	enum:socket_type_e
+SOCKET_TCP	src/socket.h	/^    SOCKET_TCP,$/;"	e	enum:socket_type_e
+SOCKET_TIMEOUT	src/socket.h	/^    SOCKET_TIMEOUT      = -5,$/;"	e	enum:socket_ret_e
+SOCKET_UDP	src/socket.h	/^    SOCKET_UDP,$/;"	e	enum:socket_type_e
+SRC	src/Makefile	/^SRC=array.c bitset.c hashtable.c$/;"	m
+SRC	test/Makefile	/^SRC=test_all.c test_array.c test_hashtable.c test_bitset.c$/;"	m
 STRDUP	src/macros.h	57;"	d
 T	src/macros.h	60;"	d
+TESTDIRS	Makefile	/^TESTDIRS = $(DIRS:%=test-%)$/;"	m
 TRUE	src/macros.h	31;"	d
+UNINSTALLDIRS	Makefile	/^UNINSTALLDIRS = $(DIRS:%=uninstall-%)$/;"	m
 UT	src/macros.h	61;"	d
 WARN	src/macros.h	35;"	d
 __ARRAY_H__	src/array.h	18;"	d
+__BITSET_H__	src/bitset.h	18;"	d
+__DAEMON_H__	src/daemon.h	18;"	d
+__EVENTS_H__	src/events.h	18;"	d
 __HASHTABLE_H__	src/hashtable.h	18;"	d
 __MACROS_H__	src/macros.h	18;"	d
+__SOCKET_H__	src/socket.h	18;"	d
 __TEST_ARRAY__	test/test_array.h	18;"	d
+__TEST_BITSET__	test/test_bitset.h	18;"	d
 __TEST_HASHTABLE__	test/test_hashtable.h	18;"	d
 __UINT__	src/array.h	23;"	d
 __UINT__	src/hashtable.h	21;"	d
+add_array_test_suite	test/test_array.c	/^CU_pSuite add_array_test_suite()$/;"	f
 add_array_tests	test/test_array.c	/^static CU_pSuite add_array_tests( CU_pSuite pSuite )$/;"	f	file:
-add_binary_test_suite	test/test_array.c	/^CU_pSuite add_binary_test_suite()$/;"	f
-add_binary_test_suite	test/test_hashtable.c	/^CU_pSuite add_binary_test_suite()$/;"	f
+add_bitset_test_suite	test/test_bitset.c	/^CU_pSuite add_bitset_test_suite()$/;"	f
+add_bitset_tests	test/test_bitset.c	/^static CU_pSuite add_bitset_tests( CU_pSuite pSuite )$/;"	f	file:
+add_hashtable_test_suite	test/test_hashtable.c	/^CU_pSuite add_hashtable_test_suite()$/;"	f
 add_hashtable_tests	test/test_hashtable.c	/^static CU_pSuite add_hashtable_tests( CU_pSuite pSuite )$/;"	f	file:
+addr	src/socket.h	/^	IPv4			addr;			\/* IPv4 struct from host string *\/$/;"	m	struct:socket_s
 array_clear	src/array.c	/^void array_clear(array_t * const array)$/;"	f
 array_deinitialize	src/array.c	/^void array_deinitialize(array_t * const array)$/;"	f
 array_delete	src/array.c	/^void array_delete(array_t * const array)$/;"	f
@@ -80,19 +143,72 @@ array_size	src/array.c	/^int_t array_size(array_t const * const array)$/;"	f
 array_t	src/array.h	/^} array_t;$/;"	t	typeref:struct:array_s
 array_try_lock	src/array.c	/^int array_try_lock(array_t * const array)$/;"	f
 array_unlock	src/array.c	/^void array_unlock(array_t * const array)$/;"	f
+bits	src/bitset.h	/^	uint32_t * bits;$/;"	m	struct:bitset_s
+bitset_s	src/bitset.h	/^typedef struct bitset_s$/;"	s
+bitset_t	src/bitset.h	/^} bitset_t;$/;"	t	typeref:struct:bitset_s
+bset_clear	src/bitset.c	/^int bset_clear( bitset_t * const bset, size_t const bit )$/;"	f
+bset_clear_all	src/bitset.c	/^void bset_clear_all( bitset_t * const bset )$/;"	f
+bset_deinitialize	src/bitset.c	/^void bset_deinitialize( bitset_t * const bset )$/;"	f
+bset_delete	src/bitset.c	/^void bset_delete( void * bset )$/;"	f
+bset_initialize	src/bitset.c	/^void bset_initialize( bitset_t * const bset, size_t const num_bits )$/;"	f
+bset_new	src/bitset.c	/^bitset_t * bset_new( size_t const num_bits )$/;"	f
+bset_set	src/bitset.c	/^int bset_set( bitset_t * const bset, size_t const bit )$/;"	f
+bset_set_all	src/bitset.c	/^void bset_set_all( bitset_t * const bset )$/;"	f
+bset_test	src/bitset.c	/^int bset_test( bitset_t const * const bset, size_t const bit )$/;"	f
 buffer_size	src/array.h	/^	uint_t			buffer_size;			\/* number of slots in the node array *\/$/;"	m	struct:array_s
+callback	src/events.h	/^	evt_fn			callback;$/;"	m	struct:evt_s
+connect_fn	src/socket.h	/^		socket_ret_t (*connect_fn)( socket_t * const s, void * user_data );$/;"	m	struct:socket_s::socket_ops_s
+connected	src/socket.h	/^	int32_t			connected;		\/* is the socket connected? *\/$/;"	m	struct:socket_s
+daemonize	src/daemon.c	/^void daemonize(void)$/;"	f
 data	src/array.c	/^	void *					data;					\/* pointer to the data *\/$/;"	m	struct:array_node_s	file:
+data	src/socket.c	/^	void * data;$/;"	m	struct:socket_write_s	file:
 data_head	src/array.h	/^	int_t			data_head;				\/* head node of the data circular list *\/$/;"	m	struct:array_s
 default_key_eq	src/hashtable.c	/^static int default_key_eq(void const * const l, void const * const r)$/;"	f	file:
 default_key_hash	src/hashtable.c	/^static uint_t default_key_hash(void const * const key)$/;"	f	file:
 default_load_factor	src/hashtable.c	/^float const default_load_factor = 0.65f;$/;"	v
 deinit_array_suite	test/test_array.c	/^static int deinit_array_suite( void )$/;"	f	file:
+deinit_bitset_suite	test/test_bitset.c	/^static int deinit_bitset_suite( void )$/;"	f	file:
 deinit_hashtable_suite	test/test_hashtable.c	/^static int deinit_hashtable_suite( void )$/;"	f	file:
 delete_fn	src/array.h	/^typedef void (*delete_fn)(void*);$/;"	t
+disconnect_fn	src/socket.h	/^		socket_ret_t (*disconnect_fn)( socket_t * const s, void * user_data );$/;"	m	struct:socket_s::socket_ops_s
 dummy	src/array.c	/^	uint32_t				dummy;$/;"	m	struct:array_node_s	file:
+el	src/socket.h	/^	evt_loop_t*		el;				\/* event loop we registered out evt with *\/$/;"	m	struct:socket_s
+error_fn	src/socket.h	/^		socket_ret_t (*error_fn)( socket_t * const s, int err, void * user_data );$/;"	m	struct:socket_s::socket_ops_s
+ev	src/events.h	/^	ev_data_t		ev;			\/* MUST BE FIRST *\/$/;"	m	struct:evt_s
+ev_data_t	src/events.h	/^} ev_data_t;$/;"	t	typeref:union:ev_data_u
+ev_data_u	src/events.h	/^typedef union ev_data_u$/;"	u
+evt_deinitialize_event_handler	src/events.c	/^void evt_deinitialize_event_handler( evt_t * const evt )$/;"	f
+evt_delete	src/events.c	/^void evt_delete(void * e)$/;"	f
+evt_delete_event_handler	src/events.c	/^void evt_delete_event_handler( void * e )$/;"	f
+evt_fn	src/events.h	/^typedef evt_ret_t (*evt_fn)( evt_loop_t * const el,$/;"	t
+evt_initialize_event_handler	src/events.c	/^void  evt_initialize_event_handler( evt_t * const evt,$/;"	f
+evt_io_callback	src/events.c	/^static void evt_io_callback( struct ev_loop * loop,$/;"	f	file:
+evt_io_type_e	src/events.h	/^typedef enum evt_io_type_e$/;"	g
+evt_io_type_t	src/events.h	/^} evt_io_type_t;$/;"	t	typeref:enum:evt_io_type_e
+evt_log_backend	src/events.c	/^static void evt_log_backend( evt_loop_t * const el )$/;"	f	file:
+evt_loop_t	src/events.h	/^typedef struct ev_loop evt_loop_t;$/;"	t	typeref:struct:ev_loop
+evt_new	src/events.c	/^evt_loop_t* evt_new( void )$/;"	f
+evt_new_event_handler	src/events.c	/^evt_t * evt_new_event_handler( evt_loop_t * const el,$/;"	f
+evt_params	src/events.h	/^	evt_params_t	evt_params;$/;"	m	struct:evt_s
+evt_params_t	src/events.h	/^} evt_params_t;$/;"	t	typeref:union:evt_params_u
+evt_params_u	src/events.h	/^typedef union evt_params_u$/;"	u
+evt_ret_e	src/events.h	/^typedef enum evt_ret_e$/;"	g
+evt_ret_t	src/events.h	/^} evt_ret_t;$/;"	t	typeref:enum:evt_ret_e
+evt_run	src/events.c	/^evt_ret_t evt_run( evt_loop_t * const el )$/;"	f
+evt_s	src/events.h	/^struct evt_s$/;"	s
+evt_signal_callback	src/events.c	/^static void evt_signal_callback( struct ev_loop * loop,$/;"	f	file:
+evt_start_event_handler	src/events.c	/^evt_ret_t evt_start_event_handler( evt_loop_t * const el,$/;"	f
+evt_stop	src/events.c	/^evt_ret_t evt_stop( evt_loop_t * const el )$/;"	f
+evt_stop_event_handler	src/events.c	/^evt_ret_t evt_stop_event_handler( evt_loop_t * const el,$/;"	f
+evt_t	src/events.h	/^typedef struct evt_s evt_t;$/;"	t	typeref:struct:evt_s
+evt_type	src/events.h	/^	evt_type_t		evt_type;$/;"	m	struct:evt_s
+evt_type_e	src/events.h	/^typedef enum evt_type_e$/;"	g
+evt_type_t	src/events.h	/^} evt_type_t;$/;"	t	typeref:enum:evt_type_e
+fd	src/events.h	/^		int fd;$/;"	m	struct:evt_params_u::__anon2
 free_head	src/array.h	/^	int_t			free_head;				\/* head node of the free circular list *\/$/;"	m	struct:array_s
 hash	src/hashtable.c	/^	uint_t				hash;				\/* hash value of the key *\/$/;"	m	struct:tuple_s	file:
 hashtable_primes	src/hashtable.c	/^uint_t const hashtable_primes[] =$/;"	v
+host	src/socket.h	/^	int8_t*			host;			\/* host name *\/$/;"	m	struct:socket_s
 ht_add	src/hashtable.c	/^int ht_add( ht_t * const htable, $/;"	f
 ht_add_prehash	src/hashtable.c	/^int ht_add_prehash( ht_t * const htable, $/;"	f
 ht_clear	src/hashtable.c	/^int ht_clear(ht_t * const htable)$/;"	f
@@ -128,12 +244,16 @@ ht_t	src/hashtable.h	/^} ht_t;$/;"	t	typeref:struct:ht_s
 ht_try_lock	src/hashtable.c	/^int ht_try_lock(ht_t * const htable)$/;"	f
 ht_unlock	src/hashtable.c	/^void ht_unlock(ht_t * const htable)$/;"	f
 init_array_suite	test/test_array.c	/^static int init_array_suite( void )$/;"	f	file:
+init_bitset_suite	test/test_bitset.c	/^static int init_bitset_suite( void )$/;"	f	file:
 init_hashtable_suite	test/test_hashtable.c	/^static int init_hashtable_suite( void )$/;"	f	file:
 initial_capacity	src/array.h	/^	uint_t			initial_capacity;		\/* the initial capacity value *\/$/;"	m	struct:array_s
 initial_capacity	src/hashtable.h	/^	uint_t				initial_capacity;	\/* the initial capacity value *\/$/;"	m	struct:ht_s
 int_t	src/array.h	/^	typedef int32_t int_t;$/;"	t
 int_t	src/array.h	/^	typedef int64_t int_t;$/;"	t
 int_t	src/hashtable.h	/^	typedef int32_t int_t;$/;"	t
+io	src/events.h	/^	struct ev_io		io;$/;"	m	union:ev_data_u	typeref:struct:ev_data_u::ev_io
+io_params	src/events.h	/^	} io_params;$/;"	m	union:evt_params_u	typeref:struct:evt_params_u::__anon2
+iov	src/socket.c	/^	int iov;$/;"	m	struct:socket_write_s	file:
 kdfn	src/hashtable.h	/^	ht_delete_fn		kdfn;				\/* key delete function *\/$/;"	m	struct:ht_s
 kefn	src/hashtable.h	/^	key_eq_fn			kefn;				\/* key compare function *\/$/;"	m	struct:ht_s
 key	src/hashtable.c	/^	void *				key;				\/* pointer to the key *\/$/;"	m	struct:tuple_s	file:
@@ -145,19 +265,75 @@ lock	src/array.h	/^	pthread_mutex_t lock;					\/* list lock *\/$/;"	m	struct:arr
 lock	src/hashtable.h	/^	pthread_mutex_t		lock;				\/* hashtable lock *\/$/;"	m	struct:ht_s
 main	test/test_all.c	/^int main()$/;"	f
 next	src/array.c	/^	struct array_node_s *	next;					\/* next link *\/$/;"	m	struct:array_node_s	typeref:struct:array_node_s::array_node_s	file:
+nleft	src/socket.c	/^	size_t nleft;$/;"	m	struct:socket_write_s	file:
 node_buffer	src/array.h	/^	array_node_t*	node_buffer;			\/* buffer of nodes *\/$/;"	m	struct:array_s
+num_bits	src/bitset.h	/^	size_t num_bits;$/;"	m	struct:bitset_s
 num_nodes	src/array.h	/^	uint_t			num_nodes;				\/* number of nodes in the list *\/$/;"	m	struct:array_s
 num_primes	src/hashtable.c	/^uint_t const num_primes = 30;$/;"	v
 num_tuples	src/hashtable.h	/^	uint_t				num_tuples;			\/* number of tuples in the table *\/$/;"	m	struct:ht_s
+ops	src/socket.h	/^	}				ops;$/;"	m	struct:socket_s	typeref:struct:socket_s::socket_ops_s
 pfn	src/array.h	/^	delete_fn		pfn;					\/* destruction function for each node *\/$/;"	m	struct:array_s
+pid	src/daemon.c	/^pid_t pid, sid;$/;"	v
+port	src/socket.h	/^	uint16_t		port;			\/* port number *\/$/;"	m	struct:socket_s
 prev	src/array.c	/^	struct array_node_s *	prev;					\/* prev link *\/$/;"	m	struct:array_node_s	typeref:struct:array_node_s::array_node_s	file:
 prime_index	src/hashtable.h	/^	uint_t				prime_index;		\/* the index of the table size *\/$/;"	m	struct:ht_s
+read_fn	src/socket.h	/^		int32_t (*read_fn)( socket_t * const s, size_t nread, void * user_data );$/;"	m	struct:socket_s::socket_ops_s
+revt	src/socket.h	/^	evt_t			revt;			\/* the read event *\/$/;"	m	struct:socket_s
+sid	src/daemon.c	/^pid_t pid, sid;$/;"	v
+sig	src/events.h	/^	struct ev_signal	sig;$/;"	m	union:ev_data_u	typeref:struct:ev_data_u::ev_signal
+signal_params	src/events.h	/^	} signal_params;$/;"	m	union:evt_params_u	typeref:struct:evt_params_u::__anon1
+signum	src/events.h	/^		int signum;$/;"	m	struct:evt_params_u::__anon1
+size	src/socket.c	/^	size_t size;$/;"	m	struct:socket_write_s	file:
+socket	src/socket.h	/^	int32_t			socket;			\/* fd of socket *\/$/;"	m	struct:socket_s
+socket_connect	src/socket.c	/^socket_ret_t socket_connect( socket_t* const s, $/;"	f
+socket_deinitialize	src/socket.c	/^void socket_deinitialize( socket_t * const s )$/;"	f
+socket_delete	src/socket.c	/^void socket_delete( void * s )$/;"	f
+socket_disconnect	src/socket.c	/^socket_ret_t socket_disconnect( socket_t* const s )$/;"	f
+socket_flush	src/socket.c	/^socket_ret_t socket_flush( socket_t* const s )$/;"	f
+socket_initialize	src/socket.c	/^void socket_initialize( socket_t * const s,$/;"	f
+socket_is_connected	src/socket.c	/^int socket_is_connected( socket_t* const s )$/;"	f
+socket_lookup_host	src/socket.c	/^static socket_ret_t socket_lookup_host( socket_t * const s, $/;"	f	file:
+socket_new	src/socket.c	/^socket_t* socket_new( socket_type_t const type, $/;"	f
+socket_ops_s	src/socket.h	/^	struct socket_ops_s$/;"	s	struct:socket_s
+socket_ops_t	src/socket.h	/^typedef struct socket_ops_s socket_ops_t;$/;"	t	typeref:struct:socket_ops_s
+socket_priv_t	src/socket.h	/^typedef struct socket_priv_s socket_priv_t;$/;"	t	typeref:struct:socket_priv_s
+socket_read	src/socket.c	/^int32_t socket_read( socket_t* const s, $/;"	f
+socket_read_fn	src/socket.c	/^static evt_ret_t socket_read_fn( evt_loop_t * const el,$/;"	f	file:
+socket_ret_e	src/socket.h	/^typedef enum socket_ret_e$/;"	g
+socket_ret_t	src/socket.h	/^} socket_ret_t;$/;"	t	typeref:enum:socket_ret_e
+socket_s	src/socket.h	/^struct socket_s$/;"	s
+socket_t	src/socket.h	/^typedef struct socket_s socket_t;$/;"	t	typeref:struct:socket_s
+socket_type_e	src/socket.h	/^typedef enum socket_type_e$/;"	g
+socket_type_t	src/socket.h	/^} socket_type_t;$/;"	t	typeref:enum:socket_type_e
+socket_write	src/socket.c	/^socket_ret_t socket_write( socket_t * const s,$/;"	f
+socket_write_common	src/socket.c	/^static socket_ret_t socket_write_common( socket_t* const s, $/;"	f	file:
+socket_write_fn	src/socket.c	/^static evt_ret_t socket_write_fn( evt_loop_t * const el,$/;"	f	file:
+socket_write_s	src/socket.c	/^typedef struct socket_write_s$/;"	s	file:
+socket_write_t	src/socket.c	/^} socket_write_t;$/;"	t	typeref:struct:socket_write_s	file:
+socket_writev	src/socket.c	/^socket_ret_t socket_writev( socket_t * const s,$/;"	f
+test_array_initdeinit	test/test_array.c	/^void test_array_initdeinit( void )$/;"	f
+test_array_newdel	test/test_array.c	/^void test_array_newdel( void )$/;"	f
+test_bitset_clearall	test/test_bitset.c	/^void test_bitset_clearall( void )$/;"	f
+test_bitset_initdeinit	test/test_bitset.c	/^void test_bitset_initdeinit( void )$/;"	f
+test_bitset_maxsize	test/test_bitset.c	/^void test_bitset_maxsize( void )$/;"	f
+test_bitset_newdel	test/test_bitset.c	/^void test_bitset_newdel( void )$/;"	f
+test_bitset_patternbitflips	test/test_bitset.c	/^void test_bitset_patternbitflips( void )$/;"	f
+test_bitset_randombitflips	test/test_bitset.c	/^void test_bitset_randombitflips( void )$/;"	f
+test_bitset_setall	test/test_bitset.c	/^void test_bitset_setall( void )$/;"	f
+test_bitset_zerosize	test/test_bitset.c	/^void test_bitset_zerosize( void )$/;"	f
 tuple_s	src/hashtable.c	/^typedef struct tuple_s$/;"	s	file:
 tuple_t	src/hashtable.c	/^} tuple_t;$/;"	t	typeref:struct:tuple_s	file:
 tuple_t	src/hashtable.h	/^typedef struct tuple_s tuple_t;$/;"	t	typeref:struct:tuple_s
 tuples	src/hashtable.h	/^	tuple_t*			tuples;				\/* pointer to tuple table *\/$/;"	m	struct:ht_s
+type	src/socket.h	/^	socket_type_t	type;			\/* type of socket *\/$/;"	m	struct:socket_s
+types	src/events.h	/^		evt_io_type_t types;$/;"	m	struct:evt_params_u::__anon2
 uint_t	src/array.h	/^	typedef uint32_t uint_t;$/;"	t
 uint_t	src/array.h	/^	typedef uint64_t uint_t;$/;"	t
 uint_t	src/hashtable.h	/^	typedef uint32_t uint_t;$/;"	t
+user_data	src/events.h	/^	void *			user_data;$/;"	m	struct:evt_s
+user_data	src/socket.h	/^	void *			user_data;		\/* passed to ops callbacks *\/$/;"	m	struct:socket_s
 value	src/hashtable.c	/^	void *				value;				\/* pointer to the value *\/$/;"	m	struct:tuple_s	file:
 vdfn	src/hashtable.h	/^	ht_delete_fn		vdfn;				\/* value delete function *\/$/;"	m	struct:ht_s
+wbuf	src/socket.h	/^	array_t 		wbuf;			\/* queued data to write *\/$/;"	m	struct:socket_s
+wevt	src/socket.h	/^	evt_t			wevt;			\/* the write event *\/$/;"	m	struct:socket_s
+write_fn	src/socket.h	/^		int32_t (*write_fn)( socket_t * const s, uint8_t const * const buffer, void * user_data );$/;"	m	struct:socket_s::socket_ops_s

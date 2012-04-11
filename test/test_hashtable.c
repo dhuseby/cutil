@@ -50,7 +50,7 @@ CU_pSuite add_hashtable_test_suite()
 	CU_pSuite pSuite = NULL;
 
 	/* add the suite to the registry */
-	pSuite = CU_add_suite("Array Tests", init_hashtable_suite, deinit_hashtable_suite);
+	pSuite = CU_add_suite("Hashtable Tests", init_hashtable_suite, deinit_hashtable_suite);
 	CHECK_PTR_RET( pSuite, NULL );
 
 	/* add in hashtable specific tests */

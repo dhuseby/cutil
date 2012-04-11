@@ -1,7 +1,7 @@
 # build cutil test executable
 #
 SHELL=/bin/sh
-SRC=test_all.c test_array.c test_hashtable.c
+SRC=test_all.c test_array.c test_hashtable.c test_bitset.c
 OBJ=$(SRC:.c=.o)
 OUT=test_all
 LIBS=-lcutil -lcunit

@@ -28,11 +28,13 @@
 #include <cutil/macros.h>
 
 #include "test_array.h"
+#include "test_bitset.h"
 #include "test_hashtable.h"
 
 int main()
 {
 	CU_pSuite array_test_suite;
+	CU_pSuite bitset_test_suite;
 	CU_pSuite hashtable_test_suite;
 
 	/* initialize the CUnit test registry */
@@ -41,6 +43,7 @@ int main()
 
 	/* add each suite of tests */
 	array_test_suite = add_array_test_suite();
+	bitset_test_suite = add_bitset_test_suite();
 	hashtable_test_suite = add_hashtable_test_suite();
 
 	/* run all tests using the CUnit Basic interface */
