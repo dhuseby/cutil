@@ -29,13 +29,17 @@
 
 #include "test_array.h"
 #include "test_bitset.h"
+#include "test_buffer.h"
 #include "test_hashtable.h"
+#include "test_pair.h"
 
 int main()
 {
 	CU_pSuite array_test_suite;
 	CU_pSuite bitset_test_suite;
+	CU_pSuite buffer_test_suite;
 	CU_pSuite hashtable_test_suite;
+	CU_pSuite pair_test_suite;
 
 	/* initialize the CUnit test registry */
 	if ( CUE_SUCCESS != CU_initialize_registry() )
@@ -44,7 +48,9 @@ int main()
 	/* add each suite of tests */
 	array_test_suite = add_array_test_suite();
 	bitset_test_suite = add_bitset_test_suite();
+	buffer_test_suite = add_buffer_test_suite();
 	hashtable_test_suite = add_hashtable_test_suite();
+	pair_test_suite = add_pair_test_suite();
 
 	/* run all tests using the CUnit Basic interface */
 	CU_basic_set_mode( CU_BRM_VERBOSE );

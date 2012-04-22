@@ -6,3 +6,4 @@ src/*.o
 src/*.a
 test/*.o
 test/test_all
+.*.swp
