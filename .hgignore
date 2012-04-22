@@ -2,8 +2,7 @@ syntax: glob
 src/cutil
 src/lib
 src/include
-src/*.o
-src/*.a
-test/*.o
 test/test_all
+*.o
+*.a
 .*.swp

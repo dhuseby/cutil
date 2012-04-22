@@ -49,12 +49,12 @@ uint_t const hashtable_primes[] =
 	1610612741
 };
 
-typedef struct tuple_s
+struct tuple_s
 {
 	uint_t				hash;				/* hash value of the key */
 	void *				key;				/* pointer to the key */
 	void *				value;				/* pointer to the value */
-} tuple_t;
+};
 
 
 /* the default key hashing function just casts the pointer value to an uint_t */
