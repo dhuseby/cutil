@@ -34,7 +34,7 @@ void test_buffer_newdel( void )
 
 	for ( i = 0; i < 1024; i++ )
 	{
-		b = buffer_new( (void*)buf, size );
+		b = buffer_new( (void*)buf, size, TRUE );
 
 		CU_ASSERT_PTR_NOT_NULL( b );
 

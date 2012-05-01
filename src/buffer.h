@@ -22,7 +22,7 @@
 /* opaque handle for the buffer */
 typedef struct buffer_s buffer_t;
 
-buffer_t * buffer_new( void * p, size_t size );
+buffer_t * buffer_new( void * p, size_t size, int weak );
 void buffer_delete( void * p );
 
 #endif/*__BUFFER_H__*/

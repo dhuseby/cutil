@@ -26,7 +26,7 @@ struct pair_s
 
 pair_t * pair_new( void * first, void * second )
 {
-	pair_t * pair = CALLOC( 0, sizeof(pair_t) );
+	pair_t * pair = CALLOC( 1, sizeof(pair_t) );
 	CHECK_PTR_RET( pair, NULL );
 
 	pair->first = first;

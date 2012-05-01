@@ -22,15 +22,17 @@ struct buffer_s
 {
 	void * p;
 	size_t size;
+	int weak;
 };
 
-buffer_t * buffer_new( void * p, size_t size )
+buffer_t * buffer_new( void * p, size_t size, int weak )
 {
-	buffer_t * b = CALLOC( 0, sizeof(buffer_t) );
+	buffer_t * b = CALLOC( 1, sizeof(buffer_t) );
 	CHECK_PTR_RET( b, NULL );
 
 	b->p = p;
 	b->size = size;
+	b->weak = weak;
 
 	return b;
 }
@@ -39,6 +41,9 @@ void buffer_delete( void * b )
 {
 	buffer_t * buf = (buffer_t*)b;
 	CHECK_PTR( buf );
+
+	if ( !buf->weak )
+		FREE( buf->p );
 
 	FREE( buf );
 }

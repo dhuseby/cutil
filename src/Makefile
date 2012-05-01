@@ -1,5 +1,10 @@
 # build cutil library
 #
+
+# definable variables
+PREFIX?=/usr/local
+
+# other variables
 SHELL=/bin/sh
 NAME=cutil
 SRC=array.c bitset.c buffer.c hashtable.c pair.c
@@ -7,7 +12,6 @@ HDR=array.h bitset.h buffer.h debug.h hashtable.h macros.h pair.h
 OBJ=$(SRC:.c=.o)
 OUT=lib$(NAME).a
 CFLAGS=-O3 -gstabs+
-PREFIX=/usr/local
 
 # install utility
 INSTALL=/usr/bin/install
