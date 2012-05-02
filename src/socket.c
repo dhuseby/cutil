@@ -327,7 +327,7 @@ void socket_initialize( socket_t * const s,
 	}
 
 	/* initialize the write buffer */
-	array_initialize( &(s->wbuf), FREE );
+	array_initialize( &(s->wbuf), 8, FREE );
 
 	/* set up params for socket write event */
 	evt_params_t params;
