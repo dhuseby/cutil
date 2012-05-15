@@ -41,7 +41,7 @@ EXTRA_LIBS_ROOT	test/Makefile	/^EXTRA_LIBS_ROOT=\/usr\/local$/;"	m
 FAIL	src/macros.h	37;"	d
 FALSE	src/macros.h	30;"	d
 FREE	src/macros.h	53;"	d
-HDR	src/Makefile	/^HDR=array.h  bitset.h  buffer.h  daemon.h  debug.h  events.h  hashtable.h  macros.h  pair.h  socket.h$/;"	m
+HDR	src/Makefile	/^HDR=array.h  bitset.h  btree.h buffer.h  daemon.h  debug.h  events.h  hashtable.h  macros.h  pair.h  socket.h$/;"	m
 INSTALL	Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
 INSTALL	src/Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
 INSTALLDIRS	Makefile	/^INSTALLDIRS = $(DIRS:%=install-%)$/;"	m
@@ -80,8 +80,8 @@ SOCKET_SCTP	src/socket.h	/^    SOCKET_SCTP$/;"	e	enum:socket_type_e
 SOCKET_TCP	src/socket.h	/^    SOCKET_TCP,$/;"	e	enum:socket_type_e
 SOCKET_TIMEOUT	src/socket.h	/^    SOCKET_TIMEOUT      = -5,$/;"	e	enum:socket_ret_e
 SOCKET_UDP	src/socket.h	/^    SOCKET_UDP,$/;"	e	enum:socket_type_e
-SRC	src/Makefile	/^SRC=array.c  bitset.c  buffer.c  daemon.c  events.c  hashtable.c  pair.c  socket.c$/;"	m
-SRC	test/Makefile	/^SRC=test_all.c test_array.c test_bitset.c test_buffer.c test_hashtable.c test_pair.c$/;"	m
+SRC	src/Makefile	/^SRC=array.c  bitset.c  btree.c buffer.c  daemon.c  events.c  hashtable.c  pair.c  socket.c$/;"	m
+SRC	test/Makefile	/^SRC=test_all.c test_array.c test_bitset.c test_btree.c test_buffer.c test_hashtable.c test_pair.c$/;"	m
 STRDUP	src/macros.h	57;"	d
 T	src/macros.h	60;"	d
 TESTDIRS	Makefile	/^TESTDIRS = $(DIRS:%=test-%)$/;"	m
@@ -91,6 +91,7 @@ UT	src/macros.h	61;"	d
 WARN	src/macros.h	35;"	d
 __ARRAY_H__	src/array.h	18;"	d
 __BITSET_H__	src/bitset.h	18;"	d
+__BTREE_H__	src/btree.h	18;"	d
 __BUFFER_H__	src/buffer.h	18;"	d
 __DAEMON_H__	src/daemon.h	18;"	d
 __EVENTS_H__	src/events.h	18;"	d
@@ -100,15 +101,19 @@ __PAIR_H__	src/pair.h	18;"	d
 __SOCKET_H__	src/socket.h	18;"	d
 __TEST_ARRAY__	test/test_array.h	18;"	d
 __TEST_BITSET__	test/test_bitset.h	18;"	d
+__TEST_BTREE__	test/test_btree.h	18;"	d
 __TEST_BUFFER__	test/test_buffer.h	18;"	d
 __TEST_HASHTABLE__	test/test_hashtable.h	18;"	d
 __TEST_PAIR__	test/test_pair.h	18;"	d
 __UINT__	src/array.h	23;"	d
+__UINT__	src/btree.h	21;"	d
 __UINT__	src/hashtable.h	21;"	d
 add_array_test_suite	test/test_array.c	/^CU_pSuite add_array_test_suite()$/;"	f
 add_array_tests	test/test_array.c	/^static CU_pSuite add_array_tests( CU_pSuite pSuite )$/;"	f	file:
 add_bitset_test_suite	test/test_bitset.c	/^CU_pSuite add_bitset_test_suite()$/;"	f
 add_bitset_tests	test/test_bitset.c	/^static CU_pSuite add_bitset_tests( CU_pSuite pSuite )$/;"	f	file:
+add_btree_test_suite	test/test_btree.c	/^CU_pSuite add_btree_test_suite()$/;"	f
+add_btree_tests	test/test_btree.c	/^static CU_pSuite add_btree_tests( CU_pSuite pSuite )$/;"	f	file:
 add_buffer_test_suite	test/test_buffer.c	/^CU_pSuite add_buffer_test_suite()$/;"	f
 add_buffer_tests	test/test_buffer.c	/^static CU_pSuite add_buffer_tests( CU_pSuite pSuite )$/;"	f	file:
 add_hashtable_test_suite	test/test_hashtable.c	/^CU_pSuite add_hashtable_test_suite()$/;"	f
@@ -164,6 +169,33 @@ bset_new	src/bitset.c	/^bitset_t * bset_new( size_t const num_bits )$/;"	f
 bset_set	src/bitset.c	/^int bset_set( bitset_t * const bset, size_t const bit )$/;"	f
 bset_set_all	src/bitset.c	/^void bset_set_all( bitset_t * const bset )$/;"	f
 bset_test	src/bitset.c	/^int bset_test( bitset_t const * const bset, size_t const bit )$/;"	f
+bt_add	src/btree.c	/^int bt_add( bt_t * const btree, $/;"	f
+bt_add_more_nodes	src/btree.c	/^static void bt_add_more_nodes( bt_t * const btree )$/;"	f	file:
+bt_deinitialize	src/btree.c	/^static void bt_deinitialize(bt_t * const btree)$/;"	f	file:
+bt_delete	src/btree.c	/^void bt_delete(bt_t * const btree)$/;"	f
+bt_delete_fn	src/btree.h	/^typedef void (*bt_delete_fn)(void * value);$/;"	t
+bt_find	src/btree.c	/^void * bt_find(bt_t * const btree, void * const key )$/;"	f
+bt_find_node	src/btree.c	/^static node_t * bt_find_node( bt_t * const btree, void * const key )$/;"	f	file:
+bt_get_mutex	src/btree.c	/^pthread_mutex_t * bt_get_mutex(bt_t * const btree)$/;"	f
+bt_get_node	src/btree.c	/^static node_t * bt_get_node( node_t ** const nlist )$/;"	f	file:
+bt_initialize	src/btree.c	/^static void bt_initialize$/;"	f	file:
+bt_insert_node	src/btree.c	/^static void bt_insert_node( bt_t * const btree,$/;"	f	file:
+bt_itr_begin	src/btree.c	/^bt_itr_t bt_itr_begin(bt_t const * const btree)$/;"	f
+bt_itr_end	src/btree.c	/^bt_itr_t bt_itr_end(bt_t const * const btree)$/;"	f
+bt_itr_get	src/btree.c	/^void* bt_itr_get(bt_t const * const btree, bt_itr_t const itr)$/;"	f
+bt_itr_next	src/btree.c	/^bt_itr_t bt_itr_next(bt_t const * const btree, bt_itr_t const itr)$/;"	f
+bt_itr_s	src/btree.h	/^typedef struct bt_itr_s$/;"	s
+bt_itr_t	src/btree.h	/^} bt_itr_t;$/;"	t	typeref:struct:bt_itr_s
+bt_key_cmp_fn	src/btree.h	/^typedef int (*bt_key_cmp_fn)( void * l, void * r);$/;"	t
+bt_lock	src/btree.c	/^void bt_lock(bt_t * const btree)$/;"	f
+bt_new	src/btree.c	/^bt_t* bt_new$/;"	f
+bt_put_node	src/btree.c	/^static void bt_put_node( node_t ** const nlist, node_t * const node )$/;"	f	file:
+bt_remove	src/btree.c	/^void * bt_remove(bt_t * const btree, void * const key )$/;"	f
+bt_s	src/btree.c	/^struct bt_s$/;"	s	file:
+bt_size	src/btree.c	/^uint_t bt_size(bt_t * const btree)$/;"	f
+bt_t	src/btree.h	/^typedef struct bt_s bt_t;$/;"	t	typeref:struct:bt_s
+bt_try_lock	src/btree.c	/^int bt_try_lock(bt_t * const btree)$/;"	f
+bt_unlock	src/btree.c	/^void bt_unlock(bt_t * const btree)$/;"	f
 buf	test/test_buffer.c	/^int8_t const * const buf = "blah";$/;"	v
 buffer_delete	src/buffer.c	/^void buffer_delete( void * b )$/;"	f
 buffer_new	src/buffer.c	/^buffer_t * buffer_new( void * p, size_t size, int weak )$/;"	f
@@ -177,11 +209,13 @@ daemonize	src/daemon.c	/^void daemonize(void)$/;"	f
 data	src/array.c	/^	void *					data;					\/* pointer to the data *\/$/;"	m	struct:array_node_s	file:
 data	src/socket.c	/^	void * data;$/;"	m	struct:socket_write_s	file:
 data_head	src/array.h	/^	int_t			data_head;				\/* head node of the data circular list *\/$/;"	m	struct:array_s
+default_key_cmp	src/btree.c	/^static int default_key_cmp( void * l, void * r )$/;"	f	file:
 default_key_eq	src/hashtable.c	/^static int default_key_eq(void const * const l, void const * const r)$/;"	f	file:
 default_key_hash	src/hashtable.c	/^static uint_t default_key_hash(void const * const key)$/;"	f	file:
 default_load_factor	src/hashtable.c	/^float const default_load_factor = 0.65f;$/;"	v
 deinit_array_suite	test/test_array.c	/^static int deinit_array_suite( void )$/;"	f	file:
 deinit_bitset_suite	test/test_bitset.c	/^static int deinit_bitset_suite( void )$/;"	f	file:
+deinit_btree_suite	test/test_btree.c	/^static int deinit_btree_suite( void )$/;"	f	file:
 deinit_buffer_suite	test/test_buffer.c	/^static int deinit_buffer_suite( void )$/;"	f	file:
 deinit_hashtable_suite	test/test_hashtable.c	/^static int deinit_hashtable_suite( void )$/;"	f	file:
 deinit_pair_suite	test/test_pair.c	/^static int deinit_pair_suite( void )$/;"	f	file:
@@ -224,6 +258,7 @@ fd	src/events.h	/^		int fd;$/;"	m	struct:evt_params_u::__anon2
 first	src/pair.c	/^	void * first;$/;"	m	struct:pair_s	file:
 first	test/test_pair.c	/^int8_t const * const first = "first";$/;"	v
 free_head	src/array.h	/^	int_t			free_head;				\/* head node of the free circular list *\/$/;"	m	struct:array_s
+free_list	src/btree.c	/^	node_t*				free_list;	\/* list of free nodes *\/$/;"	m	struct:bt_s	file:
 hash	src/hashtable.c	/^	uint_t				hash;				\/* hash value of the key *\/$/;"	m	struct:tuple_s	file:
 hashtable_primes	src/hashtable.c	/^uint_t const hashtable_primes[] =$/;"	v
 host	src/socket.h	/^	int8_t*			host;			\/* host name *\/$/;"	m	struct:socket_s
@@ -261,8 +296,10 @@ ht_size	src/hashtable.c	/^uint_t ht_size(ht_t * const htable)$/;"	f
 ht_t	src/hashtable.h	/^} ht_t;$/;"	t	typeref:struct:ht_s
 ht_try_lock	src/hashtable.c	/^int ht_try_lock(ht_t * const htable)$/;"	f
 ht_unlock	src/hashtable.c	/^void ht_unlock(ht_t * const htable)$/;"	f
+i	src/btree.h	/^	int_t i;$/;"	m	struct:bt_itr_s
 init_array_suite	test/test_array.c	/^static int init_array_suite( void )$/;"	f	file:
 init_bitset_suite	test/test_bitset.c	/^static int init_bitset_suite( void )$/;"	f	file:
+init_btree_suite	test/test_btree.c	/^static int init_btree_suite( void )$/;"	f	file:
 init_buffer_suite	test/test_buffer.c	/^static int init_buffer_suite( void )$/;"	f	file:
 init_hashtable_suite	test/test_hashtable.c	/^static int init_hashtable_suite( void )$/;"	f	file:
 init_pair_suite	test/test_pair.c	/^static int init_pair_suite( void )$/;"	f	file:
@@ -270,24 +307,39 @@ initial_capacity	src/array.h	/^	uint_t			initial_capacity;		\/* the initial capa
 initial_capacity	src/hashtable.h	/^	uint_t				initial_capacity;	\/* the initial capacity value *\/$/;"	m	struct:ht_s
 int_t	src/array.h	/^	typedef int32_t int_t;$/;"	t
 int_t	src/array.h	/^	typedef int64_t int_t;$/;"	t
+int_t	src/btree.h	/^	typedef int32_t int_t;$/;"	t
 int_t	src/hashtable.h	/^	typedef int32_t int_t;$/;"	t
 io	src/events.h	/^	struct ev_io		io;$/;"	m	union:ev_data_u	typeref:struct:ev_data_u::ev_io
 io_params	src/events.h	/^	} io_params;$/;"	m	union:evt_params_u	typeref:struct:evt_params_u::__anon2
 iov	src/socket.c	/^	int iov;$/;"	m	struct:socket_write_s	file:
+itr_begin	src/btree.c	/^static const bt_itr_t itr_begin = { 0, 0 };$/;"	v	file:
+itr_end	src/btree.c	/^static const bt_itr_t itr_end = { -1, -1 };$/;"	v	file:
+j	src/btree.h	/^	int_t j;$/;"	m	struct:bt_itr_s
+kcfn	src/btree.c	/^	bt_key_cmp_fn		kcfn;		\/* key compare function *\/$/;"	m	struct:bt_s	file:
+kdfn	src/btree.c	/^	bt_delete_fn		kdfn;		\/* key delete function *\/$/;"	m	struct:bt_s	file:
 kdfn	src/hashtable.h	/^	ht_delete_fn		kdfn;				\/* key delete function *\/$/;"	m	struct:ht_s
 kefn	src/hashtable.h	/^	key_eq_fn			kefn;				\/* key compare function *\/$/;"	m	struct:ht_s
+key	src/btree.c	/^	void * key;					\/* key *\/$/;"	m	struct:node_s	file:
 key	src/hashtable.c	/^	void *				key;				\/* pointer to the key *\/$/;"	m	struct:tuple_s	file:
 key_eq_fn	src/hashtable.h	/^typedef int (*key_eq_fn)(void const * const l, void const * const r);$/;"	t
 key_hash_fn	src/hashtable.h	/^typedef uint_t (*key_hash_fn)(void const * const key);$/;"	t
 khfn	src/hashtable.h	/^	key_hash_fn			khfn;				\/* key hash function *\/$/;"	m	struct:ht_s
+left	src/btree.c	/^	struct node_s * left;		\/* left child *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
+list_size	src/btree.c	/^	uint_t				list_size;	\/* equal to initial capacity, size blocks in node_list *\/$/;"	m	struct:bt_s	file:
 load_factor	src/hashtable.h	/^	float				load_factor;		\/* load level that triggers resize *\/$/;"	m	struct:ht_s
 lock	src/array.h	/^	pthread_mutex_t lock;					\/* list lock *\/$/;"	m	struct:array_s
+lock	src/btree.c	/^	pthread_mutex_t		lock;		\/* btree lock *\/$/;"	m	struct:bt_s	file:
 lock	src/hashtable.h	/^	pthread_mutex_t		lock;				\/* hashtable lock *\/$/;"	m	struct:ht_s
 main	test/test_all.c	/^int main()$/;"	f
 next	src/array.c	/^	struct array_node_s *	next;					\/* next link *\/$/;"	m	struct:array_node_s	typeref:struct:array_node_s::array_node_s	file:
+next	src/btree.c	/^	struct node_s * next;		\/* free\/used list pointer *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
 nleft	src/socket.c	/^	size_t nleft;$/;"	m	struct:socket_write_s	file:
 node_buffer	src/array.h	/^	array_node_t*	node_buffer;			\/* buffer of nodes *\/$/;"	m	struct:array_s
+node_list	src/btree.c	/^	node_t**			node_list;	\/* memory for the nodes *\/$/;"	m	struct:bt_s	file:
+node_s	src/btree.c	/^typedef struct node_s$/;"	s	file:
+node_t	src/btree.c	/^} node_t;$/;"	t	typeref:struct:node_s	file:
 num_bits	src/bitset.h	/^	size_t num_bits;$/;"	m	struct:bitset_s
+num_lists	src/btree.c	/^	uint_t				num_lists;	\/* number of blocks allocated *\/$/;"	m	struct:bt_s	file:
 num_nodes	src/array.h	/^	uint_t			num_nodes;				\/* number of nodes in the list *\/$/;"	m	struct:array_s
 num_primes	src/hashtable.c	/^uint_t const num_primes = 30;$/;"	v
 num_tuples	src/hashtable.h	/^	uint_t				num_tuples;			\/* number of tuples in the table *\/$/;"	m	struct:ht_s
@@ -299,6 +351,7 @@ pair_new	src/pair.c	/^pair_t * pair_new( void * first, void * second )$/;"	f
 pair_s	src/pair.c	/^struct pair_s$/;"	s	file:
 pair_second	src/pair.c	/^void * pair_second( pair_t const * const pair )$/;"	f
 pair_t	src/pair.h	/^typedef struct pair_s pair_t;$/;"	t	typeref:struct:pair_s
+parent	src/btree.c	/^	struct node_s * parent;		\/* parent pointer *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
 pfn	src/array.h	/^	delete_fn		pfn;					\/* destruction function for each node *\/$/;"	m	struct:array_s
 pid	src/daemon.c	/^pid_t pid, sid;$/;"	v
 port	src/socket.h	/^	uint16_t		port;			\/* port number *\/$/;"	m	struct:socket_s
@@ -306,12 +359,14 @@ prev	src/array.c	/^	struct array_node_s *	prev;					\/* prev link *\/$/;"	m	stru
 prime_index	src/hashtable.h	/^	uint_t				prime_index;		\/* the index of the table size *\/$/;"	m	struct:ht_s
 read_fn	src/socket.h	/^		int32_t (*read_fn)( socket_t * const s, size_t nread, void * user_data );$/;"	m	struct:socket_s::socket_ops_s
 revt	src/socket.h	/^	evt_t			revt;			\/* the read event *\/$/;"	m	struct:socket_s
+right	src/btree.c	/^	struct node_s * right;		\/* right child *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
 second	src/pair.c	/^	void * second;$/;"	m	struct:pair_s	file:
 second	test/test_pair.c	/^int8_t const * const second = "second";$/;"	v
 sid	src/daemon.c	/^pid_t pid, sid;$/;"	v
 sig	src/events.h	/^	struct ev_signal	sig;$/;"	m	union:ev_data_u	typeref:struct:ev_data_u::ev_signal
 signal_params	src/events.h	/^	} signal_params;$/;"	m	union:evt_params_u	typeref:struct:evt_params_u::__anon1
 signum	src/events.h	/^		int signum;$/;"	m	struct:evt_params_u::__anon1
+size	src/btree.c	/^	uint_t				size;		\/* number of nodes in the tree *\/$/;"	m	struct:bt_s	file:
 size	src/buffer.c	/^	size_t size;$/;"	m	struct:buffer_s	file:
 size	src/socket.c	/^	size_t size;$/;"	m	struct:socket_write_s	file:
 size	test/test_buffer.c	/^size_t const size = 5;$/;"	v
@@ -352,9 +407,11 @@ test_bitset_patternbitflips	test/test_bitset.c	/^void test_bitset_patternbitflip
 test_bitset_randombitflips	test/test_bitset.c	/^void test_bitset_randombitflips( void )$/;"	f
 test_bitset_setall	test/test_bitset.c	/^void test_bitset_setall( void )$/;"	f
 test_bitset_zerosize	test/test_bitset.c	/^void test_bitset_zerosize( void )$/;"	f
+test_btree_newdel	test/test_btree.c	/^void test_btree_newdel( void )$/;"	f
 test_buffer_newdel	test/test_buffer.c	/^void test_buffer_newdel( void )$/;"	f
 test_pair_newdel	test/test_pair.c	/^void test_pair_newdel( void )$/;"	f
 test_pair_nulls	test/test_pair.c	/^void test_pair_nulls( void )$/;"	f
+tree	src/btree.c	/^	node_t*				tree;		\/* pointer to btree root *\/$/;"	m	struct:bt_s	file:
 tuple_s	src/hashtable.c	/^struct tuple_s$/;"	s	file:
 tuple_t	src/hashtable.h	/^typedef struct tuple_s tuple_t;$/;"	t	typeref:struct:tuple_s
 tuples	src/hashtable.h	/^	tuple_t*			tuples;				\/* pointer to tuple table *\/$/;"	m	struct:ht_s
@@ -362,10 +419,13 @@ type	src/socket.h	/^	socket_type_t	type;			\/* type of socket *\/$/;"	m	struct:s
 types	src/events.h	/^		evt_io_type_t types;$/;"	m	struct:evt_params_u::__anon2
 uint_t	src/array.h	/^	typedef uint32_t uint_t;$/;"	t
 uint_t	src/array.h	/^	typedef uint64_t uint_t;$/;"	t
+uint_t	src/btree.h	/^	typedef uint32_t uint_t;$/;"	t
 uint_t	src/hashtable.h	/^	typedef uint32_t uint_t;$/;"	t
 user_data	src/events.h	/^	void *			user_data;$/;"	m	struct:evt_s
 user_data	src/socket.h	/^	void *			user_data;		\/* passed to ops callbacks *\/$/;"	m	struct:socket_s
+val	src/btree.c	/^	void * val;					\/* value *\/$/;"	m	struct:node_s	file:
 value	src/hashtable.c	/^	void *				value;				\/* pointer to the value *\/$/;"	m	struct:tuple_s	file:
+vdfn	src/btree.c	/^	bt_delete_fn		vdfn;		\/* value delete function *\/$/;"	m	struct:bt_s	file:
 vdfn	src/hashtable.h	/^	ht_delete_fn		vdfn;				\/* value delete function *\/$/;"	m	struct:ht_s
 wbuf	src/socket.h	/^	array_t 		wbuf;			\/* queued data to write *\/$/;"	m	struct:socket_s
 weak	src/buffer.c	/^	int weak;$/;"	m	struct:buffer_s	file:

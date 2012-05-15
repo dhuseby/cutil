@@ -27,10 +27,13 @@
 #include "macros.h"
 #include "btree.h"
 
+#define DEFAULT_INITIAL_CAPACITY (16)
+
 typedef struct node_s
 {
 	void * key;					/* key */
 	void * val;					/* value */
+	int32_t balance;			/* balance factor */
 	struct node_s * parent;		/* parent pointer */
 	struct node_s * left;		/* left child */
 	struct node_s * right;		/* right child */
@@ -113,19 +116,26 @@ static void bt_add_more_nodes( bt_t * const btree )
 {
 	int_t i = 0;
 	int_t j = 0;
+	node_t **p = NULL;
 	CHECK_PTR( btree );
+	CHECK_PTR_MSG( btree->free_list, "adding more nodes when free list isn't empty\n" );
 
 	/* update the number of lists */
 	i = btree->num_lists;
 	(btree->num_lists)++;
 
 	/* resize the list of pointer */
-	btree->node_list = (node_t**)REALLOC(btree->node_list, btree->num_lists * sizeof(node_t*));
+	p = (node_t**)REALLOC(btree->node_list, btree->num_lists * sizeof(node_t*));
+	CHECK_PTR_MSG( p, "realloc failed\n" );
+
+	/* store the new buffer */
+	btree->node_list = p;
 
 	/* allocate the new block of nodes */
-	WARN("heap allocating %d nodes\n", btree->list_size);
 	btree->node_list[i] = (node_t*)CALLOC(btree->list_size, sizeof(node_t));
+	CHECK_PTR_MSG( btree->node_list[i], "block allocation failed\n" );
 
+	/* link up the new nodes into a free list */
 	btree->free_list = &(btree->node_list[i][0]);
 	for ( j = 0; j < (btree->list_size - 1); ++j )
 	{
@@ -150,6 +160,7 @@ static node_t * bt_get_node( node_t ** const nlist )
 	CHECK_PTR_RET( nlist, NULL );
 	CHECK_PTR_RET( *nlist, NULL );
 
+	/* take a node from the head of the list */
 	p = (*nlist);
 	(*nlist) = p->next;
 	return p;
@@ -183,12 +194,13 @@ static void bt_initialize
 
 	/* initialize memory management */
 	btree->num_lists = 0;
-	btree->list_size = initial_capacity;
+	btree->list_size = ( (initial_capacity > 0) ? initial_capacity : DEFAULT_INITIAL_CAPACITY );
 	btree->node_list = NULL;
 	btree->free_list = NULL;
 
 	/* allocate the initial set of nodes */
 	bt_add_more_nodes( btree );
+	CHECK_PTR_RET_MSG( btree->free_list, 0, "failed to allocate more nodes\n" );
 
 	/* set up the binary tree */
 	btree->tree = NULL;
@@ -215,7 +227,6 @@ bt_t* bt_new
 	bt_t* btree = NULL;
 
 	/* allocate a btree struct */
-	WARN("heap allocating bt struct\n");
 	btree = (bt_t*)CALLOC(1, sizeof(bt_t));
 	CHECK_PTR_RET(btree, NULL);
 
@@ -336,6 +347,7 @@ static void bt_insert_node( bt_t * const btree,
 
 	/* get a node from the free list */
 	n = bt_get_node( &(btree->free_list) );
+	CHECK_PTR_MSG( n, "failed to get a node to store a new value\n" );
 
 	/* initialize it */
 	n->parent = parent;
@@ -368,6 +380,7 @@ int bt_add( bt_t * const btree,
 	{
 		bt_add_more_nodes( btree );
 	}
+	CHECK_PTR_RET_MSG( btree->free_list, 0, "failed to allocate more nodes\n" );
 
 	/* add it to the btree */
 	bt_insert_node( btree, key, value );

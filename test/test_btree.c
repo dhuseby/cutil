@@ -35,15 +35,8 @@ void test_btree_newdel( void )
 		size = (rand() % 1024);
 		bt = bt_new( size, NULL, FREE, FREE );
 
-		if ( size == 0 )
-		{
-			CU_ASSERT_PTR_NULL( bt );
-		}
-		else
-		{
-			CU_ASSERT_PTR_NOT_NULL( bt );
-			bt_delete( (void*)bt );
-		}
+		CU_ASSERT_PTR_NOT_NULL( bt );
+		bt_delete( (void*)bt );
 	}
 }
 
