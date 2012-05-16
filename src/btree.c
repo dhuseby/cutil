@@ -28,6 +28,9 @@
 #include "btree.h"
 
 #define DEFAULT_INITIAL_CAPACITY (16)
+#define min(x, y) ((x < y) ? x : y)
+#define max(x, y) ((x > y) ? x : y)
+
 
 typedef struct node_s
 {
@@ -118,7 +121,7 @@ static void bt_add_more_nodes( bt_t * const btree )
 	int_t j = 0;
 	node_t **p = NULL;
 	CHECK_PTR( btree );
-	CHECK_PTR_MSG( btree->free_list, "adding more nodes when free list isn't empty\n" );
+	CHECK_MSG( (btree->free_list == NULL), "adding more nodes when free list isn't empty\n" );
 
 	/* update the number of lists */
 	i = btree->num_lists;
@@ -302,21 +305,360 @@ uint_t bt_size(bt_t * const btree)
 	return btree->size;
 }
 
+#if 0
+/* NOTE: assumes the subtrees are balanced */
+static int bt_update_balance_factor_helper( node_t * const n )
+{
+	int l = 0;
+	int r = 0;
+	CHECK_PTR_RET( n, 0 );
 
-static int bt_update_balance_factors( node_t * const n )
+	/* process left subtree */
+	if ( n->left != NULL )
+		l = bt_update_balance_factor_helper( n->left );
+
+	/* process right subtree */
+	if ( n->right != NULL )
+		r = bt_update_balance_factor_helper( n->right );
+
+	/* update our balance factor */
+	n->balance = (r - l);
+
+	if ( r > l )
+		return r+1;
+	
+	return l + 1;
+}
+
+static void bt_update_balance_factor( node_t * const n )
+{
+	node_t * root = n;
+	CHECK_PTR( n );
+
+	while ( root->parent != NULL )
+	{
+		root = root->parent;
+	}
+
+	bt_update_balance_factor_helper( root );
+}
+#endif
+
+
+static node_t * bt_rotate_left( node_t * const n )
+{
+	/* p - parent of n (may be null if n is tree root)
+	 * n - "root" node of rotation (passed in)
+	 * r - right child of n
+	 *
+	 * left rotation:
+	 *
+	 *       p
+	 *       |
+	 *       n
+	 *      / \
+	 *     x   r
+	 *        / \
+	 *       y   z
+	 *
+	 * becomes:
+	 *
+	 *       p
+	 *       |
+	 *       r
+	 *      / \
+	 *     n   z
+	 *    / \
+	 *   x   y
+	 *
+	 */
+
+	int left;
+	node_t * p = n->parent;
+	node_t * r, * y;
+	CHECK_PTR_RET( n, NULL );
+	CHECK_PTR_RET( n->right, n ); /* n must have a right sub-tree */
+
+	/* is n the left child of p? */
+	if ( p != NULL )
+		left = (p->left == n) ? TRUE : FALSE;
+
+	/* initialize the pointers */
+	r = n->right;
+	y = r->left;
+
+	/* rotate */
+	if ( p != NULL )
+	{
+		if ( left )
+			p->left = r;
+		else
+			p->right = r;
+	}
+	r->parent = p;
+	r->left = n;
+	n->parent = r;
+	n->right = y;
+	if ( y != NULL )
+		y->parent = n;
+
+	/* update the balance values */
+	(r->balance)--;
+	n->balance = -(r->balance);
+
+	/* make sure everything is balanced */
+	ASSERT( (n != NULL) ? ((n->balance >= -1) && (n->balance <= 1)) : TRUE );
+	ASSERT( (r != NULL) ? ((r->balance >= -1) && (r->balance <= 1)) : TRUE );
+	ASSERT( (p != NULL) ? ((p->balance >= -1) && (p->balance <= 1)) : TRUE );
+
+	return r;
+}
+
+static node_t * bt_rotate_right( node_t * const n )
+{
+	/* p - parent of n (may be null if n is tree root)
+	 * n - "root" node of rotation (passed in)
+	 * l - left child of n
+	 *
+	 * right rotation:
+	 *
+	 *       p
+	 *       |
+	 *       n
+	 *      / \
+	 *     l   z
+	 *    / \
+	 *   x   y
+	 *
+	 * becomes:
+	 *
+	 *       p
+	 *       |
+	 *       l
+	 *      / \
+	 *     x   n
+	 *        / \
+	 *       y   z
+	 *
+	 */
+
+	int left;
+	node_t * p = n->parent;
+	node_t * l, * y;
+	CHECK_PTR_RET( n, NULL );
+	CHECK_PTR_RET( n->left, n ); /* n must have a left sub-tree */
+
+	/* is n the left child of p? */
+	if ( p != NULL )
+		left = (p->left == n) ? TRUE : FALSE;
+
+	/* initialize the pointers */
+	l = n->left;
+	y = l->right;
+
+	/* rotate */
+	if ( p != NULL )
+	{
+		if ( left )
+			p->left = l;
+		else
+			p->right = l;
+	}
+	l->parent = p;
+	l->right = n;
+	n->parent = l;
+	n->left = y;
+	if ( y != NULL )
+		y->parent = n;
+
+	/* update balance values */
+	(l->balance)++;
+	n->balance = -(l->balance);
+
+	/* make sure everything is balanced */
+	ASSERT( (n != NULL) ? ((n->balance >= -1) && (n->balance <= 1)) : TRUE );
+	ASSERT( (l != NULL) ? ((l->balance >= -1) && (l->balance <= 1)) : TRUE );
+	ASSERT( (p != NULL) ? ((p->balance >= -1) && (p->balance <= 1)) : TRUE );
+
+	return l;
+}
+
+static node_t * bt_rotate_left_right( node_t * const n )
+{
+	/* p - parent of n (may be null if n is tree root)
+	 * n - "root" node of rotation (passed in)
+	 * l - left child of n
+	 *
+	 * right rotation:
+	 *
+	 *       p
+	 *       |
+	 *       n
+	 *      / \
+	 *     v   r
+	 *        / \
+	 *       w   z
+	 *      / \
+	 *     x   y
+	 *
+	 * becomes:
+	 *
+	 *       p
+	 *       |
+	 *       w
+	 *     /   \
+	 *	  n	    r
+	 *   / \   / \
+	 *  v   x y   z
+	 *
+	 */
+
+	int left;
+	node_t * p = n->parent;
+	node_t *r, *w, *x, *y;
+	CHECK_PTR_RET( n, NULL );
+	CHECK_PTR_RET( n->right, n ); /* n must have a right sub-tree */
+	CHECK_PTR_RET( n->right->left, n ); /* n must also have a right-left sub-tree */
+
+	/* is n the left child of p? */
+	if ( p != NULL )
+		left = (p->left == n) ? TRUE : FALSE;
+
+	/* initialize the pointers */
+	r = n->right;
+	w = r->left;
+	x = w->left;
+	y = w->right;
+
+	/* rotate */
+	if ( p != NULL )
+	{
+		if ( left )
+			p->left = w;
+		else
+			p->right = w;
+	}
+	w->parent = p;
+	w->left = n;
+	n->parent = w;
+	n->right = x;
+	if ( x != NULL )
+		x->parent = n;
+	w->right = r;
+	r->parent = w;
+	r->left = y;
+	if ( y != NULL )
+		y->parent = r;
+
+	/* update balance values */
+	n->balance = -(max(w->balance, 0));
+	r->balance = -(min(w->balance, 0));
+	w->balance = 0;
+
+	/* make sure everything is balanced */
+	ASSERT( (n != NULL) ? ((n->balance >= -1) && (n->balance <= 1)) : TRUE );
+	ASSERT( (r != NULL) ? ((r->balance >= -1) && (r->balance <= 1)) : TRUE );
+	ASSERT( (w != NULL) ? ((w->balance >= -1) && (w->balance <= 1)) : TRUE );
+	ASSERT( (p != NULL) ? ((p->balance >= -1) && (p->balance <= 1)) : TRUE );
+
+	return w;
+}
+
+static node_t * bt_rotate_right_left( node_t * const n )
+{
+	/* p - parent of n (may be null if n is tree root)
+	 * n - "root" node of rotation (passed in)
+	 * l - left child of n
+	 *
+	 * right rotation:
+	 *
+	 *       p
+	 *       |
+	 *       n
+	 *      / \
+	 *     l   v
+	 *    / \
+	 *   w   x
+	 *      / \
+	 *     y   z
+	 *
+	 * becomes:
+	 *
+	 *       p
+	 *       |
+	 *       x
+	 *     /   \
+	 *	  l	    n
+	 *   / \   / \
+	 *  w   y z   v
+	 *
+	 */
+
+	int left;
+	node_t * p = n->parent;
+	node_t *l, *x, *y, *z;
+	CHECK_PTR_RET( n, NULL );
+	CHECK_PTR_RET( n->left, n ); /* n must have a left sub-tree */
+	CHECK_PTR_RET( n->left->right, n ); /* n must also have a left-right sub-tree */
+
+	/* is n the left child of p? */
+	if ( p != NULL )
+		left = (p->left == n) ? TRUE : FALSE;
+
+	/* initialize the pointers */
+	l = n->left;
+	x = l->right;
+	y = x->left;
+	z = x->right;
+
+	/* rotate */
+	if ( p != NULL )
+	{
+		if ( left )
+			p->left = x;
+		else
+			p->right = x;
+	}
+	x->parent = p;
+	x->left = l;
+	l->parent = x;
+	l->right = y;
+	if ( y != NULL )
+		y->parent = l;
+	x->right = n;
+	n->parent = x;
+	n->left = z;
+	if ( z != NULL )
+		z->parent = n;
+
+	/* update balance values */
+	n->balance = -(min(x->balance, 0));
+	l->balance = -(max(x->balance, 0));
+	x->balance = 0;
+
+	/* make sure everything is balanced */
+	ASSERT( (n != NULL) ? ((n->balance >= -1) && (n->balance <= 1)) : TRUE );
+	ASSERT( (l != NULL) ? ((l->balance >= -1) && (l->balance <= 1)) : TRUE );
+	ASSERT( (x != NULL) ? ((x->balance >= -1) && (x->balance <= 1)) : TRUE );
+	ASSERT( (p != NULL) ? ((p->balance >= -1) && (p->balance <= 1)) : TRUE );
+
+	return x;
+}
+
+/* NOTE: called on a newly inserted node */
+static node_t * bt_balance_tree( node_t * n )
 {
 	int left = FALSE;
 	node_t * p = NULL;
-	CHECK_PTR_RET( n, FALSE );
-	CHECK_PTR_RET( n->parent, FALSE );
+	CHECK_PTR( n );
 
 	p = n->parent;
 
-	if ( p->left == n )
-		left = TRUE;
-
 	while( p != NULL )
 	{
+		/* is n the left child of p? */
+		left = (p->left == n) ? TRUE : FALSE;
+
 		/* case 1: p has balance factor 0 */
 		if ( p->balance == 0 )
 		{
@@ -326,37 +668,65 @@ static int bt_update_balance_factors( node_t * const n )
 				p->balance = 1;
 
 			/* propagate up the tree */
-			p = p->parent;
+			n = p;
 		}
 
 		/* case 2: p's shorter subtree has increased in height */
 		else if ( ( (left == TRUE) && (p->balance > 0) ) ||
 				  ( (left == FALSE) && (p->balance < 0) ) )
 		{
+			/* p is now balanced */
 			p->balance = 0;
 
-			/* don't need to re-balance the tree */
-			return FALSE;
+			/* propagate up the tree */
+			n = p;
 		}
 
 		/* case 3: p's taller subtree has increased in height */
 		else
 		{
 			if ( left )
-				(p->balance)--; /* balance becomes -- */
+			{
+				/* left-right case */
+				if ( n->balance > 0 )
+				{
+					p->balance = n->balance + 1;
+
+					/* need left rotation of n */
+					bt_rotate_right_left( n );
+				}
+				else
+				{
+					p->balance = n->balance - 1;
+				
+					/* left-left case, need right rotation of p */
+					n = bt_rotate_right( p );
+				}
+			}
 			else
-				(p->balacne)++; /* balance becomes ++ */
+			{
+				/* right-left case */
+				if ( n->balance < 0 )
+				{
+					p->balance = n->balance - 1;
 
-			/* need to re-balance the tree */
-			return TRUE;
+					/* need right rotation of n */
+					bt_rotate_left_right( n );
+				}
+				else
+				{
+					p->balance = n->balance + 1;
+
+					/* right-right case, need left rotation of p */
+					n = bt_rotate_left( p );
+				}
+			}
 		}
-	}
-	return FALSE;
-}
 
-static void bt_rebalance_tree( bt_t * const btree )
-{
-	CHECK_PTR( btree );
+		p = n->parent;
+	}
+
+	return n;
 }
 
 static void bt_insert_node( bt_t * const btree,
@@ -365,7 +735,7 @@ static void bt_insert_node( bt_t * const btree,
 {
 	node_t ** p;
 	node_t * n;
-	node_t * parent;
+	node_t * parent = NULL;
 	CHECK_PTR( btree );
 	CHECK_PTR( key );
 	CHECK_PTR( value );
@@ -374,6 +744,7 @@ static void bt_insert_node( bt_t * const btree,
 	/* start at the root */
 	p = &btree->tree;
 
+	/* find the pointer to where the new node should go */
 	while ( (*p) != NULL )
 	{
 		if ( (*(btree->kcfn))(key, (*p)->key ) < 0 )
@@ -388,18 +759,6 @@ static void bt_insert_node( bt_t * const btree,
 			p = &((*p)->right);
 			continue;
 		}
-		
-		/* keys are the same */
-		if ( (btree->vdfn != NULL) && ((*p)->val != NULL) )
-		{
-			/* delete the old value */
-			(*(btree->vdfn))((*p)->val);
-		}
-
-		/* store the value */
-		(*p)->val = value;
-
-		return;
 	}
 
 	/* get a node from the free list */
@@ -414,16 +773,12 @@ static void bt_insert_node( bt_t * const btree,
 	n->val = key;
 	n->balance = 0;
 
-	/* add it to the list */
+	/* add it to the tree */
 	(*p) = n;
-
 	(btree->size)++;
 
-	/* update balance factors */
-	if ( bt_update_balance_factors( n ) )
-	{
-		bt_rebalance_tree( btree );
-	}
+	/* re-balance the tree */
+	btree->tree = bt_balance_tree( n );
 }
 
 
@@ -492,6 +847,17 @@ static node_t * bt_find_tree_min( node_t * p )
 	return p;
 }
 
+static node_t * bt_find_tree_max( node_t * p )
+{
+	CHECK_PTR_RET( p, NULL );
+
+	while( p->right != NULL );
+	{
+		p = p->right;
+	}
+
+	return p;
+}
 
 /* find a value by it's key. */
 void * bt_find(bt_t * const btree, void * const key )
@@ -600,6 +966,26 @@ void * bt_remove(bt_t * const btree, void * const key )
 	bt_put_node( &(btree->free_list), p );
 
 	return val;
+}
+
+void bt_print_node( node_t * const p, int const indent )
+{
+	CHECK_PTR( p );
+
+	bt_print_node( p->right, indent + 1 );
+
+	/* print the node */
+	printf( "%*s%d(%d)\n", (indent * 5), " ", p->balance, (int)p->val );
+
+	bt_print_node( p->left, indent + 1 );
+}
+
+void bt_print( bt_t * const btree )
+{
+	CHECK_PTR( btree );
+	CHECK_PTR( btree->tree );
+
+	bt_print_node( btree->tree, 1 );
 }
 
 

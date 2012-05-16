@@ -11,7 +11,7 @@ SRC=array.c  bitset.c  btree.c buffer.c  daemon.c  events.c  hashtable.c  pair.c
 HDR=array.h  bitset.h  btree.h buffer.h  daemon.h  debug.h  events.h  hashtable.h  macros.h  pair.h  socket.h
 OBJ=$(SRC:.c=.o)
 OUT=lib$(NAME).a
-CFLAGS=-O3 -gstabs+
+CFLAGS=-O0 -gstabs+
 
 # install utility
 INSTALL=/usr/bin/install

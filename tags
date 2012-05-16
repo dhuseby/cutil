@@ -10,7 +10,7 @@ BUILDDIRS	Makefile	/^BUILDDIRS = $(DIRS:%=build-%)$/;"	m
 C	src/macros.h	62;"	d
 CALLOC	src/macros.h	51;"	d
 CFLAGS	src/Makefile	/^CFLAGS=-O3 -gstabs+$/;"	m
-CFLAGS	test/Makefile	/^CFLAGS=-O3 -gstabs+ -I$(CUTILS_ROOT)\/include -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
+CFLAGS	test/Makefile	/^CFLAGS=-O0 -gstabs+ -I$(CUTILS_ROOT)\/include -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
 CHECK	src/macros.h	40;"	d
 CHECK_MSG	src/macros.h	41;"	d
 CHECK_PTR	src/macros.h	44;"	d
@@ -51,7 +51,7 @@ INSTALL_DATA	src/Makefile	/^INSTALL_DATA=$(INSTALL) -m 644$/;"	m
 INSTALL_PROGRAM	Makefile	/^INSTALL_PROGRAM=$(INSTALL)$/;"	m
 INSTALL_PROGRAM	src/Makefile	/^INSTALL_PROGRAM=$(INSTALL)$/;"	m
 IPv4	src/socket.h	/^typedef struct in_addr IPv4;$/;"	t	typeref:struct:in_addr
-LDFLAGS	test/Makefile	/^LDFLAGS=-gstabs+ -L$(CUTILS_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
+LDFLAGS	test/Makefile	/^LDFLAGS=-O0 -gstabs+ -L$(CUTILS_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
 LIBS	test/Makefile	/^LIBS=-lcutil -lcunit$/;"	m
 LOG	src/macros.h	36;"	d
 MALLOC	src/macros.h	50;"	d
@@ -178,6 +178,7 @@ bt_delete	src/btree.c	/^void bt_delete(bt_t * const btree)$/;"	f
 bt_delete_fn	src/btree.h	/^typedef void (*bt_delete_fn)(void * value);$/;"	t
 bt_find	src/btree.c	/^void * bt_find(bt_t * const btree, void * const key )$/;"	f
 bt_find_node	src/btree.c	/^static node_t * bt_find_node( bt_t * const btree, void * const key )$/;"	f	file:
+bt_find_tree_min	src/btree.c	/^static node_t * bt_find_tree_min( node_t * p )$/;"	f	file:
 bt_get_mutex	src/btree.c	/^pthread_mutex_t * bt_get_mutex(bt_t * const btree)$/;"	f
 bt_get_node	src/btree.c	/^static node_t * bt_get_node( node_t ** const nlist )$/;"	f	file:
 bt_initialize	src/btree.c	/^static void bt_initialize$/;"	f	file:
@@ -186,18 +187,20 @@ bt_itr_begin	src/btree.c	/^bt_itr_t bt_itr_begin(bt_t const * const btree)$/;"	f
 bt_itr_end	src/btree.c	/^bt_itr_t bt_itr_end(bt_t const * const btree)$/;"	f
 bt_itr_get	src/btree.c	/^void* bt_itr_get(bt_t const * const btree, bt_itr_t const itr)$/;"	f
 bt_itr_next	src/btree.c	/^bt_itr_t bt_itr_next(bt_t const * const btree, bt_itr_t const itr)$/;"	f
-bt_itr_s	src/btree.h	/^typedef struct bt_itr_s$/;"	s
-bt_itr_t	src/btree.h	/^} bt_itr_t;$/;"	t	typeref:struct:bt_itr_s
+bt_itr_t	src/btree.h	/^typedef void * bt_itr_t;$/;"	t
 bt_key_cmp_fn	src/btree.h	/^typedef int (*bt_key_cmp_fn)( void * l, void * r);$/;"	t
 bt_lock	src/btree.c	/^void bt_lock(bt_t * const btree)$/;"	f
 bt_new	src/btree.c	/^bt_t* bt_new$/;"	f
 bt_put_node	src/btree.c	/^static void bt_put_node( node_t ** const nlist, node_t * const node )$/;"	f	file:
+bt_rebalance_tree	src/btree.c	/^static void bt_rebalance_tree( bt_t * const btree )$/;"	f	file:
 bt_remove	src/btree.c	/^void * bt_remove(bt_t * const btree, void * const key )$/;"	f
+bt_replace_node	src/btree.c	/^static node_t * bt_replace_node( node_t * p, node_t * s )$/;"	f	file:
 bt_s	src/btree.c	/^struct bt_s$/;"	s	file:
 bt_size	src/btree.c	/^uint_t bt_size(bt_t * const btree)$/;"	f
 bt_t	src/btree.h	/^typedef struct bt_s bt_t;$/;"	t	typeref:struct:bt_s
 bt_try_lock	src/btree.c	/^int bt_try_lock(bt_t * const btree)$/;"	f
 bt_unlock	src/btree.c	/^void bt_unlock(bt_t * const btree)$/;"	f
+bt_update_balance_factors	src/btree.c	/^static int bt_update_balance_factors( node_t * const n )$/;"	f	file:
 buf	test/test_buffer.c	/^int8_t const * const buf = "blah";$/;"	v
 buffer_delete	src/buffer.c	/^void buffer_delete( void * b )$/;"	f
 buffer_new	src/buffer.c	/^buffer_t * buffer_new( void * p, size_t size, int weak )$/;"	f
@@ -298,7 +301,6 @@ ht_size	src/hashtable.c	/^uint_t ht_size(ht_t * const htable)$/;"	f
 ht_t	src/hashtable.h	/^} ht_t;$/;"	t	typeref:struct:ht_s
 ht_try_lock	src/hashtable.c	/^int ht_try_lock(ht_t * const htable)$/;"	f
 ht_unlock	src/hashtable.c	/^void ht_unlock(ht_t * const htable)$/;"	f
-i	src/btree.h	/^	int_t i;$/;"	m	struct:bt_itr_s
 init_array_suite	test/test_array.c	/^static int init_array_suite( void )$/;"	f	file:
 init_bitset_suite	test/test_bitset.c	/^static int init_bitset_suite( void )$/;"	f	file:
 init_btree_suite	test/test_btree.c	/^static int init_btree_suite( void )$/;"	f	file:
@@ -307,6 +309,7 @@ init_hashtable_suite	test/test_hashtable.c	/^static int init_hashtable_suite( vo
 init_pair_suite	test/test_pair.c	/^static int init_pair_suite( void )$/;"	f	file:
 initial_capacity	src/array.h	/^	uint_t			initial_capacity;		\/* the initial capacity value *\/$/;"	m	struct:array_s
 initial_capacity	src/hashtable.h	/^	uint_t				initial_capacity;	\/* the initial capacity value *\/$/;"	m	struct:ht_s
+int_less	test/test_btree.c	/^static int int_less( void * l, void * r )$/;"	f	file:
 int_t	src/array.h	/^	typedef int32_t int_t;$/;"	t
 int_t	src/array.h	/^	typedef int64_t int_t;$/;"	t
 int_t	src/btree.h	/^	typedef int32_t int_t;$/;"	t
@@ -314,9 +317,7 @@ int_t	src/hashtable.h	/^	typedef int32_t int_t;$/;"	t
 io	src/events.h	/^	struct ev_io		io;$/;"	m	union:ev_data_u	typeref:struct:ev_data_u::ev_io
 io_params	src/events.h	/^	} io_params;$/;"	m	union:evt_params_u	typeref:struct:evt_params_u::__anon2
 iov	src/socket.c	/^	int iov;$/;"	m	struct:socket_write_s	file:
-itr_begin	src/btree.c	/^static const bt_itr_t itr_begin = { 0, 0 };$/;"	v	file:
-itr_end	src/btree.c	/^static const bt_itr_t itr_end = { -1, -1 };$/;"	v	file:
-j	src/btree.h	/^	int_t j;$/;"	m	struct:bt_itr_s
+itr_end	src/btree.c	/^static const bt_itr_t itr_end = NULL;$/;"	v	file:
 kcfn	src/btree.c	/^	bt_key_cmp_fn		kcfn;		\/* key compare function *\/$/;"	m	struct:bt_s	file:
 kdfn	src/btree.c	/^	bt_delete_fn		kdfn;		\/* key delete function *\/$/;"	m	struct:bt_s	file:
 kdfn	src/hashtable.h	/^	ht_delete_fn		kdfn;				\/* key delete function *\/$/;"	m	struct:ht_s
@@ -409,6 +410,7 @@ test_bitset_patternbitflips	test/test_bitset.c	/^void test_bitset_patternbitflip
 test_bitset_randombitflips	test/test_bitset.c	/^void test_bitset_randombitflips( void )$/;"	f
 test_bitset_setall	test/test_bitset.c	/^void test_bitset_setall( void )$/;"	f
 test_bitset_zerosize	test/test_bitset.c	/^void test_bitset_zerosize( void )$/;"	f
+test_btree_iterator	test/test_btree.c	/^void test_btree_iterator( void )$/;"	f
 test_btree_newdel	test/test_btree.c	/^void test_btree_newdel( void )$/;"	f
 test_buffer_newdel	test/test_buffer.c	/^void test_buffer_newdel( void )$/;"	f
 test_pair_newdel	test/test_pair.c	/^void test_pair_newdel( void )$/;"	f

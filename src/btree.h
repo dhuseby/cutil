@@ -41,10 +41,10 @@ typedef void (*bt_delete_fn)(void * value);
 
 #ifdef USE_THREADING
 /* threading protection */
-void bt_lock(bt_t * const btable);
-int bt_try_lock(bt_t * const btable);
-void bt_unlock(bt_t * const btable);
-pthread_mutex_t * bt_get_mutex(bt_t * const btable);
+void bt_lock(bt_t * const btree);
+int bt_try_lock(bt_t * const btree);
+void bt_unlock(bt_t * const btree);
+pthread_mutex_t * bt_get_mutex(bt_t * const btree);
 #endif
 
 /* dynamically allocates and initializes a binary tree */
@@ -59,31 +59,34 @@ bt_t* bt_new(
     bt_delete_fn kdfn);
 
 /* deinitializes and frees a binary tree allocated with bt_new() */
-void bt_delete(bt_t * const btable);
+void bt_delete(bt_t * const btree);
 
 /* returns the number of key/value pairs stored in the btree */
-uint_t bt_size(bt_t * const btable);
+uint_t bt_size(bt_t * const btree);
 
 /* adds a key/value pair to the btree */
 int bt_add(
-    bt_t * const btable, 
+    bt_t * const btree, 
     void * const key, 
     void * const value);
 
 /* find a value by it's key */
-void * bt_find(bt_t * const btable, void * const key);
+void * bt_find(bt_t * const btree, void * const key);
 
 /* remove the value associated with the key from the btree */
-void * bt_remove(bt_t * const btable, void * const key);
+void * bt_remove(bt_t * const btree, void * const key);
+
+/* print tree */
+void bt_print( bt_t * const btree );
 
 /* In-order iterator based access to the btree */
-bt_itr_t bt_itr_begin(bt_t const * const btable);
+bt_itr_t bt_itr_begin(bt_t const * const btree);
 bt_itr_t bt_itr_next(
-    bt_t const * const btable, 
+    bt_t const * const btree, 
     bt_itr_t const itr);
-bt_itr_t bt_itr_end(bt_t const * const btable);
+bt_itr_t bt_itr_end(bt_t const * const btree);
 void* bt_itr_get(
-    bt_t const * const btable, 
+    bt_t const * const btree, 
     bt_itr_t const itr);
 
 #endif

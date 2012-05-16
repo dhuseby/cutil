@@ -66,6 +66,8 @@ void test_btree_iterator( void )
 	{
 		ret = bt_add( bt, (void*)i, (void*)i );
 		CU_ASSERT_EQUAL( ret, TRUE );
+		printf("-----------------------------------------------\n");
+		bt_print( bt );
 	}
 
 	itr = bt_itr_begin( bt );
