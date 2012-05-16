@@ -40,6 +40,50 @@ void test_btree_newdel( void )
 	}
 }
 
+static int int_less( void * l, void * r )
+{
+	int li = (int)l;
+	int ri = (int)r;
+
+	if ( li < ri )
+		return -1;
+	else if ( li > ri )
+		return 1;
+	return 0;
+}
+
+void test_btree_iterator( void )
+{
+	int i;
+	int ret;
+	bt_t * bt;
+	bt_itr_t itr;
+
+	bt = bt_new( 9, int_less, NULL, NULL );
+	CU_ASSERT_PTR_NOT_NULL( bt );
+
+	for ( i = 1; i < 10; i++ )
+	{
+		ret = bt_add( bt, (void*)i, (void*)i );
+		CU_ASSERT_EQUAL( ret, TRUE );
+	}
+
+	itr = bt_itr_begin( bt );
+	for ( i = 1; i < 10; i++ );
+	{
+		/* get the value at the current iterator position */
+		ret = (int)bt_itr_get( bt, itr );
+		CU_ASSERT_EQUAL( ret, i );
+
+		/* move to the next iterator position */
+		itr = bt_itr_next( bt, itr );
+	}
+
+	CU_ASSERT_EQUAL( itr, bt_itr_end( bt ) );
+
+	bt_delete( (void*)bt );
+}
+
 
 static int init_btree_suite( void )
 {
@@ -55,6 +99,7 @@ static int deinit_btree_suite( void )
 static CU_pSuite add_btree_tests( CU_pSuite pSuite )
 {
 	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of btree", test_btree_newdel), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "iteration of btree", test_btree_iterator), NULL );
 	
 	return pSuite;
 }

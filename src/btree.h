@@ -24,11 +24,7 @@
 #endif
 
 /* the  iterator type */
-typedef struct bt_itr_s
-{
-	int_t i;
-	int_t j;
-} bt_itr_t;
+typedef void * bt_itr_t;
 
 /* the binary tree opaque handle */
 typedef struct bt_s bt_t;

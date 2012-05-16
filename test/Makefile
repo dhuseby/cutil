@@ -7,8 +7,8 @@ OUT=test_all
 LIBS=-lcutil -lcunit
 EXTRA_LIBS_ROOT=/usr/local
 CUTILS_ROOT=../src
-CFLAGS=-O3 -gstabs+ -I$(CUTILS_ROOT)/include -I$(EXTRA_LIBS_ROOT)/include
-LDFLAGS=-gstabs+ -L$(CUTILS_ROOT)/lib -L$(EXTRA_LIBS_ROOT)/lib
+CFLAGS=-O0 -gstabs+ -I$(CUTILS_ROOT)/include -I$(EXTRA_LIBS_ROOT)/include
+LDFLAGS=-O0 -gstabs+ -L$(CUTILS_ROOT)/lib -L$(EXTRA_LIBS_ROOT)/lib
 
 all:
 

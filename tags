@@ -25,6 +25,7 @@ DEBUG	src/debug.h	17;"	d
 DEBUG	src/debug.h	20;"	d
 DEBUG	src/debug.h	22;"	d
 DEBUG_ON	src/debug.h	25;"	d
+DEFAULT_INITIAL_CAPACITY	src/btree.c	30;"	d	file:
 DIRS	Makefile	/^DIRS = src test$/;"	m
 DWORDS_NEEDED	src/bitset.c	21;"	d	file:
 DWORD_INDEX	src/bitset.c	22;"	d	file:
@@ -157,6 +158,7 @@ array_size	src/array.c	/^int_t array_size(array_t const * const array)$/;"	f
 array_t	src/array.h	/^} array_t;$/;"	t	typeref:struct:array_s
 array_try_lock	src/array.c	/^int array_try_lock(array_t * const array)$/;"	f
 array_unlock	src/array.c	/^void array_unlock(array_t * const array)$/;"	f
+balance	src/btree.c	/^	int32_t balance;			\/* balance factor *\/$/;"	m	struct:node_s	file:
 bits	src/bitset.h	/^	uint32_t * bits;$/;"	m	struct:bitset_s
 bitset_s	src/bitset.h	/^typedef struct bitset_s$/;"	s
 bitset_t	src/bitset.h	/^} bitset_t;$/;"	t	typeref:struct:bitset_s

@@ -163,6 +163,7 @@ static node_t * bt_get_node( node_t ** const nlist )
 	/* take a node from the head of the list */
 	p = (*nlist);
 	(*nlist) = p->next;
+	p->next = NULL;
 	return p;
 }
 
@@ -200,7 +201,7 @@ static void bt_initialize
 
 	/* allocate the initial set of nodes */
 	bt_add_more_nodes( btree );
-	CHECK_PTR_RET_MSG( btree->free_list, 0, "failed to allocate more nodes\n" );
+	CHECK_PTR_MSG( btree->free_list, "failed to allocate more nodes\n" );
 
 	/* set up the binary tree */
 	btree->tree = NULL;
@@ -302,6 +303,62 @@ uint_t bt_size(bt_t * const btree)
 }
 
 
+static int bt_update_balance_factors( node_t * const n )
+{
+	int left = FALSE;
+	node_t * p = NULL;
+	CHECK_PTR_RET( n, FALSE );
+	CHECK_PTR_RET( n->parent, FALSE );
+
+	p = n->parent;
+
+	if ( p->left == n )
+		left = TRUE;
+
+	while( p != NULL )
+	{
+		/* case 1: p has balance factor 0 */
+		if ( p->balance == 0 )
+		{
+			if ( left )
+				p->balance = -1;
+			else
+				p->balance = 1;
+
+			/* propagate up the tree */
+			p = p->parent;
+		}
+
+		/* case 2: p's shorter subtree has increased in height */
+		else if ( ( (left == TRUE) && (p->balance > 0) ) ||
+				  ( (left == FALSE) && (p->balance < 0) ) )
+		{
+			p->balance = 0;
+
+			/* don't need to re-balance the tree */
+			return FALSE;
+		}
+
+		/* case 3: p's taller subtree has increased in height */
+		else
+		{
+			if ( left )
+				(p->balance)--; /* balance becomes -- */
+			else
+				(p->balacne)++; /* balance becomes ++ */
+
+			/* need to re-balance the tree */
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+static void bt_rebalance_tree( bt_t * const btree )
+{
+	CHECK_PTR( btree );
+}
+
 static void bt_insert_node( bt_t * const btree,
 							void * const key,
 							void * const value )
@@ -355,11 +412,18 @@ static void bt_insert_node( bt_t * const btree,
 	n->right = NULL;
 	n->key = key;
 	n->val = key;
+	n->balance = 0;
 
 	/* add it to the list */
 	(*p) = n;
 
 	(btree->size)++;
+
+	/* update balance factors */
+	if ( bt_update_balance_factors( n ) )
+	{
+		bt_rebalance_tree( btree );
+	}
 }
 
 
@@ -371,22 +435,22 @@ int bt_add( bt_t * const btree,
 			void * const value )
 {
 	int_t i = 0;
-	CHECK_PTR_RET(btree, 0);
-	CHECK_PTR_RET(key, 0);
-	CHECK_PTR_RET(value, 0);
+	CHECK_PTR_RET(btree, FALSE);
+	CHECK_PTR_RET(key, FALSE);
+	CHECK_PTR_RET(value, FALSE);
 
 	/* are we out of free nodes? */
 	if ( btree->free_list == NULL )
 	{
 		bt_add_more_nodes( btree );
 	}
-	CHECK_PTR_RET_MSG( btree->free_list, 0, "failed to allocate more nodes\n" );
+	CHECK_PTR_RET_MSG( btree->free_list, FALSE, "failed to allocate more nodes\n" );
 
 	/* add it to the btree */
 	bt_insert_node( btree, key, value );
 
 	/* success */
-	return 1;
+	return TRUE;
 }
 
 
@@ -416,6 +480,18 @@ static node_t * bt_find_node( bt_t * const btree, void * const key )
 	return p;
 }
 
+static node_t * bt_find_tree_min( node_t * p )
+{
+	CHECK_PTR_RET( p, NULL );
+
+	while( p->left != NULL );
+	{
+		p = p->left;
+	}
+
+	return p;
+}
+
 
 /* find a value by it's key. */
 void * bt_find(bt_t * const btree, void * const key )
@@ -431,78 +507,140 @@ void * bt_find(bt_t * const btree, void * const key )
 	return NULL;
 }
 
+static node_t * bt_replace_node( node_t * p, node_t * s )
+{
+	CHECK_PTR_RET( p, NULL );
+
+	/* make p's parent point to s */
+	if ( p->parent != NULL )
+	{
+		if ( p->parent->left == p )
+		{
+			p->parent->left = s;
+		}
+		else
+		{
+			p->parent->right = s;
+		}
+	}
+
+	/* make s point back to p's parent */
+	if ( s != NULL )
+	{
+		s->parent = p->parent;
+	}
+
+	/* clear out p's pointers */
+	p->parent = NULL;
+	p->left = NULL;
+	p->right = NULL;
+
+	return p;
+}
+
 
 /* remove the value associated with the key from the btree */
 void * bt_remove(bt_t * const btree, void * const key )
 {
 	void * val = NULL;
 	node_t * p = NULL;
+	node_t * s = NULL;
 	CHECK_PTR_RET(btree, NULL);
 	CHECK_PTR_RET(key, NULL);
 
 	/* look up the node */
 	p = bt_find_node( btree, key );
 
-	/* lazy delete it's value, but leave it in the tree
-	 * to save time...*/
-	if ( p != NULL )
+	CHECK_PTR_RET( p, NULL );
+
+	/* case 1: p has no right child */
+	if ( p->right == NULL )
 	{
-		/* get the value pointer to pass back */
-		val = p->val;
-		p->val = NULL;
+		/* replace p with p's left child */
+		p = bt_replace_node( p, p->left );
 	}
+
+	/* case 2: p's right child has no left child */
+	else if ( p->right->left == NULL )
+	{
+		/* attach p's left child as the left child of p's right child */
+		p->right->left = p->left;
+		p->left->parent = p->right;
+
+		/* replace p with p's right child */
+		p = bt_replace_node( p, p->right );
+	}
+
+	/* case 3: p's right child has a left child */
+	else
+	{
+		/* find the in-order successor (the node with minimum value in right subtree) */
+		s = bt_find_tree_min( p->right );
+
+		/* the in-order successor has some interesting properties:
+		 * - it exists
+		 * - it cannot have a left child */
+		
+		/* replace s with s's right child */
+		s = bt_replace_node( s, s->right );
+
+		/* now replace p with s */
+		p = bt_replace_node( p, s );
+	}
+
+
+	/* get the value pointer to pass back */
+	val = p->val;
+	p->val = NULL;
+
+	/* clean up the node and put the node back on the free list */
+	if ( (btree->kdfn != NULL) && (p->key != NULL) )
+		(*(btree->kdfn))(p->key);
+	p->key = NULL;
+	bt_put_node( &(btree->free_list), p );
 
 	return val;
 }
 
-static const bt_itr_t itr_begin = { 0, 0 };
-static const bt_itr_t itr_end = { -1, -1 };
 
+static const bt_itr_t itr_end = NULL;
 
 bt_itr_t bt_itr_begin(bt_t const * const btree)
 {
-	CHECK_PTR_RET(btree, itr_end);
+	CHECK_PTR_RET( btree, itr_end );
 
-	return itr_begin;
+	return bt_find_tree_min( btree->tree );
 }
 
 
 bt_itr_t bt_itr_next(bt_t const * const btree, bt_itr_t const itr)
 {
-	bt_itr_t itmp = itr;
-	CHECK_PTR_RET(btree, itr_end);
+	node_t * p = (node_t*)itr;
+	CHECK_PTR_RET( btree, itr_end );
+	CHECK_PTR_RET( p, itr_end );
 
-	for(;;) 
+	/* if the node has a right child, find the minimum in that tree */
+	if ( p->right != NULL )
 	{
-		itmp.j++;
-
-		if ( itmp.j == btree->list_size )
-		{
-			itmp.i++;
-			itmp.j = 0;
-		}
-
-		if ( itmp.i == btree->num_lists )
-			break;
-
-		if ( btree->node_list[itmp.i][itmp.j].val != NULL )
-			return itmp;
+		return bt_find_tree_min( p->right );
 	}
 
-	return itr_end;
+	return p->parent;
 }
+
 
 bt_itr_t bt_itr_end(bt_t const * const btree)
 {
 	return itr_end;
 }
 
+
 void* bt_itr_get(bt_t const * const btree, bt_itr_t const itr)
 {
-	CHECK_PTR_RET(btree, NULL);
-	if ( (itr.i == -1) && (itr.j == -1) )
-		return NULL;
+	node_t * p = (node_t*)itr;
+	CHECK_PTR_RET( btree, NULL );
+	CHECK_RET( (itr != itr_end), NULL );
 
-	return btree->node_list[itr.i][itr.j].val;
+	return p->val;
 }
 
