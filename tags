@@ -9,7 +9,7 @@ BIT	src/bitset.c	23;"	d	file:
 BUILDDIRS	Makefile	/^BUILDDIRS = $(DIRS:%=build-%)$/;"	m
 C	src/macros.h	62;"	d
 CALLOC	src/macros.h	51;"	d
-CFLAGS	src/Makefile	/^CFLAGS=-O3 -gstabs+$/;"	m
+CFLAGS	src/Makefile	/^CFLAGS=-O0 -gstabs+$/;"	m
 CFLAGS	test/Makefile	/^CFLAGS=-O0 -gstabs+ -I$(CUTILS_ROOT)\/include -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
 CHECK	src/macros.h	40;"	d
 CHECK_MSG	src/macros.h	41;"	d
@@ -173,11 +173,13 @@ bset_set_all	src/bitset.c	/^void bset_set_all( bitset_t * const bset )$/;"	f
 bset_test	src/bitset.c	/^int bset_test( bitset_t const * const bset, size_t const bit )$/;"	f
 bt_add	src/btree.c	/^int bt_add( bt_t * const btree, $/;"	f
 bt_add_more_nodes	src/btree.c	/^static void bt_add_more_nodes( bt_t * const btree )$/;"	f	file:
+bt_balance_tree	src/btree.c	/^static node_t * bt_balance_tree( node_t * n )$/;"	f	file:
 bt_deinitialize	src/btree.c	/^static void bt_deinitialize(bt_t * const btree)$/;"	f	file:
 bt_delete	src/btree.c	/^void bt_delete(bt_t * const btree)$/;"	f
 bt_delete_fn	src/btree.h	/^typedef void (*bt_delete_fn)(void * value);$/;"	t
 bt_find	src/btree.c	/^void * bt_find(bt_t * const btree, void * const key )$/;"	f
 bt_find_node	src/btree.c	/^static node_t * bt_find_node( bt_t * const btree, void * const key )$/;"	f	file:
+bt_find_tree_max	src/btree.c	/^static node_t * bt_find_tree_max( node_t * p )$/;"	f	file:
 bt_find_tree_min	src/btree.c	/^static node_t * bt_find_tree_min( node_t * p )$/;"	f	file:
 bt_get_mutex	src/btree.c	/^pthread_mutex_t * bt_get_mutex(bt_t * const btree)$/;"	f
 bt_get_node	src/btree.c	/^static node_t * bt_get_node( node_t ** const nlist )$/;"	f	file:
@@ -191,16 +193,20 @@ bt_itr_t	src/btree.h	/^typedef void * bt_itr_t;$/;"	t
 bt_key_cmp_fn	src/btree.h	/^typedef int (*bt_key_cmp_fn)( void * l, void * r);$/;"	t
 bt_lock	src/btree.c	/^void bt_lock(bt_t * const btree)$/;"	f
 bt_new	src/btree.c	/^bt_t* bt_new$/;"	f
+bt_print	src/btree.c	/^void bt_print( bt_t * const btree )$/;"	f
+bt_print_node	src/btree.c	/^void bt_print_node( node_t * const p, int const indent )$/;"	f
 bt_put_node	src/btree.c	/^static void bt_put_node( node_t ** const nlist, node_t * const node )$/;"	f	file:
-bt_rebalance_tree	src/btree.c	/^static void bt_rebalance_tree( bt_t * const btree )$/;"	f	file:
 bt_remove	src/btree.c	/^void * bt_remove(bt_t * const btree, void * const key )$/;"	f
 bt_replace_node	src/btree.c	/^static node_t * bt_replace_node( node_t * p, node_t * s )$/;"	f	file:
+bt_rotate_left	src/btree.c	/^static node_t * bt_rotate_left( node_t * const n )$/;"	f	file:
+bt_rotate_left_right	src/btree.c	/^static node_t * bt_rotate_left_right( node_t * const n )$/;"	f	file:
+bt_rotate_right	src/btree.c	/^static node_t * bt_rotate_right( node_t * const n )$/;"	f	file:
+bt_rotate_right_left	src/btree.c	/^static node_t * bt_rotate_right_left( node_t * const n )$/;"	f	file:
 bt_s	src/btree.c	/^struct bt_s$/;"	s	file:
 bt_size	src/btree.c	/^uint_t bt_size(bt_t * const btree)$/;"	f
 bt_t	src/btree.h	/^typedef struct bt_s bt_t;$/;"	t	typeref:struct:bt_s
 bt_try_lock	src/btree.c	/^int bt_try_lock(bt_t * const btree)$/;"	f
 bt_unlock	src/btree.c	/^void bt_unlock(bt_t * const btree)$/;"	f
-bt_update_balance_factors	src/btree.c	/^static int bt_update_balance_factors( node_t * const n )$/;"	f	file:
 buf	test/test_buffer.c	/^int8_t const * const buf = "blah";$/;"	v
 buffer_delete	src/buffer.c	/^void buffer_delete( void * b )$/;"	f
 buffer_new	src/buffer.c	/^buffer_t * buffer_new( void * p, size_t size, int weak )$/;"	f
@@ -334,6 +340,8 @@ lock	src/array.h	/^	pthread_mutex_t lock;					\/* list lock *\/$/;"	m	struct:arr
 lock	src/btree.c	/^	pthread_mutex_t		lock;		\/* btree lock *\/$/;"	m	struct:bt_s	file:
 lock	src/hashtable.h	/^	pthread_mutex_t		lock;				\/* hashtable lock *\/$/;"	m	struct:ht_s
 main	test/test_all.c	/^int main()$/;"	f
+max	src/btree.c	32;"	d	file:
+min	src/btree.c	31;"	d	file:
 next	src/array.c	/^	struct array_node_s *	next;					\/* next link *\/$/;"	m	struct:array_node_s	typeref:struct:array_node_s::array_node_s	file:
 next	src/btree.c	/^	struct node_s * next;		\/* free\/used list pointer *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
 nleft	src/socket.c	/^	size_t nleft;$/;"	m	struct:socket_write_s	file:

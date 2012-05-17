@@ -79,12 +79,20 @@ void * bt_remove(bt_t * const btree, void * const key);
 /* print tree */
 void bt_print( bt_t * const btree );
 
-/* In-order iterator based access to the btree */
-bt_itr_t bt_itr_begin(bt_t const * const btree);
+/* In-order, forward, iterator based access to the btree */
+bt_itr_t bt_itr_begin( bt_t const * const btree );
 bt_itr_t bt_itr_next(
     bt_t const * const btree, 
-    bt_itr_t const itr);
-bt_itr_t bt_itr_end(bt_t const * const btree);
+    bt_itr_t const itr );
+bt_itr_t bt_itr_end( bt_t const * const btree );
+
+/* in-order, reverse, iterator based access to the btree */
+bt_itr_t bt_itr_rbegin( bt_t const * const btree );
+bt_itr_t bt_itr_rnext(
+	bt_t const * const btree,
+	bt_itr_t const itr );
+bt_itr_t bt_itr_rend( bt_t const * const btree );
+
 void* bt_itr_get(
     bt_t const * const btree, 
     bt_itr_t const itr);
