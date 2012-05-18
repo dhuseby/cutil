@@ -94,7 +94,7 @@ ht_t* ht_new(
 /* deinitializes and frees a hashtable allocated with hashtableNew() */
 /* NOTE: this calls hashtableDeinitialize if there are values left in the
  * hashtable */
-void ht_delete(ht_t * const htable);
+void ht_delete(void * ht);
 
 /* returns the number of key/value pairs stored in the hashtable */
 uint_t ht_size(ht_t * const htable);

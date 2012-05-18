@@ -259,15 +259,16 @@ void ht_deinitialize(ht_t * const htable)
 
 
 /* deinitializes and frees a hashtable allocated with ht_new() */
-void ht_delete(ht_t * const htable)
+void ht_delete(void * ht)
 {
+	ht_t * htable = (ht_t*)ht;
 	CHECK_PTR(htable);
 
 	/* de-init the hashtable if needed */
 	ht_deinitialize(htable);
 
 	/* free the hashtable */
-	FREE(htable);
+	FREE((void*)htable);
 }
 
 

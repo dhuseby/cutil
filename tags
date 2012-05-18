@@ -173,7 +173,7 @@ bset_set_all	src/bitset.c	/^void bset_set_all( bitset_t * const bset )$/;"	f
 bset_test	src/bitset.c	/^int bset_test( bitset_t const * const bset, size_t const bit )$/;"	f
 bt_add	src/btree.c	/^int bt_add( bt_t * const btree, $/;"	f
 bt_add_more_nodes	src/btree.c	/^static void bt_add_more_nodes( bt_t * const btree )$/;"	f	file:
-bt_balance_tree	src/btree.c	/^static node_t * bt_balance_tree( node_t * n )$/;"	f	file:
+bt_balance_tree	src/btree.c	/^static node_t * bt_balance_tree( bt_t * const btree, node_t * n )$/;"	f	file:
 bt_deinitialize	src/btree.c	/^static void bt_deinitialize(bt_t * const btree)$/;"	f	file:
 bt_delete	src/btree.c	/^void bt_delete(bt_t * const btree)$/;"	f
 bt_delete_fn	src/btree.h	/^typedef void (*bt_delete_fn)(void * value);$/;"	t
@@ -185,10 +185,14 @@ bt_get_mutex	src/btree.c	/^pthread_mutex_t * bt_get_mutex(bt_t * const btree)$/;
 bt_get_node	src/btree.c	/^static node_t * bt_get_node( node_t ** const nlist )$/;"	f	file:
 bt_initialize	src/btree.c	/^static void bt_initialize$/;"	f	file:
 bt_insert_node	src/btree.c	/^static void bt_insert_node( bt_t * const btree,$/;"	f	file:
+bt_is_left_child	src/btree.c	/^static int bt_is_left_child( node_t * p, node_t * n )$/;"	f	file:
 bt_itr_begin	src/btree.c	/^bt_itr_t bt_itr_begin(bt_t const * const btree)$/;"	f
 bt_itr_end	src/btree.c	/^bt_itr_t bt_itr_end(bt_t const * const btree)$/;"	f
 bt_itr_get	src/btree.c	/^void* bt_itr_get(bt_t const * const btree, bt_itr_t const itr)$/;"	f
 bt_itr_next	src/btree.c	/^bt_itr_t bt_itr_next(bt_t const * const btree, bt_itr_t const itr)$/;"	f
+bt_itr_rbegin	src/btree.c	/^bt_itr_t bt_itr_rbegin(bt_t const * const btree)$/;"	f
+bt_itr_rend	src/btree.c	/^bt_itr_t bt_itr_rend(bt_t const * const btree)$/;"	f
+bt_itr_rnext	src/btree.c	/^bt_itr_t bt_itr_rnext(bt_t const * const btree, bt_itr_t const itr)$/;"	f
 bt_itr_t	src/btree.h	/^typedef void * bt_itr_t;$/;"	t
 bt_key_cmp_fn	src/btree.h	/^typedef int (*bt_key_cmp_fn)( void * l, void * r);$/;"	t
 bt_lock	src/btree.c	/^void bt_lock(bt_t * const btree)$/;"	f
@@ -198,10 +202,10 @@ bt_print_node	src/btree.c	/^void bt_print_node( node_t * const p, int const inde
 bt_put_node	src/btree.c	/^static void bt_put_node( node_t ** const nlist, node_t * const node )$/;"	f	file:
 bt_remove	src/btree.c	/^void * bt_remove(bt_t * const btree, void * const key )$/;"	f
 bt_replace_node	src/btree.c	/^static node_t * bt_replace_node( node_t * p, node_t * s )$/;"	f	file:
-bt_rotate_left	src/btree.c	/^static node_t * bt_rotate_left( node_t * const n )$/;"	f	file:
-bt_rotate_left_right	src/btree.c	/^static node_t * bt_rotate_left_right( node_t * const n )$/;"	f	file:
-bt_rotate_right	src/btree.c	/^static node_t * bt_rotate_right( node_t * const n )$/;"	f	file:
-bt_rotate_right_left	src/btree.c	/^static node_t * bt_rotate_right_left( node_t * const n )$/;"	f	file:
+bt_rotate_left	src/btree.c	/^static node_t * bt_rotate_left( node_t * const p )$/;"	f	file:
+bt_rotate_left_right	src/btree.c	/^static node_t * bt_rotate_left_right( node_t * const p )$/;"	f	file:
+bt_rotate_right	src/btree.c	/^static node_t * bt_rotate_right( node_t * const p )$/;"	f	file:
+bt_rotate_right_left	src/btree.c	/^static node_t * bt_rotate_right_left( node_t * const p )$/;"	f	file:
 bt_s	src/btree.c	/^struct bt_s$/;"	s	file:
 bt_size	src/btree.c	/^uint_t bt_size(bt_t * const btree)$/;"	f
 bt_t	src/btree.h	/^typedef struct bt_s bt_t;$/;"	t	typeref:struct:bt_s
@@ -343,7 +347,7 @@ main	test/test_all.c	/^int main()$/;"	f
 max	src/btree.c	32;"	d	file:
 min	src/btree.c	31;"	d	file:
 next	src/array.c	/^	struct array_node_s *	next;					\/* next link *\/$/;"	m	struct:array_node_s	typeref:struct:array_node_s::array_node_s	file:
-next	src/btree.c	/^	struct node_s * next;		\/* free\/used list pointer *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
+next	src/btree.c	/^	struct node_s * next;		\/* traversal threading pointer\/free list pointer *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
 nleft	src/socket.c	/^	size_t nleft;$/;"	m	struct:socket_write_s	file:
 node_buffer	src/array.h	/^	array_node_t*	node_buffer;			\/* buffer of nodes *\/$/;"	m	struct:array_s
 node_list	src/btree.c	/^	node_t**			node_list;	\/* memory for the nodes *\/$/;"	m	struct:bt_s	file:
@@ -367,6 +371,7 @@ pfn	src/array.h	/^	delete_fn		pfn;					\/* destruction function for each node *\
 pid	src/daemon.c	/^pid_t pid, sid;$/;"	v
 port	src/socket.h	/^	uint16_t		port;			\/* port number *\/$/;"	m	struct:socket_s
 prev	src/array.c	/^	struct array_node_s *	prev;					\/* prev link *\/$/;"	m	struct:array_node_s	typeref:struct:array_node_s::array_node_s	file:
+prev	src/btree.c	/^	struct node_s * prev;		\/* traversal threading pointer *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
 prime_index	src/hashtable.h	/^	uint_t				prime_index;		\/* the index of the table size *\/$/;"	m	struct:ht_s
 read_fn	src/socket.h	/^		int32_t (*read_fn)( socket_t * const s, size_t nread, void * user_data );$/;"	m	struct:socket_s::socket_ops_s
 revt	src/socket.h	/^	evt_t			revt;			\/* the read event *\/$/;"	m	struct:socket_s
@@ -420,6 +425,7 @@ test_bitset_setall	test/test_bitset.c	/^void test_bitset_setall( void )$/;"	f
 test_bitset_zerosize	test/test_bitset.c	/^void test_bitset_zerosize( void )$/;"	f
 test_btree_iterator	test/test_btree.c	/^void test_btree_iterator( void )$/;"	f
 test_btree_newdel	test/test_btree.c	/^void test_btree_newdel( void )$/;"	f
+test_btree_random	test/test_btree.c	/^void test_btree_random( void )$/;"	f
 test_buffer_newdel	test/test_buffer.c	/^void test_buffer_newdel( void )$/;"	f
 test_pair_newdel	test/test_pair.c	/^void test_pair_newdel( void )$/;"	f
 test_pair_nulls	test/test_pair.c	/^void test_pair_nulls( void )$/;"	f

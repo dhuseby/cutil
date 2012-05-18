@@ -59,7 +59,7 @@ bt_t* bt_new(
     bt_delete_fn kdfn);
 
 /* deinitializes and frees a binary tree allocated with bt_new() */
-void bt_delete(bt_t * const btree);
+void bt_delete(void * bt);
 
 /* returns the number of key/value pairs stored in the btree */
 uint_t bt_size(bt_t * const btree);

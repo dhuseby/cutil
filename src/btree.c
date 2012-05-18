@@ -286,15 +286,16 @@ static void bt_deinitialize(bt_t * const btree)
 
 
 /* deinitializes and frees a btree allocated with bt_new() */
-void bt_delete(bt_t * const btree)
+void bt_delete(void * bt)
 {
+	bt_t * btree = (bt_t*)bt;
 	CHECK_PTR(btree);
 
 	/* de-init the btree if needed */
 	bt_deinitialize(btree);
 
 	/* free the btree */
-	FREE(btree);
+	FREE((void*)btree);
 }
 
 

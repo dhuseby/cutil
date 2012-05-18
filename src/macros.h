@@ -30,6 +30,9 @@
 #define FALSE ((int)0)
 #define TRUE  ((int)1)
 
+/* array size */
+#define ARRAY_SIZE( x ) (sizeof(x) / sizeof(x[0]))
+
 /* used for debugging purposes */
 #define ASSERT(x) assert(x)
 #define WARN(fmt, ...) { fprintf(stderr, "%20s:%-5d -- " fmt,  __FILE__, __LINE__, ##__VA_ARGS__); fflush(stderr); }
