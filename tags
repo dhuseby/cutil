@@ -4,21 +4,22 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-ASSERT	src/macros.h	34;"	d
+ARRAY_SIZE	src/macros.h	34;"	d
+ASSERT	src/macros.h	37;"	d
 BIT	src/bitset.c	23;"	d	file:
 BUILDDIRS	Makefile	/^BUILDDIRS = $(DIRS:%=build-%)$/;"	m
-C	src/macros.h	62;"	d
-CALLOC	src/macros.h	51;"	d
+C	src/macros.h	65;"	d
+CALLOC	src/macros.h	54;"	d
 CFLAGS	src/Makefile	/^CFLAGS=-O0 -gstabs+$/;"	m
 CFLAGS	test/Makefile	/^CFLAGS=-O0 -gstabs+ -I$(CUTILS_ROOT)\/include -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
-CHECK	src/macros.h	40;"	d
-CHECK_MSG	src/macros.h	41;"	d
-CHECK_PTR	src/macros.h	44;"	d
-CHECK_PTR_MSG	src/macros.h	45;"	d
-CHECK_PTR_RET	src/macros.h	46;"	d
-CHECK_PTR_RET_MSG	src/macros.h	47;"	d
-CHECK_RET	src/macros.h	42;"	d
-CHECK_RET_MSG	src/macros.h	43;"	d
+CHECK	src/macros.h	43;"	d
+CHECK_MSG	src/macros.h	44;"	d
+CHECK_PTR	src/macros.h	47;"	d
+CHECK_PTR_MSG	src/macros.h	48;"	d
+CHECK_PTR_RET	src/macros.h	49;"	d
+CHECK_PTR_RET_MSG	src/macros.h	50;"	d
+CHECK_RET	src/macros.h	45;"	d
+CHECK_RET_MSG	src/macros.h	46;"	d
 CLEANDIRS	Makefile	/^CLEANDIRS = $(DIRS:%=clean-%)$/;"	m
 CUTILS_ROOT	test/Makefile	/^CUTILS_ROOT=..\/src$/;"	m
 DEBUG	src/debug.h	17;"	d
@@ -39,9 +40,9 @@ EVT_SIGNAL	src/events.h	/^	EVT_SIGNAL,$/;"	e	enum:evt_type_e
 EV_MULTIPLICITY	src/events.c	18;"	d	file:
 EV_STANDALONE	src/events.c	17;"	d	file:
 EXTRA_LIBS_ROOT	test/Makefile	/^EXTRA_LIBS_ROOT=\/usr\/local$/;"	m
-FAIL	src/macros.h	37;"	d
+FAIL	src/macros.h	40;"	d
 FALSE	src/macros.h	30;"	d
-FREE	src/macros.h	53;"	d
+FREE	src/macros.h	56;"	d
 HDR	src/Makefile	/^HDR=array.h  bitset.h  btree.h buffer.h  daemon.h  debug.h  events.h  hashtable.h  macros.h  pair.h  socket.h$/;"	m
 INSTALL	Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
 INSTALL	src/Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
@@ -53,18 +54,18 @@ INSTALL_PROGRAM	src/Makefile	/^INSTALL_PROGRAM=$(INSTALL)$/;"	m
 IPv4	src/socket.h	/^typedef struct in_addr IPv4;$/;"	t	typeref:struct:in_addr
 LDFLAGS	test/Makefile	/^LDFLAGS=-O0 -gstabs+ -L$(CUTILS_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
 LIBS	test/Makefile	/^LIBS=-lcutil -lcunit$/;"	m
-LOG	src/macros.h	36;"	d
-MALLOC	src/macros.h	50;"	d
-MEMCMP	src/macros.h	55;"	d
-MEMCPY	src/macros.h	54;"	d
-MEMSET	src/macros.h	56;"	d
+LOG	src/macros.h	39;"	d
+MALLOC	src/macros.h	53;"	d
+MEMCMP	src/macros.h	58;"	d
+MEMCPY	src/macros.h	57;"	d
+MEMSET	src/macros.h	59;"	d
 NAME	src/Makefile	/^NAME=cutil$/;"	m
 OBJ	src/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
 OBJ	test/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
 OUT	src/Makefile	/^OUT=lib$(NAME).a$/;"	m
 OUT	test/Makefile	/^OUT=test_all$/;"	m
 PREFIX	src/Makefile	/^PREFIX?=\/usr\/local$/;"	m
-REALLOC	src/macros.h	52;"	d
+REALLOC	src/macros.h	55;"	d
 SHELL	Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	test/Makefile	/^SHELL=\/bin\/sh$/;"	m
@@ -83,13 +84,13 @@ SOCKET_TIMEOUT	src/socket.h	/^    SOCKET_TIMEOUT      = -5,$/;"	e	enum:socket_re
 SOCKET_UDP	src/socket.h	/^    SOCKET_UDP,$/;"	e	enum:socket_type_e
 SRC	src/Makefile	/^SRC=array.c  bitset.c  btree.c buffer.c  daemon.c  events.c  hashtable.c  pair.c  socket.c$/;"	m
 SRC	test/Makefile	/^SRC=test_all.c test_array.c test_bitset.c test_btree.c test_buffer.c test_hashtable.c test_pair.c$/;"	m
-STRDUP	src/macros.h	57;"	d
-T	src/macros.h	60;"	d
+STRDUP	src/macros.h	60;"	d
+T	src/macros.h	63;"	d
 TESTDIRS	Makefile	/^TESTDIRS = $(DIRS:%=test-%)$/;"	m
 TRUE	src/macros.h	31;"	d
 UNINSTALLDIRS	Makefile	/^UNINSTALLDIRS = $(DIRS:%=uninstall-%)$/;"	m
-UT	src/macros.h	61;"	d
-WARN	src/macros.h	35;"	d
+UT	src/macros.h	64;"	d
+WARN	src/macros.h	38;"	d
 __ARRAY_H__	src/array.h	18;"	d
 __BITSET_H__	src/bitset.h	18;"	d
 __BTREE_H__	src/btree.h	18;"	d
@@ -175,7 +176,7 @@ bt_add	src/btree.c	/^int bt_add( bt_t * const btree, $/;"	f
 bt_add_more_nodes	src/btree.c	/^static void bt_add_more_nodes( bt_t * const btree )$/;"	f	file:
 bt_balance_tree	src/btree.c	/^static node_t * bt_balance_tree( bt_t * const btree, node_t * n )$/;"	f	file:
 bt_deinitialize	src/btree.c	/^static void bt_deinitialize(bt_t * const btree)$/;"	f	file:
-bt_delete	src/btree.c	/^void bt_delete(bt_t * const btree)$/;"	f
+bt_delete	src/btree.c	/^void bt_delete(void * bt)$/;"	f
 bt_delete_fn	src/btree.h	/^typedef void (*bt_delete_fn)(void * value);$/;"	t
 bt_find	src/btree.c	/^void * bt_find(bt_t * const btree, void * const key )$/;"	f
 bt_find_node	src/btree.c	/^static node_t * bt_find_node( bt_t * const btree, void * const key )$/;"	f	file:
@@ -282,7 +283,7 @@ ht_add_prehash	src/hashtable.c	/^int ht_add_prehash( ht_t * const htable, $/;"	f
 ht_clear	src/hashtable.c	/^int ht_clear(ht_t * const htable)$/;"	f
 ht_compact	src/hashtable.c	/^int ht_compact(ht_t * const htable)$/;"	f
 ht_deinitialize	src/hashtable.c	/^void ht_deinitialize(ht_t * const htable)$/;"	f
-ht_delete	src/hashtable.c	/^void ht_delete(ht_t * const htable)$/;"	f
+ht_delete	src/hashtable.c	/^void ht_delete(void * ht)$/;"	f
 ht_delete_fn	src/hashtable.h	/^typedef void (*ht_delete_fn)(void * value);$/;"	t
 ht_find	src/hashtable.c	/^void * ht_find(ht_t const * const htable, void const * const key)$/;"	f
 ht_find_index	src/hashtable.c	/^static int ht_find_index$/;"	f	file:
