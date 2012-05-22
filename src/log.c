@@ -30,7 +30,8 @@ static int8_t * const priov[] =
 	T("ERR:"),
 	T("WARNING:"),
 	T("NOTICE:"),
-	T("INFO:")
+	T("INFO:"),
+	T("DEBUG:")
 };
 
 /* handles determining the proper log level from the string prefix and writing the
