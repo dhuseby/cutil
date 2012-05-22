@@ -86,7 +86,7 @@ void start_logging( void )
 	setvbuf(stderr = fopencookie(NULL, "w", log_fns), NULL, _IOLBF, 0);
 }
 
-void stop_loggin( void )
+void stop_logging( void )
 {
 	closelog();
 }

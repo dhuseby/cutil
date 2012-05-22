@@ -36,6 +36,7 @@
 /* used for debugging purposes */
 #define ASSERT(x) assert(x)
 #define WARN(fmt, ...) { fprintf(stderr, "WARNING:%20s:%-5d -- " fmt,  __FILE__, __LINE__, ##__VA_ARGS__); fflush(stderr); }
+#define NOTICE(fmt, ...) { fprintf(stderr, "NOTICE:%20s:%-5d -- " fmt,  __FILE__, __LINE__, ##__VA_ARGS__); fflush(stderr); }
 #define LOG(...) { fprintf(stderr, __VA_ARGS__); fflush(stdout); }
 #define FAIL(fmt, ...) { fprintf(stderr, "ERR:%20s:%-5d -- " fmt,  __FILE__, __LINE__, ##__VA_ARGS__); fflush(stderr); assert(0); }
 
