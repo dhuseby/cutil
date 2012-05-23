@@ -21,6 +21,7 @@
 
 #include "debug.h"
 #include "daemon.h"
+#include "log.h"
 
 pid_t pid, sid;
 
@@ -28,7 +29,7 @@ pid_t pid, sid;
  * this function handles daemonizing the process, it follows the
  * process outlined in the linux daemon writing howto
  */
-void daemonize(void)
+void daemonize( int8_t const * const root_dir )
 {
     /* forking off the parent processes */
     pid = fork();
@@ -49,8 +50,6 @@ void daemonize(void)
     /* change file mode mask (umask) */
     umask(0);
     
-    /* open any logs for writing */
-    
     /* create a unique session id (SID) */
     sid = setsid();
     if(sid < 0)
@@ -60,7 +59,7 @@ void daemonize(void)
     }
     
     /* change the current working directory to a safe place */
-    if(chdir("/") < 0)
+    if( chdir( ((root_dir == NULL) ? "/" : root_dir) ) < 0)
     {
         /* log the failure and exit */
         exit(EXIT_FAILURE);
@@ -70,11 +69,5 @@ void daemonize(void)
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
-    
-    /* 
-     * TODO: might be a good idea to map STDERR_FILENO to the log file
-     * so that logging errors is as easy as writing to STDERR. this 
-     * should also be done before setting the sid and doing the chdir
-     * so that any failures can use the global error logging facility.
-     */
 }
+

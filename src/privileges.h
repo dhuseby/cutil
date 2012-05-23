@@ -13,13 +13,12 @@
  * License along with main.c; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
- 
-#ifndef __DAEMON_H__
-#define __DAEMON_H__
 
-/*
- * this handles forking to the background and making everything nice.
- */
-void daemonize( int8_t const * const root_dir );
+#ifndef __PRIVILEGES_H__
+#define __PRIVILEGES_H__
 
-#endif /* __DAEMON_H__ */
+void drop_privileges( int permanent );
+void restore_privileges( void );
+
+#endif/*__PRIVILEGES_H__*/
+
