@@ -99,7 +99,7 @@ void array_initialize( array_t * const array,
 	CHECK_PTR(array);
 
 	/* zero out the memory */
-	memset(array, 0, sizeof(array_t));
+	MEMSET(array, 0, sizeof(array_t));
 
 	/* store the delete function pointer */
 	array->pfn = pfn;
@@ -154,7 +154,7 @@ array_t * array_new( uint_t initial_capacity, delete_fn pfn )
 	array_t * array = NULL;
 
 	/* allocate the array structure */
-	array = (array_t*)MALLOC(sizeof(array_t));
+	array = (array_t*)CALLOC( 1, sizeof(array_t) );
 
 	/* initialize the array */
 	array_initialize( array, initial_capacity, pfn );
@@ -197,7 +197,7 @@ void array_deinitialize(array_t * const array)
 	}
 
 	/* free up the node buffer */
-	FREE(array->node_buffer);
+	FREE( array->node_buffer );
 	array->node_buffer = NULL;
 
 #ifdef USE_THREADING
@@ -228,7 +228,7 @@ void array_delete(array_t * const array)
 	array_deinitialize(array);
 
 	/* free the array */
-	FREE(array);
+	FREE( (void*)array );
 }
 
 

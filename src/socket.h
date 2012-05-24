@@ -19,6 +19,7 @@
 
 #include "events.h"
 #include "array.h"
+#include "aiofd.h"
 
 typedef enum socket_ret_e
 {
@@ -72,10 +73,7 @@ struct socket_s
 	}				ops;
 
 	/* private */
-	int32_t			socket;			/* fd of socket */
-	array_t 		wbuf;			/* queued data to write */
-	evt_t			wevt;			/* the write event */
-	evt_t			revt;			/* the read event */
+	aiofd_t			aiofd;			/* the fd management state */
 };
 
 

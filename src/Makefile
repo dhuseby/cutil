@@ -7,8 +7,8 @@ PREFIX?=/usr/local
 # other variables
 SHELL=/bin/sh
 NAME=cutil
-SRC=array.c  bitset.c btree.c buffer.c daemon.c events.c hashtable.c log.c pair.c privileges.c socket.c
-HDR=array.h  bitset.h btree.h buffer.h daemon.h debug.h events.h hashtable.h log.h macros.h pair.h privileges.h socket.h
+SRC=aiofd.c array.c  bitset.c btree.c buffer.c daemon.c events.c hashtable.c log.c pair.c privileges.c socket.c
+HDR=aiofd.h array.h  bitset.h btree.h buffer.h daemon.h debug.h events.h hashtable.h log.h macros.h pair.h privileges.h socket.h
 OBJ=$(SRC:.c=.o)
 OUT=lib$(NAME).a
 CFLAGS=-O0 -gstabs+

@@ -124,7 +124,7 @@ void ht_initialize
 	CHECK_PTR(htable);
 
 	/* zero out the memory */
-	memset(htable, 0, sizeof(ht_t));
+	MEMSET( htable, 0, sizeof(ht_t) );
 
 	/* set the default load factor */
 	htable->load_factor = default_load_factor;
