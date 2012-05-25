@@ -814,7 +814,7 @@ static void bt_insert_node( bt_t * const btree,
 	n->next = inorder_successor; /* threading for faster traversal */
 	n->prev = inorder_predecessor; /* threading for faster traversal */
 	n->key = key;
-	n->val = key;
+	n->val = value;
 	n->balance = 0;
 
 	/* add it to the tree */
