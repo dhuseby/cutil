@@ -325,7 +325,7 @@ void socket_deinitialize( socket_t * const s )
 	aiofd_deinitialize( &(s->aiofd) );
 
 	/* close the socket */
-	if ( s->aiofd.rfd > 0 )
+	if ( s->aiofd.rfd >= 0 )
 		socket_disconnect( s );
 
 	/* clean up the host name */
@@ -347,7 +347,7 @@ void socket_delete( void * s )
 int socket_is_connected( socket_t* const s )
 {
 	CHECK_PTR_RET(s, 0);
-	CHECK_RET( s->aiofd.rfd > 0, 0 );
+	CHECK_RET( s->aiofd.rfd >= 0, 0 );
 	return s->connected;
 }
 

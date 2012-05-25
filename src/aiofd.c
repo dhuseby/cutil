@@ -203,19 +203,14 @@ void aiofd_initialize( aiofd_t * const aiofd,
 	CHECK_PTR( aiofd );
 	CHECK_PTR( ops );
 	CHECK_PTR( el );
-	CHECK( write_fd > 0 );
-	CHECK( read_fd > 0 );
+	CHECK( write_fd >= 0 );
+	CHECK( read_fd >= 0 );
 
 	MEMSET( (void*)aiofd, 0, sizeof(aiofd_t) );
 
-	/* store the user_data pointer */
-	aiofd->user_data = user_data;
-
-	/* store the event loop pointer */
-	aiofd->el = el;
-	
-	/* copy the ops into place */
-	MEMCPY( (void*)&(aiofd->ops), ops, sizeof(aiofd_ops_t) );
+	/* store the file descriptors */
+	aiofd->wfd = write_fd;
+	aiofd->rfd = read_fd;
 
 	/* initialize the write buffer */
 	array_initialize( &(aiofd->wbuf), 8, FREE );
@@ -243,6 +238,15 @@ void aiofd_initialize( aiofd_t * const aiofd,
 								  &params, 
 								  aiofd_read_fn, 
 								  (void *)aiofd );
+
+	/* store the event loop pointer */
+	aiofd->el = el;
+	
+	/* store the user_data pointer */
+	aiofd->user_data = user_data;
+
+	/* copy the ops into place */
+	MEMCPY( (void*)&(aiofd->ops), ops, sizeof(aiofd_ops_t) );
 }
 
 void aiofd_deinitialize( aiofd_t * const aiofd )
