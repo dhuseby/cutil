@@ -82,6 +82,8 @@ static int socket_aiofd_write_fn( aiofd_t * const aiofd,
 
 	if ( s->connected )
 	{
+		ASSERT( s->aiofd.rfd != -1 );
+
 		if ( buffer == NULL )
 		{
 			if ( array_size( &(s->aiofd.wbuf) ) == 0 )
@@ -106,65 +108,60 @@ static int socket_aiofd_write_fn( aiofd_t * const aiofd,
 			return TRUE;
 		}
 	}
-	else
+	else if ( s->aiofd.rfd != -1 )
 	{
-		if ( buffer == NULL )
+		/* we're connecting the socket and this write event callback is to signal
+		 * that the connect has completed either successfully or failed */
+		
+		/* check to see if the connect() succeeded */
+		if ( getsockopt( s->aiofd.wfd, SOL_SOCKET, SO_ERROR, &errval, &len ) < 0 )
 		{
-			/* check to see if the connect() succeeded */
-			if ( getsockopt( s->aiofd.wfd, SOL_SOCKET, SO_ERROR, &errval, &len ) < 0 )
+			WARN( "failed to get socket option while checking connect\n" );
+			if ( s->ops.error_fn != NULL )
 			{
-				WARN( "failed to get socket option while checking connect\n" );
-				if ( s->ops.error_fn != NULL )
-				{
-					DEBUG( "calling socket error callback\n" );
-					(*(s->ops.error_fn))( s, errno, s->user_data );
-				}
-				
-				/* stop write event processing */
+				DEBUG( "calling socket error callback\n" );
+				(*(s->ops.error_fn))( s, errno, s->user_data );
+			}
+			
+			/* stop write event processing */
+			return FALSE;
+		}
+
+		ASSERT( len == sizeof(errval) );
+		if ( errval == 0 )
+		{
+			DEBUG( "socket connected\n" );
+			s->connected = TRUE;
+
+			if ( s->ops.connect_fn != NULL )
+			{
+				DEBUG( "calling socket connect callback\n" );
+				/* call the connect callback */
+				(*(s->ops.connect_fn))( s, s->user_data );
+			}
+
+			/* we're connected to start read event */
+			aiofd_enable_read_evt( &(s->aiofd), TRUE );
+
+			if ( array_size( &(s->aiofd.wbuf) ) == 0 )
+			{
+				/* stop the write event processing until we have data to write */
 				return FALSE;
 			}
 
-			ASSERT( len == sizeof(errval) );
-			if ( errval == 0 )
-			{
-				DEBUG( "socket connected\n" );
-				s->connected = TRUE;
-
-				if ( s->ops.connect_fn != NULL )
-				{
-					DEBUG( "calling socket connect callback\n" );
-					/* call the connect callback */
-					(*(s->ops.connect_fn))( s, s->user_data );
-				}
-
-				/* we're connected to start read event */
-				aiofd_enable_read_evt( &(s->aiofd), TRUE );
-
-				if ( array_size( &(s->aiofd.wbuf) ) == 0 )
-				{
-					/* stop the write event processing until we have data to write */
-					return FALSE;
-				}
-
-				/* this will keep the write event processing going */
-				return TRUE;
-			}
-			else
-			{
-				DEBUG( "socket connect failed\n" );
-				if ( s->ops.error_fn != NULL )
-				{
-					DEBUG( "calling socket error callback\n" );
-					(*(s->ops.error_fn))( s, errno, s->user_data );
-				}
-
-				/* stop write event processing */
-				return FALSE;
-			}
+			/* this will keep the write event processing going */
+			return TRUE;
 		}
 		else
 		{
-			DEBUG( "error, received data when socket disconnected!\n" );
+			DEBUG( "socket connect failed\n" );
+			if ( s->ops.error_fn != NULL )
+			{
+				DEBUG( "calling socket error callback\n" );
+				(*(s->ops.error_fn))( s, errno, s->user_data );
+			}
+
+			/* stop write event processing */
 			return FALSE;
 		}
 	}

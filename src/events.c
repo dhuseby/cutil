@@ -85,17 +85,17 @@ static void evt_log_backend( evt_loop_t * const el )
 	flags = ev_backend( (struct ev_loop*)el );
 
 	if ( flags & EVBACKEND_SELECT )
-		WARN( "using SELECT backend\n" );
+		DEBUG( "using SELECT backend\n" );
 	if ( flags & EVBACKEND_POLL )
-		WARN( "using POLL backend\n" );
+		DEBUG( "using POLL backend\n" );
 	if ( flags & EVBACKEND_EPOLL )
-		WARN( "using EPOLL backend\n" );
+		DEBUG( "using EPOLL backend\n" );
 	if ( flags & EVBACKEND_KQUEUE )
-		WARN( "using KQUEUE backend\n" );
+		DEBUG( "using KQUEUE backend\n" );
 	if ( flags & EVBACKEND_DEVPOLL )
-		WARN( "using DEVPOLL backend\n" );
+		DEBUG( "using DEVPOLL backend\n" );
 	if ( flags & EVBACKEND_PORT )
-		WARN( "using PORT backend\n" );
+		DEBUG( "using PORT backend\n" );
 }
 
 evt_loop_t* evt_new( void )
