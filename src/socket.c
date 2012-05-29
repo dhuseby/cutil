@@ -38,6 +38,18 @@
 #include "events.h"
 #include "socket.h"
 
+struct socket_s
+{
+	socket_type_t	type;			/* type of socket */
+	int32_t			connected;		/* is the socket connected? */
+	int8_t*			host;			/* host name */
+	uint16_t		port;			/* port number */
+	IPv4			addr;			/* IPv4 struct from host string */
+	void *			user_data;		/* passed to ops callbacks */
+	socket_ops_t	ops;			/* socket callbacks */
+	aiofd_t			aiofd;			/* the fd management state */
+};
+
 static socket_ret_t socket_lookup_host( socket_t * const s, 
 										int8_t const * const hostname)
 {
@@ -214,7 +226,7 @@ static int socket_aiofd_read_fn( aiofd_t * const aiofd,
 	return TRUE;
 }
 
-void socket_initialize( socket_t * const s,
+static void socket_initialize( socket_t * const s,
 						socket_type_t const type, 
 					    socket_ops_t * const ops,
 					    evt_loop_t * const el,
@@ -222,7 +234,6 @@ void socket_initialize( socket_t * const s,
 {
 	int fd;
 	int32_t flags;
-	evt_params_t params;
 	static aiofd_ops_t aiofd_ops =
 	{
 		&socket_aiofd_read_fn,
@@ -238,9 +249,6 @@ void socket_initialize( socket_t * const s,
 	/* store the user_data pointer */
 	s->user_data = user_data;
 
-	/* store the event loop pointer */
-	s->el = el;
-	
 	/* copy the ops into place */
 	MEMCPY( (void*)&(s->ops), ops, sizeof(socket_ops_t) );
 
@@ -295,7 +303,7 @@ void socket_initialize( socket_t * const s,
 	}
 
 	/* initialize the aiofd to manage the socket */
-	aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, s->el, (void*)s );
+	aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s );
 }
 
 socket_t* socket_new( socket_type_t const type, 
@@ -316,7 +324,7 @@ socket_t* socket_new( socket_type_t const type,
 	return s;
 }
 
-void socket_deinitialize( socket_t * const s )
+static void socket_deinitialize( socket_t * const s )
 {
 	/* shut down the aiofd */
 	aiofd_deinitialize( &(s->aiofd) );
@@ -446,13 +454,8 @@ int32_t socket_read( socket_t* const s,
 					 uint8_t * const buffer, 
 					 int32_t const n )
 {
-	ssize_t res = 0;
-
 	CHECK_PTR_RET(s, 0);
-	
-	/* if they pass a NULL buffer pointer return -1 */
 	CHECK_PTR_RET(buffer, 0);
-
 	CHECK_RET(n > 0, 0);
 
 	return aiofd_read( &(s->aiofd), buffer, n );

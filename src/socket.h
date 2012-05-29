@@ -48,41 +48,17 @@ typedef enum socket_type_e
 } socket_type_t;
 
 typedef struct in_addr IPv4;
-typedef struct socket_priv_s socket_priv_t;
 typedef struct socket_s socket_t;
-typedef struct socket_ops_s socket_ops_t;
 
-struct socket_s
+typedef struct socket_ops_s 
 {
-	/* public */
-	socket_type_t	type;			/* type of socket */
-	int32_t			connected;		/* is the socket connected? */
-	int8_t*			host;			/* host name */
-	uint16_t		port;			/* port number */
-	IPv4			addr;			/* IPv4 struct from host string */
-	void *			user_data;		/* passed to ops callbacks */
-	evt_loop_t*		el;				/* event loop we registered out evt with */
-	struct socket_ops_s
-	{
-		socket_ret_t (*connect_fn)( socket_t * const s, void * user_data );
-		socket_ret_t (*disconnect_fn)( socket_t * const s, void * user_data );
-		socket_ret_t (*error_fn)( socket_t * const s, int err, void * user_data );
-		int32_t (*read_fn)( socket_t * const s, size_t nread, void * user_data );
-		int32_t (*write_fn)( socket_t * const s, uint8_t const * const buffer, void * user_data );
+	socket_ret_t (*connect_fn)( socket_t * const s, void * user_data );
+	socket_ret_t (*disconnect_fn)( socket_t * const s, void * user_data );
+	socket_ret_t (*error_fn)( socket_t * const s, int err, void * user_data );
+	int32_t (*read_fn)( socket_t * const s, size_t nread, void * user_data );
+	int32_t (*write_fn)( socket_t * const s, uint8_t const * const buffer, void * user_data );
 
-	}				ops;
-
-	/* private */
-	aiofd_t			aiofd;			/* the fd management state */
-};
-
-
-void socket_initialize( socket_t * const s,
-						socket_type_t const type,
-						socket_ops_t * const ops,
-						evt_loop_t * const el,
-						void * user_data );
-void socket_deinitialize( socket_t * const s );
+} socket_ops_t;
 
 /* create/destroy a socket */
 socket_t* socket_new( socket_type_t const type,

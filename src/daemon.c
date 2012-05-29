@@ -59,11 +59,16 @@ void daemonize( int8_t const * const root_dir )
     }
     
     /* change the current working directory to a safe place */
-    if( chdir( ((root_dir == NULL) ? "/" : root_dir) ) < 0)
-    {
-        /* log the failure and exit */
-        exit(EXIT_FAILURE);
-    }
+	if ( root_dir == NULL )
+	{
+		if ( chdir( "/" ) < 0 )
+			exit( EXIT_FAILURE );
+	}
+	else
+	{
+		if ( chdir( root_dir ) < 0 )
+			exit( EXIT_FAILURE );
+	}
     
     /* close standard file descriptors */
     close(STDIN_FILENO);
