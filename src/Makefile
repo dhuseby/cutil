@@ -11,6 +11,11 @@ SRC=aiofd.c array.c  bitset.c btree.c buffer.c child.c daemon.c events.c hashtab
 HDR=aiofd.h array.h  bitset.h btree.h buffer.h child.h daemon.h debug.h events.h hashtable.h log.h macros.h pair.h privileges.h sanitize.h socket.h
 OBJ=$(SRC:.c=.o)
 OUT=lib$(NAME).a
+GCDA=$(SRC:.c=.gcda)
+GCNO=$(SRC:.c=.gcno)
+GCOV=$(SRC:.c=.c.gcov)
+# use COVCFLAGS when generating test coverage data
+COVCFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+
 CFLAGS=-O0 -gstabs+
 
 # install utility
@@ -50,6 +55,10 @@ clean:
 	rm -rf lib
 	rm -rf $(OBJ)
 	rm -rf $(OUT)
+	rm -rf $(GCDA)
+	rm -rf $(GCNO)
+	rm -rf $(GCOV)
+	rm -rf ev.h.gcov
 
 .PHONY: all install uninstall clean test
 
