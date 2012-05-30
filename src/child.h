@@ -21,7 +21,7 @@ typedef struct child_process_s child_process_t;
 
 typedef struct child_ops_s 
 {
-	int (*exit_fn)( child_process_t * const cp, void * user_data );
+	int (*exit_fn)( child_process_t * const cp, int rpid, int rstatus, void * user_data );
 	int32_t (*read_fn)( child_process_t * const cp, size_t nread, void * user_data );
 	int32_t (*write_fn)( child_process_t * const cp, uint8_t const * const buffer, void * user_data );
 
@@ -35,6 +35,9 @@ child_process_t * child_process_new( int8_t const * const path,
 									 evt_loop_t * const el,
 									 void * user_data );
 void child_process_delete( void * cp, int wait );
+
+/* get the child process id */
+pid_t child_process_get_pid( child_process_t * const cp );
 
 /* read data from the child process */
 int32_t child_process_read( child_process_t * const cp, 

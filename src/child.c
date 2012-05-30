@@ -40,8 +40,38 @@ struct child_process_s
 	pid_t			pid;			/* the pid of the child process */
 	child_ops_t		ops;			/* child proces callbacks */
 	aiofd_t			aiofd;			/* the fd management state */
+	int				exited;			/* have we received the SIGCHLD signal? */
+	evt_t			sigchld;		/* the SIGCHILD signal event handler */
 	void *			user_data;		/* passed to ops callbacks */
 };
+
+static evt_ret_t sigchld_cb( evt_loop_t * const el,
+							 evt_t * const evt,
+							 evt_params_t * const params,
+							 void * user_data )
+{
+	child_process_t * child = (child_process_t*)user_data;
+	CHECK_PTR_RET( child, EVT_BAD_PTR );
+	CHECK_RET( (child->pid == params->child_params.pid), EVT_ERROR );
+	
+	DEBUG( "received SIGCHLD\n" );
+
+	/* execute the exit_fn callback */
+	if ( child->ops.exit_fn != NULL )
+	{
+		DEBUG( "calling child process exit callback\n" );
+		(*(child->ops.exit_fn))( child, 
+								 params->child_params.rpid, 
+								 params->child_params.rstatus,
+								 child->user_data );
+	}
+
+	/* record that the child process has exited */
+	child->exited = TRUE;
+
+	return EVT_OK;
+}
+
 
 static int child_aiofd_write_fn( aiofd_t * const aiofd,
 								 uint8_t const * const buffer,
@@ -133,6 +163,8 @@ static pid_t safe_fork( void )
 	/* this is the child process */
 	sanitize_files();
 	drop_privileges( TRUE );
+
+	return childpid;
 }
 
 
@@ -146,6 +178,7 @@ static int child_process_initialize( child_process_t * const child,
 {
 	int stdin_pipe[2];
 	int stdout_pipe[2];
+	evt_params_t chld_params;
 	static aiofd_ops_t aiofd_ops =
 	{
 		&child_aiofd_read_fn,
@@ -190,7 +223,7 @@ static int child_process_initialize( child_process_t * const child,
 		return FALSE;
 	}
 
-	if ( !child->pid )
+	if ( child->pid == 0 )
 	{
 		/* child process */
 
@@ -227,6 +260,16 @@ static int child_process_initialize( child_process_t * const child,
 	/* close the write side of the child's stdout pipe */
 	close( stdout_pipe[1] );
 
+	/* initialize our SIGCHLD handler */
+	MEMSET( &chld_params, 0, sizeof(evt_params_t) );
+	chld_params.child_params.pid = child->pid;
+	chld_params.child_params.trace = FALSE;
+	evt_initialize_event_handler( &(child->sigchld), EVT_CHILD, 
+								  &chld_params, &sigchld_cb, (void*)child );
+
+	/* start the handler */
+	evt_start_event_handler( el, &(child->sigchld) );
+
 	/* initialize the aiofd to monitor the parent side of the pipes */
 	aiofd_initialize( &(child->aiofd), stdin_pipe[1], stdout_pipe[0], &aiofd_ops, el, (void*)child );
 
@@ -258,21 +301,19 @@ child_process_t * child_process_new( int8_t const * const path,
 
 static void child_process_deinitialize( child_process_t * const child, int wait )
 {
-	int status;
-	pid_t pid;
 	CHECK_PTR( child );
 
 	/* shut down the aiofd */
 	aiofd_deinitialize( &(child->aiofd) );
 
 	/* wait if the client wants to */
-	if ( wait && (child->pid != -1) )
+	while ( wait && (child->exited == FALSE) )
 	{
-		do
-		{
-			pid = waitpid( child->pid, &status, 0 );
-		} while ( (pid == -1) && (errno == EINTR) );
+		sleep( 1 );
 	}
+
+	/* shut down the child event handler */
+	evt_deinitialize_event_handler( &(child->sigchld) );
 
 	/* close the file descriptors */
 	if ( child->aiofd.rfd >= 0 )
@@ -290,6 +331,12 @@ void child_process_delete( void * cp, int wait )
 	child_process_deinitialize( child, wait );
 
 	FREE( (void*)cp );
+}
+
+pid_t child_process_get_pid( child_process_t * const cp )
+{
+	CHECK_PTR_RET( cp, 0 );
+	return cp->pid;
 }
 
 int32_t child_process_read( child_process_t * const cp, 
