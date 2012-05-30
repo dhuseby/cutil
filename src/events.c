@@ -36,6 +36,7 @@ static void evt_signal_callback( struct ev_loop * loop,
 	/* get the pointer to our own struct */
 	evt_t * evt = (evt_t*)w;
 
+	ASSERT( evt->el == loop );
 	ASSERT( revents == EV_SIGNAL );
 
 	if ( evt->callback != NULL )
@@ -50,6 +51,33 @@ static void evt_signal_callback( struct ev_loop * loop,
 	}
 }
 
+/* libev child event callback */
+static void evt_child_callback( struct ev_loop * loop,
+								struct ev_child * w,
+								int revents )
+{
+	DEBUG("received child event\n");
+
+	/* get the pointer to our own struct */
+	evt_t * evt = (evt_t*)w;
+
+	ASSERT( evt->el == loop );
+	ASSERT( revents == EV_CHILD );
+
+	if ( evt->callback != NULL )
+	{
+		/* initialize the params with signal event data */
+		evt_params_t params;
+		params.child_params.pid = evt->ev.child.pid;
+		params.child_params.rpid = evt->ev.child.rpid;
+		params.child_params.rstatus = evt->ev.child.rstatus;
+
+		/* call the callback */
+		DEBUG("calling child callback\n");
+		(*(evt->callback))( (evt_loop_t*)loop, evt, &params, evt->user_data );
+	}
+}
+
 /* livev io event callback */
 static void evt_io_callback( struct ev_loop * loop,
 							 struct ev_io * w,
@@ -60,6 +88,7 @@ static void evt_io_callback( struct ev_loop * loop,
 	/* get the pointer to our own struct */
 	evt_t * evt = (evt_t*)w;
 
+	ASSERT( evt->el == loop );
 	ASSERT( (revents & EV_READ) || (revents & EV_WRITE) );
 
 	if ( evt->callback != NULL )
@@ -128,7 +157,6 @@ void evt_delete(void * e)
 
 
 void  evt_initialize_event_handler( evt_t * const evt,
-									evt_loop_t * const el,
 									evt_type_t const t,
 									evt_params_t * const params,
 									evt_fn callback,
@@ -141,6 +169,7 @@ void  evt_initialize_event_handler( evt_t * const evt,
 	MEMCPY( &(evt->evt_params), params, sizeof( evt_params_t ) );
 	evt->callback = callback;
 	evt->user_data = user_data;
+	evt->el = NULL;
 
 	switch ( t )
 	{
@@ -150,6 +179,15 @@ void  evt_initialize_event_handler( evt_t * const evt,
 			ev_signal_init( (struct ev_signal*)&(evt->ev.sig), 
 							evt_signal_callback, 
 							evt->evt_params.signal_params.signum );
+			break;
+		}
+		case EVT_CHILD:
+		{
+			/* initialize a libev child event */
+			ev_child_init( (struct ev_child*)&(evt->ev.child),
+						   evt_child_callback,
+						   evt->evt_params.child_params.pid,
+						   evt->evt_params.child_params.trace );
 			break;
 		}
 		case EVT_IO:
@@ -165,15 +203,12 @@ void  evt_initialize_event_handler( evt_t * const evt,
 }
 
 
-evt_t * evt_new_event_handler( evt_loop_t * const el,
-							   evt_type_t const t,
+evt_t * evt_new_event_handler( evt_type_t const t,
 							   evt_params_t * const params,
 							   evt_fn callback,
 							   void * user_data )
 {
 	evt_t * evt = NULL;
-
-	CHECK_PTR_RET( el, NULL );
 
 	evt = MALLOC( sizeof(evt_t) );
 	if ( evt == NULL )
@@ -183,16 +218,19 @@ evt_t * evt_new_event_handler( evt_loop_t * const el,
 	}
 
 	/* initialize it */
-	evt_initialize_event_handler( evt, el, t, params, callback, user_data );
+	evt_initialize_event_handler( evt, t, params, callback, user_data );
 
 	return evt;
 }
 
 void evt_deinitialize_event_handler( evt_t * const evt )
 {
-	/* does nothing */
+	/* stop the event handler if needed */
+	if ( evt->el != NULL )
+	{
+		evt_stop_event_handler( evt->el, evt );
+	}
 }
-
 
 void evt_delete_event_handler( void * e )
 {
@@ -211,20 +249,30 @@ evt_ret_t evt_start_event_handler( evt_loop_t * const el,
 	CHECK_PTR_RET_MSG( el, EVT_BAD_PTR, "bad event loop pointer\n" );
 	CHECK_PTR_RET_MSG( evt, EVT_BAD_PTR, "bad event pointer\n" );
 
+	/* store the pointer to the loop we're hooking into */
+	evt->el = el;
+
 	switch ( evt->evt_type )
 	{
 		case EVT_SIGNAL:
 		{
 			/* start the libev signal event */
 			DEBUG("starting signal event\n");
-			ev_signal_start( (struct ev_loop*)el, (struct ev_signal*)&evt->ev.sig );
+			ev_signal_start( (struct ev_loop*)el, (struct ev_signal*)&(evt->ev.sig) );
+			break;
+		}
+		case EVT_CHILD:
+		{
+			/* start the libevn child event */
+			DEBUG("staring child event\n");
+			ev_child_start( (struct ev_loop*)el, (struct ev_child*)&(evt->ev.child) );
 			break;
 		}
 		case EVT_IO:
 		{
 			/* start the libev io event */
 			DEBUG("starting io event\n");
-			ev_io_start( (struct ev_loop*)el, (struct ev_io*)&evt->ev.io );
+			ev_io_start( (struct ev_loop*)el, (struct ev_io*)&(evt->ev.io) );
 			break;
 		}
 	}
@@ -246,6 +294,12 @@ evt_ret_t evt_stop_event_handler( evt_loop_t * const el,
 			ev_signal_stop( (struct ev_loop*)el, (struct ev_signal*)evt );
 			break;
 		}
+		case EVT_CHILD:
+		{
+			/* stop the libev child event */
+			ev_child_stop( (struct ev_loop*)el, (struct ev_child*)evt );
+			break;
+		}
 		case EVT_IO:
 		{
 			/* stop the libev io event */
@@ -253,6 +307,9 @@ evt_ret_t evt_stop_event_handler( evt_loop_t * const el,
 			break;
 		}
 	}
+
+	/* clear our pointer to the event loop */
+	evt->el = NULL;
 
 	return EVT_OK;
 }

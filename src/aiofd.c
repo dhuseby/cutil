@@ -221,7 +221,6 @@ void aiofd_initialize( aiofd_t * const aiofd,
 
 	/* hook up the fd write event */
 	evt_initialize_event_handler( &(aiofd->wevt), 
-								  aiofd->el, 
 								  EVT_IO, 
 								  &params, 
 								  aiofd_write_fn, 
@@ -233,7 +232,6 @@ void aiofd_initialize( aiofd_t * const aiofd,
 
 	/* hook up the fd read event */
 	evt_initialize_event_handler( &(aiofd->revt), 
-								  aiofd->el, 
 								  EVT_IO, 
 								  &params, 
 								  aiofd_read_fn, 
@@ -251,11 +249,11 @@ void aiofd_initialize( aiofd_t * const aiofd,
 
 void aiofd_deinitialize( aiofd_t * const aiofd )
 {
-	/* stop write event */
-	evt_stop_event_handler( aiofd->el, &(aiofd->wevt) );
-	
-	/* stop read event */
-	evt_stop_event_handler( aiofd->el, &(aiofd->revt) );
+	/* deinitialize the write event */
+	evt_deinitialize_event_handler( &(aiofd->wevt) );
+
+	/* deinitialize the read event */
+	evt_deinitialize_event_handler( &(aiofd->revt) );
 
 	/* clean up the array of write buffers */
 	array_deinitialize( &(aiofd->wbuf) );

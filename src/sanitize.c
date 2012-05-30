@@ -25,6 +25,7 @@
 #include <paths.h>
 
 #include "debug.h"
+#include "macros.h"
 
 /* this function was lifted from "Secure Programming Cookbook for C and C++"
  * by Matt Messier and John Viega, O'Reilly July 2003, ISBN: 0-596-00394-3.

@@ -33,6 +33,7 @@ typedef enum evt_ret_e
 typedef enum evt_type_e
 {
 	EVT_SIGNAL,
+	EVT_CHILD,
 	EVT_IO
 } evt_type_t;
 
@@ -48,6 +49,14 @@ typedef union evt_params_u
 	{
 		int signum;
 	} signal_params;
+
+	struct
+	{
+		int pid;	/* pid to watch */
+		int trace;	/* 0 == only signal upon termination, 1 == also signal when stopped/continued */
+		int rpid;	/* pid of process causing change */
+		int rstatus;/* status word of process, use macros from sys/wait.h, waitpid */
+	} child_params;
 
 	struct
 	{
@@ -67,6 +76,7 @@ typedef evt_ret_t (*evt_fn)( evt_loop_t * const el,
 typedef union ev_data_u
 {
 	struct ev_signal	sig;
+	struct ev_child		child;
 	struct ev_io		io;
 } ev_data_t;
 
@@ -78,6 +88,8 @@ struct evt_s
 	evt_params_t	evt_params;
 	evt_fn			callback;
 	void *			user_data;
+
+	evt_loop_t *	el;			/* the event loop associated wtih */
 };
 
 /* allocate and initialize the events system */
@@ -87,7 +99,6 @@ evt_loop_t* evt_new( void );
 void evt_delete( void * e );
 
 void  evt_initialize_event_handler( evt_t * const evt,
-									evt_loop_t * const el,
 									evt_type_t const t,
 									evt_params_t * const params,
 									evt_fn callback,
@@ -95,8 +106,7 @@ void  evt_initialize_event_handler( evt_t * const evt,
 void evt_deinitialize_event_handler( evt_t * const evt );
 
 /* add a new event handler */
-evt_t * evt_new_event_handler( evt_loop_t * const el,
-							   evt_type_t const t,
+evt_t * evt_new_event_handler( evt_type_t const t,
 							   evt_params_t * const params,
 							   evt_fn callback,
 							   void * user_data );
