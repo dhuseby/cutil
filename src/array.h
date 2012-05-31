@@ -71,7 +71,7 @@ void array_deinitialize( array_t * const array );
 
 /* array new/delete functions */
 array_t * array_new( uint_t initial_capacity, delete_fn dfn );
-void array_delete( array_t * const array );
+void array_delete( void * arr );
 
 /* gets the size of the array */
 int_t array_size(array_t const * const array);

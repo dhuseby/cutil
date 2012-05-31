@@ -220,8 +220,9 @@ void array_deinitialize(array_t * const array)
 
 
 /* this frees an allocated array structure */
-void array_delete(array_t * const array)
+void array_delete( void * arr )
 {
+	array_t * array = (array_t*)arr;
 	CHECK_PTR(array);
 
 	/* deinit the array */
