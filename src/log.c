@@ -67,6 +67,7 @@ static size_t writer( void * cookie, char const * data, size_t leng )
 
 static int noop( void ) { return 0; }
 
+#ifdef __GNU__
 static cookie_io_functions_t log_fns =
 {
 	(void*) noop,
@@ -74,6 +75,7 @@ static cookie_io_functions_t log_fns =
 	(void*) noop,
 	(void*) noop
 };
+#endif
 
 void start_logging( void )
 {
@@ -83,8 +85,13 @@ void start_logging( void )
 	/* most systems route the LOG_DAEMON facility to /var/log/daemon.log */
 	openlog( "cbot", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_DAEMON );
 
+#if defined __GNU__
 	/* redirect stderr writes to our custom writer function that outputs to syslog */
 	setvbuf(stderr = fopencookie(NULL, "w", log_fns), NULL, _IOLBF, 0);
+#elif defined __APPLE__
+	/* redirect stderr writes to our custom writer function that outputs to syslog */
+	setvbuf(stderr = fwopen( NULL, writer ), NULL, _IOLBF, 0);
+#endif
 }
 
 void stop_logging( void )

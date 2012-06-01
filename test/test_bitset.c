@@ -60,7 +60,10 @@ void test_bitset_initdeinit( void )
 		size = (rand() % 1024);
 		bset_initialize( &bset, size );
 
-		CU_ASSERT_PTR_NOT_NULL( bset.bits );
+		if ( size > 0 )
+		{
+			CU_ASSERT_PTR_NOT_NULL( bset.bits );
+		}
 		CU_ASSERT_EQUAL( bset.num_bits, size );
 
 		bset_deinitialize( &bset );
