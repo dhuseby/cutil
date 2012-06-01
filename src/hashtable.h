@@ -17,14 +17,10 @@
 #ifndef __HASHTABLE_H__
 #define __HASHTABLE_H__
 
-#ifndef __UINT__
-#define __UINT__
-	typedef uint32_t uint_t;
-	typedef int32_t int_t;
-#endif
+#include <stdint.h>
 
 /* the hashtable iterator type */
-typedef int_t ht_itr_t;
+typedef int32_t ht_itr_t;
 
 /* the hash table opaque tuple type */
 typedef struct tuple_s tuple_t;
@@ -32,7 +28,7 @@ typedef struct tuple_s tuple_t;
 /* the key hashing function type,
  * this must return a hash value > 0 because 0 is
  * reserved for internal use */
-typedef uint_t (*key_hash_fn)(void const * const key);
+typedef uint32_t (*key_hash_fn)(void const * const key);
 
 /* define the key comparison function type,
  * it must return 1 if the keys are equal and
@@ -49,9 +45,9 @@ typedef struct ht_s
 	key_eq_fn			kefn;				/* key compare function */
 	ht_delete_fn		kdfn;				/* key delete function */
 	ht_delete_fn		vdfn;				/* value delete function */
-	uint_t				prime_index;		/* the index of the table size */
-	uint_t				num_tuples;			/* number of tuples in the table */
-	uint_t				initial_capacity;	/* the initial capacity value */
+	uint32_t				prime_index;		/* the index of the table size */
+	uint32_t				num_tuples;			/* number of tuples in the table */
+	uint32_t				initial_capacity;	/* the initial capacity value */
 	float				load_factor;		/* load level that triggers resize */
 	tuple_t*			tuples;				/* pointer to tuple table */
 #ifdef USE_THREADING
@@ -71,7 +67,7 @@ pthread_mutex_t * ht_get_mutex(ht_t * const htable);
 void ht_initialize
 (
 	ht_t * const htable, 
-	uint_t initial_capacity, 
+	uint32_t initial_capacity, 
 	key_hash_fn khfn, 
 	ht_delete_fn vdfn,
 	key_eq_fn kefn,
@@ -85,7 +81,7 @@ void ht_deinitialize(ht_t * const htable);
  * for the delete functions, then the key/values will not be deleted when 
  * hashtableDeinitialize or hashtableDelete are called. */
 ht_t* ht_new(
-	uint_t initial_capacity, 
+	uint32_t initial_capacity, 
 	key_hash_fn khfn,
 	ht_delete_fn vdfn, 
 	key_eq_fn kefn, 
@@ -97,7 +93,7 @@ ht_t* ht_new(
 void ht_delete(void * ht);
 
 /* returns the number of key/value pairs stored in the hashtable */
-uint_t ht_size(ht_t * const htable);
+uint32_t ht_size(ht_t * const htable);
 
 /* returns the current fraction of how full the hash table is.
  * the range is 0.0f to 1.0f, where 1.0f is completly full */
@@ -132,7 +128,7 @@ int ht_add(
 
 int ht_add_prehash(
 	ht_t * const htable,
-	uint_t const hash,
+	uint32_t const hash,
 	void * const key,
 	void * const value);
 
@@ -143,13 +139,13 @@ int ht_clear(ht_t * const htable);
  * to find the item */
 void * ht_find(ht_t const * const htable, void const * const key);
 void * ht_find_prehash( ht_t const * const htable, 
-						uint_t const hash, 
+						uint32_t const hash, 
 						void const * const key );
 
 /* remove the value associated with the key from the hashtable */
 void * ht_remove(ht_t * const htable, void const * const key);
 void * ht_remove_prehash( ht_t * const htable,
-						  uint_t const hash,
+						  uint32_t const hash,
 						  void const * const key );
 
 /* Iterator based access to the hashtable */

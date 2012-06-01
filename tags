@@ -3,24 +3,27 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+!_TAG_PROGRAM_VERSION	5.8	//
 ARRAY_SIZE	src/macros.h	34;"	d
 ASSERT	src/macros.h	37;"	d
 BIT	src/bitset.c	23;"	d	file:
 BUILDDIRS	Makefile	/^BUILDDIRS = $(DIRS:%=build-%)$/;"	m
-C	src/macros.h	65;"	d
-CALLOC	src/macros.h	54;"	d
+C	src/macros.h	66;"	d
+CALLOC	src/macros.h	55;"	d
 CFLAGS	src/Makefile	/^CFLAGS=-O0 -gstabs+$/;"	m
 CFLAGS	test/Makefile	/^CFLAGS=-O0 -gstabs+ -I$(CUTILS_ROOT)\/include -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
-CHECK	src/macros.h	43;"	d
-CHECK_MSG	src/macros.h	44;"	d
-CHECK_PTR	src/macros.h	47;"	d
-CHECK_PTR_MSG	src/macros.h	48;"	d
-CHECK_PTR_RET	src/macros.h	49;"	d
-CHECK_PTR_RET_MSG	src/macros.h	50;"	d
-CHECK_RET	src/macros.h	45;"	d
-CHECK_RET_MSG	src/macros.h	46;"	d
+CHECK	src/macros.h	44;"	d
+CHECK_MSG	src/macros.h	45;"	d
+CHECK_PTR	src/macros.h	48;"	d
+CHECK_PTR_MSG	src/macros.h	49;"	d
+CHECK_PTR_RET	src/macros.h	50;"	d
+CHECK_PTR_RET_MSG	src/macros.h	51;"	d
+CHECK_RET	src/macros.h	46;"	d
+CHECK_RET_MSG	src/macros.h	47;"	d
 CLEANDIRS	Makefile	/^CLEANDIRS = $(DIRS:%=clean-%)$/;"	m
+COVCFLAGS	src/Makefile	/^COVCFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+$/;"	m
+COVCFLAGS	test/Makefile	/^COVCFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -I$(CUTILS_ROOT)\/include -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
+COVLDFLAGS	test/Makefile	/^COVLDFLAGS=-fprofile-arcs -O0 -gstabs+ -L$(CUTILS_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
 CUTILS_ROOT	test/Makefile	/^CUTILS_ROOT=..\/src$/;"	m
 DEBUG	src/debug.h	17;"	d
 DEBUG	src/debug.h	20;"	d
@@ -31,6 +34,7 @@ DIRS	Makefile	/^DIRS = src test$/;"	m
 DWORDS_NEEDED	src/bitset.c	21;"	d	file:
 DWORD_INDEX	src/bitset.c	22;"	d	file:
 EVT_BAD_PTR	src/events.h	/^	EVT_BAD_PTR = -1,$/;"	e	enum:evt_ret_e
+EVT_CHILD	src/events.h	/^	EVT_CHILD,$/;"	e	enum:evt_type_e
 EVT_ERROR	src/events.h	/^	EVT_ERROR = -2$/;"	e	enum:evt_ret_e
 EVT_IO	src/events.h	/^	EVT_IO$/;"	e	enum:evt_type_e
 EVT_IO_READ	src/events.h	/^	EVT_IO_READ =  0x01,$/;"	e	enum:evt_io_type_e
@@ -40,10 +44,16 @@ EVT_SIGNAL	src/events.h	/^	EVT_SIGNAL,$/;"	e	enum:evt_type_e
 EV_MULTIPLICITY	src/events.c	18;"	d	file:
 EV_STANDALONE	src/events.c	17;"	d	file:
 EXTRA_LIBS_ROOT	test/Makefile	/^EXTRA_LIBS_ROOT=\/usr\/local$/;"	m
-FAIL	src/macros.h	40;"	d
+FAIL	src/macros.h	41;"	d
 FALSE	src/macros.h	30;"	d
-FREE	src/macros.h	56;"	d
-HDR	src/Makefile	/^HDR=array.h  bitset.h  btree.h buffer.h  daemon.h  debug.h  events.h  hashtable.h  macros.h  pair.h  socket.h$/;"	m
+FREE	src/macros.h	57;"	d
+GCDA	src/Makefile	/^GCDA=$(SRC:.c=.gcda)$/;"	m
+GCDA	test/Makefile	/^GCDA=$(SRC:.c=.gcda)$/;"	m
+GCNO	src/Makefile	/^GCNO=$(SRC:.c=.gcno)$/;"	m
+GCNO	test/Makefile	/^GCNO=$(SRC:.c=.gcno)$/;"	m
+GCOV	src/Makefile	/^GCOV=$(SRC:.c=.c.gcov)$/;"	m
+GCOV	test/Makefile	/^GCOV=$(SRC:.c=.c.gcov)$/;"	m
+HDR	src/Makefile	/^HDR=aiofd.h array.h  bitset.h btree.h buffer.h child.h daemon.h debug.h events.h hashtable.h log.h macros.h pair.h privileges.h sanitize.h socket.h$/;"	m
 INSTALL	Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
 INSTALL	src/Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
 INSTALLDIRS	Makefile	/^INSTALLDIRS = $(DIRS:%=install-%)$/;"	m
@@ -54,18 +64,20 @@ INSTALL_PROGRAM	src/Makefile	/^INSTALL_PROGRAM=$(INSTALL)$/;"	m
 IPv4	src/socket.h	/^typedef struct in_addr IPv4;$/;"	t	typeref:struct:in_addr
 LDFLAGS	test/Makefile	/^LDFLAGS=-O0 -gstabs+ -L$(CUTILS_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
 LIBS	test/Makefile	/^LIBS=-lcutil -lcunit$/;"	m
-LOG	src/macros.h	39;"	d
-MALLOC	src/macros.h	53;"	d
-MEMCMP	src/macros.h	58;"	d
-MEMCPY	src/macros.h	57;"	d
-MEMSET	src/macros.h	59;"	d
+LOG	src/macros.h	40;"	d
+MALLOC	src/macros.h	54;"	d
+MEMCMP	src/macros.h	59;"	d
+MEMCPY	src/macros.h	58;"	d
+MEMSET	src/macros.h	60;"	d
 NAME	src/Makefile	/^NAME=cutil$/;"	m
+NOTICE	src/macros.h	39;"	d
 OBJ	src/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
 OBJ	test/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
+OPEN_MAX	src/sanitize.c	37;"	d	file:
 OUT	src/Makefile	/^OUT=lib$(NAME).a$/;"	m
 OUT	test/Makefile	/^OUT=test_all$/;"	m
 PREFIX	src/Makefile	/^PREFIX?=\/usr\/local$/;"	m
-REALLOC	src/macros.h	55;"	d
+REALLOC	src/macros.h	56;"	d
 SHELL	Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	test/Makefile	/^SHELL=\/bin\/sh$/;"	m
@@ -82,24 +94,30 @@ SOCKET_SCTP	src/socket.h	/^    SOCKET_SCTP$/;"	e	enum:socket_type_e
 SOCKET_TCP	src/socket.h	/^    SOCKET_TCP,$/;"	e	enum:socket_type_e
 SOCKET_TIMEOUT	src/socket.h	/^    SOCKET_TIMEOUT      = -5,$/;"	e	enum:socket_ret_e
 SOCKET_UDP	src/socket.h	/^    SOCKET_UDP,$/;"	e	enum:socket_type_e
-SRC	src/Makefile	/^SRC=array.c  bitset.c  btree.c buffer.c  daemon.c  events.c  hashtable.c  pair.c  socket.c$/;"	m
+SRC	src/Makefile	/^SRC=aiofd.c array.c  bitset.c btree.c buffer.c child.c daemon.c events.c hashtable.c log.c pair.c privileges.c sanitize.c socket.c$/;"	m
 SRC	test/Makefile	/^SRC=test_all.c test_array.c test_bitset.c test_btree.c test_buffer.c test_hashtable.c test_pair.c$/;"	m
-STRDUP	src/macros.h	60;"	d
-T	src/macros.h	63;"	d
+STRDUP	src/macros.h	61;"	d
+T	src/macros.h	64;"	d
 TESTDIRS	Makefile	/^TESTDIRS = $(DIRS:%=test-%)$/;"	m
 TRUE	src/macros.h	31;"	d
 UNINSTALLDIRS	Makefile	/^UNINSTALLDIRS = $(DIRS:%=uninstall-%)$/;"	m
-UT	src/macros.h	64;"	d
+UT	src/macros.h	65;"	d
 WARN	src/macros.h	38;"	d
+_GNU_SOURCE	src/log.c	17;"	d	file:
+__AIOFD_H__	src/aiofd.h	18;"	d
 __ARRAY_H__	src/array.h	18;"	d
 __BITSET_H__	src/bitset.h	18;"	d
 __BTREE_H__	src/btree.h	18;"	d
 __BUFFER_H__	src/buffer.h	18;"	d
+__CHILD_H__	src/child.h	18;"	d
 __DAEMON_H__	src/daemon.h	18;"	d
 __EVENTS_H__	src/events.h	18;"	d
 __HASHTABLE_H__	src/hashtable.h	18;"	d
+__LOG_H__	src/log.h	18;"	d
 __MACROS_H__	src/macros.h	18;"	d
 __PAIR_H__	src/pair.h	18;"	d
+__PRIVILEGES_H__	src/privileges.h	18;"	d
+__SANITIZE_H__	src/sanitize.h	18;"	d
 __SOCKET_H__	src/socket.h	18;"	d
 __TEST_ARRAY__	test/test_array.h	18;"	d
 __TEST_BITSET__	test/test_bitset.h	18;"	d
@@ -107,9 +125,7 @@ __TEST_BTREE__	test/test_btree.h	18;"	d
 __TEST_BUFFER__	test/test_buffer.h	18;"	d
 __TEST_HASHTABLE__	test/test_hashtable.h	18;"	d
 __TEST_PAIR__	test/test_pair.h	18;"	d
-__UINT__	src/array.h	23;"	d
 __UINT__	src/btree.h	21;"	d
-__UINT__	src/hashtable.h	21;"	d
 add_array_test_suite	test/test_array.c	/^CU_pSuite add_array_test_suite()$/;"	f
 add_array_tests	test/test_array.c	/^static CU_pSuite add_array_tests( CU_pSuite pSuite )$/;"	f	file:
 add_bitset_test_suite	test/test_bitset.c	/^CU_pSuite add_bitset_test_suite()$/;"	f
@@ -122,40 +138,61 @@ add_hashtable_test_suite	test/test_hashtable.c	/^CU_pSuite add_hashtable_test_su
 add_hashtable_tests	test/test_hashtable.c	/^static CU_pSuite add_hashtable_tests( CU_pSuite pSuite )$/;"	f	file:
 add_pair_test_suite	test/test_pair.c	/^CU_pSuite add_pair_test_suite()$/;"	f
 add_pair_tests	test/test_pair.c	/^static CU_pSuite add_pair_tests( CU_pSuite pSuite )$/;"	f	file:
-addr	src/socket.h	/^	IPv4			addr;			\/* IPv4 struct from host string *\/$/;"	m	struct:socket_s
+addr	src/socket.c	/^	IPv4			addr;			\/* IPv4 struct from host string *\/$/;"	m	struct:socket_s	file:
+aiofd	src/child.c	/^	aiofd_t			aiofd;			\/* the fd management state *\/$/;"	m	struct:child_process_s	file:
+aiofd	src/socket.c	/^	aiofd_t			aiofd;			\/* the fd management state *\/$/;"	m	struct:socket_s	file:
+aiofd_deinitialize	src/aiofd.c	/^void aiofd_deinitialize( aiofd_t * const aiofd )$/;"	f
+aiofd_delete	src/aiofd.c	/^void aiofd_delete( void * aio )$/;"	f
+aiofd_enable_read_evt	src/aiofd.c	/^int aiofd_enable_read_evt( aiofd_t * const aiofd,$/;"	f
+aiofd_enable_write_evt	src/aiofd.c	/^int aiofd_enable_write_evt( aiofd_t * const aiofd,$/;"	f
+aiofd_flush	src/aiofd.c	/^int aiofd_flush( aiofd_t * const aiofd )$/;"	f
+aiofd_initialize	src/aiofd.c	/^void aiofd_initialize( aiofd_t * const aiofd, $/;"	f
+aiofd_new	src/aiofd.c	/^aiofd_t * aiofd_new( int const write_fd,$/;"	f
+aiofd_ops_s	src/aiofd.h	/^	struct aiofd_ops_s$/;"	s	struct:aiofd_s
+aiofd_ops_t	src/aiofd.h	/^typedef struct aiofd_ops_s aiofd_ops_t;$/;"	t	typeref:struct:aiofd_ops_s
+aiofd_read	src/aiofd.c	/^int32_t aiofd_read( aiofd_t * const aiofd,$/;"	f
+aiofd_read_fn	src/aiofd.c	/^static evt_ret_t aiofd_read_fn( evt_loop_t * const el,$/;"	f	file:
+aiofd_s	src/aiofd.h	/^struct aiofd_s$/;"	s
+aiofd_t	src/aiofd.h	/^typedef struct aiofd_s aiofd_t;$/;"	t	typeref:struct:aiofd_s
+aiofd_write	src/aiofd.c	/^int aiofd_write( aiofd_t * const aiofd, $/;"	f
+aiofd_write_common	src/aiofd.c	/^static int aiofd_write_common( aiofd_t* const aiofd, $/;"	f	file:
+aiofd_write_fn	src/aiofd.c	/^static evt_ret_t aiofd_write_fn( evt_loop_t * const el,$/;"	f	file:
+aiofd_write_s	src/aiofd.c	/^typedef struct aiofd_write_s$/;"	s	file:
+aiofd_write_t	src/aiofd.c	/^} aiofd_write_t;$/;"	t	typeref:struct:aiofd_write_s	file:
+aiofd_writev	src/aiofd.c	/^int aiofd_writev( aiofd_t * const aiofd,$/;"	f
 array_clear	src/array.c	/^void array_clear(array_t * const array)$/;"	f
 array_deinitialize	src/array.c	/^void array_deinitialize(array_t * const array)$/;"	f
-array_delete	src/array.c	/^void array_delete(array_t * const array)$/;"	f
+array_delete	src/array.c	/^void array_delete( void * arr )$/;"	f
 array_get_free_node	src/array.c	/^static array_node_t* array_get_free_node(array_t * const array)$/;"	f	file:
-array_get_head	src/array.h	114;"	d
-array_get_tail	src/array.h	115;"	d
+array_get_head	src/array.h	103;"	d
+array_get_tail	src/array.h	104;"	d
 array_grow	src/array.c	/^static int array_grow(array_t * const array)$/;"	f	file:
 array_initialize	src/array.c	/^void array_initialize( array_t * const array, $/;"	f
 array_itr_begin	src/array.c	/^array_itr_t array_itr_begin(array_t const * const array)$/;"	f
 array_itr_end	src/array.c	/^array_itr_t array_itr_end(array_t const * const array)$/;"	f
 array_itr_end_t	src/array.c	/^array_itr_t const array_itr_end_t = -1;$/;"	v
 array_itr_get	src/array.c	/^void* array_itr_get($/;"	f
-array_itr_head	src/array.h	82;"	d
+array_itr_head	src/array.h	71;"	d
 array_itr_next	src/array.c	/^array_itr_t array_itr_next($/;"	f
-array_itr_rbegin	src/array.h	84;"	d
-array_itr_rend	src/array.h	85;"	d
+array_itr_rbegin	src/array.h	73;"	d
+array_itr_rend	src/array.h	74;"	d
 array_itr_rnext	src/array.c	/^array_itr_t array_itr_rnext($/;"	f
-array_itr_t	src/array.h	/^typedef int_t array_itr_t;$/;"	t
+array_itr_t	src/array.h	/^typedef int32_t array_itr_t;$/;"	t
 array_itr_tail	src/array.c	/^array_itr_t array_itr_tail(array_t const * const array)$/;"	f
 array_lock	src/array.c	/^void array_lock(array_t * const array)$/;"	f
 array_mutex	src/array.c	/^pthread_mutex_t * array_mutex(array_t * const array)$/;"	f
-array_new	src/array.c	/^array_t * array_new( uint_t initial_capacity, delete_fn pfn )$/;"	f
+array_new	src/array.c	/^array_t * array_new( uint32_t initial_capacity, delete_fn pfn )$/;"	f
 array_node_s	src/array.c	/^struct array_node_s$/;"	s	file:
 array_node_t	src/array.h	/^typedef struct array_node_s array_node_t;$/;"	t	typeref:struct:array_node_s
 array_pop	src/array.c	/^void * array_pop($/;"	f
-array_pop_head	src/array.h	107;"	d
-array_pop_tail	src/array.h	108;"	d
+array_pop_head	src/array.h	96;"	d
+array_pop_tail	src/array.h	97;"	d
 array_push	src/array.c	/^void array_push($/;"	f
-array_push_head	src/array.h	100;"	d
-array_push_tail	src/array.h	101;"	d
+array_push_head	src/array.h	89;"	d
+array_push_tail	src/array.h	90;"	d
 array_put_free_node	src/array.c	/^static void array_put_free_node($/;"	f	file:
 array_s	src/array.h	/^typedef struct array_s$/;"	s
-array_size	src/array.c	/^int_t array_size(array_t const * const array)$/;"	f
+array_size	src/array.c	/^int32_t array_size(array_t const * const array)$/;"	f
 array_t	src/array.h	/^} array_t;$/;"	t	typeref:struct:array_s
 array_try_lock	src/array.c	/^int array_try_lock(array_t * const array)$/;"	f
 array_unlock	src/array.c	/^void array_unlock(array_t * const array)$/;"	f
@@ -216,18 +253,38 @@ buf	test/test_buffer.c	/^int8_t const * const buf = "blah";$/;"	v
 buffer_delete	src/buffer.c	/^void buffer_delete( void * b )$/;"	f
 buffer_new	src/buffer.c	/^buffer_t * buffer_new( void * p, size_t size, int weak )$/;"	f
 buffer_s	src/buffer.c	/^struct buffer_s$/;"	s	file:
-buffer_size	src/array.h	/^	uint_t			buffer_size;			\/* number of slots in the node array *\/$/;"	m	struct:array_s
+buffer_size	src/array.h	/^	uint32_t			buffer_size;			\/* number of slots in the node array *\/$/;"	m	struct:array_s
 buffer_t	src/buffer.h	/^typedef struct buffer_s buffer_t;$/;"	t	typeref:struct:buffer_s
+build_clean_environ	src/sanitize.c	/^int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int8_t ** addv )$/;"	f
 callback	src/events.h	/^	evt_fn			callback;$/;"	m	struct:evt_s
-connect_fn	src/socket.h	/^		socket_ret_t (*connect_fn)( socket_t * const s, void * user_data );$/;"	m	struct:socket_s::socket_ops_s
-connected	src/socket.h	/^	int32_t			connected;		\/* is the socket connected? *\/$/;"	m	struct:socket_s
-daemonize	src/daemon.c	/^void daemonize(void)$/;"	f
+child	src/events.h	/^	struct ev_child		child;$/;"	m	union:ev_data_u	typeref:struct:ev_data_u::ev_child
+child_aiofd_error_fn	src/child.c	/^static int child_aiofd_error_fn( aiofd_t * const aiofd,$/;"	f	file:
+child_aiofd_read_fn	src/child.c	/^static int child_aiofd_read_fn( aiofd_t * const aiofd,$/;"	f	file:
+child_aiofd_write_fn	src/child.c	/^static int child_aiofd_write_fn( aiofd_t * const aiofd,$/;"	f	file:
+child_ops_s	src/child.h	/^typedef struct child_ops_s $/;"	s
+child_ops_t	src/child.h	/^} child_ops_t;$/;"	t	typeref:struct:child_ops_s
+child_params	src/events.h	/^	} child_params;$/;"	m	union:evt_params_u	typeref:struct:evt_params_u::__anon2
+child_process_deinitialize	src/child.c	/^static void child_process_deinitialize( child_process_t * const child, int wait )$/;"	f	file:
+child_process_delete	src/child.c	/^void child_process_delete( void * cp, int wait )$/;"	f
+child_process_flush	src/child.c	/^int child_process_flush( child_process_t * const cp )$/;"	f
+child_process_get_pid	src/child.c	/^pid_t child_process_get_pid( child_process_t * const cp )$/;"	f
+child_process_initialize	src/child.c	/^static int child_process_initialize( child_process_t * const child,$/;"	f	file:
+child_process_new	src/child.c	/^child_process_t * child_process_new( int8_t const * const path,$/;"	f
+child_process_read	src/child.c	/^int32_t child_process_read( child_process_t * const cp, $/;"	f
+child_process_s	src/child.c	/^struct child_process_s$/;"	s	file:
+child_process_t	src/child.h	/^typedef struct child_process_s child_process_t;$/;"	t	typeref:struct:child_process_s
+child_process_write	src/child.c	/^int child_process_write( child_process_t * const cp, $/;"	f
+child_process_writev	src/child.c	/^int child_process_writev( child_process_t * const cp,$/;"	f
+clean_environ	src/sanitize.c	/^static int8_t * clean_environ[] =$/;"	v	file:
+connect_fn	src/socket.h	/^	socket_ret_t (*connect_fn)( socket_t * const s, void * user_data );$/;"	m	struct:socket_ops_s
+connected	src/socket.c	/^	int32_t			connected;		\/* is the socket connected? *\/$/;"	m	struct:socket_s	file:
+daemonize	src/daemon.c	/^void daemonize( int8_t const * const root_dir )$/;"	f
+data	src/aiofd.c	/^	void * data;$/;"	m	struct:aiofd_write_s	file:
 data	src/array.c	/^	void *					data;					\/* pointer to the data *\/$/;"	m	struct:array_node_s	file:
-data	src/socket.c	/^	void * data;$/;"	m	struct:socket_write_s	file:
-data_head	src/array.h	/^	int_t			data_head;				\/* head node of the data circular list *\/$/;"	m	struct:array_s
+data_head	src/array.h	/^	int32_t			data_head;				\/* head node of the data circular list *\/$/;"	m	struct:array_s
 default_key_cmp	src/btree.c	/^static int default_key_cmp( void * l, void * r )$/;"	f	file:
 default_key_eq	src/hashtable.c	/^static int default_key_eq(void const * const l, void const * const r)$/;"	f	file:
-default_key_hash	src/hashtable.c	/^static uint_t default_key_hash(void const * const key)$/;"	f	file:
+default_key_hash	src/hashtable.c	/^static uint32_t default_key_hash(void const * const key)$/;"	f	file:
 default_load_factor	src/hashtable.c	/^float const default_load_factor = 0.65f;$/;"	v
 deinit_array_suite	test/test_array.c	/^static int deinit_array_suite( void )$/;"	f	file:
 deinit_bitset_suite	test/test_bitset.c	/^static int deinit_bitset_suite( void )$/;"	f	file:
@@ -236,13 +293,17 @@ deinit_buffer_suite	test/test_buffer.c	/^static int deinit_buffer_suite( void )$
 deinit_hashtable_suite	test/test_hashtable.c	/^static int deinit_hashtable_suite( void )$/;"	f	file:
 deinit_pair_suite	test/test_pair.c	/^static int deinit_pair_suite( void )$/;"	f	file:
 delete_fn	src/array.h	/^typedef void (*delete_fn)(void*);$/;"	t
-disconnect_fn	src/socket.h	/^		socket_ret_t (*disconnect_fn)( socket_t * const s, void * user_data );$/;"	m	struct:socket_s::socket_ops_s
+disconnect_fn	src/socket.h	/^	socket_ret_t (*disconnect_fn)( socket_t * const s, void * user_data );$/;"	m	struct:socket_ops_s
+drop_privileges	src/privileges.c	/^void drop_privileges( int permanent )$/;"	f
 dummy	src/array.c	/^	uint32_t				dummy;$/;"	m	struct:array_node_s	file:
-el	src/socket.h	/^	evt_loop_t*		el;				\/* event loop we registered out evt with *\/$/;"	m	struct:socket_s
-error_fn	src/socket.h	/^		socket_ret_t (*error_fn)( socket_t * const s, int err, void * user_data );$/;"	m	struct:socket_s::socket_ops_s
+el	src/aiofd.h	/^	evt_loop_t*	el;				\/* event loop we registered out evt with *\/$/;"	m	struct:aiofd_s
+el	src/events.h	/^	evt_loop_t *	el;			\/* the event loop associated wtih *\/$/;"	m	struct:evt_s
+error_fn	src/aiofd.h	/^		int (*error_fn)( aiofd_t * const aiofd, int err, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
+error_fn	src/socket.h	/^	socket_ret_t (*error_fn)( socket_t * const s, int err, void * user_data );$/;"	m	struct:socket_ops_s
 ev	src/events.h	/^	ev_data_t		ev;			\/* MUST BE FIRST *\/$/;"	m	struct:evt_s
 ev_data_t	src/events.h	/^} ev_data_t;$/;"	t	typeref:union:ev_data_u
 ev_data_u	src/events.h	/^typedef union ev_data_u$/;"	u
+evt_child_callback	src/events.c	/^static void evt_child_callback( struct ev_loop * loop,$/;"	f	file:
 evt_deinitialize_event_handler	src/events.c	/^void evt_deinitialize_event_handler( evt_t * const evt )$/;"	f
 evt_delete	src/events.c	/^void evt_delete(void * e)$/;"	f
 evt_delete_event_handler	src/events.c	/^void evt_delete_event_handler( void * e )$/;"	f
@@ -254,7 +315,7 @@ evt_io_type_t	src/events.h	/^} evt_io_type_t;$/;"	t	typeref:enum:evt_io_type_e
 evt_log_backend	src/events.c	/^static void evt_log_backend( evt_loop_t * const el )$/;"	f	file:
 evt_loop_t	src/events.h	/^typedef struct ev_loop evt_loop_t;$/;"	t	typeref:struct:ev_loop
 evt_new	src/events.c	/^evt_loop_t* evt_new( void )$/;"	f
-evt_new_event_handler	src/events.c	/^evt_t * evt_new_event_handler( evt_loop_t * const el,$/;"	f
+evt_new_event_handler	src/events.c	/^evt_t * evt_new_event_handler( evt_type_t const t,$/;"	f
 evt_params	src/events.h	/^	evt_params_t	evt_params;$/;"	m	struct:evt_s
 evt_params_t	src/events.h	/^} evt_params_t;$/;"	t	typeref:union:evt_params_u
 evt_params_u	src/events.h	/^typedef union evt_params_u$/;"	u
@@ -270,14 +331,16 @@ evt_t	src/events.h	/^typedef struct evt_s evt_t;$/;"	t	typeref:struct:evt_s
 evt_type	src/events.h	/^	evt_type_t		evt_type;$/;"	m	struct:evt_s
 evt_type_e	src/events.h	/^typedef enum evt_type_e$/;"	g
 evt_type_t	src/events.h	/^} evt_type_t;$/;"	t	typeref:enum:evt_type_e
-fd	src/events.h	/^		int fd;$/;"	m	struct:evt_params_u::__anon2
+exit_fn	src/child.h	/^	int (*exit_fn)( child_process_t * const cp, int rpid, int rstatus, void * user_data );$/;"	m	struct:child_ops_s
+exited	src/child.c	/^	int				exited;			\/* have we received the SIGCHLD signal? *\/$/;"	m	struct:child_process_s	file:
+fd	src/events.h	/^		int fd;$/;"	m	struct:evt_params_u::__anon3
 first	src/pair.c	/^	void * first;$/;"	m	struct:pair_s	file:
 first	test/test_pair.c	/^int8_t const * const first = "first";$/;"	v
-free_head	src/array.h	/^	int_t			free_head;				\/* head node of the free circular list *\/$/;"	m	struct:array_s
+free_head	src/array.h	/^	int32_t			free_head;				\/* head node of the free circular list *\/$/;"	m	struct:array_s
 free_list	src/btree.c	/^	node_t*				free_list;	\/* list of free nodes *\/$/;"	m	struct:bt_s	file:
-hash	src/hashtable.c	/^	uint_t				hash;				\/* hash value of the key *\/$/;"	m	struct:tuple_s	file:
-hashtable_primes	src/hashtable.c	/^uint_t const hashtable_primes[] =$/;"	v
-host	src/socket.h	/^	int8_t*			host;			\/* host name *\/$/;"	m	struct:socket_s
+hash	src/hashtable.c	/^	uint32_t				hash;				\/* hash value of the key *\/$/;"	m	struct:tuple_s	file:
+hashtable_primes	src/hashtable.c	/^uint32_t const hashtable_primes[] =$/;"	v
+host	src/socket.c	/^	int8_t*			host;			\/* host name *\/$/;"	m	struct:socket_s	file:
 ht_add	src/hashtable.c	/^int ht_add( ht_t * const htable, $/;"	f
 ht_add_prehash	src/hashtable.c	/^int ht_add_prehash( ht_t * const htable, $/;"	f
 ht_clear	src/hashtable.c	/^int ht_clear(ht_t * const htable)$/;"	f
@@ -290,16 +353,16 @@ ht_find_index	src/hashtable.c	/^static int ht_find_index$/;"	f	file:
 ht_find_prehash	src/hashtable.c	/^void * ht_find_prehash( ht_t const * const htable,$/;"	f
 ht_get_mutex	src/hashtable.c	/^pthread_mutex_t * ht_get_mutex(ht_t * const htable)$/;"	f
 ht_get_resize_load_factor	src/hashtable.c	/^float ht_get_resize_load_factor(ht_t const * const htable)$/;"	f
-ht_grow	src/hashtable.c	/^static int ht_grow(ht_t * const htable, uint_t new_prime_index)$/;"	f	file:
+ht_grow	src/hashtable.c	/^static int ht_grow(ht_t * const htable, uint32_t new_prime_index)$/;"	f	file:
 ht_initialize	src/hashtable.c	/^void ht_initialize$/;"	f
 ht_itr_begin	src/hashtable.c	/^ht_itr_t ht_itr_begin(ht_t const * const htable)$/;"	f
 ht_itr_end	src/hashtable.c	/^ht_itr_t ht_itr_end(ht_t const * const htable)$/;"	f
 ht_itr_get	src/hashtable.c	/^void* ht_itr_get(ht_t const * const htable, ht_itr_t const itr, void** key)$/;"	f
 ht_itr_next	src/hashtable.c	/^ht_itr_t ht_itr_next(ht_t const * const htable, ht_itr_t const itr)$/;"	f
 ht_itr_rbegin	src/hashtable.c	/^ht_itr_t ht_itr_rbegin(ht_t const * const htable)$/;"	f
-ht_itr_rend	src/hashtable.h	159;"	d
+ht_itr_rend	src/hashtable.h	155;"	d
 ht_itr_rnext	src/hashtable.c	/^ht_itr_t ht_itr_rnext(ht_t const * const htable, ht_itr_t const itr)$/;"	f
-ht_itr_t	src/hashtable.h	/^typedef int_t ht_itr_t;$/;"	t
+ht_itr_t	src/hashtable.h	/^typedef int32_t ht_itr_t;$/;"	t
 ht_load	src/hashtable.c	/^float ht_load(ht_t * const htable)$/;"	f
 ht_lock	src/hashtable.c	/^void ht_lock(ht_t * const htable)$/;"	f
 ht_needs_to_grow	src/hashtable.c	/^static int ht_needs_to_grow(ht_t const * const htable, $/;"	f	file:
@@ -308,7 +371,7 @@ ht_remove	src/hashtable.c	/^void * ht_remove(ht_t * const htable, void const * c
 ht_remove_prehash	src/hashtable.c	/^void * ht_remove_prehash( ht_t * const htable,$/;"	f
 ht_s	src/hashtable.h	/^typedef struct ht_s$/;"	s
 ht_set_resize_load_factor	src/hashtable.c	/^int ht_set_resize_load_factor(ht_t * const htable, float load)$/;"	f
-ht_size	src/hashtable.c	/^uint_t ht_size(ht_t * const htable)$/;"	f
+ht_size	src/hashtable.c	/^uint32_t ht_size(ht_t * const htable)$/;"	f
 ht_t	src/hashtable.h	/^} ht_t;$/;"	t	typeref:struct:ht_s
 ht_try_lock	src/hashtable.c	/^int ht_try_lock(ht_t * const htable)$/;"	f
 ht_unlock	src/hashtable.c	/^void ht_unlock(ht_t * const htable)$/;"	f
@@ -318,16 +381,13 @@ init_btree_suite	test/test_btree.c	/^static int init_btree_suite( void )$/;"	f	f
 init_buffer_suite	test/test_buffer.c	/^static int init_buffer_suite( void )$/;"	f	file:
 init_hashtable_suite	test/test_hashtable.c	/^static int init_hashtable_suite( void )$/;"	f	file:
 init_pair_suite	test/test_pair.c	/^static int init_pair_suite( void )$/;"	f	file:
-initial_capacity	src/array.h	/^	uint_t			initial_capacity;		\/* the initial capacity value *\/$/;"	m	struct:array_s
-initial_capacity	src/hashtable.h	/^	uint_t				initial_capacity;	\/* the initial capacity value *\/$/;"	m	struct:ht_s
+initial_capacity	src/array.h	/^	uint32_t			initial_capacity;		\/* the initial capacity value *\/$/;"	m	struct:array_s
+initial_capacity	src/hashtable.h	/^	uint32_t				initial_capacity;	\/* the initial capacity value *\/$/;"	m	struct:ht_s
 int_less	test/test_btree.c	/^static int int_less( void * l, void * r )$/;"	f	file:
-int_t	src/array.h	/^	typedef int32_t int_t;$/;"	t
-int_t	src/array.h	/^	typedef int64_t int_t;$/;"	t
 int_t	src/btree.h	/^	typedef int32_t int_t;$/;"	t
-int_t	src/hashtable.h	/^	typedef int32_t int_t;$/;"	t
 io	src/events.h	/^	struct ev_io		io;$/;"	m	union:ev_data_u	typeref:struct:ev_data_u::ev_io
-io_params	src/events.h	/^	} io_params;$/;"	m	union:evt_params_u	typeref:struct:evt_params_u::__anon2
-iov	src/socket.c	/^	int iov;$/;"	m	struct:socket_write_s	file:
+io_params	src/events.h	/^	} io_params;$/;"	m	union:evt_params_u	typeref:struct:evt_params_u::__anon3
+iov	src/aiofd.c	/^	int iov;$/;"	m	struct:aiofd_write_s	file:
 itr_end	src/btree.c	/^static const bt_itr_t itr_end = NULL;$/;"	v	file:
 kcfn	src/btree.c	/^	bt_key_cmp_fn		kcfn;		\/* key compare function *\/$/;"	m	struct:bt_s	file:
 kdfn	src/btree.c	/^	bt_delete_fn		kdfn;		\/* key delete function *\/$/;"	m	struct:bt_s	file:
@@ -336,7 +396,7 @@ kefn	src/hashtable.h	/^	key_eq_fn			kefn;				\/* key compare function *\/$/;"	m	
 key	src/btree.c	/^	void * key;					\/* key *\/$/;"	m	struct:node_s	file:
 key	src/hashtable.c	/^	void *				key;				\/* pointer to the key *\/$/;"	m	struct:tuple_s	file:
 key_eq_fn	src/hashtable.h	/^typedef int (*key_eq_fn)(void const * const l, void const * const r);$/;"	t
-key_hash_fn	src/hashtable.h	/^typedef uint_t (*key_hash_fn)(void const * const key);$/;"	t
+key_hash_fn	src/hashtable.h	/^typedef uint32_t (*key_hash_fn)(void const * const key);$/;"	t
 khfn	src/hashtable.h	/^	key_hash_fn			khfn;				\/* key hash function *\/$/;"	m	struct:ht_s
 left	src/btree.c	/^	struct node_s * left;		\/* left child *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
 list_size	src/btree.c	/^	uint_t				list_size;	\/* equal to initial capacity, size blocks in node_list *\/$/;"	m	struct:bt_s	file:
@@ -344,22 +404,31 @@ load_factor	src/hashtable.h	/^	float				load_factor;		\/* load level that trigge
 lock	src/array.h	/^	pthread_mutex_t lock;					\/* list lock *\/$/;"	m	struct:array_s
 lock	src/btree.c	/^	pthread_mutex_t		lock;		\/* btree lock *\/$/;"	m	struct:bt_s	file:
 lock	src/hashtable.h	/^	pthread_mutex_t		lock;				\/* hashtable lock *\/$/;"	m	struct:ht_s
+log_fns	src/log.c	/^static cookie_io_functions_t log_fns =$/;"	v	file:
 main	test/test_all.c	/^int main()$/;"	f
 max	src/btree.c	32;"	d	file:
 min	src/btree.c	31;"	d	file:
 next	src/array.c	/^	struct array_node_s *	next;					\/* next link *\/$/;"	m	struct:array_node_s	typeref:struct:array_node_s::array_node_s	file:
 next	src/btree.c	/^	struct node_s * next;		\/* traversal threading pointer\/free list pointer *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
-nleft	src/socket.c	/^	size_t nleft;$/;"	m	struct:socket_write_s	file:
+nleft	src/aiofd.c	/^	size_t nleft;$/;"	m	struct:aiofd_write_s	file:
 node_buffer	src/array.h	/^	array_node_t*	node_buffer;			\/* buffer of nodes *\/$/;"	m	struct:array_s
 node_list	src/btree.c	/^	node_t**			node_list;	\/* memory for the nodes *\/$/;"	m	struct:bt_s	file:
 node_s	src/btree.c	/^typedef struct node_s$/;"	s	file:
 node_t	src/btree.c	/^} node_t;$/;"	t	typeref:struct:node_s	file:
+noop	src/log.c	/^static int noop( void ) { return 0; }$/;"	f	file:
 num_bits	src/bitset.h	/^	size_t num_bits;$/;"	m	struct:bitset_s
 num_lists	src/btree.c	/^	uint_t				num_lists;	\/* number of blocks allocated *\/$/;"	m	struct:bt_s	file:
-num_nodes	src/array.h	/^	uint_t			num_nodes;				\/* number of nodes in the list *\/$/;"	m	struct:array_s
-num_primes	src/hashtable.c	/^uint_t const num_primes = 30;$/;"	v
-num_tuples	src/hashtable.h	/^	uint_t				num_tuples;			\/* number of tuples in the table *\/$/;"	m	struct:ht_s
-ops	src/socket.h	/^	}				ops;$/;"	m	struct:socket_s	typeref:struct:socket_s::socket_ops_s
+num_nodes	src/array.h	/^	uint32_t			num_nodes;				\/* number of nodes in the list *\/$/;"	m	struct:array_s
+num_primes	src/hashtable.c	/^uint32_t const num_primes = 30;$/;"	v
+num_tuples	src/hashtable.h	/^	uint32_t				num_tuples;			\/* number of tuples in the table *\/$/;"	m	struct:ht_s
+open_devnull	src/sanitize.c	/^static int open_devnull( int fd )$/;"	f	file:
+ops	src/aiofd.h	/^	}			ops;$/;"	m	struct:aiofd_s	typeref:struct:aiofd_s::aiofd_ops_s
+ops	src/child.c	/^	child_ops_t		ops;			\/* child proces callbacks *\/$/;"	m	struct:child_process_s	file:
+ops	src/socket.c	/^	socket_ops_t	ops;			\/* socket callbacks *\/$/;"	m	struct:socket_s	file:
+orig_gid	src/privileges.c	/^static gid_t orig_gid = -1;$/;"	v	file:
+orig_groups	src/privileges.c	/^static gid_t orig_groups[NGROUPS_MAX];$/;"	v	file:
+orig_ngroups	src/privileges.c	/^static int orig_ngroups = -1;$/;"	v	file:
+orig_uid	src/privileges.c	/^static uid_t orig_uid = -1;$/;"	v	file:
 p	src/buffer.c	/^	void * p;$/;"	m	struct:buffer_s	file:
 pair_delete	src/pair.c	/^void pair_delete( void * p )$/;"	f
 pair_first	src/pair.c	/^void * pair_first( pair_t const * const pair )$/;"	f
@@ -369,51 +438,63 @@ pair_second	src/pair.c	/^void * pair_second( pair_t const * const pair )$/;"	f
 pair_t	src/pair.h	/^typedef struct pair_s pair_t;$/;"	t	typeref:struct:pair_s
 parent	src/btree.c	/^	struct node_s * parent;		\/* parent pointer *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
 pfn	src/array.h	/^	delete_fn		pfn;					\/* destruction function for each node *\/$/;"	m	struct:array_s
+pid	src/child.c	/^	pid_t			pid;			\/* the pid of the child process *\/$/;"	m	struct:child_process_s	file:
 pid	src/daemon.c	/^pid_t pid, sid;$/;"	v
-port	src/socket.h	/^	uint16_t		port;			\/* port number *\/$/;"	m	struct:socket_s
+pid	src/events.h	/^		int pid;	\/* pid to watch *\/$/;"	m	struct:evt_params_u::__anon2
+port	src/socket.c	/^	uint16_t		port;			\/* port number *\/$/;"	m	struct:socket_s	file:
+preserve_environ	src/sanitize.c	/^static int8_t * preserve_environ[] =$/;"	v	file:
 prev	src/array.c	/^	struct array_node_s *	prev;					\/* prev link *\/$/;"	m	struct:array_node_s	typeref:struct:array_node_s::array_node_s	file:
 prev	src/btree.c	/^	struct node_s * prev;		\/* traversal threading pointer *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
-prime_index	src/hashtable.h	/^	uint_t				prime_index;		\/* the index of the table size *\/$/;"	m	struct:ht_s
-read_fn	src/socket.h	/^		int32_t (*read_fn)( socket_t * const s, size_t nread, void * user_data );$/;"	m	struct:socket_s::socket_ops_s
-revt	src/socket.h	/^	evt_t			revt;			\/* the read event *\/$/;"	m	struct:socket_s
+prime_index	src/hashtable.h	/^	uint32_t				prime_index;		\/* the index of the table size *\/$/;"	m	struct:ht_s
+priov	src/log.c	/^static int8_t * const priov[] =$/;"	v	file:
+read_fn	src/aiofd.h	/^		int (*read_fn)( aiofd_t * const aiofd, size_t nread, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
+read_fn	src/child.h	/^	int32_t (*read_fn)( child_process_t * const cp, size_t nread, void * user_data );$/;"	m	struct:child_ops_s
+read_fn	src/socket.h	/^	int32_t (*read_fn)( socket_t * const s, size_t nread, void * user_data );$/;"	m	struct:socket_ops_s
+restore_privileges	src/privileges.c	/^void restore_privileges( void )$/;"	f
+revt	src/aiofd.h	/^	evt_t		revt;			\/* read event *\/$/;"	m	struct:aiofd_s
+rfd	src/aiofd.h	/^	int			rfd;			\/* read fd if two are given *\/$/;"	m	struct:aiofd_s
 right	src/btree.c	/^	struct node_s * right;		\/* right child *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
+rpid	src/events.h	/^		int rpid;	\/* pid of process causing change *\/$/;"	m	struct:evt_params_u::__anon2
+rstatus	src/events.h	/^		int rstatus;\/* status word of process, use macros from sys\/wait.h, waitpid *\/$/;"	m	struct:evt_params_u::__anon2
+safe_fork	src/child.c	/^static pid_t safe_fork( void )$/;"	f	file:
+sanitize_files	src/sanitize.c	/^void sanitize_files( void )$/;"	f
 second	src/pair.c	/^	void * second;$/;"	m	struct:pair_s	file:
 second	test/test_pair.c	/^int8_t const * const second = "second";$/;"	v
 sid	src/daemon.c	/^pid_t pid, sid;$/;"	v
 sig	src/events.h	/^	struct ev_signal	sig;$/;"	m	union:ev_data_u	typeref:struct:ev_data_u::ev_signal
+sigchld	src/child.c	/^	evt_t			sigchld;		\/* the SIGCHILD signal event handler *\/$/;"	m	struct:child_process_s	file:
+sigchld_cb	src/child.c	/^static evt_ret_t sigchld_cb( evt_loop_t * const el,$/;"	f	file:
 signal_params	src/events.h	/^	} signal_params;$/;"	m	union:evt_params_u	typeref:struct:evt_params_u::__anon1
 signum	src/events.h	/^		int signum;$/;"	m	struct:evt_params_u::__anon1
+size	src/aiofd.c	/^	size_t size;$/;"	m	struct:aiofd_write_s	file:
 size	src/btree.c	/^	uint_t				size;		\/* number of nodes in the tree *\/$/;"	m	struct:bt_s	file:
 size	src/buffer.c	/^	size_t size;$/;"	m	struct:buffer_s	file:
-size	src/socket.c	/^	size_t size;$/;"	m	struct:socket_write_s	file:
 size	test/test_buffer.c	/^size_t const size = 5;$/;"	v
-socket	src/socket.h	/^	int32_t			socket;			\/* fd of socket *\/$/;"	m	struct:socket_s
+socket_aiofd_error_fn	src/socket.c	/^static int socket_aiofd_error_fn( aiofd_t * const aiofd,$/;"	f	file:
+socket_aiofd_read_fn	src/socket.c	/^static int socket_aiofd_read_fn( aiofd_t * const aiofd,$/;"	f	file:
+socket_aiofd_write_fn	src/socket.c	/^static int socket_aiofd_write_fn( aiofd_t * const aiofd,$/;"	f	file:
 socket_connect	src/socket.c	/^socket_ret_t socket_connect( socket_t* const s, $/;"	f
-socket_deinitialize	src/socket.c	/^void socket_deinitialize( socket_t * const s )$/;"	f
+socket_deinitialize	src/socket.c	/^static void socket_deinitialize( socket_t * const s )$/;"	f	file:
 socket_delete	src/socket.c	/^void socket_delete( void * s )$/;"	f
 socket_disconnect	src/socket.c	/^socket_ret_t socket_disconnect( socket_t* const s )$/;"	f
 socket_flush	src/socket.c	/^socket_ret_t socket_flush( socket_t* const s )$/;"	f
-socket_initialize	src/socket.c	/^void socket_initialize( socket_t * const s,$/;"	f
+socket_initialize	src/socket.c	/^static void socket_initialize( socket_t * const s,$/;"	f	file:
 socket_is_connected	src/socket.c	/^int socket_is_connected( socket_t* const s )$/;"	f
 socket_lookup_host	src/socket.c	/^static socket_ret_t socket_lookup_host( socket_t * const s, $/;"	f	file:
 socket_new	src/socket.c	/^socket_t* socket_new( socket_type_t const type, $/;"	f
-socket_ops_s	src/socket.h	/^	struct socket_ops_s$/;"	s	struct:socket_s
-socket_ops_t	src/socket.h	/^typedef struct socket_ops_s socket_ops_t;$/;"	t	typeref:struct:socket_ops_s
-socket_priv_t	src/socket.h	/^typedef struct socket_priv_s socket_priv_t;$/;"	t	typeref:struct:socket_priv_s
+socket_ops_s	src/socket.h	/^typedef struct socket_ops_s $/;"	s
+socket_ops_t	src/socket.h	/^} socket_ops_t;$/;"	t	typeref:struct:socket_ops_s
 socket_read	src/socket.c	/^int32_t socket_read( socket_t* const s, $/;"	f
-socket_read_fn	src/socket.c	/^static evt_ret_t socket_read_fn( evt_loop_t * const el,$/;"	f	file:
 socket_ret_e	src/socket.h	/^typedef enum socket_ret_e$/;"	g
 socket_ret_t	src/socket.h	/^} socket_ret_t;$/;"	t	typeref:enum:socket_ret_e
-socket_s	src/socket.h	/^struct socket_s$/;"	s
+socket_s	src/socket.c	/^struct socket_s$/;"	s	file:
 socket_t	src/socket.h	/^typedef struct socket_s socket_t;$/;"	t	typeref:struct:socket_s
 socket_type_e	src/socket.h	/^typedef enum socket_type_e$/;"	g
 socket_type_t	src/socket.h	/^} socket_type_t;$/;"	t	typeref:enum:socket_type_e
 socket_write	src/socket.c	/^socket_ret_t socket_write( socket_t * const s,$/;"	f
-socket_write_common	src/socket.c	/^static socket_ret_t socket_write_common( socket_t* const s, $/;"	f	file:
-socket_write_fn	src/socket.c	/^static evt_ret_t socket_write_fn( evt_loop_t * const el,$/;"	f	file:
-socket_write_s	src/socket.c	/^typedef struct socket_write_s$/;"	s	file:
-socket_write_t	src/socket.c	/^} socket_write_t;$/;"	t	typeref:struct:socket_write_s	file:
 socket_writev	src/socket.c	/^socket_ret_t socket_writev( socket_t * const s,$/;"	f
+start_logging	src/log.c	/^void start_logging( void )$/;"	f
+stop_logging	src/log.c	/^void stop_logging( void )$/;"	f
 test_array_initdeinit	test/test_array.c	/^void test_array_initdeinit( void )$/;"	f
 test_array_newdel	test/test_array.c	/^void test_array_newdel( void )$/;"	f
 test_bitset_clearall	test/test_bitset.c	/^void test_bitset_clearall( void )$/;"	f
@@ -430,23 +511,27 @@ test_btree_random	test/test_btree.c	/^void test_btree_random( void )$/;"	f
 test_buffer_newdel	test/test_buffer.c	/^void test_buffer_newdel( void )$/;"	f
 test_pair_newdel	test/test_pair.c	/^void test_pair_newdel( void )$/;"	f
 test_pair_nulls	test/test_pair.c	/^void test_pair_nulls( void )$/;"	f
+trace	src/events.h	/^		int trace;	\/* 0 == only signal upon termination, 1 == also signal when stopped\/continued *\/$/;"	m	struct:evt_params_u::__anon2
 tree	src/btree.c	/^	node_t*				tree;		\/* pointer to btree root *\/$/;"	m	struct:bt_s	file:
 tuple_s	src/hashtable.c	/^struct tuple_s$/;"	s	file:
 tuple_t	src/hashtable.h	/^typedef struct tuple_s tuple_t;$/;"	t	typeref:struct:tuple_s
 tuples	src/hashtable.h	/^	tuple_t*			tuples;				\/* pointer to tuple table *\/$/;"	m	struct:ht_s
-type	src/socket.h	/^	socket_type_t	type;			\/* type of socket *\/$/;"	m	struct:socket_s
-types	src/events.h	/^		evt_io_type_t types;$/;"	m	struct:evt_params_u::__anon2
-uint_t	src/array.h	/^	typedef uint32_t uint_t;$/;"	t
-uint_t	src/array.h	/^	typedef uint64_t uint_t;$/;"	t
+type	src/socket.c	/^	socket_type_t	type;			\/* type of socket *\/$/;"	m	struct:socket_s	file:
+types	src/events.h	/^		evt_io_type_t types;$/;"	m	struct:evt_params_u::__anon3
 uint_t	src/btree.h	/^	typedef uint32_t uint_t;$/;"	t
-uint_t	src/hashtable.h	/^	typedef uint32_t uint_t;$/;"	t
+user_data	src/aiofd.h	/^	void *		user_data;		\/* context to pass to callbacks *\/$/;"	m	struct:aiofd_s
+user_data	src/child.c	/^	void *			user_data;		\/* passed to ops callbacks *\/$/;"	m	struct:child_process_s	file:
 user_data	src/events.h	/^	void *			user_data;$/;"	m	struct:evt_s
-user_data	src/socket.h	/^	void *			user_data;		\/* passed to ops callbacks *\/$/;"	m	struct:socket_s
+user_data	src/socket.c	/^	void *			user_data;		\/* passed to ops callbacks *\/$/;"	m	struct:socket_s	file:
 val	src/btree.c	/^	void * val;					\/* value *\/$/;"	m	struct:node_s	file:
 value	src/hashtable.c	/^	void *				value;				\/* pointer to the value *\/$/;"	m	struct:tuple_s	file:
 vdfn	src/btree.c	/^	bt_delete_fn		vdfn;		\/* value delete function *\/$/;"	m	struct:bt_s	file:
 vdfn	src/hashtable.h	/^	ht_delete_fn		vdfn;				\/* value delete function *\/$/;"	m	struct:ht_s
-wbuf	src/socket.h	/^	array_t 		wbuf;			\/* queued data to write *\/$/;"	m	struct:socket_s
+wbuf	src/aiofd.h	/^	array_t		wbuf;			\/* array of buffers waiting to be written *\/$/;"	m	struct:aiofd_s
 weak	src/buffer.c	/^	int weak;$/;"	m	struct:buffer_s	file:
-wevt	src/socket.h	/^	evt_t			wevt;			\/* the write event *\/$/;"	m	struct:socket_s
-write_fn	src/socket.h	/^		int32_t (*write_fn)( socket_t * const s, uint8_t const * const buffer, void * user_data );$/;"	m	struct:socket_s::socket_ops_s
+wevt	src/aiofd.h	/^	evt_t		wevt;			\/* write event *\/$/;"	m	struct:aiofd_s
+wfd	src/aiofd.h	/^	int			wfd;			\/* read\/write fd, if only one given, write-only otherwise *\/$/;"	m	struct:aiofd_s
+write_fn	src/aiofd.h	/^		int (*write_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
+write_fn	src/child.h	/^	int32_t (*write_fn)( child_process_t * const cp, uint8_t const * const buffer, void * user_data );$/;"	m	struct:child_ops_s
+write_fn	src/socket.h	/^	int32_t (*write_fn)( socket_t * const s, uint8_t const * const buffer, void * user_data );$/;"	m	struct:socket_ops_s
+writer	src/log.c	/^static size_t writer( void * cookie, char const * data, size_t leng )$/;"	f	file:

@@ -33,7 +33,7 @@
 void test_array_newdel( void )
 {
 	int i;
-	uint_t size;
+	uint32_t size;
 	array_t * arr;
 
 	for ( i = 0; i < 1024; i++ )
@@ -54,7 +54,7 @@ void test_array_newdel( void )
 void test_array_initdeinit( void )
 {
 	int i;
-	uint_t size;
+	uint32_t size;
 	array_t arr;
 
 	for ( i = 0; i < 1024; i++ )

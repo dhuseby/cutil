@@ -328,7 +328,7 @@ static int aiofd_write_common( aiofd_t* const aiofd,
 							   size_t total,
 							   int iov )
 {
-	int_t asize = 0;
+	int32_t asize = 0;
 	ssize_t res = 0;
 	aiofd_write_t * wb = NULL;
 	
