@@ -21,7 +21,19 @@
 #include <cutil/macros.h>
 #include <cutil/btree.h>
 
+#include "macros.h"
 #include "test_btree.h"
+
+#if defined(PORTABLE_64_BIT)
+typedef uint64_t uint_t;
+typedef int64_t int_t;
+#elif defined(PORTABLE_32_BIT)
+typedef uint32_t uint_t;
+typedef int32_t int_t;
+#else
+#error "failed to identify if we're on a 64-bit or 32-bit platform"
+#endif
+
 
 void test_btree_newdel( void )
 {
@@ -42,8 +54,8 @@ void test_btree_newdel( void )
 
 static int int_less( void * l, void * r )
 {
-	int li = (int)l;
-	int ri = (int)r;
+	int_t li = (int_t)l;
+	int_t ri = (int_t)r;
 
 	if ( li < ri )
 		return -1;
@@ -54,8 +66,8 @@ static int int_less( void * l, void * r )
 
 void test_btree_iterator( void )
 {
-	int i;
-	int cur, prev;
+	int_t i;
+	int_t cur, prev;
 	bt_t * bt;
 	bt_itr_t itr;
 
@@ -72,7 +84,7 @@ void test_btree_iterator( void )
 	for ( ; itr != bt_itr_end( bt ); itr = bt_itr_next( bt, itr ) )
 	{
 		/* get the value at the current iterator position */
-		cur = (int)bt_itr_get( bt, itr );
+		cur = (int_t)bt_itr_get( bt, itr );
 		CU_ASSERT( cur == (prev + 1) );
 		prev = cur;
 	}
@@ -84,13 +96,13 @@ void test_btree_iterator( void )
 	for ( ; itr != bt_itr_rend( bt ); itr = bt_itr_rnext( bt, itr ) )
 	{
 		/* get the value at the current iterator position */
-		cur = (int)bt_itr_get( bt, itr );
+		cur = (int_t)bt_itr_get( bt, itr );
 		CU_ASSERT( cur == (prev - 1) );
 		prev = cur;
 	}
 
 	/* remove 5 */
-	CU_ASSERT_EQUAL( 5, (int)bt_remove( bt, (void*)5 ) );
+	CU_ASSERT_EQUAL( 5, (int_t)bt_remove( bt, (void*)5 ) );
 	CU_ASSERT_PTR_NULL( bt_find( bt, (void*)5 ) );
 
 	prev = 0;
@@ -98,7 +110,7 @@ void test_btree_iterator( void )
 	for ( ; itr != bt_itr_end( bt ); itr = bt_itr_next( bt, itr ) )
 	{
 		/* get the value at the current iterator position */
-		cur = (int)bt_itr_get( bt, itr );
+		cur = (int_t)bt_itr_get( bt, itr );
 		if ( cur == 6 )
 		{
 			CU_ASSERT( cur == (prev + 2) ); /* special case for cur == 6, prev == 4 */
@@ -115,9 +127,9 @@ void test_btree_iterator( void )
 
 void test_btree_random( void )
 {
-	int i = 0;
-	int v = 0;
-	int cur, prev;
+	int_t i = 0;
+	int_t v = 0;
+	int_t cur, prev;
 	bt_t * bt;
 	bt_itr_t itr;
 	size_t size = (rand() % 1024);
@@ -130,10 +142,10 @@ void test_btree_random( void )
 	}
 
 	itr = bt_itr_begin( bt );
-	prev = (int)bt_itr_get( bt, itr ) - 1;
+	prev = (int_t)bt_itr_get( bt, itr ) - 1;
 	for ( ; itr != bt_itr_end( bt ); itr = bt_itr_next( bt, itr ) )
 	{
-		cur = (int)bt_itr_get( bt, itr );
+		cur = (int_t)bt_itr_get( bt, itr );
 		CU_ASSERT( cur > prev );
 		prev = cur;
 	}

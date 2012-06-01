@@ -65,5 +65,12 @@
 #define UT(x)	(uint8_t*)(x)
 #define C(x)	(char*)(x)
 
+/* are we on a 64-bit platform? */
+#if defined(_WIN64) || defined(__amd64__)
+#define PORTABLE_64_BIT
+#else
+#define PORTABLE_32_BIT
+#endif
+
 #endif/*__MACROS_H__*/
  

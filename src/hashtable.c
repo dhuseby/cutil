@@ -36,8 +36,8 @@ float const default_load_factor = 0.65f;
 /* this list of primes are the table size used by the hashtable.  each prime 
  * is roughly double the size of the previous prime to get amortized resize
  * operations. */
-uint32_t const num_primes = 30;
-uint32_t const hashtable_primes[] =
+uint_t const num_primes = 30;
+uint_t const hashtable_primes[] =
 {
 	0, 7, 13, 29, 53, 97, 193, 389, 769, 1543, 3079,
 	6151, 12289, 24593, 49157,
@@ -51,24 +51,24 @@ uint32_t const hashtable_primes[] =
 
 struct tuple_s
 {
-	uint32_t				hash;				/* hash value of the key */
+	uint_t				hash;				/* hash value of the key */
 	void *				key;				/* pointer to the key */
 	void *				value;				/* pointer to the value */
 };
 
 
-/* the default key hashing function just casts the pointer value to an uint32_t */
-static uint32_t default_key_hash(void const * const key)
+/* the default key hashing function just casts the pointer value to an uint_t */
+static uint_t default_key_hash(void const * const key)
 {
-	uint32_t const hash = (uint32_t)key;
+	uint_t const hash = (uint_t)key;
 	return ((hash == 0) ? hash + 1 : hash);
 }
 
-/* the default key compare function just casts the pointers to uint32_t
+/* the default key compare function just casts the pointers to uint_t
  * and compares them.  this works with the default key hash function */
 static int default_key_eq(void const * const l, void const * const r)
 {
-	return ((uint32_t)l == (uint32_t)r);
+	return ((uint_t)l == (uint_t)r);
 }
 
 
@@ -113,14 +113,14 @@ pthread_mutex_t * ht_get_mutex(ht_t * const htable)
 void ht_initialize
 (
 	ht_t * const htable, 
-	uint32_t initial_capacity, 
+	uint_t initial_capacity, 
 	key_hash_fn khfn, 
 	ht_delete_fn vdfn,
 	key_eq_fn kefn,
 	ht_delete_fn kdfn
 )
 {
-	uint32_t i = 0;
+	uint_t i = 0;
 	CHECK_PTR(htable);
 
 	/* zero out the memory */
@@ -132,7 +132,7 @@ void ht_initialize
 	if ( initial_capacity > 0 )
 	{
 		/* figure out the initial table size */
-		while(((uint32_t)(hashtable_primes[i] * htable->load_factor) < initial_capacity) &&
+		while(((uint_t)(hashtable_primes[i] * htable->load_factor) < initial_capacity) &&
 			  (i < (num_primes - 1)))
 			i++;
 
@@ -180,7 +180,7 @@ void ht_initialize
  * key compare function will be used */
 ht_t* ht_new
 (
-	uint32_t initial_capacity, 
+	uint_t initial_capacity, 
 	key_hash_fn khfn, 
 	ht_delete_fn vdfn, 
 	key_eq_fn kefn, 
@@ -205,9 +205,9 @@ ht_t* ht_new
 /* deinitialize a hashtable. */
 void ht_deinitialize(ht_t * const htable)
 {
-	int32_t ret = 0;
-	int32_t i = 0;
-	int32_t table_size = 0;
+	int_t ret = 0;
+	int_t i = 0;
+	int_t table_size = 0;
 	tuple_t* tuple = NULL;
 	CHECK_PTR(htable);
 
@@ -273,7 +273,7 @@ void ht_delete(void * ht)
 
 
 /* returns the number of key/value pairs stored in the hashtable */
-uint32_t ht_size(ht_t * const htable)
+uint_t ht_size(ht_t * const htable)
 {
 	CHECK_PTR_RET(htable, 0);
 
@@ -305,16 +305,16 @@ float ht_get_resize_load_factor(ht_t const * const htable)
 /* private function for growing the hash table.
  * NOTE: it only supports keeping the table the same size (compacting)
  * and growing the table.  this does not support shrinking the hash table. */
-static int ht_grow(ht_t * const htable, uint32_t new_prime_index)
+static int ht_grow(ht_t * const htable, uint_t new_prime_index)
 {
-	uint32_t i = 0;
-	uint32_t j = 0;
-	uint32_t hash = 0;
+	uint_t i = 0;
+	uint_t j = 0;
+	uint_t hash = 0;
 	tuple_t * tuple = NULL;
 	tuple_t * tuples = NULL;
-	uint32_t old_table_size = 0;
-	uint32_t new_table_size = 0;
-	uint32_t new_num_tuples = 0;
+	uint_t old_table_size = 0;
+	uint_t new_table_size = 0;
+	uint_t new_num_tuples = 0;
 	CHECK_PTR_RET(htable, 0);
 	CHECK_RET(htable->prime_index <= new_prime_index, 0);
 	CHECK_RET(new_prime_index < num_primes, 0);
@@ -429,10 +429,10 @@ static int ht_grow(ht_t * const htable, uint32_t new_prime_index)
  * factor less than the limit.	if the table does not need to grow
  * the function returns 0. */
 static int ht_needs_to_grow(ht_t const * const htable, 
-								uint32_t new_size)
+								uint_t new_size)
 {
-	uint32_t new_index = 0;
-	uint32_t load = 0;
+	uint_t new_index = 0;
+	uint_t load = 0;
 	CHECK_PTR_RET(htable, 0);
 	CHECK_RET((((int)new_index >= 0) && (new_index < num_primes)), 0);
 
@@ -446,18 +446,18 @@ static int ht_needs_to_grow(ht_t const * const htable,
 	new_index = htable->prime_index;
 
 	/* if the table doesn't need to grow, return 0 */
-	if(new_size < (uint32_t)((float)hashtable_primes[new_index] * htable->load_factor))
+	if(new_size < (uint_t)((float)hashtable_primes[new_index] * htable->load_factor))
 	{
 		return 0;
 	}
 
 	/* the table needs to grow, so find the prime index for the
 	 * new size */
-	load = (uint32_t)((float)hashtable_primes[new_index] * htable->load_factor);
+	load = (uint_t)((float)hashtable_primes[new_index] * htable->load_factor);
 	while((new_index < num_primes) && (new_size >= load))
 	{
 		new_index++;
-		load = (uint32_t)((float)hashtable_primes[new_index] * htable->load_factor);
+		load = (uint_t)((float)hashtable_primes[new_index] * htable->load_factor);
 	}
 
 	/* can the table grow? */
@@ -537,7 +537,7 @@ int ht_add( ht_t * const htable,
 			void * const key,
 			void * const value)
 {
-	uint32_t hash;
+	uint_t hash;
 	CHECK_PTR_RET(htable, 0);
 	CHECK_PTR_RET(htable->khfn, 0);
 	CHECK_PTR_RET(key, 0);
@@ -549,13 +549,13 @@ int ht_add( ht_t * const htable,
 }
 
 int ht_add_prehash( ht_t * const htable, 
-					uint32_t const hash,
+					uint_t const hash,
 					void * const key,
 					void * const value )
 {
 	int new_index = 0;
-	uint32_t i = 0;
-	uint32_t table_size = 0;
+	uint_t i = 0;
+	uint_t table_size = 0;
 	CHECK_PTR_RET(htable, 0);
 	CHECK_PTR_RET(key, 0);
 	CHECK_PTR_RET(value, 0);
@@ -638,7 +638,7 @@ int ht_add_prehash( ht_t * const htable,
 /* clears all key/value pairs from the hashtable and compacts it */
 int ht_clear(ht_t * const htable)
 {
-	uint32_t initial_capacity = 0;
+	uint_t initial_capacity = 0;
 	key_hash_fn khfn = NULL;
 	ht_delete_fn vdfn = NULL;
 	key_eq_fn kefn = NULL;
@@ -667,13 +667,13 @@ int ht_clear(ht_t * const htable)
 static int ht_find_index
 (
 	ht_t const * const htable, 
-	uint32_t const hash,
+	uint_t const hash,
 	void const * const key,
-	uint32_t * const index
+	uint_t * const index
 )
 {
-	uint32_t i = 0;
-	uint32_t table_size = 0;
+	uint_t i = 0;
+	uint_t table_size = 0;
 	CHECK_PTR_RET(htable, 0);
 	CHECK_RET(hash != 0, 0);
 	CHECK_PTR_RET(index, 0);
@@ -717,7 +717,7 @@ static int ht_find_index
 /* find a value by it's key. */
 void * ht_find(ht_t const * const htable, void const * const key)
 {
-	uint32_t hash = 0;
+	uint_t hash = 0;
 	CHECK_PTR_RET(htable, NULL);
 	CHECK_PTR_RET(key, NULL);
 	CHECK_PTR_RET(htable->khfn, NULL);
@@ -729,10 +729,10 @@ void * ht_find(ht_t const * const htable, void const * const key)
 }
 
 void * ht_find_prehash( ht_t const * const htable,
-						uint32_t const hash,
+						uint_t const hash,
 						void const * const key )
 {
-	uint32_t i = 0;
+	uint_t i = 0;
 	CHECK_PTR_RET(htable, NULL);
 	CHECK_PTR_RET(key, NULL);
 
@@ -752,7 +752,7 @@ void * ht_find_prehash( ht_t const * const htable,
 /* remove the value associated with the key from the hashtable */
 void * ht_remove(ht_t * const htable, void const * const key)
 {
-	uint32_t hash = 0;
+	uint_t hash = 0;
 	CHECK_PTR_RET(htable, NULL);
 	CHECK_PTR_RET(key, NULL);
 	CHECK_PTR_RET(htable->khfn, NULL);
@@ -765,10 +765,10 @@ void * ht_remove(ht_t * const htable, void const * const key)
 
 
 void * ht_remove_prehash( ht_t * const htable,
-						  uint32_t const hash,
+						  uint_t const hash,
 						  void const * const key )
 {
-	uint32_t i = 0;
+	uint_t i = 0;
 	void * value = NULL;
 	CHECK_PTR_RET(htable, NULL);
 	CHECK_PTR_RET(key, NULL);
@@ -839,20 +839,20 @@ ht_itr_t ht_itr_rbegin(ht_t const * const htable)
 
 ht_itr_t ht_itr_next(ht_t const * const htable, ht_itr_t const itr)
 {
-	int32_t i = itr;
+	int_t i = itr;
 	CHECK_PTR_RET(htable, -1);
 	CHECK_RET( htable->tuples != NULL, -1 );
 
 	/* if they aren't at the beginning or end, increment the itr so that it moves to the
 	 * next item in the hashtable instead of matching the same one always.
 	 */
-	if((i >= -1) && (i < (int32_t)hashtable_primes[htable->prime_index]))
+	if((i >= -1) && (i < (int_t)hashtable_primes[htable->prime_index]))
 		i++;
 
-	if(i >= (int32_t)hashtable_primes[htable->prime_index])
+	if(i >= (int_t)hashtable_primes[htable->prime_index])
 		return ht_itr_end(htable);
 
-	for(; i < (int32_t)hashtable_primes[htable->prime_index]; i++)
+	for(; i < (int_t)hashtable_primes[htable->prime_index]; i++)
 	{
 		/* if is is a live tuple, return the itr to that */
 		if((htable->tuples[i].hash != 0) &&
@@ -866,14 +866,14 @@ ht_itr_t ht_itr_next(ht_t const * const htable, ht_itr_t const itr)
 
 ht_itr_t ht_itr_rnext(ht_t const * const htable, ht_itr_t const itr)
 {
-	int32_t i = itr;
+	int_t i = itr;
 	CHECK_PTR_RET(htable, -1);
 	CHECK_RET( htable->tuples != NULL, -1 );
 
-	if(i < (int32_t)0)
+	if(i < (int_t)0)
 		return ht_itr_rend(htable);
 
-	for(; i >= (int32_t)0; i--)
+	for(; i >= (int_t)0; i--)
 	{
 		/* if is is a live tuple, return the itr to that */
 		if((htable->tuples[i].hash != 0) &&
@@ -889,7 +889,7 @@ void* ht_itr_get(ht_t const * const htable, ht_itr_t const itr, void** key)
 {
 	CHECK_PTR_RET(htable, NULL);
 	CHECK_RET(itr != -1, NULL);
-	CHECK_RET(itr < (int32_t)hashtable_primes[htable->prime_index], NULL);
+	CHECK_RET(itr < (int_t)hashtable_primes[htable->prime_index], NULL);
 	CHECK_RET( htable->tuples != NULL, NULL );
 
 	if((htable->tuples[itr].hash == 0) ||

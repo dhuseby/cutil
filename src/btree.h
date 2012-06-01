@@ -17,11 +17,19 @@
 #ifndef __BTREE_H__
 #define __BTREE_H__
 
-#ifndef __UINT__
-#define __UINT__
-	typedef uint32_t uint_t;
-	typedef int32_t int_t;
+#include <stdint.h>
+#include "macros.h"
+
+#if defined(PORTABLE_64_BIT)
+typedef uint64_t uint_t;
+typedef int64_t int_t;
+#elif defined(PORTABLE_32_BIT)
+typedef uint32_t uint_t;
+typedef int32_t int_t;
+#else
+#error "failed to identify if we're on a 64-bit or 32-bit platform"
 #endif
+
 
 /* the  iterator type */
 typedef void * bt_itr_t;

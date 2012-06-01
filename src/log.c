@@ -61,7 +61,7 @@ static size_t writer( void * cookie, char const * data, size_t leng )
 	}
 
 	/* p is now either the log level matching the prefix, or LOG_INFO */
-	syslog( p, "%.*s", leng, data );
+	syslog( p, "%.*s", (int)leng, data );
 	return leng;
 }
 

@@ -30,7 +30,7 @@ struct array_node_s
 	struct array_node_s *	next;					/* next link */
 	struct array_node_s *	prev;					/* prev link */
 	void *					data;					/* pointer to the data */
-	uint32_t				dummy;
+	uint_t				dummy;
 };
 
 /* index constants */
@@ -92,10 +92,10 @@ pthread_mutex_t * array_mutex(array_t * const array)
  * data structure is deleted.
  */
 void array_initialize( array_t * const array, 
-					   uint32_t initial_capacity,
+					   uint_t initial_capacity,
 					   delete_fn pfn )
 {
-	uint32_t i = 0;
+	uint_t i = 0;
 	CHECK_PTR(array);
 
 	/* zero out the memory */
@@ -149,7 +149,7 @@ void array_initialize( array_t * const array,
  * This function allocates a new array structure and
  * initializes it.
  */
-array_t * array_new( uint32_t initial_capacity, delete_fn pfn )
+array_t * array_new( uint_t initial_capacity, delete_fn pfn )
 {
 	array_t * array = NULL;
 
@@ -171,8 +171,8 @@ array_t * array_new( uint32_t initial_capacity, delete_fn pfn )
  */
 void array_deinitialize(array_t * const array)
 {
-	int32_t ret = 0;
-	uint32_t i = 0;
+	int_t ret = 0;
+	uint_t i = 0;
 	array_node_t* node = NULL;
 	CHECK_PTR(array);
 
@@ -234,11 +234,11 @@ void array_delete( void * arr )
 
 
 /* get the size of the array in a thread-safe way */
-int32_t array_size(array_t const * const array)
+int_t array_size(array_t const * const array)
 {
 	CHECK_PTR_RET(array, -1);
 
-	return (int32_t)array->num_nodes;
+	return (int_t)array->num_nodes;
 }
 
 
@@ -248,10 +248,10 @@ int32_t array_size(array_t const * const array)
  */
 static int array_grow(array_t * const array)
 {
-	uint32_t new_free_head = 0;
-	uint32_t i = 0;
-	uint32_t old_size = 0;
-	uint32_t new_size = 0;
+	uint_t new_free_head = 0;
+	uint_t i = 0;
+	uint_t old_size = 0;
+	uint_t new_size = 0;
 	array_node_t* old_itr = NULL;
 	array_node_t* new_buffer = NULL;
 	CHECK_PTR_RET(array, 0);
@@ -312,7 +312,7 @@ static int array_grow(array_t * const array)
 		array->data_head = 0;
 
 		/* fix up the head of the free list index */
-		array->free_head = (int32_t)new_free_head;
+		array->free_head = (int_t)new_free_head;
 	}
 
 	/* free up the old buffer */
@@ -378,7 +378,7 @@ static array_node_t* array_get_free_node(array_t * const array)
 	node->prev = NULL;
 
 	/* calculate the new free head index */
-	array->free_head = (int32_t)((uint32_t)new_free_head - (uint32_t)array->node_buffer) / sizeof(array_node_t);
+	array->free_head = (int_t)((uint_t)new_free_head - (uint_t)array->node_buffer) / sizeof(array_node_t);
 
 	/* return the old free head */
 	return node;
@@ -406,7 +406,7 @@ static void array_put_free_node(
 	node->next->prev = node;
 
 	/* calculate the new free head index */
-	array->free_head = (int32_t)((uint32_t)node - (uint32_t)array->node_buffer) / sizeof(array_node_t);
+	array->free_head = (int_t)((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t);
 }
 
 /* get an iterator to the start of the array */
@@ -436,7 +436,7 @@ array_itr_t array_itr_tail(array_t const * const array)
 	tail = array->node_buffer[array->data_head].prev;
 	
 	/* calculate return the iterator pointed to the tail item */
-	return (array_itr_t)(((uint32_t)tail - (uint32_t)array->node_buffer) / sizeof(array_node_t));
+	return (array_itr_t)(((uint_t)tail - (uint_t)array->node_buffer) / sizeof(array_node_t));
 }
 
 /* iterator based access to the array elements */
@@ -467,7 +467,7 @@ array_itr_t array_itr_next(
 	CHECK_RET(node->data != NULL, array_itr_end_t);
 
 	/* return the index of the node */
-	return (array_itr_t)(((uint32_t)node - (uint32_t)array->node_buffer) / sizeof(array_node_t));
+	return (array_itr_t)(((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t));
 }
 
 array_itr_t array_itr_rnext(
@@ -503,7 +503,7 @@ array_itr_t array_itr_rnext(
 	CHECK_RET(node->data != NULL, array_itr_end_t);
 
 	/* return the index of the node */
-	return (array_itr_t)(((uint32_t)node - (uint32_t)array->node_buffer) / sizeof(array_node_t));
+	return (array_itr_t)(((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t));
 }
 
 /* 
@@ -552,11 +552,11 @@ void array_push(
 	if(array_size(array) > 0)
 	{
 		if(itr != array_itr_end(array))
-			array->data_head = (int32_t)((uint32_t)node - (uint32_t)array->node_buffer) / sizeof(array_node_t);
+			array->data_head = (int_t)((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t);
 	}
 	else
 	{
-		array->data_head = (int32_t)((uint32_t)node - (uint32_t)array->node_buffer) / sizeof(array_node_t);
+		array->data_head = (int_t)((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t);
 	}
 
 	/* we added an item to the list */
@@ -614,7 +614,7 @@ void * array_pop(
 	{
 		/* calculate the new data head index */
 		if (new_head != NULL)
-			array->data_head = (int32_t)((uint32_t)new_head - (uint32_t)array->node_buffer) / sizeof(array_node_t);
+			array->data_head = (int_t)((uint_t)new_head - (uint_t)array->node_buffer) / sizeof(array_node_t);
 	}
 	
 	return ret;
@@ -636,7 +636,7 @@ void* array_itr_get(
 /* clear the contents of the array */
 void array_clear(array_t * const array)
 {
-	uint32_t initial_capacity = 0;
+	uint_t initial_capacity = 0;
 	delete_fn pfn = NULL;
 	CHECK_PTR(array);
 	

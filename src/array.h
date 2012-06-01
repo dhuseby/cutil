@@ -18,16 +18,27 @@
 #define __ARRAY_H__
 
 #include <stdint.h>
+#include "macros.h"
 
 #ifdef USE_THREADING
 #include <pthread.h>
+#endif
+
+#if defined(PORTABLE_64_BIT)
+typedef uint64_t uint_t;
+typedef int64_t int_t;
+#elif defined(PORTABLE_32_BIT)
+typedef uint32_t uint_t;
+typedef int32_t int_t;
+#else
+#error "failed to identify if we're on a 64-bit or 32-bit platform"
 #endif
 
 /* define the delete function ponter type */
 typedef void (*delete_fn)(void*);
 
 /* defines the array iterator type */
-typedef int32_t array_itr_t;
+typedef int_t array_itr_t;
 
 /* internal node struct */
 typedef struct array_node_s array_node_t;
@@ -36,11 +47,11 @@ typedef struct array_node_s array_node_t;
 typedef struct array_s
 {
 	delete_fn		pfn;					/* destruction function for each node */
-	uint32_t			num_nodes;				/* number of nodes in the list */
-	uint32_t			buffer_size;			/* number of slots in the node array */
-	uint32_t			initial_capacity;		/* the initial capacity value */
-	int32_t			data_head;				/* head node of the data circular list */
-	int32_t			free_head;				/* head node of the free circular list */
+	uint_t			num_nodes;				/* number of nodes in the list */
+	uint_t			buffer_size;			/* number of slots in the node array */
+	uint_t			initial_capacity;		/* the initial capacity value */
+	int_t			data_head;				/* head node of the data circular list */
+	int_t			free_head;				/* head node of the free circular list */
 	array_node_t*	node_buffer;			/* buffer of nodes */
 #ifdef USE_THREADING
 	pthread_mutex_t lock;					/* list lock */
@@ -55,15 +66,15 @@ void array_unlock(array_t * const array);
 pthread_mutex_t * array_mutex(array_t * const array);
 #endif/*USE_THREADING*/
 
-void array_initialize( array_t * const array, uint32_t initial_capacity, delete_fn dfn );
+void array_initialize( array_t * const array, uint_t initial_capacity, delete_fn dfn );
 void array_deinitialize( array_t * const array );
 
 /* array new/delete functions */
-array_t * array_new( uint32_t initial_capacity, delete_fn dfn );
+array_t * array_new( uint_t initial_capacity, delete_fn dfn );
 void array_delete( void * arr );
 
 /* gets the size of the array */
-int32_t array_size(array_t const * const array);
+int_t array_size(array_t const * const array);
 
 /* functions for getting iterators */
 array_itr_t array_itr_begin(array_t const * const array);

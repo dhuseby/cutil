@@ -1055,7 +1055,11 @@ void bt_print_node( node_t * const p, int const indent )
 	bt_print_node( p->right, indent + 1 );
 
 	/* print the node */
-	printf( "%*s%d(%d)\n", (indent * 5), " ", p->balance, (int)p->val );
+#if defined(PORTABLE_64_BIT)
+	printf( "%*s%d(%ld)\n", (indent * 5), " ", p->balance, (int_t)p->val );
+#else
+	printf( "%*s%d(%d)\n", (indent * 5), " ", p->balance, (int_t)p->val );
+#endif
 
 	bt_print_node( p->left, indent + 1 );
 }
