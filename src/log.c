@@ -36,7 +36,7 @@ static int8_t * const priov[] =
 
 /* handles determining the proper log level from the string prefix and writing the
  * message out to syslog */
-static size_t writer( void * cookie, char const * data, size_t leng )
+static ssize_t writer( void * cookie, char const * data, size_t leng )
 {
 	(void)cookie;
 	int p = LOG_DEBUG;
@@ -75,6 +75,8 @@ static cookie_io_functions_t log_fns =
 	(void*) noop,
 	(void*) noop
 };
+#elif defined __APPLE__
+typedef int (*writefn)(void *, const char *, int);
 #endif
 
 void start_logging( void )
@@ -90,7 +92,7 @@ void start_logging( void )
 	setvbuf(stderr = fopencookie(NULL, "w", log_fns), NULL, _IOLBF, 0);
 #elif defined __APPLE__
 	/* redirect stderr writes to our custom writer function that outputs to syslog */
-	setvbuf(stderr = fwopen( NULL, writer ), NULL, _IOLBF, 0);
+	setvbuf(stderr = fwopen( NULL, (writefn)writer ), NULL, _IOLBF, 0);
 #endif
 }
 
