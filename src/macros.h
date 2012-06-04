@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <assert.h>
 
@@ -68,8 +69,12 @@
 /* are we on a 64-bit platform? */
 #if defined(_WIN64) || defined(__amd64__)
 #define PORTABLE_64_BIT
+typedef uint64_t uint_t;
+typedef int64_t int_t;
 #else
 #define PORTABLE_32_BIT
+typedef uint32_t uint_t;
+typedef int32_t int_t;
 #endif
 
 #endif/*__MACROS_H__*/
