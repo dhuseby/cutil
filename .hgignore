@@ -6,3 +6,7 @@ test/test_all
 *.o
 *.a
 .*.swp
+*.gcno
+*.gcda
+coverage/*
+src/cutil.info

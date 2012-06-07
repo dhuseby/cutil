@@ -10,16 +10,22 @@ OUT=test_all
 LIBS=-lcutil -lcunit
 EXTRA_LIBS_ROOT=/usr/local
 CUTILS_ROOT=../src
-# use COVCFLAGS and COVLDFLAGS when generating test coverage data
-COVCFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -I$(CUTILS_ROOT)/include -I$(EXTRA_LIBS_ROOT)/include
-COVLDFLAGS=-fprofile-arcs -O0 -gstabs+ -L$(CUTILS_ROOT)/lib -L$(EXTRA_LIBS_ROOT)/lib
 CFLAGS=-O0 -gstabs+ -I$(CUTILS_ROOT)/include -I$(EXTRA_LIBS_ROOT)/include
 LDFLAGS=-O0 -gstabs+ -L$(CUTILS_ROOT)/lib -L$(EXTRA_LIBS_ROOT)/lib
+# set CFLAGS to something gcov can use
+#coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -I$(CUTILS_ROOT)/include -I$(EXTRA_LIBS_ROOT)/include
+# set LDFLAGS to something gcov can use
+coverage: LDFLAGS=-fprofile-arcs -O0 -gstabs+ -L$(CUTILS_ROOT)/lib -L$(EXTRA_LIBS_ROOT)/lib
+
 
 all:
 
 test: $(OUT)
 	./test_all
+
+coverage: $(OUT)
+	./test_all
+
 
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -31,6 +37,8 @@ install:
 
 uninstall:
 
+report:
+
 clean:
 	rm -rf $(OBJ)
 	rm -rf $(OUT)
@@ -38,5 +46,5 @@ clean:
 	rm -rf $(GCNO)
 	rm -rf $(GCOV)
 
-.PHONY: all install uninstall clean test
+.PHONY: all install uninstall clean test coverage report
 

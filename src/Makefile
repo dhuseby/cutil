@@ -3,6 +3,7 @@
 
 # definable variables
 PREFIX?=/usr/local
+COVERAGE?=../coverage
 
 # other variables
 SHELL=/bin/sh
@@ -14,8 +15,8 @@ OUT=lib$(NAME).a
 GCDA=$(SRC:.c=.gcda)
 GCNO=$(SRC:.c=.gcno)
 GCOV=$(SRC:.c=.c.gcov)
-# use COVCFLAGS when generating test coverage data
-COVCFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+
+# set CFLAGS to something gcov can use
+coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+
 CFLAGS=-O0 -gstabs+
 
 # install utility
@@ -49,6 +50,14 @@ uninstall:
 
 test: all
 
+coverage: all
+
+report:
+	lcov --base-directory . --directory . -c -o cutil.info
+	lcov --remove cutil.info "/usr*" -o cutil.info
+	rm -rf $(COVERAGE)
+	genhtml -o $(COVERAGE) -t "cutil test coverage" --num-spaces 4 cutil.info
+
 clean:
 	rm -rf $(NAME)
 	rm -rf include
@@ -60,5 +69,5 @@ clean:
 	rm -rf $(GCOV)
 	rm -rf ev.h.gcov
 
-.PHONY: all install uninstall clean test
+.PHONY: all install uninstall clean test coverage report
 
