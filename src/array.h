@@ -81,6 +81,8 @@ array_itr_t array_itr_next(
 array_itr_t array_itr_rnext(
 	array_t const * const array,
 	array_itr_t const itr );
+#define array_itr_prev(a,i) array_itr_rnext(a,i)
+#define array_itr_rprev(a,i) array_itr_next(a,i)
 
 /* O(1) functions for adding items to the array */
 void array_push(

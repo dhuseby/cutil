@@ -521,7 +521,6 @@ void array_push(
 	array_node_t * node = NULL;
 	array_itr_t const i = ((itr == array_itr_end(array)) ? array->data_head : itr);
 	CHECK_PTR(array);
-	CHECK_PTR(data);
 	
 	/* a node from the free list */
 	node = array_get_free_node(array);

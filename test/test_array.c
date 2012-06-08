@@ -30,7 +30,7 @@
 
 #include "test_array.h"
 
-void test_array_newdel( void )
+static void test_array_newdel( void )
 {
 	int i;
 	uint32_t size;
@@ -40,18 +40,18 @@ void test_array_newdel( void )
 	{
 		arr = NULL;
 		size = (rand() % 1024);
-		arr = array_new( size, FREE );
+		arr = array_new( size, NULL );
 
 		CU_ASSERT_PTR_NOT_NULL( arr );
 		CU_ASSERT_EQUAL( array_size( arr ), 0 );
 		CU_ASSERT_EQUAL( arr->buffer_size, size );
-		CU_ASSERT_EQUAL( arr->pfn, FREE );
+		CU_ASSERT_EQUAL( arr->pfn, NULL );
 
 		array_delete( arr );
 	}
 }
 
-void test_array_initdeinit( void )
+static void test_array_initdeinit( void )
 {
 	int i;
 	uint32_t size;
@@ -61,20 +61,128 @@ void test_array_initdeinit( void )
 	{
 		MEMSET( &arr, 0, sizeof(array_t) );
 		size = (rand() % 1024);
-		array_initialize( &arr, size, FREE );
+		array_initialize( &arr, size, NULL );
 
 		CU_ASSERT_EQUAL( array_size( &arr ), 0 );
 		CU_ASSERT_EQUAL( arr.buffer_size, size );
-		CU_ASSERT_EQUAL( arr.pfn, FREE );
+		CU_ASSERT_EQUAL( arr.pfn, NULL );
+
+		array_deinitialize( &arr );
+	}
+}
+
+static void test_array_empty_iterator( void )
+{
+	int i;
+	uint32_t size;
+	array_t arr;
+	array_itr_t itr;
+
+	for ( i = 0; i < 1024; i++ )
+	{
+		MEMSET( &arr, 0, sizeof(array_t) );
+		size = (rand() % 1024);
+		array_initialize( &arr, size, NULL );
+
+		itr = array_itr_begin( &arr );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+		itr = array_itr_end( &arr );
+		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
+
+		itr = array_itr_head( &arr );
+		CU_ASSERT_EQUAL( itr, array_itr_tail( &arr ) );
+		itr = array_itr_tail( &arr );
+		CU_ASSERT_EQUAL( itr, array_itr_head( &arr ) );
+
+		itr = array_itr_rbegin( &arr );
+		CU_ASSERT_EQUAL( itr, array_itr_rend( &arr ) );
+		itr = array_itr_rend( &arr );
+		CU_ASSERT_EQUAL( itr, array_itr_rbegin( &arr ) );
+
+		itr = array_itr_begin( &arr );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+		itr = array_itr_next( &arr, itr );
+		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+		itr = array_itr_prev( &arr, itr );
+		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+
+		itr = array_itr_end( &arr );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+		itr = array_itr_prev( &arr, itr );
+		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+		itr = array_itr_next( &arr, itr );
+		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+
+		itr = array_itr_rbegin( &arr );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+		itr = array_itr_prev( &arr, itr );
+		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+		itr = array_itr_next( &arr, itr );
+		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+
+		itr = array_itr_rend( &arr );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+		itr = array_itr_next( &arr, itr );
+		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+		itr = array_itr_prev( &arr, itr );
+		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
+		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
+
+		array_deinitialize( &arr );
+	}
+}
+
+static void test_array_push_head_1( void )
+{
+	array_t arr;
+	array_initialize( &arr, 1, NULL );
+	array_push_head( &arr, (void*)1 );
+	CU_ASSERT_EQUAL( array_size( &arr ), 1 );
+	array_push_head( &arr, (void*)2 );
+	CU_ASSERT_EQUAL( array_size( &arr ), 2 );
+	array_push_head( &arr, (void*)3 );
+	CU_ASSERT_EQUAL( array_size( &arr ), 3 );
+	array_push_head( &arr, (void*)4 );
+	CU_ASSERT_EQUAL( array_size( &arr ), 4 );
+	array_push_head( &arr, (void*)5 );
+	CU_ASSERT_EQUAL( array_size( &arr ), 5 );
+}
+
+static void test_array_push_head( void )
+{
+	int i, j;
+	uint32_t size;
+	uint32_t multiple;
+	array_t arr;
+
+	for ( i = 0; i < 1024; i++ )
+	{
+		MEMSET( &arr, 0, sizeof(array_t) );
+		size = (rand() % 1024);
+		multiple = (rand() % 8);
+		array_initialize( &arr, size, NULL );
+
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			array_push_head( &arr, (void*)j );
+		}
+
+		CU_ASSERT_EQUAL( array_size( &arr ), (size * multiple) );
+		CU_ASSERT_EQUAL( arr.pfn, NULL );
 
 		array_deinitialize( &arr );
 	}
 }
 
 /*TODO:
- *	- empty array iterator test
  *	- non-empty array iterator test
- *	- head push test
  *	- tail push test
  *	- middle itr push test
  *	- head pop test
@@ -103,6 +211,9 @@ static CU_pSuite add_array_tests( CU_pSuite pSuite )
 {
 	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of array", test_array_newdel), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "init/deinit of array", test_array_initdeinit), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "empty array itr tests", test_array_empty_iterator), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "push one head tests", test_array_push_head_1), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "push head tests", test_array_push_head), NULL );
 	return pSuite;
 }
 
