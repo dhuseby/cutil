@@ -24,6 +24,8 @@
 #include "macros.h"
 #include "array.h"
 
+#define DEFAULT_INITIAL_CAPACITY (16)
+
 /* node used in queue structure */
 struct array_node_s
 {
@@ -37,7 +39,8 @@ struct array_node_s
 array_itr_t const array_itr_end_t = -1;
 
 /* forward declaration */
-static int array_grow(array_t * const array);
+static int array_grow( array_t * const array );
+static int array_sanity_check( array_t const * const array );
 
 #ifdef USE_THREADING
 /*
@@ -117,7 +120,7 @@ void array_initialize( array_t * const array,
 	array->data_head = -1;
 
 	/* initialize the free list */
-	array->free_head = 0;
+	array->free_head = -1;
 
 	/* allocate the initial node buffer only if there is an initial capacity */
 	if ( initial_capacity > 0 )
@@ -127,6 +130,8 @@ void array_initialize( array_t * const array,
 			WARN("failed to grow the array\n");
 		}
 	}
+
+	ASSERT( array_sanity_check( array ) );
 
 #ifdef USE_THREADING
 	/* initialize the mutex */
@@ -162,31 +167,40 @@ void array_deinitialize(array_t * const array)
 {
 	int_t ret = 0;
 	uint_t i = 0;
+	array_node_t* pstart = NULL;
 	array_node_t* node = NULL;
 	CHECK_PTR(array);
+	ASSERT( array_sanity_check( array ) );
 
 	/* iterate over the list calling the destructor for each node */
-	if((array->pfn != NULL) && (array->node_buffer != NULL))
+	if( (array->pfn != NULL) && (array_size( array ) > 0) )
 	{
-		node = array->node_buffer;
-		for(i = 0; i < array->num_nodes; i++)
+		node = pstart = &(array->node_buffer[array->data_head]);
+		do
 		{
 			/* if there is data, free it */
 			if((node != NULL) && (node->data != NULL))
 			{
 				/* free up the data */
+				WARN("FREE 0x%08x\n", (uint_t)node->data);
 				(*(array->pfn))(node->data);
 
 				node->data = NULL;
 			}
 
 			/* move to the next node in the list */
-			node++;
-		}
+			node = node->next;
+
+		} while( node != pstart );
 	}
 
 	/* free up the node buffer */
-	FREE( array->node_buffer );
+	if ( array->node_buffer != NULL )
+	{
+		WARN("FREE %d bytes at 0x%08x\n", (array->buffer_size * sizeof(array_node_t)), (uint_t)array->node_buffer);
+		fflush(stderr);
+		FREE( array->node_buffer );
+	}
 	array->node_buffer = NULL;
 
 #ifdef USE_THREADING
@@ -205,6 +219,16 @@ void array_deinitialize(array_t * const array)
 	/* clear out the counts */
 	array->num_nodes = 0;
 	array->buffer_size = 0;
+	
+	ASSERT( array_sanity_check( array ) );
+}
+
+void array_force_grow( array_t * const array )
+{
+	CHECK_PTR( array );
+	ASSERT( array_sanity_check( array ) );
+	array_grow( array );
+	ASSERT( array_sanity_check( array ) );
 }
 
 
@@ -249,40 +273,72 @@ static int array_grow(array_t * const array)
 	/* get the new size */
 	if ( old_size == 0 )
 	{
-		new_size = array->initial_capacity;
+		new_size = ((array->initial_capacity > 0) ? array->initial_capacity : DEFAULT_INITIAL_CAPACITY);
 	}
+	/*
 	else if ( old_size >= 256 )
 	{
 		new_size = (old_size + 256);
 	}
+	*/
 	else
 	{
-		new_size = (old_size << 1);
+		new_size = (old_size * 2);
 	}
 
 	/* resize the existing buffer */
-	ASSERT( new_size > array->buffer_size );
-	new_buffer = (array_node_t*)CALLOC( new_size, sizeof(array_node_t) );
-	MEMCPY( (void*)new_buffer, (void*)array->node_buffer, old_size * sizeof(array_node_t) );
-	FREE( array->node_buffer );
+	ASSERT( new_size > old_size );
+	ASSERT( new_size > 0 );
+	if ( array->node_buffer != NULL )
+	{
+		ASSERT( new_size > 0 );
+	}
+
+	new_buffer = (array_node_t*)REALLOC( array->node_buffer, (new_size * sizeof(array_node_t)) );
+	WARN("REALLOC from %d at 0x%08x to %d at 0x%08x\n", (old_size * sizeof(array_node_t)), (uint_t)array->node_buffer, (new_size * sizeof(array_node_t)), (uint_t)new_buffer);
+	ASSERT( new_buffer != NULL );
+	WARN("MEMSET %d bytes at 0x%08x (0x%08x[%d])\n", ((new_size - old_size) * sizeof(array_node_t)), (uint_t)&(new_buffer[old_size]), new_buffer, old_size);
+	MEMSET( (void*)&(new_buffer[old_size]), 0, ((new_size - old_size) * sizeof(array_node_t)) );
 	array->node_buffer = new_buffer;
 
-	/* zero out the new memory */
-	MEMSET( (void*)&(array->node_buffer[old_size]), 0, ((new_size - old_size) * sizeof(array_node_t)) );
+	/*
+	new_buffer = (array_node_t*)CALLOC( new_size, sizeof(array_node_t) );
+	WARN("CALLOC %d bytes at 0x%08x\n", (new_size * sizeof(array_node_t)), (uint_t)new_buffer);
+	ASSERT( new_buffer != NULL );
+	if ( old_size > 0 )
+	{
+		WARN("MEMCPY %d from 0x%08x to 0x%08x\n", (old_size * sizeof(array_node_t)), (uint_t)array->node_buffer, (uint_t)new_buffer);
+		MEMCPY( (void*)new_buffer, array->node_buffer, (old_size * sizeof(array_node_t)) );
+	}
+
+	if ( array->node_buffer != NULL )
+	{
+		WARN("FREE %d bytes at 0x%08x\n", (old_size * sizeof(array_node_t)), (uint_t)array->node_buffer);
+		FREE( array->node_buffer );
+	}
+	array->node_buffer = new_buffer;
+	new_buffer = NULL;
+	*/
+	ASSERT( array->node_buffer != NULL );
 
 	/* store the new size */
 	array->buffer_size = new_size;
 
-	/* make the new free list head's prev point at the new free list's tail node */
-	array->node_buffer[array->free_head].prev = &array->node_buffer[array->buffer_size - 1];
-
-	/* make the new free list head's next point at the first node in the new memory */
-	if ( old_size > 0 )
+	if ( old_size == 0 )
+	{
+		/* initialize the free_head index */
+		array->free_head = 0;
+	}
+	else
+	{
+		/* link the free_head with the head of the new block of ndoes */
 		array->node_buffer[array->free_head].next = &array->node_buffer[old_size];
+	}
 
-	/* make the new free list tail's next point at the new free list's head node */
+	/* link the free_head node with the tail of the new block of nodes */
+	array->node_buffer[array->free_head].prev = &array->node_buffer[array->buffer_size - 1];
 	array->node_buffer[array->buffer_size - 1].next = &array->node_buffer[array->free_head];
-	
+
 	/* fix up the middle free nodes */
 	for(i = old_size; i < array->buffer_size; i++)
 	{
@@ -297,6 +353,8 @@ static int array_grow(array_t * const array)
 		/* initialize the data pointer */
 		array->node_buffer[i].data = NULL;
 	}
+	
+	ASSERT( array_sanity_check( array ) );
 
 	return TRUE;
 }
@@ -307,6 +365,8 @@ static array_node_t* array_get_free_node(array_t * const array)
 	array_node_t* node = NULL;
 	array_node_t* new_free_head = NULL;
 	CHECK_PTR_RET(array, NULL);
+
+	ASSERT( array_sanity_check( array ) );
 
 	/* are we taking the last free node? better grow the buffer first */
 	if((array->num_nodes + 1) >= array->buffer_size)
@@ -334,6 +394,8 @@ static array_node_t* array_get_free_node(array_t * const array)
 	/* calculate the new free head index */
 	array->free_head = (int_t)((uint_t)new_free_head - (uint_t)array->node_buffer) / sizeof(array_node_t);
 
+	ASSERT( array_sanity_check( array ) );
+
 	/* return the old free head */
 	return node;
 }
@@ -345,6 +407,8 @@ static void array_put_free_node(
 {
 	array_node_t* old_free_head = NULL;
 	CHECK_PTR(array);
+	
+	ASSERT( array_sanity_check( array ) );
 
 	/* clear the data pointer */
 	node->data = NULL;
@@ -360,6 +424,7 @@ static void array_put_free_node(
 
 	/* calculate the new free head index */
 	array->free_head = (int_t)((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t);
+	ASSERT( array_sanity_check( array ) );
 }
 
 /* get an iterator to the start of the array */
@@ -367,6 +432,7 @@ array_itr_t array_itr_begin(array_t const * const array)
 {
 	CHECK_PTR_RET(array, array_itr_end_t);
 	CHECK_RET(array_size(array) > 0, array_itr_end_t);
+	ASSERT( array_sanity_check( array ) );
 
 	return array->data_head;
 }
@@ -384,6 +450,7 @@ array_itr_t array_itr_tail(array_t const * const array)
 	
 	CHECK_PTR_RET(array, array_itr_end_t);
 	CHECK_RET(array_size(array) > 0, array_itr_end_t);
+	ASSERT( array_sanity_check( array ) );
 	
 	/* get a pointer to the tail */
 	tail = array->node_buffer[array->data_head].prev;
@@ -402,6 +469,7 @@ array_itr_t array_itr_next(
 	CHECK_PTR_RET(array, array_itr_end_t);
 	CHECK_RET(array_size(array) > 0, array_itr_end_t);
 	CHECK_RET(itr != array_itr_end_t, array_itr_end_t);
+	ASSERT( array_sanity_check( array ) );
 
 	/* get a pointer to the node the iterator points to */
 	node = array->node_buffer[itr].next;
@@ -429,6 +497,7 @@ array_itr_t array_itr_rnext(
 	CHECK_PTR_RET(array, array_itr_end_t);
 	CHECK_RET(array_size(array) > 0, array_itr_end_t);
 	CHECK_RET(itr != array_itr_end_t, array_itr_end_t);
+	ASSERT( array_sanity_check( array ) );
 
 	/* get a pointer to the node the iterator points to */
 	node = &(array->node_buffer[itr]);
@@ -473,6 +542,7 @@ void array_push(
 	array_itr_t const i = ((itr == array_itr_end(array)) ? array->data_head : itr);
 
 	CHECK_PTR(array);
+	ASSERT( array_sanity_check( array ) );
 	
 	/* a node from the free list */
 	node = array_get_free_node(array);
@@ -504,6 +574,7 @@ void array_push(
 
 	/* we added an item to the list */
 	array->num_nodes++;
+	ASSERT( array_sanity_check( array ) );
 }
 
 
@@ -520,6 +591,7 @@ void * array_pop(
 	 * before the data_head node in the circular list */
 	array_itr_t const i = ((itr == array_itr_end(array)) ? array_itr_tail(array) : itr);
 	CHECK_PTR_RET(array, NULL);
+	ASSERT( array_sanity_check( array ) );
 	CHECK_RET(array_size(array) > 0, NULL);
 	
 	/* get a pointer to the node */
@@ -561,6 +633,7 @@ void * array_pop(
 		array->data_head = (int_t)((uint_t)new_head - (uint_t)array->node_buffer) / sizeof(array_node_t);
 	}
 	
+	ASSERT( array_sanity_check( array ) );
 	return ret;
 }
 
@@ -572,6 +645,7 @@ void* array_itr_get(
 	CHECK_PTR_RET(array, NULL);
 	CHECK_RET(array_size(array) > 0, NULL);
 	CHECK_RET(itr != array_itr_end(array), NULL);
+	ASSERT( array_sanity_check( array ) );
 
 	/* return the pointer to the head's data */
 	return array->node_buffer[itr].data;
@@ -583,6 +657,7 @@ void array_clear(array_t * const array)
 	uint_t initial_capacity = 0;
 	delete_fn pfn = NULL;
 	CHECK_PTR(array);
+	ASSERT( array_sanity_check( array ) );
 	
 	/* store the existing params */
 	pfn = array->pfn;
@@ -591,11 +666,71 @@ void array_clear(array_t * const array)
 	/* de-init the array and clean up all the memory except for
 	 * the array struct itself */
 	array_deinitialize( array );
+	ASSERT( array_sanity_check( array ) );
 	
 	/* clear out the array struct */
 	memset(array, 0, sizeof(array_t));
 
 	/* reinitialize the array with the saved params */
 	array_initialize( array, initial_capacity, pfn );
+}
+
+static int array_sanity_check( array_t const * const array )
+{
+	array_node_t * pstart = NULL;
+	array_node_t * p = NULL;
+	CHECK_PTR_RET( array, FALSE );
+
+	ASSERT(array->buffer_size >= 0);
+	
+	if ( array->buffer_size == 0 )
+	{
+		ASSERT(array->node_buffer == NULL);
+		ASSERT(array->data_head == -1);
+		ASSERT(array->free_head == -1);
+	}
+	else
+	{
+		ASSERT( (array->num_nodes >= 0) && (array->num_nodes <= array->buffer_size) );
+		ASSERT( (array->data_head >= -1) && (array->data_head <= (int_t)array->buffer_size) );
+		ASSERT( (array->free_head >= -1) && (array->free_head <= (int_t)array->buffer_size) );
+
+		/* check the free list if we have one */
+		if ( array->free_head >= 0 )
+		{
+			pstart = &(array->node_buffer[array->free_head]);
+			p = pstart;
+			do {
+				/* make sure the next pointer points to a node in the buffer */
+				ASSERT( (void*)p->next >= (void*)array->node_buffer );
+				ASSERT( (void*)p->next <= (void*)(array->node_buffer + array->buffer_size) );
+				/* make sure the prev pointer points to a node in the buffer */
+				ASSERT( (void*)p->prev >= (void*)array->node_buffer );
+				ASSERT( (void*)p->prev <= (void*)(array->node_buffer + array->buffer_size) );
+				ASSERT( p->data == NULL );
+				p = p->next;
+
+			} while ( p != pstart );
+		}
+
+		/* check the data list if we have one */
+		if ( array->data_head >= 0 )
+		{
+			pstart = &(array->node_buffer[array->free_head]);
+			p = pstart;
+			do {
+				/* make sure the next pointer points to a node in the buffer */
+				ASSERT( (void*)p->next >= (void*)array->node_buffer );
+				ASSERT( (void*)p->next <= (void*)(array->node_buffer + array->buffer_size) );
+				/* make sure the prev pointer points to a node in the buffer */
+				ASSERT( (void*)p->prev >= (void*)array->node_buffer );
+				ASSERT( (void*)p->prev <= (void*)(array->node_buffer + array->buffer_size) );
+				p = p->next;
+
+			} while ( p != pstart );
+		}
+	}
+
+	return TRUE;
 }
 

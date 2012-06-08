@@ -58,6 +58,7 @@ pthread_mutex_t * array_mutex(array_t * const array);
 
 void array_initialize( array_t * const array, uint_t initial_capacity, delete_fn dfn );
 void array_deinitialize( array_t * const array );
+void array_force_grow( array_t * const array );
 
 /* array new/delete functions */
 array_t * array_new( uint_t initial_capacity, delete_fn dfn );
