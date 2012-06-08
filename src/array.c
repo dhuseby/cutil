@@ -36,6 +36,9 @@ struct array_node_s
 /* index constants */
 array_itr_t const array_itr_end_t = -1;
 
+/* forward declaration */
+static int array_grow(array_t * const array);
+
 #ifdef USE_THREADING
 /*
  * This function locks the array mutex.
@@ -105,7 +108,7 @@ void array_initialize( array_t * const array,
 	array->pfn = pfn;
 
 	/* remember the buffer size */
-	array->buffer_size = initial_capacity;
+	array->buffer_size = 0;
 
 	/* remember the initial capacity */
 	array->initial_capacity = initial_capacity;
@@ -119,23 +122,9 @@ void array_initialize( array_t * const array,
 	/* allocate the initial node buffer only if there is an initial capacity */
 	if ( initial_capacity > 0 )
 	{
-		array->node_buffer = (array_node_t*)CALLOC(initial_capacity, sizeof(array_node_t));
-		ASSERT(array->node_buffer != NULL);
-
-		/* fixup the head of the free list */
-		array->node_buffer[0].prev = &array->node_buffer[initial_capacity - 1];
-
-		/* fixup the tail of the free list */
-		array->node_buffer[initial_capacity - 1].next = &array->node_buffer[0];
-
-		/* fixup the middle nodes */
-		for(i = 0; i < initial_capacity; i++)
+		if( !array_grow( array ) )
 		{
-			if(array->node_buffer[i].next == NULL)
-				array->node_buffer[i].next = &array->node_buffer[i + 1];
-
-			if(array->node_buffer[i].prev == NULL)
-				array->node_buffer[i].prev = &array->node_buffer[i - 1];
+			WARN("failed to grow the array\n");
 		}
 	}
 
@@ -248,12 +237,10 @@ int_t array_size(array_t const * const array)
  */
 static int array_grow(array_t * const array)
 {
-	uint_t new_free_head = 0;
 	uint_t i = 0;
 	uint_t old_size = 0;
 	uint_t new_size = 0;
-	array_node_t* old_itr = NULL;
-	array_node_t* new_buffer = NULL;
+	array_node_t * new_buffer = NULL;
 	CHECK_PTR_RET(array, 0);
 
 	/* get the old size */
@@ -262,7 +249,7 @@ static int array_grow(array_t * const array)
 	/* get the new size */
 	if ( old_size == 0 )
 	{
-		new_size = 16;
+		new_size = array->initial_capacity;
 	}
 	else if ( old_size >= 256 )
 	{
@@ -273,65 +260,31 @@ static int array_grow(array_t * const array)
 		new_size = (old_size << 1);
 	}
 
-	/* allocate the new buffer */
-	new_buffer = (array_node_t *)CALLOC(new_size, sizeof(array_node_t));
-	CHECK_RET(new_buffer != NULL, 0);
-
-	/* copy the existing nodes to the new new buffer if needed */
-	if(array_size(array) > 0)
-	{
-		/* move the new free head to the node after the end of the data list */
-		new_free_head = array_size(array);
-
-		/* fix up the head of the data list */
-		new_buffer[0].prev = &new_buffer[new_free_head - 1];
-
-		/* fix up the tail of the data list */
-		new_buffer[new_free_head - 1].next = &new_buffer[0];
-
-		/* fix up the middle nodes */
-		old_itr = &array->node_buffer[array->data_head];
-		for(i = 0; i < new_free_head; i++)
-		{
-			/* set up the next link if it isn't already */
-			if(new_buffer[i].next == NULL)
-				new_buffer[i].next = &new_buffer[i + 1];
-
-			/* set up the prev link if it isn't already */
-			if(new_buffer[i].prev == NULL)
-				new_buffer[i].prev = &new_buffer[i - 1];
-
-			/* copy the data pointer */
-			new_buffer[i].data = old_itr->data;
-
-			/* move to the next node in the old data list */
-			old_itr = old_itr->next;
-		}
-
-		/* fix up the head of the data list index */
-		array->data_head = 0;
-
-		/* fix up the head of the free list index */
-		array->free_head = (int_t)new_free_head;
-	}
-
-	/* free up the old buffer */
-	FREE(array->node_buffer);
-
-	/* store the new buffer pointer */
+	/* resize the existing buffer */
+	ASSERT( new_size > array->buffer_size );
+	new_buffer = (array_node_t*)CALLOC( new_size, sizeof(array_node_t) );
+	MEMCPY( (void*)new_buffer, (void*)array->node_buffer, old_size * sizeof(array_node_t) );
+	FREE( array->node_buffer );
 	array->node_buffer = new_buffer;
-	
+
+	/* zero out the new memory */
+	MEMSET( (void*)&(array->node_buffer[old_size]), 0, ((new_size - old_size) * sizeof(array_node_t)) );
+
 	/* store the new size */
 	array->buffer_size = new_size;
 
-	/* fix up the head of the free list */
+	/* make the new free list head's prev point at the new free list's tail node */
 	array->node_buffer[array->free_head].prev = &array->node_buffer[array->buffer_size - 1];
 
-	/* fix up the tail of the free list */
+	/* make the new free list head's next point at the first node in the new memory */
+	if ( old_size > 0 )
+		array->node_buffer[array->free_head].next = &array->node_buffer[old_size];
+
+	/* make the new free list tail's next point at the new free list's head node */
 	array->node_buffer[array->buffer_size - 1].next = &array->node_buffer[array->free_head];
 	
 	/* fix up the middle free nodes */
-	for(i = array->free_head; i < array->buffer_size; i++)
+	for(i = old_size; i < array->buffer_size; i++)
 	{
 		/* initialize the prev pointer if needed */
 		if(array->node_buffer[i].prev == NULL)
@@ -345,7 +298,7 @@ static int array_grow(array_t * const array)
 		array->node_buffer[i].data = NULL;
 	}
 
-	return 1;
+	return TRUE;
 }
 
 
@@ -355,6 +308,7 @@ static array_node_t* array_get_free_node(array_t * const array)
 	array_node_t* new_free_head = NULL;
 	CHECK_PTR_RET(array, NULL);
 
+	/* are we taking the last free node? better grow the buffer first */
 	if((array->num_nodes + 1) >= array->buffer_size)
 	{
 		/* we need to grow the buffer */
@@ -390,7 +344,6 @@ static void array_put_free_node(
 	array_node_t* const node)
 {
 	array_node_t* old_free_head = NULL;
-	CHECK_PTR(array);
 	CHECK_PTR(array);
 
 	/* clear the data pointer */
@@ -463,9 +416,6 @@ array_itr_t array_itr_next(
 		return array_itr_end_t;
 	}
 
-	/* check that the node is still in the data list */
-	CHECK_RET(node->data != NULL, array_itr_end_t);
-
 	/* return the index of the node */
 	return (array_itr_t)(((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t));
 }
@@ -499,9 +449,6 @@ array_itr_t array_itr_rnext(
 	/* check that we got a valid node pointer */
 	CHECK_RET(node != NULL, array_itr_end_t);
 
-	/* check that the node is still in the data list */
-	CHECK_RET(node->data != NULL, array_itr_end_t);
-
 	/* return the index of the node */
 	return (array_itr_t)(((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t));
 }
@@ -519,7 +466,12 @@ void array_push(
 	array_itr_t const itr)
 {
 	array_node_t * node = NULL;
+
+	/* we insert before the iterator, and the data nodes form a circular
+	 * list, so if they are inserting at the tail, then we want to insert
+	 * before the data_head node */
 	array_itr_t const i = ((itr == array_itr_end(array)) ? array->data_head : itr);
+
 	CHECK_PTR(array);
 	
 	/* a node from the free list */
@@ -542,18 +494,10 @@ void array_push(
 		node->prev = node;
 		node->next = node;
 	}
-	
-	/* 
-	 * if there already is a node in the list and they were pushing
-	 * onto the tail, recalculate the new data head index. otherwise
-	 * always update the data head index
-	 */
-	if(array_size(array) > 0)
-	{
-		if(itr != array_itr_end(array))
-			array->data_head = (int_t)((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t);
-	}
-	else
+
+	/* we only have to update the data_head index if they were pushing the 
+	 * new node at the beginning of the array */
+	if ( itr == array->data_head )
 	{
 		array->data_head = (int_t)((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t);
 	}
@@ -571,6 +515,9 @@ void * array_pop(
 	void * ret = NULL;
 	array_node_t * new_head = NULL;
 	array_node_t * node = NULL;
+
+	/* if the itr is at the end, then the node we're removing is the node
+	 * before the data_head node in the circular list */
 	array_itr_t const i = ((itr == array_itr_end(array)) ? array_itr_tail(array) : itr);
 	CHECK_PTR_RET(array, NULL);
 	CHECK_RET(array_size(array) > 0, NULL);
@@ -578,14 +525,12 @@ void * array_pop(
 	/* get a pointer to the node */
 	node = &array->node_buffer[i];
 	
-	/* bail if the node is no longer in the data list */
-	CHECK_RET(node->data != NULL, NULL);
-	
-	/* remember the next node */
+	/* if we're removing the node at the start of the list, then get a pointer
+	 * to the node that will be the new first node */
 	if(i == (array_itr_t)array->data_head)
 		new_head = node->next;
 
-	/* unhook it from the list */
+	/* unhook the node from the list */
 	node->prev->next = node->next;
 	node->next->prev = node->prev;
 	node->prev = NULL;
@@ -597,7 +542,7 @@ void * array_pop(
 	/* put the node back on the free list */
 	array_put_free_node(array, node);
 
-	/* we removed an item to the list */
+	/* we removed an item from the list */
 	array->num_nodes--;
 	
 	/* 
@@ -612,8 +557,8 @@ void * array_pop(
 	else
 	{
 		/* calculate the new data head index */
-		if (new_head != NULL)
-			array->data_head = (int_t)((uint_t)new_head - (uint_t)array->node_buffer) / sizeof(array_node_t);
+		ASSERT( new_head != NULL );
+		array->data_head = (int_t)((uint_t)new_head - (uint_t)array->node_buffer) / sizeof(array_node_t);
 	}
 	
 	return ret;

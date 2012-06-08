@@ -119,19 +119,19 @@ static void test_array_empty_iterator( void )
 
 		itr = array_itr_rbegin( &arr );
 		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
-		itr = array_itr_prev( &arr, itr );
+		itr = array_itr_rprev( &arr, itr );
 		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
 		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
-		itr = array_itr_next( &arr, itr );
+		itr = array_itr_rnext( &arr, itr );
 		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
 		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
 
 		itr = array_itr_rend( &arr );
 		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
-		itr = array_itr_next( &arr, itr );
+		itr = array_itr_rnext( &arr, itr );
 		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
 		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
-		itr = array_itr_prev( &arr, itr );
+		itr = array_itr_rprev( &arr, itr );
 		CU_ASSERT_EQUAL( itr, array_itr_begin( &arr ) );
 		CU_ASSERT_EQUAL( itr, array_itr_end( &arr ) );
 
@@ -143,14 +143,19 @@ static void test_array_push_head_1( void )
 {
 	array_t arr;
 	array_initialize( &arr, 1, NULL );
+	printf("push 1\n");
 	array_push_head( &arr, (void*)1 );
 	CU_ASSERT_EQUAL( array_size( &arr ), 1 );
+	printf("push 2\n");
 	array_push_head( &arr, (void*)2 );
 	CU_ASSERT_EQUAL( array_size( &arr ), 2 );
+	printf("push 3\n");
 	array_push_head( &arr, (void*)3 );
 	CU_ASSERT_EQUAL( array_size( &arr ), 3 );
+	printf("push 4\n");
 	array_push_head( &arr, (void*)4 );
 	CU_ASSERT_EQUAL( array_size( &arr ), 4 );
+	printf("push 5\n");
 	array_push_head( &arr, (void*)5 );
 	CU_ASSERT_EQUAL( array_size( &arr ), 5 );
 }
@@ -181,12 +186,243 @@ static void test_array_push_head( void )
 	}
 }
 
+static void test_array_push_tail_1( void )
+{
+	array_t arr;
+	array_initialize( &arr, 1, NULL );
+	array_push_tail( &arr, (void*)1 );
+	CU_ASSERT_EQUAL( array_size( &arr ), 1 );
+	array_push_tail( &arr, (void*)2 );
+	CU_ASSERT_EQUAL( array_size( &arr ), 2 );
+	array_push_tail( &arr, (void*)3 );
+	CU_ASSERT_EQUAL( array_size( &arr ), 3 );
+	array_push_tail( &arr, (void*)4 );
+	CU_ASSERT_EQUAL( array_size( &arr ), 4 );
+	array_push_tail( &arr, (void*)5 );
+	CU_ASSERT_EQUAL( array_size( &arr ), 5 );
+}
+
+static void test_array_push_tail( void )
+{
+	int i, j;
+	uint32_t size;
+	uint32_t multiple;
+	array_t arr;
+	array_itr_t itr;
+
+	for ( i = 0; i < 1024; i++ )
+	{
+		MEMSET( &arr, 0, sizeof(array_t) );
+		size = (rand() % 1024);
+		multiple = (rand() % 8);
+		array_initialize( &arr, size, NULL );
+
+		/* push integers to the tail */
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			array_push_tail( &arr, (void*)j );
+		}
+
+		/* walk the array to make sure the values are what we expect */
+		itr = array_itr_begin( &arr );
+		j = 0;
+		for ( ; itr != array_itr_end( &arr ); itr = array_itr_next( &arr, itr ) )
+		{
+			CU_ASSERT_EQUAL( (int)array_itr_get( &arr, itr ), j );
+			j++;
+		}
+
+		CU_ASSERT_EQUAL( array_size( &arr ), (size * multiple) );
+		CU_ASSERT_EQUAL( arr.pfn, NULL );
+
+		array_deinitialize( &arr );
+	}
+}
+
+static void test_array_push_dynamic( void )
+{
+	int i, j;
+	void * p;
+	uint32_t size;
+	uint32_t multiple;
+	array_t arr;
+
+	for ( i = 0; i < 128; i++ )
+	{
+		MEMSET( &arr, 0, sizeof(array_t) );
+		size = (rand() % 128);
+		multiple = (rand() % 8);
+		array_initialize( &arr, size, FREE );
+
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			p = CALLOC( (rand() % 1024), sizeof(uint8_t) );
+			array_push_tail( &arr, p );
+			CU_ASSERT_EQUAL( array_size( &arr ), (j + 1) );
+		}
+
+		CU_ASSERT_EQUAL( array_size( &arr ), (size * multiple) );
+		CU_ASSERT_EQUAL( arr.pfn, FREE );
+
+		array_deinitialize( &arr );
+	}
+}
+
+static void test_array_push_zero_initial_size( void )
+{
+	array_t arr;
+	array_initialize( &arr, 0, NULL );
+	CU_ASSERT_EQUAL( array_size( &arr ), 0 );
+	CU_ASSERT_EQUAL( arr.pfn, NULL );
+	array_push_tail( &arr, (void*)0 );
+	CU_ASSERT_EQUAL( array_size( &arr ), 1 );
+	array_deinitialize( &arr );
+}
+
+static void test_array_pop_head_static( void )
+{
+	int i, j;
+	uint32_t size;
+	uint32_t multiple;
+	array_t arr;
+	array_itr_t itr;
+
+	size = (rand() % 1024);
+	array_initialize( &arr, size, NULL );
+	multiple = (rand() % 8);
+	for( i = 0; i < (size * multiple); i++ )
+	{
+		array_push_tail( &arr, (void*)i );
+		CU_ASSERT_EQUAL( array_size( &arr ), (i + 1) );
+	}
+
+	CU_ASSERT_EQUAL( array_size( &arr ), (size * multiple) );
+
+	/* walk the array to make sure the values are what we expect */
+	itr = array_itr_begin( &arr );
+	i = 0;
+	for ( ; itr != array_itr_end( &arr ); itr = array_itr_next( &arr, itr ) )
+	{
+		CU_ASSERT_EQUAL( (int)array_itr_get( &arr, itr ), i );
+		i++;
+	}
+
+	itr = array_itr_rbegin( &arr );
+	i = ((size * multiple) - 1);
+	for ( ; itr != array_itr_rend( &arr ); itr = array_itr_rnext( &arr, itr ) )
+	{
+		CU_ASSERT_EQUAL( (int)array_itr_get( &arr, itr ), i );
+		i--;
+	}
+
+	for ( i = 0; i < (size * multiple); i++ )
+	{
+		j = (int)array_pop_head( &arr );
+		CU_ASSERT_EQUAL( j, i );
+	}
+
+	CU_ASSERT_EQUAL( array_size( &arr ), 0 );
+	array_deinitialize( &arr );
+}
+
+static void test_array_pop_tail_static( void )
+{
+	int i, j;
+	uint32_t size;
+	uint32_t multiple;
+	array_t arr;
+	array_itr_t itr;
+
+	/*size = (rand() % 1024);*/
+	size = 4;
+	array_initialize( &arr, size, NULL );
+	/*multiple = (rand() % 8);*/
+	multiple = 4;
+	for( i = 0; i < (size * multiple); i++ )
+	{
+		array_push_head( &arr, (void*)i );
+		CU_ASSERT_EQUAL( array_size( &arr ), (i + 1) );
+		CU_ASSERT_EQUAL( (int)array_get_head(&arr), i );
+		if ( (int)array_get_head(&arr) != i )
+		{
+			printf( "%d == %d (size: %u, bufsize: %u\n", (int)array_get_head(&arr), i, size, arr.buffer_size );
+		}
+
+		if ( i > 0 )
+		{
+			/* make sure the previous item in the array is what we expect */
+			itr = array_itr_begin( &arr );
+			itr = array_itr_next( &arr, itr );
+			/*CU_ASSERT_EQUAL( (int)array_itr_get(&arr, itr), (i - 1) );*/
+			if ( (i - 1) != (int)array_itr_get(&arr, itr) )
+			{
+				itr = array_itr_begin( &arr );
+				itr = array_itr_next( &arr, itr );
+				j = (int)array_itr_get( &arr, itr );
+			}
+		}
+	}
+#if 0
+	CU_ASSERT_EQUAL( array_size( &arr ), (size * multiple) );
+	/* walk the array to make sure the values are what we expect */
+	itr = array_itr_begin( &arr );
+	i = 0;
+	for ( ; itr != array_itr_end( &arr ); itr = array_itr_next( &arr, itr ) )
+	{
+		printf("%d\n", (int)array_itr_get( &arr, itr ) );
+		/*CU_ASSERT_EQUAL( (int)array_itr_get( &arr, itr ), i );*/
+		i++;
+	}
+
+	itr = array_itr_rbegin( &arr );
+	i = ((size * multiple) - 1);
+	for ( ; itr != array_itr_rend( &arr ); itr = array_itr_rnext( &arr, itr ) )
+	{
+		CU_ASSERT_EQUAL( (int)array_itr_get( &arr, itr ), i );
+		i--;
+	}
+
+	for ( i = ((size * multiple) - 1); i >= 0; i-- )
+	{
+		j = (int)array_pop_tail( &arr );
+		/*CU_ASSERT_EQUAL( j, i );*/
+	}
+
+	CU_ASSERT_EQUAL( array_size( &arr ), 0 );
+#endif
+	array_deinitialize( &arr );
+}
+
+static void test_array_clear( void )
+{
+	int i;
+	uint32_t size;
+	uint32_t multiple;
+	array_t arr;
+
+	size = (rand() % 1024);
+	array_initialize( &arr, size, NULL );
+	multiple = (rand() % 8);
+	for( i = 0; i < (size * multiple); i++ )
+	{
+		array_push_head( &arr, (void*)i );
+		CU_ASSERT_EQUAL( array_size( &arr ), (i + 1) );
+	}
+
+	CU_ASSERT_EQUAL( array_size( &arr ), (size * multiple) );
+
+	array_clear( &arr );
+
+	CU_ASSERT_EQUAL( array_size( &arr ), 0 );
+	array_deinitialize( &arr );
+}
+
+
+
 /*TODO:
  *	- non-empty array iterator test
- *	- tail push test
  *	- middle itr push test
- *	- head pop test
- *	- tal pop test
+ *	- tail pop test
  *	- middle itr pop test
  *	- head get test
  *	- tail get test
@@ -214,6 +450,13 @@ static CU_pSuite add_array_tests( CU_pSuite pSuite )
 	CHECK_PTR_RET( CU_add_test( pSuite, "empty array itr tests", test_array_empty_iterator), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "push one head tests", test_array_push_head_1), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "push head tests", test_array_push_head), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "push one tail tests", test_array_push_tail_1), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "push tail tests", test_array_push_tail), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "push dynamic memory", test_array_push_dynamic), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "push to zero initial size", test_array_push_zero_initial_size), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "pop head static", test_array_pop_head_static), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "pop tail static", test_array_pop_tail_static), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "array clear", test_array_clear), NULL );
 	return pSuite;
 }
 
