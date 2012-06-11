@@ -6,7 +6,7 @@ INSTALL_PROGRAM=$(INSTALL)
 INSTALL_DATA=$(INSTALL) -m 644
 COVERAGE?=./coverage
 
-DIRS = src test
+DIRS = src tests
 BUILDDIRS = $(DIRS:%=build-%)
 INSTALLDIRS = $(DIRS:%=install-%)
 UNINSTALLDIRS = $(DIRS:%=uninstall-%)
@@ -36,7 +36,6 @@ $(UNINSTALLDIRS):
 test: $(TESTDIRS)
 
 $(TESTDIRS):
-	@echo "building test target"
 	$(MAKE) -C $(@:test-%=%) test
 
 coverage: $(GCOVDIRS) $(REPORTDIRS)
