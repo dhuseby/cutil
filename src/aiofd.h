@@ -18,6 +18,8 @@
 #define __AIOFD_H__
 
 #include <sys/uio.h>
+#include "array.h"
+#include "events.h"
 
 typedef struct aiofd_s aiofd_t;
 typedef struct aiofd_ops_s aiofd_ops_t;
@@ -48,12 +50,12 @@ aiofd_t * aiofd_new( int const write_fd,
 					 void * user_data );
 void aiofd_delete( void * aio );
 
-void aiofd_initialize( aiofd_t * const aiofd, 
-					   int const write_fd,
-					   int const read_fd,
-					   aiofd_ops_t * const ops,
-					   evt_loop_t * const el,
-					   void * user_data );
+int aiofd_initialize( aiofd_t * const aiofd, 
+					  int const write_fd,
+					  int const read_fd,
+					  aiofd_ops_t * const ops,
+					  evt_loop_t * const el,
+					  void * user_data );
 void aiofd_deinitialize( aiofd_t * const aiofd );
 
 /* enables/disables processing of the read and write events */

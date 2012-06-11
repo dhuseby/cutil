@@ -22,8 +22,6 @@
 #include <cutil/macros.h>
 #include <cutil/pair.h>
 
-#include "test_pair.h"
-
 int8_t const * const first = "first";
 int8_t const * const second = "second";
 

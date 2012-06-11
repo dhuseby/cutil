@@ -28,8 +28,6 @@
 #include <cutil/macros.h>
 #include <cutil/array.h>
 
-#include "test_array.h"
-
 #define REPEAT (128)
 #define SIZEMAX (128)
 #define MULTIPLE (8)

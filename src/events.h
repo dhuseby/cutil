@@ -98,11 +98,11 @@ evt_loop_t* evt_new( void );
 /* deinitialize and free the events system */
 void evt_delete( void * e );
 
-void  evt_initialize_event_handler( evt_t * const evt,
-									evt_type_t const t,
-									evt_params_t * const params,
-									evt_fn callback,
-									void * user_data );
+int evt_initialize_event_handler( evt_t * const evt,
+								  evt_type_t const t,
+								  evt_params_t * const params,
+								  evt_fn callback,
+								  void * user_data );
 void evt_deinitialize_event_handler( evt_t * const evt );
 
 /* add a new event handler */

@@ -17,6 +17,12 @@
 #ifndef __CHILD_H__
 #define __CHILD_H__
 
+#include <sys/uio.h>
+#include "events.h"
+
+#define NO_ARGS(x) { x, NULL }
+#define EMPTY_ENV { NULL }
+
 typedef struct child_process_s child_process_t;
 
 typedef struct child_ops_s 

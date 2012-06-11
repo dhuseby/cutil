@@ -27,33 +27,43 @@
 #include <cutil/debug.h>
 #include <cutil/macros.h>
 
-#include "test_array.h"
-#include "test_bitset.h"
-#include "test_btree.h"
-#include "test_buffer.h"
-#include "test_hashtable.h"
-#include "test_pair.h"
+#define SUITE(x) extern CU_pSuite add_##x##_test_suite();
+#define SUITE_VAR(x) CU_pSuite x##_test_suite;
+#define ADD_SUITE(x) x##_test_suite = add_##x##_test_suite();
+
+SUITE( aiofd );
+SUITE( array );
+SUITE( bitset );
+SUITE( btree );
+SUITE( buffer );
+SUITE( child );
+SUITE( hashtable );
+SUITE( pair );
 
 int main()
 {
-	CU_pSuite array_test_suite;
-	CU_pSuite bitset_test_suite;
-	CU_pSuite btree_test_suite;
-	CU_pSuite buffer_test_suite;
-	CU_pSuite hashtable_test_suite;
-	CU_pSuite pair_test_suite;
+	SUITE_VAR( aiofd );
+	SUITE_VAR( array );
+	SUITE_VAR( bitset );
+	SUITE_VAR( btree );
+	SUITE_VAR( buffer );
+	SUITE_VAR( child );
+	SUITE_VAR( hashtable );
+	SUITE_VAR( pair );
 
 	/* initialize the CUnit test registry */
 	if ( CUE_SUCCESS != CU_initialize_registry() )
 		return CU_get_error();
 
 	/* add each suite of tests */
-	array_test_suite = add_array_test_suite();
-	bitset_test_suite = add_bitset_test_suite();
-	btree_test_suite = add_btree_test_suite();
-	buffer_test_suite = add_buffer_test_suite();
-	hashtable_test_suite = add_hashtable_test_suite();
-	pair_test_suite = add_pair_test_suite();
+	ADD_SUITE( aiofd );
+	ADD_SUITE( array );
+	ADD_SUITE( bitset );
+	ADD_SUITE( btree );
+	ADD_SUITE( buffer );
+	ADD_SUITE( child );
+	ADD_SUITE( hashtable );
+	ADD_SUITE( pair );
 
 	/* run all tests using the CUnit Basic interface */
 	CU_basic_set_mode( CU_BRM_VERBOSE );

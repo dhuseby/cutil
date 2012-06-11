@@ -26,64 +26,84 @@
 
 #include <cutil/debug.h>
 #include <cutil/macros.h>
-#include <cutil/hashtable.h>
+#include <cutil/aiofd.h>
 
 #define REPEAT (128)
 #define SIZEMAX (128)
 #define MULTIPLE (8)
 
-static void test_hashtable_newdel( void )
+static evt_loop_t * el = NULL;
+
+static int read_fn( aiofd_t * const aiofd, size_t nread, void * user_data )
+{
+	return FALSE;
+}
+
+static int write_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )
+{
+	return FALSE;
+}
+
+static int error_fn( aiofd_t * const aiofd, int err, void * user_data )
+{
+	return TRUE;
+}
+
+static void test_aiofd_newdel( void )
 {
 	int i;
-	uint32_t size;
-	ht_t * ht;
+	aiofd_t * aiofd;
+	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+
+	/* make sure there is an event loop */
+	CU_ASSERT_PTR_NOT_NULL( el );
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
-		ht = NULL;
-		size = (rand() % SIZEMAX);
-		ht = ht_new( size, NULL, NULL, NULL, NULL );
+		aiofd = NULL;
+		aiofd = aiofd_new( fileno(stdout), fileno(stdin), &ops, el, NULL );
 
-		CU_ASSERT_PTR_NOT_NULL( ht );
-		CU_ASSERT_EQUAL( ht_size( ht ), 0 );
-		CU_ASSERT_EQUAL( ht->initial_capacity, size );
-		CU_ASSERT_NOT_EQUAL( ht->khfn, NULL );
-		CU_ASSERT_NOT_EQUAL( ht->kefn, NULL );
-		CU_ASSERT_EQUAL( ht->kdfn, NULL );
-		CU_ASSERT_EQUAL( ht->vdfn, NULL );
+		CU_ASSERT_PTR_NOT_NULL( aiofd );
 
-		ht_delete( ht );
+		aiofd_delete( aiofd );
 	}
 }
 
-
-static int init_hashtable_suite( void )
+static int init_aiofd_suite( void )
 {
 	srand(0xDEADBEEF);
+
+	/* set up the event loop */
+	el = evt_new();
+
 	return 0;
 }
 
-static int deinit_hashtable_suite( void )
+static int deinit_aiofd_suite( void )
 {
+	/* take down the event loop */
+	evt_delete( el );
+	el = NULL;
+
 	return 0;
 }
 
-static CU_pSuite add_hashtable_tests( CU_pSuite pSuite )
+static CU_pSuite add_aiofd_tests( CU_pSuite pSuite )
 {
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of hashtable", test_hashtable_newdel), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of aiofd", test_aiofd_newdel), NULL );
 	return pSuite;
 }
 
-CU_pSuite add_hashtable_test_suite()
+CU_pSuite add_aiofd_test_suite()
 {
 	CU_pSuite pSuite = NULL;
 
 	/* add the suite to the registry */
-	pSuite = CU_add_suite("Hashtable Tests", init_hashtable_suite, deinit_hashtable_suite);
+	pSuite = CU_add_suite("Async I/O fd Tests", init_aiofd_suite, deinit_aiofd_suite);
 	CHECK_PTR_RET( pSuite, NULL );
 
-	/* add in hashtable specific tests */
-	CHECK_PTR_RET( add_hashtable_tests( pSuite ), NULL );
+	/* add in aiofd specific tests */
+	CHECK_PTR_RET( add_aiofd_tests( pSuite ), NULL );
 
 	return pSuite;
 }

@@ -156,12 +156,15 @@ void evt_delete(void * e)
 }
 
 
-void  evt_initialize_event_handler( evt_t * const evt,
-									evt_type_t const t,
-									evt_params_t * const params,
-									evt_fn callback,
-									void * user_data )
+int evt_initialize_event_handler( evt_t * const evt,
+								  evt_type_t const t,
+								  evt_params_t * const params,
+								  evt_fn callback,
+								  void * user_data )
 {
+	CHECK_PTR_RET( evt, FALSE );
+	CHECK_PTR_RET( params, FALSE );
+
 	MEMSET( (void*)evt, 0, sizeof(evt_t) );
 
 	/* initialize the event handler struct */
@@ -179,7 +182,7 @@ void  evt_initialize_event_handler( evt_t * const evt,
 			ev_signal_init( (struct ev_signal*)&(evt->ev.sig), 
 							evt_signal_callback, 
 							evt->evt_params.signal_params.signum );
-			break;
+			return TRUE;
 		}
 		case EVT_CHILD:
 		{
@@ -188,7 +191,7 @@ void  evt_initialize_event_handler( evt_t * const evt,
 						   evt_child_callback,
 						   evt->evt_params.child_params.pid,
 						   evt->evt_params.child_params.trace );
-			break;
+			return TRUE;
 		}
 		case EVT_IO:
 		{
@@ -197,9 +200,11 @@ void  evt_initialize_event_handler( evt_t * const evt,
 						evt_io_callback,
 						evt->evt_params.io_params.fd,
 						evt->evt_params.io_params.types );
-			break;
+			return TRUE;
 		}
 	}
+
+	return FALSE;
 }
 
 

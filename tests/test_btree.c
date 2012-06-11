@@ -21,9 +21,6 @@
 #include <cutil/macros.h>
 #include <cutil/btree.h>
 
-#include "macros.h"
-#include "test_btree.h"
-
 void test_btree_newdel( void )
 {
 	int i;

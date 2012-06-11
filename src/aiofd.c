@@ -176,7 +176,11 @@ aiofd_t * aiofd_new( int const write_fd,
 	CHECK_PTR_RET( aiofd, NULL );
 
 	/* initlialize the aiofd */
-	aiofd_initialize( aiofd, write_fd, read_fd, ops, el, user_data );
+	if ( !aiofd_initialize( aiofd, write_fd, read_fd, ops, el, user_data ) )
+	{
+		FREE( aiofd );
+		return NULL;
+	}
 
 	return aiofd;
 }
@@ -191,20 +195,20 @@ void aiofd_delete( void * aio )
 	FREE( (void*)aiofd );
 }
 
-void aiofd_initialize( aiofd_t * const aiofd, 
-					   int const write_fd,
-					   int const read_fd,
-					   aiofd_ops_t * const ops,
-					   evt_loop_t * const el,
-					   void * user_data )
+int aiofd_initialize( aiofd_t * const aiofd, 
+					  int const write_fd,
+					  int const read_fd,
+					  aiofd_ops_t * const ops,
+					  evt_loop_t * const el,
+					  void * user_data )
 {
 	evt_params_t params;
 
-	CHECK_PTR( aiofd );
-	CHECK_PTR( ops );
-	CHECK_PTR( el );
-	CHECK( write_fd >= 0 );
-	CHECK( read_fd >= 0 );
+	CHECK_PTR_RET( aiofd, FALSE );
+	CHECK_PTR_RET( ops, FALSE );
+	CHECK_PTR_RET( el, FALSE );
+	CHECK_RET( write_fd >= 0, FALSE );
+	CHECK_RET( read_fd >= 0, FALSE );
 
 	MEMSET( (void*)aiofd, 0, sizeof(aiofd_t) );
 
@@ -213,29 +217,37 @@ void aiofd_initialize( aiofd_t * const aiofd,
 	aiofd->rfd = read_fd;
 
 	/* initialize the write buffer */
-	array_initialize( &(aiofd->wbuf), 8, FREE );
+	CHECK_RET( array_initialize( &(aiofd->wbuf), 8, FREE ), FALSE );
 
 	/* set up params for fd write event */
 	params.io_params.fd = aiofd->wfd;
 	params.io_params.types = EVT_IO_WRITE;
 
 	/* hook up the fd write event */
-	evt_initialize_event_handler( &(aiofd->wevt), 
-								  EVT_IO, 
-								  &params, 
-								  aiofd_write_fn, 
-								  (void *)aiofd );
+	if ( !evt_initialize_event_handler( &(aiofd->wevt), 
+										EVT_IO, 
+										&params, 
+										aiofd_write_fn, 
+										(void *)aiofd ) )
+	{
+		array_deinitialize( &(aiofd->wbuf) );
+		return FALSE;
+	}
 
 	/* set up params for socket read event */
 	params.io_params.fd = aiofd->rfd;
 	params.io_params.types = EVT_IO_READ;
 
 	/* hook up the fd read event */
-	evt_initialize_event_handler( &(aiofd->revt), 
-								  EVT_IO, 
-								  &params, 
-								  aiofd_read_fn, 
-								  (void *)aiofd );
+	if ( !evt_initialize_event_handler( &(aiofd->revt), 
+										EVT_IO, 
+										&params, 
+										aiofd_read_fn, 
+										(void *)aiofd ) )
+	{
+		array_deinitialize( &(aiofd->wbuf) );
+		return FALSE;
+	}
 
 	/* store the event loop pointer */
 	aiofd->el = el;
@@ -245,6 +257,8 @@ void aiofd_initialize( aiofd_t * const aiofd,
 
 	/* copy the ops into place */
 	MEMCPY( (void*)&(aiofd->ops), ops, sizeof(aiofd_ops_t) );
+
+	return TRUE;
 }
 
 void aiofd_deinitialize( aiofd_t * const aiofd )

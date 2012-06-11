@@ -13,7 +13,7 @@
  * License along with main.c; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
-
+#if 0
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +27,8 @@
 #include <cutil/debug.h>
 #include <cutil/macros.h>
 #include <cutil/hashtable.h>
+
+#include "test_hashtable.h"
 
 #define REPEAT (128)
 #define SIZEMAX (128)
@@ -87,4 +89,5 @@ CU_pSuite add_hashtable_test_suite()
 
 	return pSuite;
 }
+#endif
 

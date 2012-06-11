@@ -22,8 +22,6 @@
 #include <cutil/macros.h>
 #include <cutil/buffer.h>
 
-#include "test_buffer.h"
-
 int8_t const * const buf = "blah";
 size_t const size = 5;
 

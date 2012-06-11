@@ -38,7 +38,7 @@
 #define ASSERT(x) assert(x)
 #define WARN(fmt, ...) { fprintf(stderr, "WARNING:%12s:%-5d -- " fmt,  __FILE__, __LINE__, ##__VA_ARGS__); fflush(stderr); }
 #define NOTICE(fmt, ...) { fprintf(stderr, "NOTICE:%13s:%-5d -- " fmt,  __FILE__, __LINE__, ##__VA_ARGS__); fflush(stderr); }
-#define LOG(...) { fprintf(stderr, __VA_ARGS__); fflush(stdout); }
+#define LOG(...) { fprintf(stderr, __VA_ARGS__); fflush(stderr); }
 #define FAIL(fmt, ...) { fprintf(stderr, "ERR:%16s:%-5d -- " fmt,  __FILE__, __LINE__, ##__VA_ARGS__); fflush(stderr); assert(0); }
 
 /* runtime check macros */

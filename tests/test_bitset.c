@@ -20,8 +20,6 @@
 #include <cutil/macros.h>
 #include <cutil/bitset.h>
 
-#include "test_bitset.h"
-
 void test_bitset_newdel( void )
 {
 	int i;
