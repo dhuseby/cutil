@@ -30,8 +30,38 @@
 
 #include "test_hashtable.h"
 
+#define REPEAT (128)
+#define SIZEMAX (128)
+#define MULTIPLE (8)
+
+static void test_hashtable_newdel( void )
+{
+	int i;
+	uint32_t size;
+	ht_t * ht;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		ht = NULL;
+		size = (rand() % SIZEMAX);
+		ht = ht_new( size, NULL, NULL, NULL, NULL );
+
+		CU_ASSERT_PTR_NOT_NULL( ht );
+		CU_ASSERT_EQUAL( ht_size( ht ), 0 );
+		CU_ASSERT_EQUAL( ht->initial_capacity, size );
+		CU_ASSERT_NOT_EQUAL( ht->khfn, NULL );
+		CU_ASSERT_NOT_EQUAL( ht->kefn, NULL );
+		CU_ASSERT_EQUAL( ht->kdfn, NULL );
+		CU_ASSERT_EQUAL( ht->vdfn, NULL );
+
+		ht_delete( ht );
+	}
+}
+
+
 static int init_hashtable_suite( void )
 {
+	srand(0xDEADBEEF);
 	return 0;
 }
 
@@ -42,6 +72,7 @@ static int deinit_hashtable_suite( void )
 
 static CU_pSuite add_hashtable_tests( CU_pSuite pSuite )
 {
+	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of hashtable", test_hashtable_newdel), NULL );
 	return pSuite;
 }
 

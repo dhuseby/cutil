@@ -40,7 +40,6 @@ struct array_node_s
 };
 
 #define NODE_AT( a, i ) (&(a->node_buffer[i]))
-#define INDEX_OF( a, n ) (int_t)((uint_t)n - (uint_t)a->node_buffer) / sizeof(array_node_t);
 
 /* index constants */
 array_itr_t const array_itr_end_t = -1;
@@ -104,12 +103,13 @@ pthread_mutex_t * array_mutex(array_t * const array)
  * for the pfn parameter, then no action will be taken when the 
  * data structure is deleted.
  */
-void array_initialize( array_t * const array, 
-					   uint_t initial_capacity,
-					   delete_fn pfn )
+int array_initialize( array_t * const array, 
+					  int_t initial_capacity,
+					  delete_fn pfn )
 {
-	uint_t i = 0;
-	CHECK_PTR(array);
+	int_t i = 0;
+	CHECK_PTR_RET( array, FALSE );
+	CHECK_RET( initial_capacity >= 0, FALSE );
 
 	/* zero out the memory */
 	MEMSET(array, 0, sizeof(array_t));
@@ -134,7 +134,7 @@ void array_initialize( array_t * const array,
 	{
 		if( !array_grow( array ) )
 		{
-			WARN("failed to grow the array\n");
+			return FALSE;
 		}
 	}
 
@@ -146,21 +146,28 @@ void array_initialize( array_t * const array,
 	/* initialize the mutex */
 	pthread_mutex_init(&array->lock, 0);
 #endif
+
+	return TRUE;
 }
 
 /*
  * This function allocates a new array structure and
  * initializes it.
  */
-array_t * array_new( uint_t initial_capacity, delete_fn pfn )
+array_t * array_new( int_t initial_capacity, delete_fn pfn )
 {
 	array_t * array = NULL;
+	CHECK_PTR_RET( initial_capacity >= 0, NULL );
 
 	/* allocate the array structure */
 	array = (array_t*)CALLOC( 1, sizeof(array_t) );
 
 	/* initialize the array */
-	array_initialize( array, initial_capacity, pfn );
+	if ( !array_initialize( array, initial_capacity, pfn ) )
+	{
+		FREE( array );
+		return NULL;
+	}
 
 	/* return the new array */
 	return array;
@@ -175,7 +182,7 @@ array_t * array_new( uint_t initial_capacity, delete_fn pfn )
 void array_deinitialize(array_t * const array)
 {
 	int_t ret = 0;
-	uint_t i = 0;
+	int_t i = 0;
 	array_node_t* pstart = NULL;
 	array_node_t* node = NULL;
 	CHECK_PTR(array);
@@ -214,7 +221,9 @@ void array_deinitialize(array_t * const array)
 #ifdef USE_THREADING
 	/* destroy the lock */
 	ret = pthread_mutex_destroy(&array->lock);
+#ifdef UNIT_TESTING
 	ASSERT(ret == 0);
+#endif
 #endif
 
 	/* invalidate the delete function */
@@ -249,9 +258,9 @@ void array_delete( void * arr )
 
 
 /* get the size of the array in a thread-safe way */
-int_t array_size(array_t const * const array)
+int_t array_size( array_t const * const array )
 {
-	CHECK_PTR_RET(array, -1);
+	CHECK_PTR_RET(array, 0);
 
 	return (int_t)array->num_nodes;
 }
@@ -261,11 +270,11 @@ int_t array_size(array_t const * const array)
  * this function doubles the node buffer size and moves the nodes from the old
  * buffer to the new buffer, compacting them at the same time
  */
-static int array_grow(array_t * const array)
+static int array_grow( array_t * const array )
 {
-	uint_t i = 0;
-	uint_t old_size = 0;
-	uint_t new_size = 0;
+	int_t i = 0;
+	int_t old_size = 0;
+	int_t new_size = 0;
 	array_node_t * new_buffer = NULL;
 	CHECK_PTR_RET( array, FALSE );
 
@@ -293,18 +302,19 @@ static int array_grow(array_t * const array)
 	}
 
 	/* resize the existing buffer */
-	ASSERT( new_size > old_size );
-	ASSERT( new_size > 0 );
+	CHECK_RET( new_size > old_size, FALSE );
+	CHECK_RET( new_size > 0, FALSE );
 	if ( array->node_buffer != NULL )
 	{
-		ASSERT( new_size > 0 );
+		CHECK_RET( new_size > 0, FALSE );
 	}
 
+	/* allocate a new buffer */
 	new_buffer = (array_node_t*)REALLOC( array->node_buffer, (new_size * sizeof(array_node_t)) );
-	ASSERT( new_buffer != NULL );
+	CHECK_PTR_RET( new_buffer, FALSE );
+
 	MEMSET( (void*)&(new_buffer[old_size]), 0, ((new_size - old_size) * sizeof(array_node_t)) );
 	array->node_buffer = new_buffer;
-	ASSERT( array->node_buffer != NULL );
 
 	/* store the new size */
 	array->buffer_size = new_size;
@@ -362,7 +372,6 @@ static array_itr_t array_get_free_node( array_t * const array )
 		/* we need to grow the buffer */
 		if(!array_grow(array))
 		{
-			WARN("failed to grow the array!\n");
 			return array_itr_end_t;
 		}
 	}
@@ -394,13 +403,12 @@ static array_itr_t array_get_free_node( array_t * const array )
 }
 
 
-static void array_put_free_node(
-	array_t * const array, 
-	array_itr_t const itr )
+static void array_put_free_node( array_t * const array, array_itr_t const itr )
 {
 	array_itr_t prev = array_itr_end_t;
 	CHECK_PTR(array);
 	CHECK( itr != array_itr_end_t );
+	CHECK( itr >= 0 );
 #ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
 #endif
@@ -425,7 +433,7 @@ static void array_put_free_node(
 }
 
 /* get an iterator to the start of the array */
-array_itr_t array_itr_begin(array_t const * const array)
+array_itr_t array_itr_begin( array_t const * const array )
 {
 	CHECK_PTR_RET(array, array_itr_end_t);
 	CHECK_RET(array_size(array) > 0, array_itr_end_t);
@@ -437,13 +445,13 @@ array_itr_t array_itr_begin(array_t const * const array)
 }
 
 /* get an iterator to the end of the array */
-array_itr_t array_itr_end(array_t const * const array)
+array_itr_t array_itr_end( array_t const * const array )
 {
 	return array_itr_end_t;
 }
 
 /* get an iterator to the last item in the array */
-array_itr_t array_itr_tail(array_t const * const array)
+array_itr_t array_itr_tail( array_t const * const array )
 {
 	CHECK_PTR_RET(array, array_itr_end_t);
 	CHECK_RET(array_size(array) > 0, array_itr_end_t);
@@ -456,9 +464,7 @@ array_itr_t array_itr_tail(array_t const * const array)
 }
 
 /* iterator based access to the array elements */
-array_itr_t array_itr_next(
-	array_t const * const array, 
-	array_itr_t const itr)
+array_itr_t array_itr_next( array_t const * const array, array_itr_t const itr )
 {
 	CHECK_PTR_RET(array, array_itr_end_t);
 	CHECK_RET(array_size(array) > 0, array_itr_end_t);
@@ -472,9 +478,7 @@ array_itr_t array_itr_next(
 			NODE_AT(array, itr)->next;
 }
 
-array_itr_t array_itr_rnext(
-	array_t const * const array, 
-	array_itr_t const itr)
+array_itr_t array_itr_rnext( array_t const * const array, array_itr_t const itr )
 {
 	CHECK_PTR_RET(array, array_itr_end_t);
 	CHECK_RET(array_size(array) > 0, array_itr_end_t);
@@ -493,10 +497,10 @@ array_itr_t array_itr_rnext(
  * in the array, you must use the iterator returned from the
  * array_itr_end() function.
  */
-void array_push(
+int array_push(
 	array_t * const array, 
 	void * const data, 
-	array_itr_t const itr)
+	array_itr_t const itr )
 {
 	array_itr_t free_itr = array_itr_end_t;
 
@@ -505,14 +509,14 @@ void array_push(
 	 * before the data_head node */
 	array_itr_t const i = ((itr == array_itr_end(array)) ? array->data_head : itr);
 
-	CHECK_PTR(array);
+	CHECK_PTR_RET( array, FALSE );
 #ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
 #endif
 	
 	/* a the index of a node from the free list */
 	free_itr = array_get_free_node(array);
-	ASSERT(free_itr != array_itr_end_t);
+	CHECK_RET( free_itr != array_itr_end_t, FALSE );
 	
 	/* store the data pointer */
 	NODE_AT( array, free_itr )->data = data;
@@ -543,13 +547,15 @@ void array_push(
 #ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
 #endif
+
+	return TRUE;
 }
 
 
 /* pop the data at the location specified by the iterator */
 void * array_pop(
 	array_t * const array, 
-	array_itr_t const itr)
+	array_itr_t const itr )
 {
 	void * ret = NULL;
 	array_itr_t new_head = array_itr_end_t;
@@ -602,8 +608,11 @@ void * array_pop(
 	}
 	else
 	{
-		/* calculate the new data head index */
+#ifdef UNIT_TESTING
 		ASSERT( new_head != array_itr_end_t );
+#endif
+
+		/* calculate the new data head index */
 		array->data_head = new_head;
 	}
 	
@@ -616,7 +625,7 @@ void * array_pop(
 /* get a pointer to the data at the location specified by the iterator */
 void* array_itr_get(
 	array_t const * const array, 
-	array_itr_t const itr)
+	array_itr_t const itr )
 {
 	CHECK_PTR_RET(array, NULL);
 	CHECK_RET(array_size(array) > 0, NULL);
@@ -630,9 +639,9 @@ void* array_itr_get(
 }
 
 /* clear the contents of the array */
-void array_clear(array_t * const array)
+void array_clear( array_t * const array )
 {
-	uint_t initial_capacity = 0;
+	int_t initial_capacity = 0;
 	delete_fn pfn = NULL;
 	CHECK_PTR(array);
 #ifdef UNIT_TESTING
@@ -718,15 +727,11 @@ static int array_sanity_check( array_t const * const array )
 void array_force_grow( array_t * const array )
 {
 	CHECK_PTR( array );
-#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
-#endif
 
 	ASSERT( array_sanity_check( array ) );
 	array_grow( array );
-#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
-#endif
 
 	ASSERT( array_sanity_check( array ) );
 }

@@ -415,7 +415,7 @@ static void test_array_pop_tail_static( void )
 			}
 		}
 	}
-#if 0
+	
 	CU_ASSERT_EQUAL( array_size( &arr ), (size * multiple) );
 	/* walk the array to make sure the values are what we expect */
 	itr = array_itr_begin( &arr );
@@ -423,7 +423,7 @@ static void test_array_pop_tail_static( void )
 	for ( ; itr != array_itr_end( &arr ); itr = array_itr_next( &arr, itr ) )
 	{
 		printf("%d\n", (int)array_itr_get( &arr, itr ) );
-		/*CU_ASSERT_EQUAL( (int)array_itr_get( &arr, itr ), i );*/
+		CU_ASSERT_EQUAL( (int)array_itr_get( &arr, itr ), i );
 		i++;
 	}
 
@@ -438,11 +438,10 @@ static void test_array_pop_tail_static( void )
 	for ( i = ((size * multiple) - 1); i >= 0; i-- )
 	{
 		j = (int)array_pop_tail( &arr );
-		/*CU_ASSERT_EQUAL( j, i );*/
+		CU_ASSERT_EQUAL( j, i );
 	}
 
 	CU_ASSERT_EQUAL( array_size( &arr ), 0 );
-#endif
 	array_deinitialize( &arr );
 }
 
@@ -470,10 +469,63 @@ static void test_array_clear( void )
 	array_deinitialize( &arr );
 }
 
+static void test_array_new_fail( void )
+{
+	int i;
+	uint32_t size;
+	array_t * arr = NULL;
+
+	/* turn on the flag that forces grows to fail */
+	array_set_fail_grow( TRUE );
+
+	size = (rand() % SIZEMAX);
+	arr = array_new( size, NULL );
+
+	CU_ASSERT_PTR_NULL( arr );
+	CU_ASSERT_EQUAL( array_size( arr ), 0 );
+	
+	array_set_fail_grow( FALSE );
+}
+
+static void test_array_init_fail( void )
+{
+	int i;
+	uint32_t size;
+	array_t arr;
+
+	/* turn on the flag that forces grows to fail */
+	array_set_fail_grow( TRUE );
+
+	MEMSET( &arr, 0, sizeof(array_t) );
+	size = (rand() % SIZEMAX);
+	array_initialize( &arr, size, NULL );
+
+	CU_ASSERT_EQUAL( array_size( &arr ), 0 );
+
+	array_set_fail_grow( FALSE );
+}
+
+static void test_array_push_fail( void )
+{
+	int ret;
+	array_t arr;
+	MEMSET(&arr, 0, sizeof(array_t));
+	array_initialize( &arr, 0, NULL );
+
+	/* turn on the flag that forces grows to fail */
+	array_set_fail_grow( TRUE );
+
+	ret = array_push_head( &arr, (void*)1 )
+	CU_ASSERT_EQUAL( ret, FALSE );
+	CU_ASSERT_EQUAL( array_size( &arr ), 0 );
+	
+	array_deinitialize( &arr );
+	
+	array_set_fail_grow( FALSE );
+}
 
 
 /*TODO:
- *	- non-empty array iterator test
  *	- middle itr push test
  *	- middle itr pop test
  *	- head get test
@@ -511,6 +563,9 @@ static CU_pSuite add_array_tests( CU_pSuite pSuite )
 	CHECK_PTR_RET( CU_add_test( pSuite, "pop head static", test_array_pop_head_static), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "pop tail static", test_array_pop_tail_static), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "array clear", test_array_clear), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "array new fail", test_array_new_fail), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "array init fail", test_array_init_fail), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "array push fail", test_array_push_fail), NULL );
 	return pSuite;
 }
 

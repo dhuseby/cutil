@@ -37,9 +37,9 @@ typedef struct array_node_s array_node_t;
 typedef struct array_s
 {
 	delete_fn		pfn;					/* destruction function for each node */
-	uint_t			num_nodes;				/* number of nodes in the list */
-	uint_t			buffer_size;			/* number of slots in the node array */
-	uint_t			initial_capacity;		/* the initial capacity value */
+	int_t			num_nodes;				/* number of nodes in the list */
+	int_t			buffer_size;			/* number of slots in the node array */
+	int_t			initial_capacity;		/* the initial capacity value */
 	int_t			data_head;				/* head node of the data circular list */
 	int_t			free_head;				/* head node of the free circular list */
 	array_node_t*	node_buffer;			/* buffer of nodes */
@@ -56,11 +56,11 @@ void array_unlock(array_t * const array);
 pthread_mutex_t * array_mutex(array_t * const array);
 #endif/*USE_THREADING*/
 
-void array_initialize( array_t * const array, uint_t initial_capacity, delete_fn dfn );
+int array_initialize( array_t * const array, int_t initial_capacity, delete_fn dfn );
 void array_deinitialize( array_t * const array );
 
 /* array new/delete functions */
-array_t * array_new( uint_t initial_capacity, delete_fn dfn );
+array_t * array_new( int_t initial_capacity, delete_fn dfn );
 void array_delete( void * arr );
 
 /* gets the size of the array */
@@ -85,7 +85,7 @@ array_itr_t array_itr_rnext(
 #define array_itr_rprev(a,i) array_itr_next(a,i)
 
 /* O(1) functions for adding items to the array */
-void array_push(
+int array_push(
 	array_t * const array, 
 	void * const data, 
 	array_itr_t const itr);
