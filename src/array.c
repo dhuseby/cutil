@@ -26,14 +26,21 @@
 
 #define DEFAULT_INITIAL_CAPACITY (16)
 
+#ifdef UNIT_TESTING
+static int fail_grow = FALSE;
+#endif
+
 /* node used in queue structure */
 struct array_node_s
 {
-	struct array_node_s *	next;					/* next link */
-	struct array_node_s *	prev;					/* prev link */
-	void *					data;					/* pointer to the data */
-	uint_t				dummy;
+	int_t	next;	/* next node in the list */
+	int_t	prev;	/* prev node in the list */
+	void *	data;	/* pointer to the data */
+	uint_t	dummy;
 };
+
+#define NODE_AT( a, i ) (&(a->node_buffer[i]))
+#define INDEX_OF( a, n ) (int_t)((uint_t)n - (uint_t)a->node_buffer) / sizeof(array_node_t);
 
 /* index constants */
 array_itr_t const array_itr_end_t = -1;
@@ -131,7 +138,9 @@ void array_initialize( array_t * const array,
 		}
 	}
 
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 
 #ifdef USE_THREADING
 	/* initialize the mutex */
@@ -170,26 +179,27 @@ void array_deinitialize(array_t * const array)
 	array_node_t* pstart = NULL;
 	array_node_t* node = NULL;
 	CHECK_PTR(array);
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 
 	/* iterate over the list calling the destructor for each node */
 	if( (array->pfn != NULL) && (array_size( array ) > 0) )
 	{
-		node = pstart = &(array->node_buffer[array->data_head]);
+		node = pstart = NODE_AT(array, array->data_head);
 		do
 		{
 			/* if there is data, free it */
 			if((node != NULL) && (node->data != NULL))
 			{
 				/* free up the data */
-				WARN("FREE 0x%08x\n", (uint_t)node->data);
 				(*(array->pfn))(node->data);
 
 				node->data = NULL;
 			}
 
 			/* move to the next node in the list */
-			node = node->next;
+			node = NODE_AT( array, node->next);
 
 		} while( node != pstart );
 	}
@@ -197,8 +207,6 @@ void array_deinitialize(array_t * const array)
 	/* free up the node buffer */
 	if ( array->node_buffer != NULL )
 	{
-		WARN("FREE %d bytes at 0x%08x\n", (array->buffer_size * sizeof(array_node_t)), (uint_t)array->node_buffer);
-		fflush(stderr);
 		FREE( array->node_buffer );
 	}
 	array->node_buffer = NULL;
@@ -220,15 +228,9 @@ void array_deinitialize(array_t * const array)
 	array->num_nodes = 0;
 	array->buffer_size = 0;
 	
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
-}
-
-void array_force_grow( array_t * const array )
-{
-	CHECK_PTR( array );
-	ASSERT( array_sanity_check( array ) );
-	array_grow( array );
-	ASSERT( array_sanity_check( array ) );
+#endif
 }
 
 
@@ -265,7 +267,13 @@ static int array_grow(array_t * const array)
 	uint_t old_size = 0;
 	uint_t new_size = 0;
 	array_node_t * new_buffer = NULL;
-	CHECK_PTR_RET(array, 0);
+	CHECK_PTR_RET( array, FALSE );
+
+#ifdef UNIT_TESTING
+	/* fail the grow if FAIL_GROW is true */
+	if ( fail_grow == TRUE )
+		return FALSE;
+#endif
 
 	/* get the old size */
 	old_size = array->buffer_size;
@@ -275,12 +283,10 @@ static int array_grow(array_t * const array)
 	{
 		new_size = ((array->initial_capacity > 0) ? array->initial_capacity : DEFAULT_INITIAL_CAPACITY);
 	}
-	/*
 	else if ( old_size >= 256 )
 	{
 		new_size = (old_size + 256);
 	}
-	*/
 	else
 	{
 		new_size = (old_size * 2);
@@ -295,34 +301,26 @@ static int array_grow(array_t * const array)
 	}
 
 	new_buffer = (array_node_t*)REALLOC( array->node_buffer, (new_size * sizeof(array_node_t)) );
-	WARN("REALLOC from %d at 0x%08x to %d at 0x%08x\n", (old_size * sizeof(array_node_t)), (uint_t)array->node_buffer, (new_size * sizeof(array_node_t)), (uint_t)new_buffer);
 	ASSERT( new_buffer != NULL );
-	WARN("MEMSET %d bytes at 0x%08x (0x%08x[%d])\n", ((new_size - old_size) * sizeof(array_node_t)), (uint_t)&(new_buffer[old_size]), new_buffer, old_size);
 	MEMSET( (void*)&(new_buffer[old_size]), 0, ((new_size - old_size) * sizeof(array_node_t)) );
 	array->node_buffer = new_buffer;
-
-	/*
-	new_buffer = (array_node_t*)CALLOC( new_size, sizeof(array_node_t) );
-	WARN("CALLOC %d bytes at 0x%08x\n", (new_size * sizeof(array_node_t)), (uint_t)new_buffer);
-	ASSERT( new_buffer != NULL );
-	if ( old_size > 0 )
-	{
-		WARN("MEMCPY %d from 0x%08x to 0x%08x\n", (old_size * sizeof(array_node_t)), (uint_t)array->node_buffer, (uint_t)new_buffer);
-		MEMCPY( (void*)new_buffer, array->node_buffer, (old_size * sizeof(array_node_t)) );
-	}
-
-	if ( array->node_buffer != NULL )
-	{
-		WARN("FREE %d bytes at 0x%08x\n", (old_size * sizeof(array_node_t)), (uint_t)array->node_buffer);
-		FREE( array->node_buffer );
-	}
-	array->node_buffer = new_buffer;
-	new_buffer = NULL;
-	*/
 	ASSERT( array->node_buffer != NULL );
 
 	/* store the new size */
 	array->buffer_size = new_size;
+
+	/* fix up the middle free nodes */
+	for(i = old_size; i < array->buffer_size; i++)
+	{
+		/* initialize the prev */
+		array->node_buffer[i].prev = (i - 1);
+
+		/* initialize the next */
+		array->node_buffer[i].next = (i + 1);
+
+		/* initialize the data pointer */
+		array->node_buffer[i].data = NULL;
+	}
 
 	if ( old_size == 0 )
 	{
@@ -332,41 +330,31 @@ static int array_grow(array_t * const array)
 	else
 	{
 		/* link the free_head with the head of the new block of ndoes */
-		array->node_buffer[array->free_head].next = &array->node_buffer[old_size];
+		array->node_buffer[array->free_head].next = old_size;
 	}
 
 	/* link the free_head node with the tail of the new block of nodes */
-	array->node_buffer[array->free_head].prev = &array->node_buffer[array->buffer_size - 1];
-	array->node_buffer[array->buffer_size - 1].next = &array->node_buffer[array->free_head];
-
-	/* fix up the middle free nodes */
-	for(i = old_size; i < array->buffer_size; i++)
-	{
-		/* initialize the prev pointer if needed */
-		if(array->node_buffer[i].prev == NULL)
-			array->node_buffer[i].prev = &array->node_buffer[i - 1];
-
-		/* initialize the next pointer if needed */
-		if(array->node_buffer[i].next == NULL)
-			array->node_buffer[i].next = &array->node_buffer[i + 1];
-
-		/* initialize the data pointer */
-		array->node_buffer[i].data = NULL;
-	}
+	array->node_buffer[array->free_head].prev = (array->buffer_size - 1);
+	array->node_buffer[array->buffer_size - 1].next = array->free_head;
 	
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 
 	return TRUE;
 }
 
 
-static array_node_t* array_get_free_node(array_t * const array)
+static array_itr_t array_get_free_node( array_t * const array )
 {
-	array_node_t* node = NULL;
-	array_node_t* new_free_head = NULL;
-	CHECK_PTR_RET(array, NULL);
+	array_itr_t prev = array_itr_end_t;
+	array_itr_t ret = array_itr_end_t;
+	array_itr_t next = array_itr_end_t;
+	CHECK_PTR_RET(array, array_itr_end_t);
 
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 
 	/* are we taking the last free node? better grow the buffer first */
 	if((array->num_nodes + 1) >= array->buffer_size)
@@ -374,57 +362,66 @@ static array_node_t* array_get_free_node(array_t * const array)
 		/* we need to grow the buffer */
 		if(!array_grow(array))
 		{
-			WARN("failed to grow the array!");
-			return NULL;
+			WARN("failed to grow the array!\n");
+			return array_itr_end_t;
 		}
 	}
 
-	/* remove the node at the head of the free list */
-	node = &array->node_buffer[array->free_head];
+	/* get the index of the node to return */
+	ret = array->free_head;
 
-	/* get the pointer to the new free head */
-	new_free_head = node->next;
+	/* get the index of the node previous to the free head in the list */
+	prev = NODE_AT(array, ret)->prev;
+
+	/* get the index of the node next after the free head in the list */
+	next = NODE_AT(array, ret)->next;
+
+	/* set the new free head to the next node in the free list */
+	array->free_head = next;
 
 	/* remove the old head */
-	node->prev->next = node->next;
-	node->next->prev = node->prev;
-	node->next = NULL;
-	node->prev = NULL;
+	NODE_AT(array, prev)->next = next;
+	NODE_AT(array, next)->prev = prev;
+	NODE_AT(array, ret)->next = array_itr_end_t;
+	NODE_AT(array, ret)->prev = array_itr_end_t;
 
-	/* calculate the new free head index */
-	array->free_head = (int_t)((uint_t)new_free_head - (uint_t)array->node_buffer) / sizeof(array_node_t);
-
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 
-	/* return the old free head */
-	return node;
+	/* return the node removed from the free list */
+	return ret;
 }
 
 
 static void array_put_free_node(
 	array_t * const array, 
-	array_node_t* const node)
+	array_itr_t const itr )
 {
-	array_node_t* old_free_head = NULL;
+	array_itr_t prev = array_itr_end_t;
 	CHECK_PTR(array);
-	
+	CHECK( itr != array_itr_end_t );
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 
 	/* clear the data pointer */
-	node->data = NULL;
+	NODE_AT( array, itr )->data = NULL;
 
-	/* get the old free head */
-	old_free_head = &array->node_buffer[array->free_head];
+	/* get the index of the node previous to the head */
+	prev = NODE_AT( array, array->free_head )->prev;
 
 	/* hook in the new head */
-	node->prev = old_free_head->prev;
-	node->prev->next = node;
-	node->next = old_free_head;
-	node->next->prev = node;
+	NODE_AT( array, itr)->prev = prev;
+	NODE_AT( array, prev )->next = itr;
+	NODE_AT( array, itr)->next = array->free_head;
+	NODE_AT( array, array->free_head )->prev = itr;
 
 	/* calculate the new free head index */
-	array->free_head = (int_t)((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t);
+	array->free_head = itr;
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 }
 
 /* get an iterator to the start of the array */
@@ -432,7 +429,9 @@ array_itr_t array_itr_begin(array_t const * const array)
 {
 	CHECK_PTR_RET(array, array_itr_end_t);
 	CHECK_RET(array_size(array) > 0, array_itr_end_t);
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 
 	return array->data_head;
 }
@@ -446,17 +445,14 @@ array_itr_t array_itr_end(array_t const * const array)
 /* get an iterator to the last item in the array */
 array_itr_t array_itr_tail(array_t const * const array)
 {
-	array_node_t* tail = NULL;
-	
 	CHECK_PTR_RET(array, array_itr_end_t);
 	CHECK_RET(array_size(array) > 0, array_itr_end_t);
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 	
-	/* get a pointer to the tail */
-	tail = array->node_buffer[array->data_head].prev;
-	
-	/* calculate return the iterator pointed to the tail item */
-	return (array_itr_t)(((uint_t)tail - (uint_t)array->node_buffer) / sizeof(array_node_t));
+	/* return the index of the tail */
+	return (array_itr_t)NODE_AT(array, array->data_head)->prev;
 }
 
 /* iterator based access to the array elements */
@@ -464,62 +460,30 @@ array_itr_t array_itr_next(
 	array_t const * const array, 
 	array_itr_t const itr)
 {
-	array_node_t* node = NULL;
-	
 	CHECK_PTR_RET(array, array_itr_end_t);
 	CHECK_RET(array_size(array) > 0, array_itr_end_t);
 	CHECK_RET(itr != array_itr_end_t, array_itr_end_t);
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 
-	/* get a pointer to the node the iterator points to */
-	node = array->node_buffer[itr].next;
-
-	/* check that we got a valid node pointer */
-	CHECK_RET(node != NULL, array_itr_end_t);
-
-	/* check to see if we've gone full circle */
-	if(node == &array->node_buffer[array->data_head])
-	{
-		/* yep so return -1 */
-		return array_itr_end_t;
-	}
-
-	/* return the index of the node */
-	return (array_itr_t)(((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t));
+	return ( NODE_AT(array, itr)->next == array->data_head ) ? 
+			array_itr_end_t :
+			NODE_AT(array, itr)->next;
 }
 
 array_itr_t array_itr_rnext(
 	array_t const * const array, 
 	array_itr_t const itr)
 {
-	array_node_t* node = NULL;
-	
 	CHECK_PTR_RET(array, array_itr_end_t);
 	CHECK_RET(array_size(array) > 0, array_itr_end_t);
 	CHECK_RET(itr != array_itr_end_t, array_itr_end_t);
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 
-	/* get a pointer to the node the iterator points to */
-	node = &(array->node_buffer[itr]);
-
-	/* check that we got a valid node pointer */
-	CHECK_RET(node != NULL, array_itr_end_t);
-
-	/* check to see if we've gone full circle */
-	if(node == &array->node_buffer[array->data_head])
-	{
-		/* yep so return -1 */
-		return array_itr_end_t;
-	}
-
-	/* now get the previous node pointer */
-	node = array->node_buffer[itr].prev;
-
-	/* check that we got a valid node pointer */
-	CHECK_RET(node != NULL, array_itr_end_t);
-
-	/* return the index of the node */
-	return (array_itr_t)(((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t));
+	return ( itr == array->data_head ) ? array_itr_end_t : NODE_AT(array, itr)->prev;
 }
 
 /* 
@@ -534,7 +498,7 @@ void array_push(
 	void * const data, 
 	array_itr_t const itr)
 {
-	array_node_t * node = NULL;
+	array_itr_t free_itr = array_itr_end_t;
 
 	/* we insert before the iterator, and the data nodes form a circular
 	 * list, so if they are inserting at the tail, then we want to insert
@@ -542,39 +506,43 @@ void array_push(
 	array_itr_t const i = ((itr == array_itr_end(array)) ? array->data_head : itr);
 
 	CHECK_PTR(array);
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 	
-	/* a node from the free list */
-	node = array_get_free_node(array);
-	ASSERT(node != NULL);
+	/* a the index of a node from the free list */
+	free_itr = array_get_free_node(array);
+	ASSERT(free_itr != array_itr_end_t);
 	
 	/* store the data pointer */
-	node->data = data;
+	NODE_AT( array, free_itr )->data = data;
 	
 	/* hook the new node into the list where the iterator specifies */	
 	if(array_size(array) > 0)
 	{
-		node->prev = array->node_buffer[i].prev;
-		node->prev->next = node;
-		node->next = &array->node_buffer[i];
-		node->next->prev = node;
+		NODE_AT( array, free_itr )->prev = NODE_AT( array, i )->prev;
+		NODE_AT(array, NODE_AT(array, free_itr)->prev)->next = free_itr;
+		NODE_AT(array, free_itr)->next = i;
+		NODE_AT(array, i)->prev = free_itr;
 	}
 	else
 	{
-		node->prev = node;
-		node->next = node;
+		NODE_AT(array, free_itr)->prev = free_itr;
+		NODE_AT(array, free_itr)->next = free_itr;
 	}
 
 	/* we only have to update the data_head index if they were pushing the 
 	 * new node at the beginning of the array */
 	if ( itr == array->data_head )
 	{
-		array->data_head = (int_t)((uint_t)node - (uint_t)array->node_buffer) / sizeof(array_node_t);
+		array->data_head = free_itr;
 	}
 
 	/* we added an item to the list */
 	array->num_nodes++;
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 }
 
 
@@ -584,35 +552,41 @@ void * array_pop(
 	array_itr_t const itr)
 {
 	void * ret = NULL;
-	array_node_t * new_head = NULL;
-	array_node_t * node = NULL;
+	array_itr_t new_head = array_itr_end_t;
+	array_itr_t prev = array_itr_end_t;
+	array_itr_t next = array_itr_end_t;
 
 	/* if the itr is at the end, then the node we're removing is the node
 	 * before the data_head node in the circular list */
 	array_itr_t const i = ((itr == array_itr_end(array)) ? array_itr_tail(array) : itr);
 	CHECK_PTR_RET(array, NULL);
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 	CHECK_RET(array_size(array) > 0, NULL);
-	
-	/* get a pointer to the node */
-	node = &array->node_buffer[i];
 	
 	/* if we're removing the node at the start of the list, then get a pointer
 	 * to the node that will be the new first node */
 	if(i == (array_itr_t)array->data_head)
-		new_head = node->next;
+		new_head = NODE_AT( array, array->data_head )->next;
+
+	/* get the index of the node previous to i */
+	prev = NODE_AT( array, i )->prev;
+
+	/* get the index of the node after i */
+	next = NODE_AT( array, i )->next;
 
 	/* unhook the node from the list */
-	node->prev->next = node->next;
-	node->next->prev = node->prev;
-	node->prev = NULL;
-	node->next = NULL;
+	NODE_AT( array, prev )->next = NODE_AT( array, i )->next;
+	NODE_AT( array, next )->prev = NODE_AT( array, i )->prev;
+	NODE_AT( array, i )->prev = array_itr_end_t;
+	NODE_AT( array, i )->next = array_itr_end_t;
 
 	/* get the pointer to return */
-	ret = node->data;
+	ret = NODE_AT( array, i )->data;
 
 	/* put the node back on the free list */
-	array_put_free_node(array, node);
+	array_put_free_node(array, i);
 
 	/* we removed an item from the list */
 	array->num_nodes--;
@@ -629,11 +603,13 @@ void * array_pop(
 	else
 	{
 		/* calculate the new data head index */
-		ASSERT( new_head != NULL );
-		array->data_head = (int_t)((uint_t)new_head - (uint_t)array->node_buffer) / sizeof(array_node_t);
+		ASSERT( new_head != array_itr_end_t );
+		array->data_head = new_head;
 	}
 	
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 	return ret;
 }
 
@@ -645,7 +621,9 @@ void* array_itr_get(
 	CHECK_PTR_RET(array, NULL);
 	CHECK_RET(array_size(array) > 0, NULL);
 	CHECK_RET(itr != array_itr_end(array), NULL);
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 
 	/* return the pointer to the head's data */
 	return array->node_buffer[itr].data;
@@ -657,7 +635,9 @@ void array_clear(array_t * const array)
 	uint_t initial_capacity = 0;
 	delete_fn pfn = NULL;
 	CHECK_PTR(array);
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 	
 	/* store the existing params */
 	pfn = array->pfn;
@@ -666,7 +646,9 @@ void array_clear(array_t * const array)
 	/* de-init the array and clean up all the memory except for
 	 * the array struct itself */
 	array_deinitialize( array );
+#ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
+#endif
 	
 	/* clear out the array struct */
 	memset(array, 0, sizeof(array_t));
@@ -675,6 +657,7 @@ void array_clear(array_t * const array)
 	array_initialize( array, initial_capacity, pfn );
 }
 
+#ifdef UNIT_TESTING
 static int array_sanity_check( array_t const * const array )
 {
 	array_node_t * pstart = NULL;
@@ -698,17 +681,16 @@ static int array_sanity_check( array_t const * const array )
 		/* check the free list if we have one */
 		if ( array->free_head >= 0 )
 		{
-			pstart = &(array->node_buffer[array->free_head]);
-			p = pstart;
+			p = pstart = NODE_AT( array, array->free_head );
 			do {
-				/* make sure the next pointer points to a node in the buffer */
-				ASSERT( (void*)p->next >= (void*)array->node_buffer );
-				ASSERT( (void*)p->next <= (void*)(array->node_buffer + array->buffer_size) );
-				/* make sure the prev pointer points to a node in the buffer */
-				ASSERT( (void*)p->prev >= (void*)array->node_buffer );
-				ASSERT( (void*)p->prev <= (void*)(array->node_buffer + array->buffer_size) );
+				/* make sure next is in (0, buffer_size]  */
+				ASSERT( p->next >= 0 );
+				ASSERT( p->next < (int_t)array->buffer_size );
+				/* make sure prev is in (0, buffer_size] */
+				ASSERT( p->prev >= 0 );
+				ASSERT( p->prev < (int_t)array->buffer_size );
 				ASSERT( p->data == NULL );
-				p = p->next;
+				p = NODE_AT( array, p->next );
 
 			} while ( p != pstart );
 		}
@@ -716,16 +698,15 @@ static int array_sanity_check( array_t const * const array )
 		/* check the data list if we have one */
 		if ( array->data_head >= 0 )
 		{
-			pstart = &(array->node_buffer[array->free_head]);
-			p = pstart;
+			p = pstart = NODE_AT( array, array->free_head );
 			do {
-				/* make sure the next pointer points to a node in the buffer */
-				ASSERT( (void*)p->next >= (void*)array->node_buffer );
-				ASSERT( (void*)p->next <= (void*)(array->node_buffer + array->buffer_size) );
-				/* make sure the prev pointer points to a node in the buffer */
-				ASSERT( (void*)p->prev >= (void*)array->node_buffer );
-				ASSERT( (void*)p->prev <= (void*)(array->node_buffer + array->buffer_size) );
-				p = p->next;
+				/* make sure next is in (0, buffer_size] */
+				ASSERT( p->next >= 0 );
+				ASSERT( p->next < (int_t)array->buffer_size );
+				/* make sure prev is in (0, buffer_size] */
+				ASSERT( p->prev >= 0 );
+				ASSERT( p->prev <= array->buffer_size );
+				p = NODE_AT( array, p->next );
 
 			} while ( p != pstart );
 		}
@@ -734,3 +715,25 @@ static int array_sanity_check( array_t const * const array )
 	return TRUE;
 }
 
+void array_force_grow( array_t * const array )
+{
+	CHECK_PTR( array );
+#ifdef UNIT_TESTING
+	ASSERT( array_sanity_check( array ) );
+#endif
+
+	ASSERT( array_sanity_check( array ) );
+	array_grow( array );
+#ifdef UNIT_TESTING
+	ASSERT( array_sanity_check( array ) );
+#endif
+
+	ASSERT( array_sanity_check( array ) );
+}
+
+void array_set_fail_grow( int fail )
+{
+	fail_grow = fail;
+}
+
+#endif

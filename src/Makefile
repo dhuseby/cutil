@@ -16,8 +16,9 @@ GCDA=$(SRC:.c=.gcda)
 GCNO=$(SRC:.c=.gcno)
 GCOV=$(SRC:.c=.c.gcov)
 # set CFLAGS to something gcov can use
-coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+
-CFLAGS=-O0 -gstabs+
+CFLAGS=-O3
+coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -DUNIT_TESTING
+test: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING
 
 # install utility
 INSTALL=/usr/bin/install

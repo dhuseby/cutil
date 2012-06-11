@@ -8,5 +8,4 @@ test/test_all
 .*.swp
 *.gcno
 *.gcda
-coverage/*
 src/cutil.info

@@ -307,29 +307,17 @@ static void test_array_push_dynamic( void )
 		MEMSET( &arr, 0, sizeof(array_t) );
 		size = (rand() % SIZEMAX);
 		multiple = (rand() % MULTIPLE);
-		/*printf( "%d * %d = %d\n", size, multiple, size * multiple );*/
 		array_initialize( &arr, size, FREE );
-		t = (void**)CALLOC( (size * multiple), sizeof(void*));
 
 		for ( j = 0; j < (size * multiple); j++ )
 		{
 			p = CALLOC( (rand() % SIZEMAX) + 1, sizeof(uint8_t) );
-			WARN("CALLOC 0x%08x\n", (uint_t)p);
 			array_push_tail( &arr, p );
 			CU_ASSERT_EQUAL( array_size( &arr ), (j + 1) );
-			t[j] = p;
 		}
 
 		CU_ASSERT_EQUAL( array_size( &arr ), (size * multiple) );
 		CU_ASSERT_EQUAL( arr.pfn, FREE );
-
-		itr = array_itr_begin( &arr );
-		j = 0;
-		for ( ; itr != array_itr_end( &arr ); itr = array_itr_next( &arr, itr ) )
-		{
-			WARN("%d: 0x%08x == 0x%08x\n", j, (uint_t)t[j], (uint_t)array_itr_get( &arr, itr ));
-			j++;
-		}
 
 		array_deinitialize( &arr );
 	}

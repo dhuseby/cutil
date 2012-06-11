@@ -1,0 +1,1224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - cutil test coverage - cutil/src/btree.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">cutil/src</a> - btree.c<span style="font-size: 80%;"> (source / <a href="btree.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">cutil test coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">372</td>
+            <td class="headerCovTableEntry">410</td>
+            <td class="headerCovTableEntryHi">90.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-06-11</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">28</td>
+            <td class="headerCovTableEntry">32</td>
+            <td class="headerCovTableEntryMed">87.5 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">195</td>
+            <td class="headerCovTableEntry">300</td>
+            <td class="headerCovTableEntryLo">65.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /*</a>
+<span class="lineNum">       2 </span>                :            :  * This program is free software; you can redistribute it and/or
+<span class="lineNum">       3 </span>                :            :  * modify it under the terms of the GNU Lesser General Public
+<span class="lineNum">       4 </span>                :            :  * License as published by the Free Software Foundation; either
+<span class="lineNum">       5 </span>                :            :  * version 2.1 of the License, or (at your option) any later version.
+<span class="lineNum">       6 </span>                :            :  * 
+<span class="lineNum">       7 </span>                :            :  * This program is distributed in the hope that it will be useful,
+<span class="lineNum">       8 </span>                :            :  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+<span class="lineNum">       9 </span>                :            :  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+<span class="lineNum">      10 </span>                :            :  * Lesser General Public License for more details.
+<span class="lineNum">      11 </span>                :            :  * 
+<span class="lineNum">      12 </span>                :            :  * You should have received a copy of the GNU Lesser General Public
+<span class="lineNum">      13 </span>                :            :  * License along with main.c; if not, write to the Free Software
+<span class="lineNum">      14 </span>                :            :  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+<span class="lineNum">      15 </span>                :            :  */
+<span class="lineNum">      16 </span>                :            : 
+<span class="lineNum">      17 </span>                :            : #include &lt;stdio.h&gt;
+<span class="lineNum">      18 </span>                :            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      19 </span>                :            : #include &lt;stdint.h&gt;
+<span class="lineNum">      20 </span>                :            : #include &lt;string.h&gt;
+<span class="lineNum">      21 </span>                :            : #include &lt;assert.h&gt;
+<span class="lineNum">      22 </span>                :            : #include &lt;inttypes.h&gt;
+<span class="lineNum">      23 </span>                :            : #ifdef USE_THREADING
+<span class="lineNum">      24 </span>                :            : #include &lt;pthread.h&gt;
+<span class="lineNum">      25 </span>                :            : #endif
+<span class="lineNum">      26 </span>                :            : 
+<span class="lineNum">      27 </span>                :            : #include &quot;debug.h&quot;
+<span class="lineNum">      28 </span>                :            : #include &quot;macros.h&quot;
+<span class="lineNum">      29 </span>                :            : #include &quot;btree.h&quot;
+<span class="lineNum">      30 </span>                :            : 
+<span class="lineNum">      31 </span>                :            : #define DEFAULT_INITIAL_CAPACITY (16)
+<span class="lineNum">      32 </span>                :            : #define min(x, y) ((x &lt; y) ? x : y)
+<span class="lineNum">      33 </span>                :            : #define max(x, y) ((x &gt; y) ? x : y)
+<span class="lineNum">      34 </span>                :            : 
+<span class="lineNum">      35 </span>                :            : 
+<span class="lineNum">      36 </span>                :            : typedef struct node_s
+<span class="lineNum">      37 </span>                :            : {
+<span class="lineNum">      38 </span>                :            :     void * key;                 /* key */
+<span class="lineNum">      39 </span>                :            :     void * val;                 /* value */
+<span class="lineNum">      40 </span>                :            :     int32_t balance;            /* balance factor */
+<span class="lineNum">      41 </span>                :            :     struct node_s * parent;     /* parent pointer */
+<span class="lineNum">      42 </span>                :            :     struct node_s * left;       /* left child */
+<span class="lineNum">      43 </span>                :            :     struct node_s * right;      /* right child */
+<span class="lineNum">      44 </span>                :            :     struct node_s * next;       /* traversal threading pointer/free list pointer */
+<span class="lineNum">      45 </span>                :            :     struct node_s * prev;       /* traversal threading pointer */
+<span class="lineNum">      46 </span>                :            : } node_t;
+<span class="lineNum">      47 </span>                :            : 
+<span class="lineNum">      48 </span>                :            : /* the binary tree structure */
+<span class="lineNum">      49 </span>                :            : struct bt_s
+<span class="lineNum">      50 </span>                :            : {
+<span class="lineNum">      51 </span>                :            :     /* callbacks */
+<span class="lineNum">      52 </span>                :            :     bt_key_cmp_fn       kcfn;       /* key compare function */
+<span class="lineNum">      53 </span>                :            :     bt_delete_fn        kdfn;       /* key delete function */
+<span class="lineNum">      54 </span>                :            :     bt_delete_fn        vdfn;       /* value delete function */
+<span class="lineNum">      55 </span>                :            : 
+<span class="lineNum">      56 </span>                :            :     /* memory management */
+<span class="lineNum">      57 </span>                :            :     node_t**            node_list;  /* memory for the nodes */
+<span class="lineNum">      58 </span>                :            :     node_t*             free_list;  /* list of free nodes */
+<span class="lineNum">      59 </span>                :            :     uint_t              num_lists;  /* number of blocks allocated */
+<span class="lineNum">      60 </span>                :            :     uint_t              list_size;  /* equal to initial capacity, size blocks in node_list */
+<span class="lineNum">      61 </span>                :            : 
+<span class="lineNum">      62 </span>                :            :     /* binary tree */
+<span class="lineNum">      63 </span>                :            :     node_t*             tree;       /* pointer to btree root */
+<span class="lineNum">      64 </span>                :            :     uint_t              size;       /* number of nodes in the tree */
+<span class="lineNum">      65 </span>                :            : 
+<span class="lineNum">      66 </span>                :            : #ifdef USE_THREADING
+<span class="lineNum">      67 </span>                :            :     pthread_mutex_t     lock;       /* btree lock */
+<span class="lineNum">      68 </span>                :            : #endif
+<span class="lineNum">      69 </span>                :            : };
+<span class="lineNum">      70 </span>                :            : 
+<a name="71"><span class="lineNum">      71 </span>                :            : </a>
+<span class="lineNum">      72 </span>                :            : /* the default key compare function */
+<span class="lineNum">      73 </span>                :<span class="lineNoCov">          0 : static int default_key_cmp( void * l, void * r )</span>
+<span class="lineNum">      74 </span>                :            : {
+<span class="lineNum">      75 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ((uint_t)l &lt; (uint_t)r)</span>
+<span class="lineNum">      76 </span>                :<span class="lineNoCov">          0 :         return -1;</span>
+<span class="lineNum">      77 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     else if ((uint_t)l == (uint_t)r)</span>
+<span class="lineNum">      78 </span>                :<span class="lineNoCov">          0 :         return 0;</span>
+<span class="lineNum">      79 </span>                :<span class="lineNoCov">          0 :     return 1;</span>
+<span class="lineNum">      80 </span>                :            : }
+<span class="lineNum">      81 </span>                :            : 
+<span class="lineNum">      82 </span>                :            : 
+<span class="lineNum">      83 </span>                :            : #ifdef USE_THREADING
+<span class="lineNum">      84 </span>                :            : void bt_lock(bt_t * const btree)
+<span class="lineNum">      85 </span>                :            : {
+<span class="lineNum">      86 </span>                :            :     CHECK_PTR(btree);
+<span class="lineNum">      87 </span>                :            : 
+<span class="lineNum">      88 </span>                :            :     /* lock the mutex */
+<span class="lineNum">      89 </span>                :            :     pthread_mutex_lock(&amp;btree-&gt;lock);
+<span class="lineNum">      90 </span>                :            : }
+<span class="lineNum">      91 </span>                :            : 
+<span class="lineNum">      92 </span>                :            : 
+<span class="lineNum">      93 </span>                :            : int bt_try_lock(bt_t * const btree)
+<span class="lineNum">      94 </span>                :            : {
+<span class="lineNum">      95 </span>                :            :     CHECK_PTR_RET(btree, -1);
+<span class="lineNum">      96 </span>                :            : 
+<span class="lineNum">      97 </span>                :            :     /* try to lock the mutex */
+<span class="lineNum">      98 </span>                :            :     return pthread_mutex_trylock(&amp;btree-&gt;lock);
+<span class="lineNum">      99 </span>                :            : }
+<span class="lineNum">     100 </span>                :            : 
+<span class="lineNum">     101 </span>                :            : 
+<span class="lineNum">     102 </span>                :            : void bt_unlock(bt_t * const btree)
+<span class="lineNum">     103 </span>                :            : {
+<span class="lineNum">     104 </span>                :            :     CHECK_PTR(btree);
+<span class="lineNum">     105 </span>                :            : 
+<span class="lineNum">     106 </span>                :            :     /* lock the mutex */
+<span class="lineNum">     107 </span>                :            :     pthread_mutex_unlock(&amp;btree-&gt;lock);
+<span class="lineNum">     108 </span>                :            : }
+<span class="lineNum">     109 </span>                :            : 
+<span class="lineNum">     110 </span>                :            : 
+<span class="lineNum">     111 </span>                :            : pthread_mutex_t * bt_get_mutex(bt_t * const btree)
+<span class="lineNum">     112 </span>                :            : {
+<span class="lineNum">     113 </span>                :            :     CHECK_PTR_RET(btree, NULL);
+<span class="lineNum">     114 </span>                :            :     
+<span class="lineNum">     115 </span>                :            :     /* return the mutex pointer */
+<span class="lineNum">     116 </span>                :            :     return &amp;btree-&gt;lock; 
+<span class="lineNum">     117 </span>                :            : }
+<a name="118"><span class="lineNum">     118 </span>                :            : #endif</a>
+<span class="lineNum">     119 </span>                :            : 
+<span class="lineNum">     120 </span>                :<span class="lineCov">       1116 : static void bt_add_more_nodes( bt_t * const btree )</span>
+<span class="lineNum">     121 </span>                :            : {
+<span class="lineNum">     122 </span>                :<span class="lineCov">       1116 :     int_t i = 0;</span>
+<span class="lineNum">     123 </span>                :<span class="lineCov">       1116 :     int_t j = 0;</span>
+<span class="lineNum">     124 </span>                :<span class="lineCov">       1116 :     node_t **p = NULL;</span>
+<span class="lineNum">     125 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1116 times"> + </span>]:<span class="lineCov">       1116 :     CHECK_PTR( btree );</span>
+<span class="lineNum">     126 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1116 times"> + </span>]:<span class="lineCov">       1116 :     CHECK_MSG( (btree-&gt;free_list == NULL), &quot;adding more nodes when free list isn't empty\n&quot; );</span>
+<span class="lineNum">     127 </span>                :            : 
+<span class="lineNum">     128 </span>                :            :     /* update the number of lists */
+<span class="lineNum">     129 </span>                :<span class="lineCov">       1116 :     i = btree-&gt;num_lists;</span>
+<span class="lineNum">     130 </span>                :<span class="lineCov">       1116 :     (btree-&gt;num_lists)++;</span>
+<span class="lineNum">     131 </span>                :            : 
+<span class="lineNum">     132 </span>                :            :     /* resize the list of pointer */
+<span class="lineNum">     133 </span>                :<span class="lineCov">       1116 :     p = (node_t**)REALLOC(btree-&gt;node_list, btree-&gt;num_lists * sizeof(node_t*));</span>
+<span class="lineNum">     134 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1116 times"> + </span>]:<span class="lineCov">       1116 :     CHECK_PTR_MSG( p, &quot;realloc failed\n&quot; );</span>
+<span class="lineNum">     135 </span>                :            : 
+<span class="lineNum">     136 </span>                :            :     /* store the new buffer */
+<span class="lineNum">     137 </span>                :<span class="lineCov">       1116 :     btree-&gt;node_list = p;</span>
+<span class="lineNum">     138 </span>                :            : 
+<span class="lineNum">     139 </span>                :            :     /* allocate the new block of nodes */
+<span class="lineNum">     140 </span>                :<span class="lineCov">       1116 :     btree-&gt;node_list[i] = (node_t*)CALLOC(btree-&gt;list_size, sizeof(node_t));</span>
+<span class="lineNum">     141 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1116 times"> + </span>]:<span class="lineCov">       1116 :     CHECK_PTR_MSG( btree-&gt;node_list[i], &quot;block allocation failed\n&quot; );</span>
+<span class="lineNum">     142 </span>                :            : 
+<span class="lineNum">     143 </span>                :            :     /* link up the new nodes into a free list */
+<span class="lineNum">     144 </span>                :<span class="lineCov">       1116 :     btree-&gt;free_list = &amp;(btree-&gt;node_list[i][0]);</span>
+<span class="lineNum">     145 </span>        [<span class="branchCov" title="Branch 0 was taken 520043 times"> + </span><span class="branchCov" title="Branch 1 was taken 1116 times"> + </span>]:<span class="lineCov">     521159 :     for ( j = 0; j &lt; (btree-&gt;list_size - 1); ++j )</span>
+<span class="lineNum">     146 </span>                :            :     {
+<span class="lineNum">     147 </span>                :<span class="lineCov">     520043 :         btree-&gt;node_list[i][j].next = &amp;(btree-&gt;node_list[i][j+1]);</span>
+<span class="lineNum">     148 </span>                :            :     }
+<span class="lineNum">     149 </span>                :<span class="lineCov">       1116 :     btree-&gt;node_list[i][btree-&gt;list_size - 1].next = NULL;</span>
+<a name="150"><span class="lineNum">     150 </span>                :            : }</a>
+<span class="lineNum">     151 </span>                :            : 
+<span class="lineNum">     152 </span>                :<span class="lineCov">          1 : static void bt_put_node( node_t ** const nlist, node_t * const node )</span>
+<span class="lineNum">     153 </span>                :            : {
+<span class="lineNum">     154 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR( nlist );</span>
+<span class="lineNum">     155 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR( node );</span>
+<span class="lineNum">     156 </span>                :            : 
+<span class="lineNum">     157 </span>                :            :     /* put the node at the head of the list */
+<span class="lineNum">     158 </span>                :<span class="lineCov">          1 :     node-&gt;next = (*nlist);</span>
+<span class="lineNum">     159 </span>                :<span class="lineCov">          1 :     (*nlist) = node;</span>
+<a name="160"><span class="lineNum">     160 </span>                :            : }</a>
+<span class="lineNum">     161 </span>                :            : 
+<span class="lineNum">     162 </span>                :<span class="lineCov">        915 : static node_t * bt_get_node( node_t ** const nlist )</span>
+<span class="lineNum">     163 </span>                :            : {
+<span class="lineNum">     164 </span>                :            :     node_t * p;
+<span class="lineNum">     165 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">        915 :     CHECK_PTR_RET( nlist, NULL );</span>
+<span class="lineNum">     166 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">        915 :     CHECK_PTR_RET( *nlist, NULL );</span>
+<span class="lineNum">     167 </span>                :            : 
+<span class="lineNum">     168 </span>                :            :     /* take a node from the head of the list */
+<span class="lineNum">     169 </span>                :<span class="lineCov">        915 :     p = (*nlist);</span>
+<span class="lineNum">     170 </span>                :<span class="lineCov">        915 :     (*nlist) = p-&gt;next;</span>
+<span class="lineNum">     171 </span>                :<span class="lineCov">        915 :     p-&gt;next = NULL;</span>
+<span class="lineNum">     172 </span>                :<span class="lineCov">        915 :     return p;</span>
+<span class="lineNum">     173 </span>                :            : }
+<span class="lineNum">     174 </span>                :            : 
+<a name="175"><span class="lineNum">     175 </span>                :            : </a>
+<span class="lineNum">     176 </span>                :            : /* initializes abtree */
+<span class="lineNum">     177 </span>                :<span class="lineCov">       1026 : static void bt_initialize</span>
+<span class="lineNum">     178 </span>                :            : (
+<span class="lineNum">     179 </span>                :            :     bt_t * const btree, 
+<span class="lineNum">     180 </span>                :            :     uint_t initial_capacity, 
+<span class="lineNum">     181 </span>                :            :     bt_key_cmp_fn kcfn,
+<span class="lineNum">     182 </span>                :            :     bt_delete_fn vdfn,
+<span class="lineNum">     183 </span>                :            :     bt_delete_fn kdfn
+<span class="lineNum">     184 </span>                :            : )
+<span class="lineNum">     185 </span>                :            : {
+<span class="lineNum">     186 </span>                :<span class="lineCov">       1026 :     int_t i = 0;</span>
+<span class="lineNum">     187 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1026 times"> + </span>]:<span class="lineCov">       1026 :     CHECK_PTR(btree);</span>
+<span class="lineNum">     188 </span>                :            : 
+<span class="lineNum">     189 </span>                :            :     /* initialize the key compare function */
+<span class="lineNum">     190 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 1024 times"> + </span>]:<span class="lineCov">       1026 :     if(kcfn != NULL)</span>
+<span class="lineNum">     191 </span>                :<span class="lineCov">          2 :         btree-&gt;kcfn = kcfn;</span>
+<span class="lineNum">     192 </span>                :            :     else
+<span class="lineNum">     193 </span>                :<span class="lineCov">       1024 :         btree-&gt;kcfn = default_key_cmp;</span>
+<span class="lineNum">     194 </span>                :            : 
+<span class="lineNum">     195 </span>                :            :     /* initialize the key delete function */
+<span class="lineNum">     196 </span>                :<span class="lineCov">       1026 :     btree-&gt;kdfn = kdfn;</span>
+<span class="lineNum">     197 </span>                :            :     
+<span class="lineNum">     198 </span>                :            :     /* initialize the value delete function */
+<span class="lineNum">     199 </span>                :<span class="lineCov">       1026 :     btree-&gt;vdfn = vdfn;</span>
+<span class="lineNum">     200 </span>                :            : 
+<span class="lineNum">     201 </span>                :            :     /* initialize memory management */
+<span class="lineNum">     202 </span>                :<span class="lineCov">       1026 :     btree-&gt;num_lists = 0;</span>
+<span class="lineNum">     203 </span>        [<span class="branchCov" title="Branch 0 was taken 1024 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">       1026 :     btree-&gt;list_size = ( (initial_capacity &gt; 0) ? initial_capacity : DEFAULT_INITIAL_CAPACITY );</span>
+<span class="lineNum">     204 </span>                :<span class="lineCov">       1026 :     btree-&gt;node_list = NULL;</span>
+<span class="lineNum">     205 </span>                :<span class="lineCov">       1026 :     btree-&gt;free_list = NULL;</span>
+<span class="lineNum">     206 </span>                :            : 
+<span class="lineNum">     207 </span>                :            :     /* allocate the initial set of nodes */
+<span class="lineNum">     208 </span>                :<span class="lineCov">       1026 :     bt_add_more_nodes( btree );</span>
+<span class="lineNum">     209 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1026 times"> + </span>]:<span class="lineCov">       1026 :     CHECK_PTR_MSG( btree-&gt;free_list, &quot;failed to allocate more nodes\n&quot; );</span>
+<span class="lineNum">     210 </span>                :            : 
+<span class="lineNum">     211 </span>                :            :     /* set up the binary tree */
+<span class="lineNum">     212 </span>                :<span class="lineCov">       1026 :     btree-&gt;tree = NULL;</span>
+<span class="lineNum">     213 </span>                :<span class="lineCov">       1026 :     btree-&gt;size = 0;</span>
+<span class="lineNum">     214 </span>                :            : 
+<span class="lineNum">     215 </span>                :            : #ifdef USE_THREADING
+<span class="lineNum">     216 </span>                :            :     /* initialize the mutex */
+<span class="lineNum">     217 </span>                :            :     pthread_mutex_init(&amp;btree-&gt;lock, 0);
+<span class="lineNum">     218 </span>                :            : #endif
+<span class="lineNum">     219 </span>                :            : }
+<span class="lineNum">     220 </span>                :            : 
+<span class="lineNum">     221 </span>                :            : 
+<span class="lineNum">     222 </span>                :            : /* dynamically allocates and initializes a btree */
+<a name="223"><span class="lineNum">     223 </span>                :            : /* NOTE: If NULL is passed in for the bt_key_cmp_fn function, the default</a>
+<span class="lineNum">     224 </span>                :            :  * key compare function will be used */
+<span class="lineNum">     225 </span>                :<span class="lineCov">       1026 : bt_t* bt_new</span>
+<span class="lineNum">     226 </span>                :            : (
+<span class="lineNum">     227 </span>                :            :     uint_t initial_capacity, 
+<span class="lineNum">     228 </span>                :            :     bt_key_cmp_fn kcfn, 
+<span class="lineNum">     229 </span>                :            :     bt_delete_fn vdfn, 
+<span class="lineNum">     230 </span>                :            :     bt_delete_fn kdfn
+<span class="lineNum">     231 </span>                :            : )
+<span class="lineNum">     232 </span>                :            : {
+<span class="lineNum">     233 </span>                :<span class="lineCov">       1026 :     bt_t* btree = NULL;</span>
+<span class="lineNum">     234 </span>                :            : 
+<span class="lineNum">     235 </span>                :            :     /* allocate a btree struct */
+<span class="lineNum">     236 </span>                :<span class="lineCov">       1026 :     btree = (bt_t*)CALLOC(1, sizeof(bt_t));</span>
+<span class="lineNum">     237 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1026 times"> + </span>]:<span class="lineCov">       1026 :     CHECK_PTR_RET(btree, NULL);</span>
+<span class="lineNum">     238 </span>                :            : 
+<span class="lineNum">     239 </span>                :            :     /* initialize the btree */
+<span class="lineNum">     240 </span>                :<span class="lineCov">       1026 :     bt_initialize(btree, initial_capacity, kcfn, vdfn, kdfn);</span>
+<span class="lineNum">     241 </span>                :            : 
+<span class="lineNum">     242 </span>                :            :     /* return the new btree */
+<span class="lineNum">     243 </span>                :<span class="lineCov">       1026 :     return btree;</span>
+<span class="lineNum">     244 </span>                :            : }
+<span class="lineNum">     245 </span>                :            : 
+<a name="246"><span class="lineNum">     246 </span>                :            : </a>
+<span class="lineNum">     247 </span>                :            : /* deinitialize a btree. */
+<span class="lineNum">     248 </span>                :<span class="lineCov">       1026 : static void bt_deinitialize(bt_t * const btree)</span>
+<span class="lineNum">     249 </span>                :            : {
+<span class="lineNum">     250 </span>                :<span class="lineCov">       1026 :     int_t ret = 0;</span>
+<span class="lineNum">     251 </span>                :<span class="lineCov">       1026 :     int_t i = 0;</span>
+<span class="lineNum">     252 </span>                :<span class="lineCov">       1026 :     int_t j = 0;</span>
+<span class="lineNum">     253 </span>                :<span class="lineCov">       1026 :     node_t * p = NULL;</span>
+<span class="lineNum">     254 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1026 times"> + </span>]:<span class="lineCov">       2052 :     CHECK_PTR(btree);</span>
+<span class="lineNum">     255 </span>                :            : 
+<span class="lineNum">     256 </span>        [<span class="branchCov" title="Branch 0 was taken 1116 times"> + </span><span class="branchCov" title="Branch 1 was taken 1026 times"> + </span>]:<span class="lineCov">       2142 :     for ( i = 0; i &lt; btree-&gt;num_lists; ++i )</span>
+<span class="lineNum">     257 </span>                :            :     {
+<span class="lineNum">     258 </span>        [<span class="branchCov" title="Branch 0 was taken 521159 times"> + </span><span class="branchCov" title="Branch 1 was taken 1116 times"> + </span>]:<span class="lineCov">     522275 :         for ( j = 0; j &lt; btree-&gt;list_size; ++j )</span>
+<span class="lineNum">     259 </span>                :            :         {
+<span class="lineNum">     260 </span>                :<span class="lineCov">     521159 :             p = &amp;(btree-&gt;node_list[i][j]);</span>
+<span class="lineNum">     261 </span>                :            : 
+<span class="lineNum">     262 </span>[<span class="branchCov" title="Branch 0 was taken 520240 times"> + </span><span class="branchCov" title="Branch 1 was taken 919 times"> + </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 520240 times"> + </span>]:<span class="lineCov">     521159 :             if ( (btree-&gt;kdfn != NULL) &amp;&amp; (p-&gt;key != NULL) )</span>
+<span class="lineNum">     263 </span>                :<span class="lineNoCov">          0 :                 (*(btree-&gt;kdfn))(p-&gt;key);</span>
+<span class="lineNum">     264 </span>                :            : 
+<span class="lineNum">     265 </span>[<span class="branchCov" title="Branch 0 was taken 520240 times"> + </span><span class="branchCov" title="Branch 1 was taken 919 times"> + </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 520240 times"> + </span>]:<span class="lineCov">     521159 :             if ( (btree-&gt;vdfn != NULL) &amp;&amp; (p-&gt;val != NULL) )</span>
+<span class="lineNum">     266 </span>                :<span class="lineNoCov">          0 :                 (*(btree-&gt;vdfn))(p-&gt;val);</span>
+<span class="lineNum">     267 </span>                :            :         }
+<span class="lineNum">     268 </span>                :            : 
+<span class="lineNum">     269 </span>                :            :         /* free the node block */
+<span class="lineNum">     270 </span>                :<span class="lineCov">       1116 :         FREE( btree-&gt;node_list[i] );</span>
+<span class="lineNum">     271 </span>                :            :     }
+<span class="lineNum">     272 </span>                :            : 
+<span class="lineNum">     273 </span>                :            :     /* free the list of node block */
+<span class="lineNum">     274 </span>                :<span class="lineCov">       1026 :     FREE( btree-&gt;node_list );</span>
+<span class="lineNum">     275 </span>                :            : 
+<span class="lineNum">     276 </span>                :<span class="lineCov">       1026 :     btree-&gt;free_list = NULL;</span>
+<span class="lineNum">     277 </span>                :<span class="lineCov">       1026 :     btree-&gt;tree = NULL;</span>
+<span class="lineNum">     278 </span>                :<span class="lineCov">       1026 :     btree-&gt;size = 0;</span>
+<span class="lineNum">     279 </span>                :<span class="lineCov">       1026 :     btree-&gt;num_lists = 0;</span>
+<span class="lineNum">     280 </span>                :            : 
+<span class="lineNum">     281 </span>                :            : #ifdef USE_THREADING
+<span class="lineNum">     282 </span>                :            :     /* destroy the lock */
+<span class="lineNum">     283 </span>                :            :     ret = pthread_mutex_destroy(&amp;btree-&gt;lock);
+<span class="lineNum">     284 </span>                :            :     ASSERT(ret == 0);
+<span class="lineNum">     285 </span>                :            : #endif
+<span class="lineNum">     286 </span>                :            : }
+<span class="lineNum">     287 </span>                :            : 
+<a name="288"><span class="lineNum">     288 </span>                :            : </a>
+<span class="lineNum">     289 </span>                :            : /* deinitializes and frees a btree allocated with bt_new() */
+<span class="lineNum">     290 </span>                :<span class="lineCov">       1026 : void bt_delete(void * bt)</span>
+<span class="lineNum">     291 </span>                :            : {
+<span class="lineNum">     292 </span>                :<span class="lineCov">       1026 :     bt_t * btree = (bt_t*)bt;</span>
+<span class="lineNum">     293 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1026 times"> + </span>]:<span class="lineCov">       2052 :     CHECK_PTR(btree);</span>
+<span class="lineNum">     294 </span>                :            : 
+<span class="lineNum">     295 </span>                :            :     /* de-init the btree if needed */
+<span class="lineNum">     296 </span>                :<span class="lineCov">       1026 :     bt_deinitialize(btree);</span>
+<span class="lineNum">     297 </span>                :            : 
+<span class="lineNum">     298 </span>                :            :     /* free the btree */
+<span class="lineNum">     299 </span>                :<span class="lineCov">       1026 :     FREE((void*)btree);</span>
+<span class="lineNum">     300 </span>                :            : }
+<span class="lineNum">     301 </span>                :            : 
+<a name="302"><span class="lineNum">     302 </span>                :            : </a>
+<span class="lineNum">     303 </span>                :            : /* returns the number of key/value pairs stored in the btree */
+<span class="lineNum">     304 </span>                :<span class="lineNoCov">          0 : uint_t bt_size(bt_t * const btree)</span>
+<span class="lineNum">     305 </span>                :            : {
+<span class="lineNum">     306 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET(btree, 0);</span>
+<span class="lineNum">     307 </span>                :            : 
+<span class="lineNum">     308 </span>                :<span class="lineNoCov">          0 :     return btree-&gt;size;</span>
+<a name="309"><span class="lineNum">     309 </span>                :            : }</a>
+<span class="lineNum">     310 </span>                :            : 
+<span class="lineNum">     311 </span>                :<span class="lineCov">       2921 : static int bt_is_left_child( node_t * p, node_t * n )</span>
+<span class="lineNum">     312 </span>                :            : {
+<span class="lineNum">     313 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2921 times"> + </span>]:<span class="lineCov">       2921 :     CHECK_PTR_RET( p, FALSE );</span>
+<span class="lineNum">     314 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2921 times"> + </span>]:<span class="lineCov">       2921 :     CHECK_PTR_RET( n, FALSE );</span>
+<span class="lineNum">     315 </span>                :            :     
+<span class="lineNum">     316 </span>        [<span class="branchCov" title="Branch 0 was taken 1510 times"> + </span><span class="branchCov" title="Branch 1 was taken 1411 times"> + </span>]:<span class="lineCov">       2921 :     if ( p-&gt;left == n )</span>
+<span class="lineNum">     317 </span>                :<span class="lineCov">       1510 :         return TRUE;</span>
+<span class="lineNum">     318 </span>                :            :     
+<span class="lineNum">     319 </span>                :<span class="lineCov">       2921 :     return FALSE;</span>
+<a name="320"><span class="lineNum">     320 </span>                :            : }</a>
+<span class="lineNum">     321 </span>                :            : 
+<span class="lineNum">     322 </span>                :<span class="lineCov">        102 : static node_t * bt_rotate_left( node_t * const p )</span>
+<span class="lineNum">     323 </span>                :            : {
+<span class="lineNum">     324 </span>                :            :     /* if p's balance is ++ and n's balance is + we have this situation:
+<span class="lineNum">     325 </span>                :            :      *
+<span class="lineNum">     326 </span>                :            :      *       R
+<span class="lineNum">     327 </span>                :            :      *       |
+<span class="lineNum">     328 </span>                :            :      *       p++
+<span class="lineNum">     329 </span>                :            :      *      / \
+<span class="lineNum">     330 </span>                :            :      *     a   n+
+<span class="lineNum">     331 </span>                :            :      *        / \
+<span class="lineNum">     332 </span>                :            :      *       b   c
+<span class="lineNum">     333 </span>                :            :      *
+<span class="lineNum">     334 </span>                :            :      * where height(c) &gt; height(b). we rotate to the left to get this:
+<span class="lineNum">     335 </span>                :            :      *
+<span class="lineNum">     336 </span>                :            :      *       R
+<span class="lineNum">     337 </span>                :            :      *       |
+<span class="lineNum">     338 </span>                :            :      *       n
+<span class="lineNum">     339 </span>                :            :      *      / \
+<span class="lineNum">     340 </span>                :            :      *     p   c
+<span class="lineNum">     341 </span>                :            :      *    / \
+<span class="lineNum">     342 </span>                :            :      *   a   b
+<span class="lineNum">     343 </span>                :            :      *
+<span class="lineNum">     344 </span>                :            :      * after the rotation n and p will have balance 0.
+<span class="lineNum">     345 </span>                :            :      */
+<span class="lineNum">     346 </span>                :            :     int left;
+<span class="lineNum">     347 </span>                :<span class="lineCov">        102 :     node_t * R = p-&gt;parent;</span>
+<span class="lineNum">     348 </span>                :            :     node_t *n, *b;
+<span class="lineNum">     349 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 102 times"> + </span>]:<span class="lineCov">        102 :     CHECK_PTR_RET( p, p );</span>
+<span class="lineNum">     350 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 102 times"> + </span>]:<span class="lineCov">        102 :     CHECK_PTR_RET( p-&gt;right, p ); /* p must have a right sub-tree */</span>
+<span class="lineNum">     351 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 102 times"> + </span>]:<span class="lineCov">        102 :     CHECK_RET( (p-&gt;balance == 2), p );</span>
+<span class="lineNum">     352 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 102 times"> + </span>]:<span class="lineCov">        102 :     CHECK_RET( (p-&gt;right-&gt;balance == 1), p );</span>
+<span class="lineNum">     353 </span>                :            : 
+<span class="lineNum">     354 </span>                :            :     /* is p the left child of R? */
+<span class="lineNum">     355 </span>        [<span class="branchCov" title="Branch 0 was taken 100 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">        102 :     if ( R != NULL )</span>
+<span class="lineNum">     356 </span>                :<span class="lineCov">        100 :         left = bt_is_left_child( R, p );</span>
+<span class="lineNum">     357 </span>                :            : 
+<span class="lineNum">     358 </span>                :            :     /* initialize the pointers */
+<span class="lineNum">     359 </span>                :<span class="lineCov">        102 :     n = p-&gt;right;</span>
+<span class="lineNum">     360 </span>                :<span class="lineCov">        102 :     b = n-&gt;left;</span>
+<span class="lineNum">     361 </span>                :            : 
+<span class="lineNum">     362 </span>                :            :     /* move b to be p's right child */
+<span class="lineNum">     363 </span>                :<span class="lineCov">        102 :     p-&gt;right = b;</span>
+<span class="lineNum">     364 </span>        [<span class="branchCov" title="Branch 0 was taken 30 times"> + </span><span class="branchCov" title="Branch 1 was taken 72 times"> + </span>]:<span class="lineCov">        102 :     if ( b != NULL )</span>
+<span class="lineNum">     365 </span>                :<span class="lineCov">         30 :         b-&gt;parent = p;</span>
+<span class="lineNum">     366 </span>                :            : 
+<span class="lineNum">     367 </span>                :            :     /* move p to be n's left child */
+<span class="lineNum">     368 </span>                :<span class="lineCov">        102 :     n-&gt;left = p;</span>
+<span class="lineNum">     369 </span>                :<span class="lineCov">        102 :     p-&gt;parent = n;</span>
+<span class="lineNum">     370 </span>                :            : 
+<span class="lineNum">     371 </span>                :            :     /* if needed, make n a child of R */
+<span class="lineNum">     372 </span>        [<span class="branchCov" title="Branch 0 was taken 100 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">        102 :     if ( R != NULL )</span>
+<span class="lineNum">     373 </span>                :            :     {
+<span class="lineNum">     374 </span>        [<span class="branchCov" title="Branch 0 was taken 57 times"> + </span><span class="branchCov" title="Branch 1 was taken 43 times"> + </span>]:<span class="lineCov">        100 :         if ( left )</span>
+<span class="lineNum">     375 </span>                :<span class="lineCov">         57 :             R-&gt;left = n;</span>
+<span class="lineNum">     376 </span>                :            :         else
+<span class="lineNum">     377 </span>                :<span class="lineCov">         43 :             R-&gt;right = n;</span>
+<span class="lineNum">     378 </span>                :<span class="lineCov">        100 :         n-&gt;parent = R;</span>
+<span class="lineNum">     379 </span>                :            :     }
+<span class="lineNum">     380 </span>                :            :     else
+<span class="lineNum">     381 </span>                :<span class="lineCov">          2 :         n-&gt;parent = NULL;</span>
+<span class="lineNum">     382 </span>                :            : 
+<span class="lineNum">     383 </span>                :            :     /* update balance factors */
+<span class="lineNum">     384 </span>                :<span class="lineCov">        102 :     n-&gt;balance = 0;</span>
+<span class="lineNum">     385 </span>                :<span class="lineCov">        102 :     p-&gt;balance = 0;</span>
+<span class="lineNum">     386 </span>                :            : 
+<span class="lineNum">     387 </span>                :<span class="lineCov">        102 :     return n;</span>
+<a name="388"><span class="lineNum">     388 </span>                :            : }</a>
+<span class="lineNum">     389 </span>                :            : 
+<span class="lineNum">     390 </span>                :<span class="lineCov">        112 : static node_t * bt_rotate_right( node_t * const p )</span>
+<span class="lineNum">     391 </span>                :            : {
+<span class="lineNum">     392 </span>                :            :     /* if p's balance is -- and n's balance is - we have this situation:
+<span class="lineNum">     393 </span>                :            :      *
+<span class="lineNum">     394 </span>                :            :      *       R
+<span class="lineNum">     395 </span>                :            :      *       |
+<span class="lineNum">     396 </span>                :            :      *       p--
+<span class="lineNum">     397 </span>                :            :      *      / \
+<span class="lineNum">     398 </span>                :            :      *     n-  c
+<span class="lineNum">     399 </span>                :            :      *    / \
+<span class="lineNum">     400 </span>                :            :      *   a   b
+<span class="lineNum">     401 </span>                :            :      *
+<span class="lineNum">     402 </span>                :            :      * where height(a) &gt; height(b). we rotate to the right to get this:
+<span class="lineNum">     403 </span>                :            :      *
+<span class="lineNum">     404 </span>                :            :      *       R
+<span class="lineNum">     405 </span>                :            :      *       |
+<span class="lineNum">     406 </span>                :            :      *       n
+<span class="lineNum">     407 </span>                :            :      *      / \
+<span class="lineNum">     408 </span>                :            :      *     a   p
+<span class="lineNum">     409 </span>                :            :      *        / \
+<span class="lineNum">     410 </span>                :            :      *       b   c
+<span class="lineNum">     411 </span>                :            :      *
+<span class="lineNum">     412 </span>                :            :      * after the rotation n and p will have balance 0.
+<span class="lineNum">     413 </span>                :            :      */
+<span class="lineNum">     414 </span>                :            : 
+<span class="lineNum">     415 </span>                :            :     int left;
+<span class="lineNum">     416 </span>                :<span class="lineCov">        112 :     node_t * R = p-&gt;parent;</span>
+<span class="lineNum">     417 </span>                :            :     node_t *n, *b;
+<span class="lineNum">     418 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 112 times"> + </span>]:<span class="lineCov">        112 :     CHECK_PTR_RET( p, p );</span>
+<span class="lineNum">     419 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 112 times"> + </span>]:<span class="lineCov">        112 :     CHECK_PTR_RET( p-&gt;left, p ); /* p must have a left sub-tree */</span>
+<span class="lineNum">     420 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 112 times"> + </span>]:<span class="lineCov">        112 :     CHECK_RET( (p-&gt;balance == -2), p );</span>
+<span class="lineNum">     421 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 112 times"> + </span>]:<span class="lineCov">        112 :     CHECK_RET( (p-&gt;left-&gt;balance == -1), p );</span>
+<span class="lineNum">     422 </span>                :            : 
+<span class="lineNum">     423 </span>                :            :     /* is p the left child of R? */
+<span class="lineNum">     424 </span>        [<span class="branchCov" title="Branch 0 was taken 111 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        112 :     if ( R != NULL )</span>
+<span class="lineNum">     425 </span>                :<span class="lineCov">        111 :         left = bt_is_left_child( R, p );</span>
+<span class="lineNum">     426 </span>                :            : 
+<span class="lineNum">     427 </span>                :            :     /* initialize the pointers */
+<span class="lineNum">     428 </span>                :<span class="lineCov">        112 :     n = p-&gt;left;</span>
+<span class="lineNum">     429 </span>                :<span class="lineCov">        112 :     b = n-&gt;right;</span>
+<span class="lineNum">     430 </span>                :            : 
+<span class="lineNum">     431 </span>                :            :     /* move b to be p's left child */
+<span class="lineNum">     432 </span>                :<span class="lineCov">        112 :     p-&gt;left = b;</span>
+<span class="lineNum">     433 </span>        [<span class="branchCov" title="Branch 0 was taken 46 times"> + </span><span class="branchCov" title="Branch 1 was taken 66 times"> + </span>]:<span class="lineCov">        112 :     if ( b != NULL )</span>
+<span class="lineNum">     434 </span>                :<span class="lineCov">         46 :         b-&gt;parent = p;</span>
+<span class="lineNum">     435 </span>                :            : 
+<span class="lineNum">     436 </span>                :            :     /* move p to be n's right child */
+<span class="lineNum">     437 </span>                :<span class="lineCov">        112 :     n-&gt;right = p;</span>
+<span class="lineNum">     438 </span>                :<span class="lineCov">        112 :     p-&gt;parent = n;</span>
+<span class="lineNum">     439 </span>                :            : 
+<span class="lineNum">     440 </span>                :            :     /* if needed, make n a child of R */
+<span class="lineNum">     441 </span>        [<span class="branchCov" title="Branch 0 was taken 111 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        112 :     if ( R != NULL )</span>
+<span class="lineNum">     442 </span>                :            :     {
+<span class="lineNum">     443 </span>        [<span class="branchCov" title="Branch 0 was taken 66 times"> + </span><span class="branchCov" title="Branch 1 was taken 45 times"> + </span>]:<span class="lineCov">        111 :         if ( left )</span>
+<span class="lineNum">     444 </span>                :<span class="lineCov">         66 :             R-&gt;left = n;</span>
+<span class="lineNum">     445 </span>                :            :         else
+<span class="lineNum">     446 </span>                :<span class="lineCov">         45 :             R-&gt;right = n;</span>
+<span class="lineNum">     447 </span>                :<span class="lineCov">        111 :         n-&gt;parent = R;</span>
+<span class="lineNum">     448 </span>                :            :     }
+<span class="lineNum">     449 </span>                :            :     else
+<span class="lineNum">     450 </span>                :<span class="lineCov">          1 :         n-&gt;parent = NULL;</span>
+<span class="lineNum">     451 </span>                :            : 
+<span class="lineNum">     452 </span>                :            :     /* update balance factors */
+<span class="lineNum">     453 </span>                :<span class="lineCov">        112 :     n-&gt;balance = 0;</span>
+<span class="lineNum">     454 </span>                :<span class="lineCov">        112 :     p-&gt;balance = 0;</span>
+<span class="lineNum">     455 </span>                :            : 
+<span class="lineNum">     456 </span>                :<span class="lineCov">        112 :     return n;</span>
+<a name="457"><span class="lineNum">     457 </span>                :            : }</a>
+<span class="lineNum">     458 </span>                :            : 
+<span class="lineNum">     459 </span>                :<span class="lineCov">        111 : static node_t * bt_rotate_left_right( node_t * const p )</span>
+<span class="lineNum">     460 </span>                :            : {
+<span class="lineNum">     461 </span>                :            :     /* if p's balance is -- and n's balance is +, g's balance can be -, 0, or +,
+<span class="lineNum">     462 </span>                :            :      * and we have this situation:
+<span class="lineNum">     463 </span>                :            :      *
+<span class="lineNum">     464 </span>                :            :      *       R
+<span class="lineNum">     465 </span>                :            :      *       |
+<span class="lineNum">     466 </span>                :            :      *       p--
+<span class="lineNum">     467 </span>                :            :      *      / \
+<span class="lineNum">     468 </span>                :            :      *     n+  d
+<span class="lineNum">     469 </span>                :            :      *    / \
+<span class="lineNum">     470 </span>                :            :      *   a   g?
+<span class="lineNum">     471 </span>                :            :      *      / \
+<span class="lineNum">     472 </span>                :            :      *     b   c
+<span class="lineNum">     473 </span>                :            :      *
+<span class="lineNum">     474 </span>                :            :      * first we do a left rotation to get this:
+<span class="lineNum">     475 </span>                :            :      *
+<span class="lineNum">     476 </span>                :            :      *       R
+<span class="lineNum">     477 </span>                :            :      *       |
+<span class="lineNum">     478 </span>                :            :      *       p--
+<span class="lineNum">     479 </span>                :            :      *      / \
+<span class="lineNum">     480 </span>                :            :      *     g?  d
+<span class="lineNum">     481 </span>                :            :      *    / \
+<span class="lineNum">     482 </span>                :            :      *   n+  c
+<span class="lineNum">     483 </span>                :            :      *  / \
+<span class="lineNum">     484 </span>                :            :      * a   b
+<span class="lineNum">     485 </span>                :            :      *
+<span class="lineNum">     486 </span>                :            :      * then we do a right rotation to get this:
+<span class="lineNum">     487 </span>                :            :      *
+<span class="lineNum">     488 </span>                :            :      *       R
+<span class="lineNum">     489 </span>                :            :      *       |
+<span class="lineNum">     490 </span>                :            :      *       g
+<span class="lineNum">     491 </span>                :            :      *     /   \
+<span class="lineNum">     492 </span>                :            :      *    n     p
+<span class="lineNum">     493 </span>                :            :      *   / \   / \
+<span class="lineNum">     494 </span>                :            :      *  a   b c   d
+<span class="lineNum">     495 </span>                :            :      *
+<span class="lineNum">     496 </span>                :            :      *  and g will have a balance of 0 and the balance values for n and p depend
+<span class="lineNum">     497 </span>                :            :      *  on the starting balance of g.  the balance values follow the following
+<span class="lineNum">     498 </span>                :            :      *  table:
+<span class="lineNum">     499 </span>                :            :      *
+<span class="lineNum">     500 </span>                :            :      *  |  g  |  n  |  p  |
+<span class="lineNum">     501 </span>                :            :      *  +=====+=====+=====+
+<span class="lineNum">     502 </span>                :            :      *  |  0  |  0  |  0  |
+<span class="lineNum">     503 </span>                :            :      *  |  -  |  0  |  +  |
+<span class="lineNum">     504 </span>                :            :      *  |  +  |  -  |  0  |
+<span class="lineNum">     505 </span>                :            :      */
+<span class="lineNum">     506 </span>                :            :     int left;
+<span class="lineNum">     507 </span>                :<span class="lineCov">        111 :     node_t * R = p-&gt;parent;</span>
+<span class="lineNum">     508 </span>                :            :     node_t *g, *n, *b, *c;
+<span class="lineNum">     509 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 111 times"> + </span>]:<span class="lineCov">        111 :     CHECK_PTR_RET( p, p );</span>
+<span class="lineNum">     510 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 111 times"> + </span>]:<span class="lineCov">        111 :     CHECK_PTR_RET( p-&gt;left, p ); /* p must have a left sub-tree */</span>
+<span class="lineNum">     511 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 111 times"> + </span>]:<span class="lineCov">        111 :     CHECK_PTR_RET( p-&gt;left-&gt;right, p ); /* p must also have a left-right sub-tree */</span>
+<span class="lineNum">     512 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 111 times"> + </span>]:<span class="lineCov">        111 :     CHECK_RET( (p-&gt;balance == -2), p );</span>
+<span class="lineNum">     513 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 111 times"> + </span>]:<span class="lineCov">        111 :     CHECK_RET( (p-&gt;left-&gt;balance == 1), p );</span>
+<span class="lineNum">     514 </span>                :            : 
+<span class="lineNum">     515 </span>                :            :     /* is p the left child of R? */
+<span class="lineNum">     516 </span>        [<span class="branchCov" title="Branch 0 was taken 110 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        111 :     if ( R != NULL )</span>
+<span class="lineNum">     517 </span>                :<span class="lineCov">        110 :         left = bt_is_left_child( R, p );</span>
+<span class="lineNum">     518 </span>                :            : 
+<span class="lineNum">     519 </span>                :            :     /* initialize the pointers */
+<span class="lineNum">     520 </span>                :<span class="lineCov">        111 :     n = p-&gt;left;</span>
+<span class="lineNum">     521 </span>                :<span class="lineCov">        111 :     g = n-&gt;right;</span>
+<span class="lineNum">     522 </span>                :<span class="lineCov">        111 :     b = g-&gt;left;</span>
+<span class="lineNum">     523 </span>                :<span class="lineCov">        111 :     c = g-&gt;right;</span>
+<span class="lineNum">     524 </span>                :            : 
+<span class="lineNum">     525 </span>                :            :     /* move b to be n's right child */
+<span class="lineNum">     526 </span>                :<span class="lineCov">        111 :     n-&gt;right = b;</span>
+<span class="lineNum">     527 </span>        [<span class="branchCov" title="Branch 0 was taken 30 times"> + </span><span class="branchCov" title="Branch 1 was taken 81 times"> + </span>]:<span class="lineCov">        111 :     if ( b != NULL )</span>
+<span class="lineNum">     528 </span>                :<span class="lineCov">         30 :         b-&gt;parent = n;</span>
+<span class="lineNum">     529 </span>                :            : 
+<span class="lineNum">     530 </span>                :            :     /* move c to be p's left child */
+<span class="lineNum">     531 </span>                :<span class="lineCov">        111 :     p-&gt;left = c;</span>
+<span class="lineNum">     532 </span>        [<span class="branchCov" title="Branch 0 was taken 28 times"> + </span><span class="branchCov" title="Branch 1 was taken 83 times"> + </span>]:<span class="lineCov">        111 :     if ( c != NULL )</span>
+<span class="lineNum">     533 </span>                :<span class="lineCov">         28 :         c-&gt;parent = p;</span>
+<span class="lineNum">     534 </span>                :            : 
+<span class="lineNum">     535 </span>                :            :     /* move n to be g's left child */
+<span class="lineNum">     536 </span>                :<span class="lineCov">        111 :     g-&gt;left = n;</span>
+<span class="lineNum">     537 </span>                :<span class="lineCov">        111 :     n-&gt;parent = g;</span>
+<span class="lineNum">     538 </span>                :            : 
+<span class="lineNum">     539 </span>                :            :     /* move p to be g's right child */
+<span class="lineNum">     540 </span>                :<span class="lineCov">        111 :     g-&gt;right = p;</span>
+<span class="lineNum">     541 </span>                :<span class="lineCov">        111 :     p-&gt;parent = g;</span>
+<span class="lineNum">     542 </span>                :            : 
+<span class="lineNum">     543 </span>                :            :     /* if needed, make g a child of R */
+<span class="lineNum">     544 </span>        [<span class="branchCov" title="Branch 0 was taken 110 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        111 :     if ( R != NULL )</span>
+<span class="lineNum">     545 </span>                :            :     {
+<span class="lineNum">     546 </span>        [<span class="branchCov" title="Branch 0 was taken 62 times"> + </span><span class="branchCov" title="Branch 1 was taken 48 times"> + </span>]:<span class="lineCov">        110 :         if ( left )</span>
+<span class="lineNum">     547 </span>                :<span class="lineCov">         62 :             R-&gt;left = g;</span>
+<span class="lineNum">     548 </span>                :            :         else
+<span class="lineNum">     549 </span>                :<span class="lineCov">         48 :             R-&gt;right = g;</span>
+<span class="lineNum">     550 </span>                :<span class="lineCov">        110 :         g-&gt;parent = R;</span>
+<span class="lineNum">     551 </span>                :            :     }
+<span class="lineNum">     552 </span>                :            :     else
+<span class="lineNum">     553 </span>                :<span class="lineCov">          1 :         g-&gt;parent = NULL;</span>
+<span class="lineNum">     554 </span>                :            : 
+<span class="lineNum">     555 </span>                :            :     /* update balance factors */
+<span class="lineNum">     556 </span>        [<span class="branchCov" title="Branch 0 was taken 71 times"> + </span><span class="branchCov" title="Branch 1 was taken 40 times"> + </span>]:<span class="lineCov">        111 :     if ( g-&gt;balance == 0 )</span>
+<span class="lineNum">     557 </span>                :<span class="lineCov">         71 :         n-&gt;balance = p-&gt;balance = 0;</span>
+<span class="lineNum">     558 </span>        [<span class="branchCov" title="Branch 0 was taken 17 times"> + </span><span class="branchCov" title="Branch 1 was taken 23 times"> + </span>]:<span class="lineCov">         40 :     else if ( g-&gt;balance == -1 )</span>
+<span class="lineNum">     559 </span>                :            :     {
+<span class="lineNum">     560 </span>                :<span class="lineCov">         17 :         n-&gt;balance = 0;</span>
+<span class="lineNum">     561 </span>                :<span class="lineCov">         17 :         p-&gt;balance = 1;</span>
+<span class="lineNum">     562 </span>                :            :     }
+<span class="lineNum">     563 </span>                :            :     else /* g-&gt;balance == 1 */
+<span class="lineNum">     564 </span>                :            :     {
+<span class="lineNum">     565 </span>                :<span class="lineCov">         23 :         n-&gt;balance = -1;</span>
+<span class="lineNum">     566 </span>                :<span class="lineCov">         23 :         p-&gt;balance = 0;</span>
+<span class="lineNum">     567 </span>                :            :     }
+<span class="lineNum">     568 </span>                :<span class="lineCov">        111 :     g-&gt;balance = 0;</span>
+<span class="lineNum">     569 </span>                :            : 
+<span class="lineNum">     570 </span>                :<span class="lineCov">        111 :     return g;</span>
+<a name="571"><span class="lineNum">     571 </span>                :            : }</a>
+<span class="lineNum">     572 </span>                :            : 
+<span class="lineNum">     573 </span>                :<span class="lineCov">         95 : static node_t * bt_rotate_right_left( node_t * const p )</span>
+<span class="lineNum">     574 </span>                :            : {
+<span class="lineNum">     575 </span>                :            :     /* if p's balance is ++ and n's balance is -, g's balance can be -, 0, or +,
+<span class="lineNum">     576 </span>                :            :      * and we have this situation:
+<span class="lineNum">     577 </span>                :            :      *
+<span class="lineNum">     578 </span>                :            :      *       R
+<span class="lineNum">     579 </span>                :            :      *       |
+<span class="lineNum">     580 </span>                :            :      *       p++
+<span class="lineNum">     581 </span>                :            :      *      / \
+<span class="lineNum">     582 </span>                :            :      *     a   n-
+<span class="lineNum">     583 </span>                :            :      *        / \
+<span class="lineNum">     584 </span>                :            :      *       g?  d
+<span class="lineNum">     585 </span>                :            :      *      / \
+<span class="lineNum">     586 </span>                :            :      *     b   c
+<span class="lineNum">     587 </span>                :            :      *
+<span class="lineNum">     588 </span>                :            :      * first we do a right rotation to get this:
+<span class="lineNum">     589 </span>                :            :      *
+<span class="lineNum">     590 </span>                :            :      *       R
+<span class="lineNum">     591 </span>                :            :      *       |
+<span class="lineNum">     592 </span>                :            :      *       p--
+<span class="lineNum">     593 </span>                :            :      *      / \
+<span class="lineNum">     594 </span>                :            :      *     a   g?
+<span class="lineNum">     595 </span>                :            :      *        / \
+<span class="lineNum">     596 </span>                :            :      *       b   n+
+<span class="lineNum">     597 </span>                :            :      *          / \
+<span class="lineNum">     598 </span>                :            :      *         c   d
+<span class="lineNum">     599 </span>                :            :      *
+<span class="lineNum">     600 </span>                :            :      * then we do a left rotation to get this:
+<span class="lineNum">     601 </span>                :            :      *
+<span class="lineNum">     602 </span>                :            :      *       R
+<span class="lineNum">     603 </span>                :            :      *       |
+<span class="lineNum">     604 </span>                :            :      *       g
+<span class="lineNum">     605 </span>                :            :      *     /   \
+<span class="lineNum">     606 </span>                :            :      *    p     n
+<span class="lineNum">     607 </span>                :            :      *   / \   / \
+<span class="lineNum">     608 </span>                :            :      *  a   b c   d
+<span class="lineNum">     609 </span>                :            :      *
+<span class="lineNum">     610 </span>                :            :      *  and g will have a balance of 0 and the balance values for n and p depend
+<span class="lineNum">     611 </span>                :            :      *  on the starting balance of g.  the balance values follow the following
+<span class="lineNum">     612 </span>                :            :      *  table:
+<span class="lineNum">     613 </span>                :            :      *
+<span class="lineNum">     614 </span>                :            :      *  |  g  |  n  |  p  |
+<span class="lineNum">     615 </span>                :            :      *  +=====+=====+=====+
+<span class="lineNum">     616 </span>                :            :      *  |  0  |  0  |  0  |
+<span class="lineNum">     617 </span>                :            :      *  |  -  |  +  |  0  |
+<span class="lineNum">     618 </span>                :            :      *  |  +  |  0  |  -  |
+<span class="lineNum">     619 </span>                :            :      */
+<span class="lineNum">     620 </span>                :            :     int left;
+<span class="lineNum">     621 </span>                :<span class="lineCov">         95 :     node_t * R = p-&gt;parent;</span>
+<span class="lineNum">     622 </span>                :            :     node_t *g, *n, *b, *c;
+<span class="lineNum">     623 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 95 times"> + </span>]:<span class="lineCov">         95 :     CHECK_PTR_RET( p, p );</span>
+<span class="lineNum">     624 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 95 times"> + </span>]:<span class="lineCov">         95 :     CHECK_PTR_RET( p-&gt;right, p ); /* p must have a right sub-tree */</span>
+<span class="lineNum">     625 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 95 times"> + </span>]:<span class="lineCov">         95 :     CHECK_PTR_RET( p-&gt;right-&gt;left, p ); /* p must also have a right-left sub-tree */</span>
+<span class="lineNum">     626 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 95 times"> + </span>]:<span class="lineCov">         95 :     CHECK_RET( (p-&gt;balance == 2), p );</span>
+<span class="lineNum">     627 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 95 times"> + </span>]:<span class="lineCov">         95 :     CHECK_RET( (p-&gt;right-&gt;balance == -1), p );</span>
+<span class="lineNum">     628 </span>                :            : 
+<span class="lineNum">     629 </span>                :            :     /* is p the left child of R? */
+<span class="lineNum">     630 </span>        [<span class="branchCov" title="Branch 0 was taken 95 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         95 :     if ( R != NULL )</span>
+<span class="lineNum">     631 </span>                :<span class="lineCov">         95 :         left = bt_is_left_child( R, p );</span>
+<span class="lineNum">     632 </span>                :            : 
+<span class="lineNum">     633 </span>                :            :     /* initialize pointers */
+<span class="lineNum">     634 </span>                :<span class="lineCov">         95 :     n = p-&gt;right;</span>
+<span class="lineNum">     635 </span>                :<span class="lineCov">         95 :     g = n-&gt;left;</span>
+<span class="lineNum">     636 </span>                :<span class="lineCov">         95 :     b = g-&gt;left;</span>
+<span class="lineNum">     637 </span>                :<span class="lineCov">         95 :     c = g-&gt;right;</span>
+<span class="lineNum">     638 </span>                :            : 
+<span class="lineNum">     639 </span>                :            :     /* move b to be p's right child */
+<span class="lineNum">     640 </span>                :<span class="lineCov">         95 :     p-&gt;right = b;</span>
+<span class="lineNum">     641 </span>        [<span class="branchCov" title="Branch 0 was taken 30 times"> + </span><span class="branchCov" title="Branch 1 was taken 65 times"> + </span>]:<span class="lineCov">         95 :     if ( b != NULL )</span>
+<span class="lineNum">     642 </span>                :<span class="lineCov">         30 :         b-&gt;parent = p;</span>
+<span class="lineNum">     643 </span>                :            : 
+<span class="lineNum">     644 </span>                :            :     /* move c to be n's left child */
+<span class="lineNum">     645 </span>                :<span class="lineCov">         95 :     n-&gt;left = c;</span>
+<span class="lineNum">     646 </span>        [<span class="branchCov" title="Branch 0 was taken 26 times"> + </span><span class="branchCov" title="Branch 1 was taken 69 times"> + </span>]:<span class="lineCov">         95 :     if ( c != NULL )</span>
+<span class="lineNum">     647 </span>                :<span class="lineCov">         26 :         c-&gt;parent = n;</span>
+<span class="lineNum">     648 </span>                :            : 
+<span class="lineNum">     649 </span>                :            :     /* move p to be g's left child */
+<span class="lineNum">     650 </span>                :<span class="lineCov">         95 :     g-&gt;left = p;</span>
+<span class="lineNum">     651 </span>                :<span class="lineCov">         95 :     p-&gt;parent = g;</span>
+<span class="lineNum">     652 </span>                :            : 
+<span class="lineNum">     653 </span>                :            :     /* move n to be g's right child */
+<span class="lineNum">     654 </span>                :<span class="lineCov">         95 :     g-&gt;right = n;</span>
+<span class="lineNum">     655 </span>                :<span class="lineCov">         95 :     n-&gt;parent = g;</span>
+<span class="lineNum">     656 </span>                :            : 
+<span class="lineNum">     657 </span>                :            :     /* if needed, make g a child of R */
+<span class="lineNum">     658 </span>        [<span class="branchCov" title="Branch 0 was taken 95 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         95 :     if ( R != NULL )</span>
+<span class="lineNum">     659 </span>                :            :     {
+<span class="lineNum">     660 </span>        [<span class="branchCov" title="Branch 0 was taken 45 times"> + </span><span class="branchCov" title="Branch 1 was taken 50 times"> + </span>]:<span class="lineCov">         95 :         if ( left )</span>
+<span class="lineNum">     661 </span>                :<span class="lineCov">         45 :             R-&gt;left = g;</span>
+<span class="lineNum">     662 </span>                :            :         else
+<span class="lineNum">     663 </span>                :<span class="lineCov">         50 :             R-&gt;right = g;</span>
+<span class="lineNum">     664 </span>                :<span class="lineCov">         95 :         g-&gt;parent = R;</span>
+<span class="lineNum">     665 </span>                :            :     }
+<span class="lineNum">     666 </span>                :            :     else
+<span class="lineNum">     667 </span>                :<span class="lineNoCov">          0 :         g-&gt;parent = NULL;</span>
+<span class="lineNum">     668 </span>                :            : 
+<span class="lineNum">     669 </span>                :            :     /* update balance factors */
+<span class="lineNum">     670 </span>        [<span class="branchCov" title="Branch 0 was taken 61 times"> + </span><span class="branchCov" title="Branch 1 was taken 34 times"> + </span>]:<span class="lineCov">         95 :     if ( g-&gt;balance == 0 )</span>
+<span class="lineNum">     671 </span>                :<span class="lineCov">         61 :         n-&gt;balance = p-&gt;balance = 0;</span>
+<span class="lineNum">     672 </span>        [<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchCov" title="Branch 1 was taken 16 times"> + </span>]:<span class="lineCov">         34 :     else if ( g-&gt;balance == -1 )</span>
+<span class="lineNum">     673 </span>                :            :     {
+<span class="lineNum">     674 </span>                :<span class="lineCov">         18 :         n-&gt;balance = 1;</span>
+<span class="lineNum">     675 </span>                :<span class="lineCov">         18 :         p-&gt;balance = 0;</span>
+<span class="lineNum">     676 </span>                :            :     }
+<span class="lineNum">     677 </span>                :            :     else /* g-&gt;balance == 1 */
+<span class="lineNum">     678 </span>                :            :     {
+<span class="lineNum">     679 </span>                :<span class="lineCov">         16 :         n-&gt;balance = 0;</span>
+<span class="lineNum">     680 </span>                :<span class="lineCov">         16 :         p-&gt;balance = -1;</span>
+<span class="lineNum">     681 </span>                :            :     }
+<span class="lineNum">     682 </span>                :<span class="lineCov">         95 :     g-&gt;balance = 0;</span>
+<span class="lineNum">     683 </span>                :            : 
+<span class="lineNum">     684 </span>                :<span class="lineCov">         95 :     return g;</span>
+<span class="lineNum">     685 </span>                :            : }
+<a name="686"><span class="lineNum">     686 </span>                :            : </a>
+<span class="lineNum">     687 </span>                :            : 
+<span class="lineNum">     688 </span>                :<span class="lineCov">        915 : static node_t * bt_balance_tree( bt_t * const btree, node_t * n )</span>
+<span class="lineNum">     689 </span>                :            : {
+<span class="lineNum">     690 </span>                :<span class="lineCov">        915 :     int left_child = FALSE;</span>
+<span class="lineNum">     691 </span>                :<span class="lineCov">        915 :     int update_root = FALSE;</span>
+<span class="lineNum">     692 </span>                :            :     node_t * p;
+<span class="lineNum">     693 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">        915 :     CHECK_PTR_RET( n, NULL );</span>
+<span class="lineNum">     694 </span>                :            :     
+<span class="lineNum">     695 </span>                :<span class="lineCov">        915 :     p = n-&gt;parent;</span>
+<span class="lineNum">     696 </span>                :            : 
+<span class="lineNum">     697 </span>        [<span class="branchCov" title="Branch 0 was taken 2505 times"> + </span><span class="branchCov" title="Branch 1 was taken 16 times"> + </span>]:<span class="lineCov">       2521 :     while( p != NULL )</span>
+<span class="lineNum">     698 </span>                :            :     {
+<span class="lineNum">     699 </span>                :            :         /* is n the left child of p? */
+<span class="lineNum">     700 </span>                :<span class="lineCov">       2505 :         left_child = bt_is_left_child( p, n );</span>
+<span class="lineNum">     701 </span>                :            : 
+<span class="lineNum">     702 </span>                :            :         /* case 1: p had balance factor of 0 */
+<span class="lineNum">     703 </span>        [<span class="branchCov" title="Branch 0 was taken 1606 times"> + </span><span class="branchCov" title="Branch 1 was taken 899 times"> + </span>]:<span class="lineCov">       2505 :         if ( p-&gt;balance == 0 )</span>
+<span class="lineNum">     704 </span>                :            :         {
+<span class="lineNum">     705 </span>                :            :             /* tip balance left or right */
+<span class="lineNum">     706 </span>        [<span class="branchCov" title="Branch 0 was taken 820 times"> + </span><span class="branchCov" title="Branch 1 was taken 786 times"> + </span>]:<span class="lineCov">       1606 :             p-&gt;balance = left_child ? -1 : 1;</span>
+<span class="lineNum">     707 </span>                :            : 
+<span class="lineNum">     708 </span>                :            :             /* height changed so propagate upwards */
+<span class="lineNum">     709 </span>                :<span class="lineCov">       1606 :             n = p;</span>
+<span class="lineNum">     710 </span>                :<span class="lineCov">       1606 :             p = n-&gt;parent;</span>
+<span class="lineNum">     711 </span>                :            :         }
+<span class="lineNum">     712 </span>                :            : 
+<span class="lineNum">     713 </span>                :            :         /* case 2: p's shorter subtree has increased in height */
+<span class="lineNum">     714 </span>[<span class="branchCov" title="Branch 0 was taken 465 times"> + </span><span class="branchCov" title="Branch 1 was taken 434 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 223 times"> + </span><span class="branchCov" title="Branch 3 was taken 242 times"> + </span>]:<span class="lineCov">        899 :         else if ( ((p-&gt;balance &lt; 0) &amp;&amp; (left_child == FALSE)) ||</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 434 times"> + </span><span class="branchCov" title="Branch 5 was taken 223 times"> + </span>]
+<span class="lineNum">     715 </span>        [<span class="branchCov" title="Branch 0 was taken 237 times"> + </span><span class="branchCov" title="Branch 1 was taken 197 times"> + </span>]:<span class="lineCov">        434 :                   ((p-&gt;balance &gt; 0) &amp;&amp; (left_child == TRUE)) )</span>
+<span class="lineNum">     716 </span>                :            :         {
+<span class="lineNum">     717 </span>        [<span class="branchCov" title="Branch 0 was taken 237 times"> + </span><span class="branchCov" title="Branch 1 was taken 242 times"> + </span>]:<span class="lineCov">        479 :             p-&gt;balance = left_child ? (p-&gt;balance - 1) : (p-&gt;balance + 1);</span>
+<span class="lineNum">     718 </span>                :            : 
+<span class="lineNum">     719 </span>                :            :             /* the subtree's should be balanced in height now */
+<span class="lineNum">     720 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 479 times"> + </span>]:<span class="lineCov">        479 :             ASSERT( p-&gt;balance == 0 );</span>
+<span class="lineNum">     721 </span>                :            : 
+<span class="lineNum">     722 </span>                :            :             /* since the subtree rooted at p didn't change height, we don't need
+<span class="lineNum">     723 </span>                :            :              * to propagate upwards */
+<span class="lineNum">     724 </span>                :<span class="lineCov">        479 :             return p;</span>
+<span class="lineNum">     725 </span>                :            :         }
+<span class="lineNum">     726 </span>                :            : 
+<span class="lineNum">     727 </span>                :            :         /* case 3: p's taller subtree has increased in height */
+<span class="lineNum">     728 </span>[<span class="branchCov" title="Branch 0 was taken 223 times"> + </span><span class="branchCov" title="Branch 1 was taken 197 times"> + </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 223 times"> + </span>]:<span class="lineCov">        420 :         else if ( ((p-&gt;balance &lt; 0) &amp;&amp; (left_child == TRUE)) ||</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 197 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     729 </span>        [<span class="branchCov" title="Branch 0 was taken 197 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        197 :                   ((p-&gt;balance &gt; 0) &amp;&amp; (left_child == FALSE)) )</span>
+<span class="lineNum">     730 </span>                :            :         {
+<span class="lineNum">     731 </span>                :            :             /* we're about to do rotations so we need to know if we need to update
+<span class="lineNum">     732 </span>                :            :              * the btree's root pointer */
+<span class="lineNum">     733 </span>                :<span class="lineCov">        420 :             update_root = (p-&gt;parent == NULL) ? TRUE : FALSE;</span>
+<span class="lineNum">     734 </span>                :            : 
+<span class="lineNum">     735 </span>                :            :             /* there are four possibilities here depending on the balance of p and n.
+<span class="lineNum">     736 </span>                :            :              * p's new balance factor should be either -- or ++ depending on whether
+<span class="lineNum">     737 </span>                :            :              * n is p's left child or not. */
+<span class="lineNum">     738 </span>        [<span class="branchCov" title="Branch 0 was taken 223 times"> + </span><span class="branchCov" title="Branch 1 was taken 197 times"> + </span>]:<span class="lineCov">        420 :             p-&gt;balance = left_child ? (p-&gt;balance - 1) : (p-&gt;balance + 1);</span>
+<span class="lineNum">     739 </span>[<span class="branchCov" title="Branch 0 was taken 197 times"> + </span><span class="branchCov" title="Branch 1 was taken 223 times"> + </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 197 times"> + </span>]:<span class="lineCov">        420 :             ASSERT( ((p-&gt;balance == -2) || (p-&gt;balance == 2)) );</span>
+<span class="lineNum">     740 </span>[<span class="branchCov" title="Branch 0 was taken 213 times"> + </span><span class="branchCov" title="Branch 1 was taken 207 times"> + </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 213 times"> + </span>]:<span class="lineCov">        420 :             ASSERT( ((n-&gt;balance == -1) || (n-&gt;balance == 1)) );</span>
+<span class="lineNum">     741 </span>                :            : 
+<span class="lineNum">     742 </span>[<span class="branchCov" title="Branch 0 was taken 223 times"> + </span><span class="branchCov" title="Branch 1 was taken 197 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 112 times"> + </span><span class="branchCov" title="Branch 3 was taken 111 times"> + </span>]:<span class="lineCov">        420 :             if ( (p-&gt;balance == -2) &amp;&amp; (n-&gt;balance == -1) )</span>
+<span class="lineNum">     743 </span>                :            :             {
+<span class="lineNum">     744 </span>                :<span class="lineCov">        112 :                 p = bt_rotate_right( p );</span>
+<span class="lineNum">     745 </span>                :            :             }
+<span class="lineNum">     746 </span>[<span class="branchCov" title="Branch 0 was taken 111 times"> + </span><span class="branchCov" title="Branch 1 was taken 197 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 111 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        308 :             else if ( (p-&gt;balance == -2) &amp;&amp; (n-&gt;balance == 1) )</span>
+<span class="lineNum">     747 </span>                :            :             {
+<span class="lineNum">     748 </span>                :<span class="lineCov">        111 :                 p = bt_rotate_left_right( p );</span>
+<span class="lineNum">     749 </span>                :            :             }
+<span class="lineNum">     750 </span>[<span class="branchCov" title="Branch 0 was taken 197 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 95 times"> + </span><span class="branchCov" title="Branch 3 was taken 102 times"> + </span>]:<span class="lineCov">        197 :             else if ( (p-&gt;balance == 2) &amp;&amp; (n-&gt;balance == -1) )</span>
+<span class="lineNum">     751 </span>                :            :             {
+<span class="lineNum">     752 </span>                :<span class="lineCov">         95 :                 p = bt_rotate_right_left( p );</span>
+<span class="lineNum">     753 </span>                :            :             }
+<span class="lineNum">     754 </span>[<span class="branchCov" title="Branch 0 was taken 102 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 102 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        102 :             else if ( (p-&gt;balance == 2) &amp;&amp; (n-&gt;balance == 1) )</span>
+<span class="lineNum">     755 </span>                :            :             {
+<span class="lineNum">     756 </span>                :<span class="lineCov">        102 :                 p = bt_rotate_left( p );</span>
+<span class="lineNum">     757 </span>                :            :             }
+<span class="lineNum">     758 </span>                :            : 
+<span class="lineNum">     759 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 416 times"> + </span>]:<span class="lineCov">        420 :             if ( update_root )</span>
+<span class="lineNum">     760 </span>                :<span class="lineCov">          4 :                 btree-&gt;tree = p;</span>
+<span class="lineNum">     761 </span>                :            : 
+<span class="lineNum">     762 </span>                :<span class="lineCov">        420 :             return p;</span>
+<span class="lineNum">     763 </span>                :            :         }
+<span class="lineNum">     764 </span>                :            :     }
+<span class="lineNum">     765 </span>                :            : 
+<span class="lineNum">     766 </span>                :<span class="lineCov">        915 :     return n;</span>
+<span class="lineNum">     767 </span>                :            : }
+<a name="768"><span class="lineNum">     768 </span>                :            : </a>
+<span class="lineNum">     769 </span>                :            : 
+<span class="lineNum">     770 </span>                :<span class="lineCov">        915 : static void bt_insert_node( bt_t * const btree,</span>
+<span class="lineNum">     771 </span>                :            :                             void * const key,
+<span class="lineNum">     772 </span>                :            :                             void * const value )
+<span class="lineNum">     773 </span>                :            : {
+<span class="lineNum">     774 </span>                :            :     node_t ** p;
+<span class="lineNum">     775 </span>                :            :     node_t * n;
+<span class="lineNum">     776 </span>                :<span class="lineCov">        915 :     node_t * parent = NULL;</span>
+<span class="lineNum">     777 </span>                :<span class="lineCov">        915 :     node_t * inorder_successor = NULL;</span>
+<span class="lineNum">     778 </span>                :<span class="lineCov">        915 :     node_t * inorder_predecessor = NULL;</span>
+<span class="lineNum">     779 </span>                :            :     int left;
+<span class="lineNum">     780 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">        915 :     CHECK_PTR( btree );</span>
+<span class="lineNum">     781 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">        915 :     CHECK_PTR( key );</span>
+<span class="lineNum">     782 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">        915 :     CHECK_PTR( value );</span>
+<span class="lineNum">     783 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">        915 :     CHECK_PTR( btree-&gt;kcfn );</span>
+<span class="lineNum">     784 </span>                :            : 
+<span class="lineNum">     785 </span>                :            :     /* start at the root */
+<span class="lineNum">     786 </span>                :<span class="lineCov">        915 :     p = &amp;btree-&gt;tree;</span>
+<span class="lineNum">     787 </span>                :            : 
+<span class="lineNum">     788 </span>                :            :     /* find the pointer to where the new node should go */
+<span class="lineNum">     789 </span>        [<span class="branchCov" title="Branch 0 was taken 7753 times"> + </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">       8668 :     while ( (*p) != NULL )</span>
+<span class="lineNum">     790 </span>                :            :     {
+<span class="lineNum">     791 </span>        [<span class="branchCov" title="Branch 1 was taken 4012 times"> + </span><span class="branchCov" title="Branch 2 was taken 3741 times"> + </span>]:<span class="lineCov">       7753 :         if ( (*(btree-&gt;kcfn))(key, (*p)-&gt;key ) &lt; 0 )</span>
+<span class="lineNum">     792 </span>                :            :         {
+<span class="lineNum">     793 </span>                :<span class="lineCov">       4012 :             parent = (*p);</span>
+<span class="lineNum">     794 </span>                :<span class="lineCov">       4012 :             inorder_successor = parent;</span>
+<span class="lineNum">     795 </span>                :<span class="lineCov">       4012 :             p = &amp;((*p)-&gt;left);</span>
+<span class="lineNum">     796 </span>                :<span class="lineCov">       4012 :             continue;</span>
+<span class="lineNum">     797 </span>                :            :         }
+<span class="lineNum">     798 </span>        [<span class="branchCov" title="Branch 1 was taken 3741 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">       3741 :         if ( (*(btree-&gt;kcfn))(key, (*p)-&gt;key ) &gt; 0 )</span>
+<span class="lineNum">     799 </span>                :            :         {
+<span class="lineNum">     800 </span>                :<span class="lineCov">       3741 :             parent = (*p);</span>
+<span class="lineNum">     801 </span>                :<span class="lineCov">       3741 :             inorder_predecessor = parent;</span>
+<span class="lineNum">     802 </span>                :<span class="lineCov">       3741 :             p = &amp;((*p)-&gt;right);</span>
+<span class="lineNum">     803 </span>                :<span class="lineCov">       3741 :             continue;</span>
+<span class="lineNum">     804 </span>                :            :         }
+<span class="lineNum">     805 </span>                :            :     }
+<span class="lineNum">     806 </span>                :            : 
+<span class="lineNum">     807 </span>                :            :     /* get a node from the free list */
+<span class="lineNum">     808 </span>                :<span class="lineCov">        915 :     n = bt_get_node( &amp;(btree-&gt;free_list) );</span>
+<span class="lineNum">     809 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">        915 :     CHECK_PTR_MSG( n, &quot;failed to get a node to store a new value\n&quot; );</span>
+<span class="lineNum">     810 </span>                :            : 
+<span class="lineNum">     811 </span>                :            :     /* initialize it */
+<span class="lineNum">     812 </span>                :<span class="lineCov">        915 :     n-&gt;parent = parent;</span>
+<span class="lineNum">     813 </span>                :<span class="lineCov">        915 :     n-&gt;left = NULL;</span>
+<span class="lineNum">     814 </span>                :<span class="lineCov">        915 :     n-&gt;right = NULL;</span>
+<span class="lineNum">     815 </span>                :<span class="lineCov">        915 :     n-&gt;next = inorder_successor; /* threading for faster traversal */</span>
+<span class="lineNum">     816 </span>                :<span class="lineCov">        915 :     n-&gt;prev = inorder_predecessor; /* threading for faster traversal */</span>
+<span class="lineNum">     817 </span>                :<span class="lineCov">        915 :     n-&gt;key = key;</span>
+<span class="lineNum">     818 </span>                :<span class="lineCov">        915 :     n-&gt;val = value;</span>
+<span class="lineNum">     819 </span>                :<span class="lineCov">        915 :     n-&gt;balance = 0;</span>
+<span class="lineNum">     820 </span>                :            : 
+<span class="lineNum">     821 </span>                :            :     /* add it to the tree */
+<span class="lineNum">     822 </span>                :<span class="lineCov">        915 :     (*p) = n;</span>
+<span class="lineNum">     823 </span>                :<span class="lineCov">        915 :     (btree-&gt;size)++;</span>
+<span class="lineNum">     824 </span>                :            : 
+<span class="lineNum">     825 </span>                :            :     /* fix successor's prev pointer */
+<span class="lineNum">     826 </span>        [<span class="branchCov" title="Branch 0 was taken 904 times"> + </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">        915 :     if ( inorder_successor != NULL )</span>
+<span class="lineNum">     827 </span>                :<span class="lineCov">        904 :         inorder_successor-&gt;prev = n;</span>
+<span class="lineNum">     828 </span>                :            : 
+<span class="lineNum">     829 </span>        [<span class="branchCov" title="Branch 0 was taken 907 times"> + </span><span class="branchCov" title="Branch 1 was taken 8 times"> + </span>]:<span class="lineCov">        915 :     if ( inorder_predecessor != NULL )</span>
+<span class="lineNum">     830 </span>                :<span class="lineCov">        907 :         inorder_predecessor-&gt;next = n;</span>
+<span class="lineNum">     831 </span>                :            : 
+<span class="lineNum">     832 </span>                :            :     /* re-balance the tree */
+<span class="lineNum">     833 </span>                :<span class="lineCov">        915 :     bt_balance_tree( btree, n );</span>
+<span class="lineNum">     834 </span>                :            : }
+<span class="lineNum">     835 </span>                :            : 
+<span class="lineNum">     836 </span>                :            : 
+<span class="lineNum">     837 </span>                :            : /* adds a key/value pair to the btree. */
+<a name="838"><span class="lineNum">     838 </span>                :            : /* NOTE: if the number of values stored in the table will exceed a load </a>
+<span class="lineNum">     839 </span>                :            :  * factor of 65% then the btree grows to make more room. */
+<span class="lineNum">     840 </span>                :<span class="lineCov">        915 : int bt_add( bt_t * const btree, </span>
+<span class="lineNum">     841 </span>                :            :             void * const key,
+<span class="lineNum">     842 </span>                :            :             void * const value )
+<span class="lineNum">     843 </span>                :            : {
+<span class="lineNum">     844 </span>                :<span class="lineCov">        915 :     int_t i = 0;</span>
+<span class="lineNum">     845 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">        915 :     CHECK_PTR_RET(btree, FALSE);</span>
+<span class="lineNum">     846 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">        915 :     CHECK_PTR_RET(key, FALSE);</span>
+<span class="lineNum">     847 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">        915 :     CHECK_PTR_RET(value, FALSE);</span>
+<span class="lineNum">     848 </span>                :            : 
+<span class="lineNum">     849 </span>                :            :     /* are we out of free nodes? */
+<span class="lineNum">     850 </span>        [<span class="branchCov" title="Branch 0 was taken 90 times"> + </span><span class="branchCov" title="Branch 1 was taken 825 times"> + </span>]:<span class="lineCov">        915 :     if ( btree-&gt;free_list == NULL )</span>
+<span class="lineNum">     851 </span>                :            :     {
+<span class="lineNum">     852 </span>                :<span class="lineCov">         90 :         bt_add_more_nodes( btree );</span>
+<span class="lineNum">     853 </span>                :            :     }
+<span class="lineNum">     854 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 915 times"> + </span>]:<span class="lineCov">        915 :     CHECK_PTR_RET_MSG( btree-&gt;free_list, FALSE, &quot;failed to allocate more nodes\n&quot; );</span>
+<span class="lineNum">     855 </span>                :            : 
+<span class="lineNum">     856 </span>                :            :     /* add it to the btree */
+<span class="lineNum">     857 </span>                :<span class="lineCov">        915 :     bt_insert_node( btree, key, value );</span>
+<span class="lineNum">     858 </span>                :            : 
+<span class="lineNum">     859 </span>                :            :     /* success */
+<span class="lineNum">     860 </span>                :<span class="lineCov">        915 :     return TRUE;</span>
+<span class="lineNum">     861 </span>                :            : }
+<a name="862"><span class="lineNum">     862 </span>                :            : </a>
+<span class="lineNum">     863 </span>                :            : 
+<span class="lineNum">     864 </span>                :<span class="lineCov">          2 : static node_t * bt_find_node( bt_t * const btree, void * const key )</span>
+<span class="lineNum">     865 </span>                :            : {
+<span class="lineNum">     866 </span>                :            :     node_t * p;
+<span class="lineNum">     867 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :     CHECK_PTR_RET(btree, NULL);</span>
+<span class="lineNum">     868 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :     CHECK_PTR_RET(key, NULL);</span>
+<span class="lineNum">     869 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :     CHECK_PTR_RET( btree-&gt;kcfn, NULL );</span>
+<span class="lineNum">     870 </span>                :            : 
+<span class="lineNum">     871 </span>                :<span class="lineCov">          2 :     p = btree-&gt;tree;</span>
+<span class="lineNum">     872 </span>                :            : 
+<span class="lineNum">     873 </span>        [<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          6 :     while( p != NULL )</span>
+<span class="lineNum">     874 </span>                :            :     {
+<span class="lineNum">     875 </span>        [<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchCov" title="Branch 2 was taken 3 times"> + </span>]:<span class="lineCov">          5 :         if ( (*(btree-&gt;kcfn))( key, p-&gt;key ) &lt; 0 )</span>
+<span class="lineNum">     876 </span>                :            :         {
+<span class="lineNum">     877 </span>                :<span class="lineCov">          2 :             p = p-&gt;left;</span>
+<span class="lineNum">     878 </span>                :<span class="lineCov">          2 :             continue;</span>
+<span class="lineNum">     879 </span>                :            :         }
+<span class="lineNum">     880 </span>        [<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          3 :         if ( (*(btree-&gt;kcfn))( key, p-&gt;key ) &gt; 0 )</span>
+<span class="lineNum">     881 </span>                :            :         {
+<span class="lineNum">     882 </span>                :<span class="lineCov">          2 :             p = p-&gt;right;</span>
+<span class="lineNum">     883 </span>                :<span class="lineCov">          2 :             continue;</span>
+<span class="lineNum">     884 </span>                :            :         }
+<span class="lineNum">     885 </span>                :<span class="lineCov">          1 :         break;</span>
+<span class="lineNum">     886 </span>                :            :     }
+<span class="lineNum">     887 </span>                :<span class="lineCov">          2 :     return p;</span>
+<a name="888"><span class="lineNum">     888 </span>                :            : }</a>
+<span class="lineNum">     889 </span>                :            : 
+<span class="lineNum">     890 </span>                :<span class="lineCov">          3 : static node_t * bt_find_tree_min( node_t * p )</span>
+<span class="lineNum">     891 </span>                :            : {
+<span class="lineNum">     892 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          3 :     CHECK_PTR_RET( p, NULL );</span>
+<span class="lineNum">     893 </span>                :            : 
+<span class="lineNum">     894 </span>        [<span class="branchCov" title="Branch 0 was taken 13 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">         16 :     while( p-&gt;left != NULL )</span>
+<span class="lineNum">     895 </span>                :            :     {
+<span class="lineNum">     896 </span>                :<span class="lineCov">         13 :         p = p-&gt;left;</span>
+<span class="lineNum">     897 </span>                :            :     }
+<span class="lineNum">     898 </span>                :            : 
+<span class="lineNum">     899 </span>                :<span class="lineCov">          3 :     return p;</span>
+<a name="900"><span class="lineNum">     900 </span>                :            : }</a>
+<span class="lineNum">     901 </span>                :            : 
+<span class="lineNum">     902 </span>                :<span class="lineCov">          1 : static node_t * bt_find_tree_max( node_t * p )</span>
+<span class="lineNum">     903 </span>                :            : {
+<span class="lineNum">     904 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET( p, NULL );</span>
+<span class="lineNum">     905 </span>                :            : 
+<span class="lineNum">     906 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          4 :     while( p-&gt;right != NULL )</span>
+<span class="lineNum">     907 </span>                :            :     {
+<span class="lineNum">     908 </span>                :<span class="lineCov">          3 :         p = p-&gt;right;</span>
+<span class="lineNum">     909 </span>                :            :     }
+<span class="lineNum">     910 </span>                :            : 
+<span class="lineNum">     911 </span>                :<span class="lineCov">          1 :     return p;</span>
+<span class="lineNum">     912 </span>                :            : }
+<a name="913"><span class="lineNum">     913 </span>                :            : </a>
+<span class="lineNum">     914 </span>                :            : /* find a value by it's key. */
+<span class="lineNum">     915 </span>                :<span class="lineCov">          1 : void * bt_find(bt_t * const btree, void * const key )</span>
+<span class="lineNum">     916 </span>                :            : {
+<span class="lineNum">     917 </span>                :<span class="lineCov">          1 :     node_t * p = NULL;</span>
+<span class="lineNum">     918 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET(btree, NULL);</span>
+<span class="lineNum">     919 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET(key, NULL);</span>
+<span class="lineNum">     920 </span>                :            : 
+<span class="lineNum">     921 </span>                :<span class="lineCov">          1 :     p = bt_find_node( btree, key );</span>
+<span class="lineNum">     922 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     if ( p != NULL )</span>
+<span class="lineNum">     923 </span>                :<span class="lineNoCov">          0 :         return p-&gt;val;</span>
+<span class="lineNum">     924 </span>                :            : 
+<span class="lineNum">     925 </span>                :<span class="lineCov">          1 :     return NULL;</span>
+<a name="926"><span class="lineNum">     926 </span>                :            : }</a>
+<span class="lineNum">     927 </span>                :            : 
+<span class="lineNum">     928 </span>                :<span class="lineCov">          1 : static node_t * bt_replace_node( node_t * p, node_t * s )</span>
+<span class="lineNum">     929 </span>                :            : {
+<span class="lineNum">     930 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET( p, NULL );</span>
+<span class="lineNum">     931 </span>                :            : 
+<span class="lineNum">     932 </span>                :            :     /* make p's parent point to s */
+<span class="lineNum">     933 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :     if ( p-&gt;parent != NULL )</span>
+<span class="lineNum">     934 </span>                :            :     {
+<span class="lineNum">     935 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         if ( p-&gt;parent-&gt;left == p )</span>
+<span class="lineNum">     936 </span>                :            :         {
+<span class="lineNum">     937 </span>                :<span class="lineCov">          1 :             p-&gt;parent-&gt;left = s;</span>
+<span class="lineNum">     938 </span>                :            :         }
+<span class="lineNum">     939 </span>                :            :         else
+<span class="lineNum">     940 </span>                :            :         {
+<span class="lineNum">     941 </span>                :<span class="lineNoCov">          0 :             p-&gt;parent-&gt;right = s;</span>
+<span class="lineNum">     942 </span>                :            :         }
+<span class="lineNum">     943 </span>                :            :     }
+<span class="lineNum">     944 </span>                :            : 
+<span class="lineNum">     945 </span>                :            :     /* make s point back to p's parent */
+<span class="lineNum">     946 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     if ( s != NULL )</span>
+<span class="lineNum">     947 </span>                :            :     {
+<span class="lineNum">     948 </span>                :<span class="lineNoCov">          0 :         s-&gt;parent = p-&gt;parent;</span>
+<span class="lineNum">     949 </span>                :            : 
+<span class="lineNum">     950 </span>                :            :         /* fix up prev/next pointers */
+<span class="lineNum">     951 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :         if ( p-&gt;prev != NULL )</span>
+<span class="lineNum">     952 </span>                :            :         {
+<span class="lineNum">     953 </span>                :<span class="lineNoCov">          0 :             s-&gt;prev = p-&gt;prev;</span>
+<span class="lineNum">     954 </span>                :<span class="lineNoCov">          0 :             s-&gt;prev-&gt;next = s;</span>
+<span class="lineNum">     955 </span>                :            :         }
+<span class="lineNum">     956 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :         if ( p-&gt;next != NULL )</span>
+<span class="lineNum">     957 </span>                :            :         {
+<span class="lineNum">     958 </span>                :<span class="lineNoCov">          0 :             s-&gt;next = p-&gt;next;</span>
+<span class="lineNum">     959 </span>                :<span class="lineNoCov">          0 :             s-&gt;next-&gt;prev = s;</span>
+<span class="lineNum">     960 </span>                :            :         }
+<span class="lineNum">     961 </span>                :            :     }
+<span class="lineNum">     962 </span>                :            :     else
+<span class="lineNum">     963 </span>                :            :     {
+<span class="lineNum">     964 </span>                :            :         /* replacing the node with NULL so make the node's prev's next point
+<span class="lineNum">     965 </span>                :            :          * to the node's next and the node's next's prev point to the node's
+<span class="lineNum">     966 </span>                :            :          * prev. */
+<span class="lineNum">     967 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         if ( p-&gt;prev != NULL )</span>
+<span class="lineNum">     968 </span>                :            :         {
+<span class="lineNum">     969 </span>                :<span class="lineCov">          1 :             p-&gt;prev-&gt;next = p-&gt;next;</span>
+<span class="lineNum">     970 </span>                :            :         }
+<span class="lineNum">     971 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         if ( p-&gt;next != NULL )</span>
+<span class="lineNum">     972 </span>                :            :         {
+<span class="lineNum">     973 </span>                :<span class="lineCov">          1 :             p-&gt;next-&gt;prev = p-&gt;prev;</span>
+<span class="lineNum">     974 </span>                :            :         }
+<span class="lineNum">     975 </span>                :            :     }
+<span class="lineNum">     976 </span>                :            : 
+<span class="lineNum">     977 </span>                :            :     /* clear out p's pointers */
+<span class="lineNum">     978 </span>                :<span class="lineCov">          1 :     p-&gt;parent = NULL;</span>
+<span class="lineNum">     979 </span>                :<span class="lineCov">          1 :     p-&gt;left = NULL;</span>
+<span class="lineNum">     980 </span>                :<span class="lineCov">          1 :     p-&gt;right = NULL;</span>
+<span class="lineNum">     981 </span>                :<span class="lineCov">          1 :     p-&gt;next = NULL;</span>
+<span class="lineNum">     982 </span>                :<span class="lineCov">          1 :     p-&gt;prev = NULL;</span>
+<span class="lineNum">     983 </span>                :            : 
+<span class="lineNum">     984 </span>                :<span class="lineCov">          1 :     return p;</span>
+<span class="lineNum">     985 </span>                :            : }
+<span class="lineNum">     986 </span>                :            : 
+<a name="987"><span class="lineNum">     987 </span>                :            : </a>
+<span class="lineNum">     988 </span>                :            : /* remove the value associated with the key from the btree */
+<span class="lineNum">     989 </span>                :<span class="lineCov">          1 : void * bt_remove(bt_t * const btree, void * const key )</span>
+<span class="lineNum">     990 </span>                :            : {
+<span class="lineNum">     991 </span>                :<span class="lineCov">          1 :     void * val = NULL;</span>
+<span class="lineNum">     992 </span>                :<span class="lineCov">          1 :     node_t * p = NULL;</span>
+<span class="lineNum">     993 </span>                :<span class="lineCov">          1 :     node_t * s = NULL;</span>
+<span class="lineNum">     994 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET(btree, NULL);</span>
+<span class="lineNum">     995 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET(key, NULL);</span>
+<span class="lineNum">     996 </span>                :            : 
+<span class="lineNum">     997 </span>                :            :     /* look up the node */
+<span class="lineNum">     998 </span>                :<span class="lineCov">          1 :     p = bt_find_node( btree, key );</span>
+<span class="lineNum">     999 </span>                :            : 
+<span class="lineNum">    1000 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET( p, NULL );</span>
+<span class="lineNum">    1001 </span>                :            : 
+<span class="lineNum">    1002 </span>                :            :     /* case 1: p has no right child */
+<span class="lineNum">    1003 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :     if ( p-&gt;right == NULL )</span>
+<span class="lineNum">    1004 </span>                :            :     {
+<span class="lineNum">    1005 </span>                :            :         /* replace p with p's left child */
+<span class="lineNum">    1006 </span>                :<span class="lineCov">          1 :         p = bt_replace_node( p, p-&gt;left );</span>
+<span class="lineNum">    1007 </span>                :            :     }
+<span class="lineNum">    1008 </span>                :            : 
+<span class="lineNum">    1009 </span>                :            :     /* case 2: p's right child has no left child */
+<span class="lineNum">    1010 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     else if ( p-&gt;right-&gt;left == NULL )</span>
+<span class="lineNum">    1011 </span>                :            :     {
+<span class="lineNum">    1012 </span>                :            :         /* attach p's left child as the left child of p's right child */
+<span class="lineNum">    1013 </span>                :<span class="lineNoCov">          0 :         p-&gt;right-&gt;left = p-&gt;left;</span>
+<span class="lineNum">    1014 </span>                :<span class="lineNoCov">          0 :         p-&gt;left-&gt;parent = p-&gt;right;</span>
+<span class="lineNum">    1015 </span>                :            : 
+<span class="lineNum">    1016 </span>                :            :         /* replace p with p's right child */
+<span class="lineNum">    1017 </span>                :<span class="lineNoCov">          0 :         p = bt_replace_node( p, p-&gt;right );</span>
+<span class="lineNum">    1018 </span>                :            :     }
+<span class="lineNum">    1019 </span>                :            : 
+<span class="lineNum">    1020 </span>                :            :     /* case 3: p's right child has a left child */
+<span class="lineNum">    1021 </span>                :            :     else
+<span class="lineNum">    1022 </span>                :            :     {
+<span class="lineNum">    1023 </span>                :            :         /* find the in-order successor (the node with minimum value in right subtree) */
+<span class="lineNum">    1024 </span>                :<span class="lineNoCov">          0 :         s = bt_find_tree_min( p-&gt;right );</span>
+<span class="lineNum">    1025 </span>                :            : 
+<span class="lineNum">    1026 </span>                :            :         /* the in-order successor has some interesting properties:
+<span class="lineNum">    1027 </span>                :            :          * - it exists
+<span class="lineNum">    1028 </span>                :            :          * - it cannot have a left child */
+<span class="lineNum">    1029 </span>                :            :         
+<span class="lineNum">    1030 </span>                :            :         /* replace s with s's right child */
+<span class="lineNum">    1031 </span>                :<span class="lineNoCov">          0 :         s = bt_replace_node( s, s-&gt;right );</span>
+<span class="lineNum">    1032 </span>                :            : 
+<span class="lineNum">    1033 </span>                :            :         /* now replace p with s */
+<span class="lineNum">    1034 </span>                :<span class="lineNoCov">          0 :         p = bt_replace_node( p, s );</span>
+<span class="lineNum">    1035 </span>                :            :     }
+<span class="lineNum">    1036 </span>                :            : 
+<span class="lineNum">    1037 </span>                :            : 
+<span class="lineNum">    1038 </span>                :            :     /* get the value pointer to pass back */
+<span class="lineNum">    1039 </span>                :<span class="lineCov">          1 :     val = p-&gt;val;</span>
+<span class="lineNum">    1040 </span>                :<span class="lineCov">          1 :     p-&gt;val = NULL;</span>
+<span class="lineNum">    1041 </span>                :<span class="lineCov">          1 :     p-&gt;next = NULL;</span>
+<span class="lineNum">    1042 </span>                :            : 
+<span class="lineNum">    1043 </span>                :            :     /* clean up the node and put the node back on the free list */
+<span class="lineNum">    1044 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineCov">          1 :     if ( (btree-&gt;kdfn != NULL) &amp;&amp; (p-&gt;key != NULL) )</span>
+<span class="lineNum">    1045 </span>                :<span class="lineNoCov">          0 :         (*(btree-&gt;kdfn))(p-&gt;key);</span>
+<span class="lineNum">    1046 </span>                :<span class="lineCov">          1 :     p-&gt;key = NULL;</span>
+<span class="lineNum">    1047 </span>                :<span class="lineCov">          1 :     bt_put_node( &amp;(btree-&gt;free_list), p );</span>
+<span class="lineNum">    1048 </span>                :            : 
+<span class="lineNum">    1049 </span>                :<span class="lineCov">          1 :     return val;</span>
+<a name="1050"><span class="lineNum">    1050 </span>                :            : }</a>
+<span class="lineNum">    1051 </span>                :            : 
+<span class="lineNum">    1052 </span>                :<span class="lineNoCov">          0 : void bt_print_node( node_t * const p, int const indent )</span>
+<span class="lineNum">    1053 </span>                :            : {
+<span class="lineNum">    1054 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR( p );</span>
+<span class="lineNum">    1055 </span>                :            : 
+<span class="lineNum">    1056 </span>                :<span class="lineNoCov">          0 :     bt_print_node( p-&gt;right, indent + 1 );</span>
+<span class="lineNum">    1057 </span>                :            : 
+<span class="lineNum">    1058 </span>                :            :     /* print the node */
+<span class="lineNum">    1059 </span>                :            : #if defined(PORTABLE_64_BIT)
+<span class="lineNum">    1060 </span>                :            :     printf( &quot;%*s%d(%&quot; PRId64 &quot;)\n&quot;, (indent * 5), &quot; &quot;, p-&gt;balance, (int_t)p-&gt;val );
+<span class="lineNum">    1061 </span>                :            : #else
+<span class="lineNum">    1062 </span>                :<span class="lineNoCov">          0 :     printf( &quot;%*s%d(%&quot; PRId32 &quot;)\n&quot;, (indent * 5), &quot; &quot;, p-&gt;balance, (int_t)p-&gt;val );</span>
+<span class="lineNum">    1063 </span>                :            : #endif
+<span class="lineNum">    1064 </span>                :            : 
+<span class="lineNum">    1065 </span>                :<span class="lineNoCov">          0 :     bt_print_node( p-&gt;left, indent + 1 );</span>
+<a name="1066"><span class="lineNum">    1066 </span>                :            : }</a>
+<span class="lineNum">    1067 </span>                :            : 
+<span class="lineNum">    1068 </span>                :<span class="lineNoCov">          0 : void bt_print( bt_t * const btree )</span>
+<span class="lineNum">    1069 </span>                :            : {
+<span class="lineNum">    1070 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR( btree );</span>
+<span class="lineNum">    1071 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR( btree-&gt;tree );</span>
+<span class="lineNum">    1072 </span>                :            : 
+<span class="lineNum">    1073 </span>                :<span class="lineNoCov">          0 :     bt_print_node( btree-&gt;tree, 1 );</span>
+<span class="lineNum">    1074 </span>                :            : }
+<span class="lineNum">    1075 </span>                :            : 
+<span class="lineNum">    1076 </span>                :            : 
+<a name="1077"><span class="lineNum">    1077 </span>                :            : static const bt_itr_t itr_end = NULL;</a>
+<span class="lineNum">    1078 </span>                :            : 
+<span class="lineNum">    1079 </span>                :<span class="lineCov">          3 : bt_itr_t bt_itr_begin(bt_t const * const btree)</span>
+<span class="lineNum">    1080 </span>                :            : {
+<span class="lineNum">    1081 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          3 :     CHECK_PTR_RET( btree, itr_end );</span>
+<span class="lineNum">    1082 </span>                :            : 
+<span class="lineNum">    1083 </span>                :<span class="lineCov">          3 :     return bt_find_tree_min( btree-&gt;tree );</span>
+<span class="lineNum">    1084 </span>                :            : }
+<a name="1085"><span class="lineNum">    1085 </span>                :            : </a>
+<span class="lineNum">    1086 </span>                :            : 
+<span class="lineNum">    1087 </span>                :<span class="lineCov">        923 : bt_itr_t bt_itr_next(bt_t const * const btree, bt_itr_t const itr)</span>
+<span class="lineNum">    1088 </span>                :            : {
+<span class="lineNum">    1089 </span>                :<span class="lineCov">        923 :     node_t * p = (node_t*)itr;</span>
+<span class="lineNum">    1090 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 923 times"> + </span>]:<span class="lineCov">        923 :     CHECK_PTR_RET( btree, itr_end );</span>
+<span class="lineNum">    1091 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 923 times"> + </span>]:<span class="lineCov">        923 :     CHECK_PTR_RET( p, itr_end );</span>
+<span class="lineNum">    1092 </span>                :            : 
+<span class="lineNum">    1093 </span>                :            :     /* return the next node in the list */
+<span class="lineNum">    1094 </span>                :<span class="lineCov">        923 :     return p-&gt;next;</span>
+<span class="lineNum">    1095 </span>                :            : }
+<a name="1096"><span class="lineNum">    1096 </span>                :            : </a>
+<span class="lineNum">    1097 </span>                :            : 
+<span class="lineNum">    1098 </span>                :<span class="lineCov">        928 : bt_itr_t bt_itr_end(bt_t const * const btree)</span>
+<span class="lineNum">    1099 </span>                :            : {
+<span class="lineNum">    1100 </span>                :<span class="lineCov">        928 :     return itr_end;</span>
+<span class="lineNum">    1101 </span>                :            : }
+<a name="1102"><span class="lineNum">    1102 </span>                :            : </a>
+<span class="lineNum">    1103 </span>                :            : 
+<span class="lineNum">    1104 </span>                :<span class="lineCov">          1 : bt_itr_t bt_itr_rbegin(bt_t const * const btree)</span>
+<span class="lineNum">    1105 </span>                :            : {
+<span class="lineNum">    1106 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET( btree, itr_end );</span>
+<span class="lineNum">    1107 </span>                :            : 
+<span class="lineNum">    1108 </span>                :<span class="lineCov">          1 :     return bt_find_tree_max( btree-&gt;tree );</span>
+<span class="lineNum">    1109 </span>                :            : }
+<a name="1110"><span class="lineNum">    1110 </span>                :            : </a>
+<span class="lineNum">    1111 </span>                :            : 
+<span class="lineNum">    1112 </span>                :<span class="lineCov">          9 : bt_itr_t bt_itr_rnext(bt_t const * const btree, bt_itr_t const itr)</span>
+<span class="lineNum">    1113 </span>                :            : {
+<span class="lineNum">    1114 </span>                :<span class="lineCov">          9 :     node_t * p = (node_t*)itr;</span>
+<span class="lineNum">    1115 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9 times"> + </span>]:<span class="lineCov">          9 :     CHECK_PTR_RET( btree, itr_end );</span>
+<span class="lineNum">    1116 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9 times"> + </span>]:<span class="lineCov">          9 :     CHECK_PTR_RET( p, itr_end );</span>
+<span class="lineNum">    1117 </span>                :            : 
+<span class="lineNum">    1118 </span>                :            :     /* return the next node in the list */
+<span class="lineNum">    1119 </span>                :<span class="lineCov">          9 :     return p-&gt;prev;</span>
+<span class="lineNum">    1120 </span>                :            : }
+<a name="1121"><span class="lineNum">    1121 </span>                :            : </a>
+<span class="lineNum">    1122 </span>                :            : 
+<span class="lineNum">    1123 </span>                :<span class="lineCov">         10 : bt_itr_t bt_itr_rend(bt_t const * const btree)</span>
+<span class="lineNum">    1124 </span>                :            : {
+<span class="lineNum">    1125 </span>                :<span class="lineCov">         10 :     return itr_end;</span>
+<span class="lineNum">    1126 </span>                :            : }
+<a name="1127"><span class="lineNum">    1127 </span>                :            : </a>
+<span class="lineNum">    1128 </span>                :            : 
+<span class="lineNum">    1129 </span>                :<span class="lineCov">        933 : void* bt_itr_get(bt_t const * const btree, bt_itr_t const itr)</span>
+<span class="lineNum">    1130 </span>                :            : {
+<span class="lineNum">    1131 </span>                :<span class="lineCov">        933 :     node_t * p = (node_t*)itr;</span>
+<span class="lineNum">    1132 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 933 times"> + </span>]:<span class="lineCov">        933 :     CHECK_PTR_RET( btree, NULL );</span>
+<span class="lineNum">    1133 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 933 times"> + </span>]:<span class="lineCov">        933 :     CHECK_RET( (itr != itr_end), NULL );</span>
+<span class="lineNum">    1134 </span>                :            : 
+<span class="lineNum">    1135 </span>                :<span class="lineCov">        933 :     return p-&gt;val;</span>
+<span class="lineNum">    1136 </span>                :            : }
+<span class="lineNum">    1137 </span>                :            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -12,8 +12,6 @@ EXTRA_LIBS_ROOT=/usr/local
 CUTILS_ROOT=../src
 CFLAGS=-O0 -gstabs+ -I$(CUTILS_ROOT)/include -I$(EXTRA_LIBS_ROOT)/include
 LDFLAGS=-O0 -gstabs+ -L$(CUTILS_ROOT)/lib -L$(EXTRA_LIBS_ROOT)/lib
-# set CFLAGS to something gcov can use
-#coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -I$(CUTILS_ROOT)/include -I$(EXTRA_LIBS_ROOT)/include
 # set LDFLAGS to something gcov can use
 coverage: LDFLAGS=-fprofile-arcs -O0 -gstabs+ -L$(CUTILS_ROOT)/lib -L$(EXTRA_LIBS_ROOT)/lib
 
@@ -25,7 +23,6 @@ test: $(OUT)
 
 coverage: $(OUT)
 	./test_all
-
 
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@

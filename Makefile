@@ -12,38 +12,47 @@ INSTALLDIRS = $(DIRS:%=install-%)
 UNINSTALLDIRS = $(DIRS:%=uninstall-%)
 CLEANDIRS = $(DIRS:%=clean-%)
 TESTDIRS = $(DIRS:%=test-%)
+FOODIRS = $(DIRS:%=foo-%)
 GCOVDIRS = $(DIRS:%=gcov-%)
 REPORTDIRS = $(DIRS:%=report-%)
 
 all: $(BUILDDIRS)
+
 $(DIRS): $(BUILDDIRS)
+
 $(BUILDDIRS):
 	$(MAKE) -C $(@:build-%=%)
 
 install: $(INSTALLDIRS)
+
 $(INSTALLDIRS):
 	$(MAKE) -C $(@:install-%=%) install
 
 uninstall: $(UNINSTALLDIRS)
+
 $(UNINSTALLDIRS):
 	$(MAKE) -C $(@:uninstall-%=%) uninstall
 
 test: $(TESTDIRS)
+
 $(TESTDIRS):
+	@echo "building test target"
 	$(MAKE) -C $(@:test-%=%) test
 
 coverage: $(GCOVDIRS) $(REPORTDIRS)
+
 $(GCOVDIRS):
 	$(MAKE) -C $(@:gcov-%=%) coverage
 
 report: $(REPORTDIRS)
+
 $(REPORTDIRS):
 	$(MAKE) -C $(@:report-%=%) report
 
 clean: $(CLEANDIRS)
+
 $(CLEANDIRS):
 	$(MAKE) -C $(@:clean-%=%) clean
-	rm -rf $(COVERAGE)
 
 .PHONY: subdirs $(DIRS)
 .PHONY: subdirs $(BUILDDIRS)

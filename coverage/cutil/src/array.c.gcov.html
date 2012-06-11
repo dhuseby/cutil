@@ -1,0 +1,824 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - cutil test coverage - cutil/src/array.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">cutil/src</a> - array.c<span style="font-size: 80%;"> (source / <a href="array.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">cutil test coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">237</td>
+            <td class="headerCovTableEntry">244</td>
+            <td class="headerCovTableEntryHi">97.1 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-06-11</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntryHi">95.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">130</td>
+            <td class="headerCovTableEntry">208</td>
+            <td class="headerCovTableEntryLo">62.5 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /*</a>
+<span class="lineNum">       2 </span>                :            :  * This program is free software; you can redistribute it and/or
+<span class="lineNum">       3 </span>                :            :  * modify it under the terms of the GNU Lesser General Public
+<span class="lineNum">       4 </span>                :            :  * License as published by the Free Software Foundation; either
+<span class="lineNum">       5 </span>                :            :  * version 3.0 of the License, or (at your option) any later version.
+<span class="lineNum">       6 </span>                :            :  * 
+<span class="lineNum">       7 </span>                :            :  * This program is distributed in the hope that it will be useful,
+<span class="lineNum">       8 </span>                :            :  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+<span class="lineNum">       9 </span>                :            :  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+<span class="lineNum">      10 </span>                :            :  * Lesser General Public License for more details.
+<span class="lineNum">      11 </span>                :            :  * 
+<span class="lineNum">      12 </span>                :            :  * You should have received a copy of the GNU Lesser General Public
+<span class="lineNum">      13 </span>                :            :  * License along with main.c; if not, write to the Free Software
+<span class="lineNum">      14 </span>                :            :  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+<span class="lineNum">      15 </span>                :            :  */
+<span class="lineNum">      16 </span>                :            : 
+<span class="lineNum">      17 </span>                :            : #include &lt;stdio.h&gt;
+<span class="lineNum">      18 </span>                :            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      19 </span>                :            : #include &lt;stdint.h&gt;
+<span class="lineNum">      20 </span>                :            : #include &lt;string.h&gt;
+<span class="lineNum">      21 </span>                :            : #include &lt;assert.h&gt;
+<span class="lineNum">      22 </span>                :            : 
+<span class="lineNum">      23 </span>                :            : #include &quot;debug.h&quot;
+<span class="lineNum">      24 </span>                :            : #include &quot;macros.h&quot;
+<span class="lineNum">      25 </span>                :            : #include &quot;array.h&quot;
+<span class="lineNum">      26 </span>                :            : 
+<span class="lineNum">      27 </span>                :            : #define DEFAULT_INITIAL_CAPACITY (16)
+<span class="lineNum">      28 </span>                :            : 
+<span class="lineNum">      29 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">      30 </span>                :            : static int fail_grow = FALSE;
+<span class="lineNum">      31 </span>                :            : #endif
+<span class="lineNum">      32 </span>                :            : 
+<span class="lineNum">      33 </span>                :            : /* node used in queue structure */
+<span class="lineNum">      34 </span>                :            : struct array_node_s
+<span class="lineNum">      35 </span>                :            : {
+<span class="lineNum">      36 </span>                :            :     int_t   next;   /* next node in the list */
+<span class="lineNum">      37 </span>                :            :     int_t   prev;   /* prev node in the list */
+<span class="lineNum">      38 </span>                :            :     void *  data;   /* pointer to the data */
+<span class="lineNum">      39 </span>                :            :     uint_t  dummy;
+<span class="lineNum">      40 </span>                :            : };
+<span class="lineNum">      41 </span>                :            : 
+<span class="lineNum">      42 </span>                :            : #define NODE_AT( a, i ) (&amp;(a-&gt;node_buffer[i]))
+<span class="lineNum">      43 </span>                :            : #define INDEX_OF( a, n ) (int_t)((uint_t)n - (uint_t)a-&gt;node_buffer) / sizeof(array_node_t);
+<span class="lineNum">      44 </span>                :            : 
+<span class="lineNum">      45 </span>                :            : /* index constants */
+<span class="lineNum">      46 </span>                :            : array_itr_t const array_itr_end_t = -1;
+<span class="lineNum">      47 </span>                :            : 
+<span class="lineNum">      48 </span>                :            : /* forward declaration */
+<span class="lineNum">      49 </span>                :            : static int array_grow( array_t * const array );
+<span class="lineNum">      50 </span>                :            : static int array_sanity_check( array_t const * const array );
+<span class="lineNum">      51 </span>                :            : 
+<span class="lineNum">      52 </span>                :            : #ifdef USE_THREADING
+<span class="lineNum">      53 </span>                :            : /*
+<span class="lineNum">      54 </span>                :            :  * This function locks the array mutex.
+<span class="lineNum">      55 </span>                :            :  */
+<span class="lineNum">      56 </span>                :            : void array_lock(array_t * const array)
+<span class="lineNum">      57 </span>                :            : {
+<span class="lineNum">      58 </span>                :            :     CHECK_PTR(array);
+<span class="lineNum">      59 </span>                :            : 
+<span class="lineNum">      60 </span>                :            :     /* lock the mutex */
+<span class="lineNum">      61 </span>                :            :     pthread_mutex_lock(&amp;array-&gt;lock);
+<span class="lineNum">      62 </span>                :            : }
+<span class="lineNum">      63 </span>                :            : 
+<span class="lineNum">      64 </span>                :            : /*
+<span class="lineNum">      65 </span>                :            :  * This function tries to lock the mutex associated with the array.
+<span class="lineNum">      66 </span>                :            :  */
+<span class="lineNum">      67 </span>                :            : int array_try_lock(array_t * const array)
+<span class="lineNum">      68 </span>                :            : {
+<span class="lineNum">      69 </span>                :            :     CHECK_PTR_RET(array, 0);
+<span class="lineNum">      70 </span>                :            :     
+<span class="lineNum">      71 </span>                :            :     /* try to lock the mutex */
+<span class="lineNum">      72 </span>                :            :     return (pthread_mutex_trylock(&amp;array-&gt;lock) == 0);
+<span class="lineNum">      73 </span>                :            : }
+<span class="lineNum">      74 </span>                :            : 
+<span class="lineNum">      75 </span>                :            : /*
+<span class="lineNum">      76 </span>                :            :  * This function unlocks the array mutex.
+<span class="lineNum">      77 </span>                :            :  */
+<span class="lineNum">      78 </span>                :            : void array_unlock(array_t * const array)
+<span class="lineNum">      79 </span>                :            : {
+<span class="lineNum">      80 </span>                :            :     CHECK_PTR(array);
+<span class="lineNum">      81 </span>                :            : 
+<span class="lineNum">      82 </span>                :            :     /* unlock the mutex */
+<span class="lineNum">      83 </span>                :            :     pthread_mutex_unlock(&amp;array-&gt;lock);
+<span class="lineNum">      84 </span>                :            : }
+<span class="lineNum">      85 </span>                :            : 
+<span class="lineNum">      86 </span>                :            : /*
+<span class="lineNum">      87 </span>                :            :  * Returns the mutex pointer for use with condition variables.
+<span class="lineNum">      88 </span>                :            :  */
+<span class="lineNum">      89 </span>                :            : pthread_mutex_t * array_mutex(array_t * const array)
+<span class="lineNum">      90 </span>                :            : {
+<span class="lineNum">      91 </span>                :            :     CHECK_PTR_RET(array, NULL);
+<span class="lineNum">      92 </span>                :            : 
+<span class="lineNum">      93 </span>                :            :     /* return the mutex pointer */
+<span class="lineNum">      94 </span>                :            :     return &amp;array-&gt;lock;
+<span class="lineNum">      95 </span>                :            : }
+<span class="lineNum">      96 </span>                :            : #endif/*USE_THREADING*/
+<span class="lineNum">      97 </span>                :            : 
+<span class="lineNum">      98 </span>                :            : /*
+<span class="lineNum">      99 </span>                :            :  * This function initializes the array_t structure by allocating
+<span class="lineNum">     100 </span>                :            :  * a node buffer and initializing the indexes for the data head
+<span class="lineNum">     101 </span>                :            :  * and the free list head.  It then initializes the linked lists.
+<span class="lineNum">     102 </span>                :            :  * The function pointer points to a destructor for the nodes that 
+<span class="lineNum">     103 </span>                :            :  * are going to be stored in the data structure.  If NULL is passed 
+<span class="lineNum">     104 </span>                :            :  * for the pfn parameter, then no action will be taken when the 
+<a name="105"><span class="lineNum">     105 </span>                :            :  * data structure is deleted.</a>
+<span class="lineNum">     106 </span>                :            :  */
+<span class="lineNum">     107 </span>                :<span class="lineCov">        791 : void array_initialize( array_t * const array, </span>
+<span class="lineNum">     108 </span>                :            :                        uint_t initial_capacity,
+<span class="lineNum">     109 </span>                :            :                        delete_fn pfn )
+<span class="lineNum">     110 </span>                :            : {
+<span class="lineNum">     111 </span>                :<span class="lineCov">        791 :     uint_t i = 0;</span>
+<span class="lineNum">     112 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 791 times"> + </span>]:<span class="lineCov">       1582 :     CHECK_PTR(array);</span>
+<span class="lineNum">     113 </span>                :            : 
+<span class="lineNum">     114 </span>                :            :     /* zero out the memory */
+<span class="lineNum">     115 </span>                :<span class="lineCov">        791 :     MEMSET(array, 0, sizeof(array_t));</span>
+<span class="lineNum">     116 </span>                :            : 
+<span class="lineNum">     117 </span>                :            :     /* store the delete function pointer */
+<span class="lineNum">     118 </span>                :<span class="lineCov">        791 :     array-&gt;pfn = pfn;</span>
+<span class="lineNum">     119 </span>                :            : 
+<span class="lineNum">     120 </span>                :            :     /* remember the buffer size */
+<span class="lineNum">     121 </span>                :<span class="lineCov">        791 :     array-&gt;buffer_size = 0;</span>
+<span class="lineNum">     122 </span>                :            : 
+<span class="lineNum">     123 </span>                :            :     /* remember the initial capacity */
+<span class="lineNum">     124 </span>                :<span class="lineCov">        791 :     array-&gt;initial_capacity = initial_capacity;</span>
+<span class="lineNum">     125 </span>                :            : 
+<span class="lineNum">     126 </span>                :            :     /* initialize the data list */
+<span class="lineNum">     127 </span>                :<span class="lineCov">        791 :     array-&gt;data_head = -1;</span>
+<span class="lineNum">     128 </span>                :            : 
+<span class="lineNum">     129 </span>                :            :     /* initialize the free list */
+<span class="lineNum">     130 </span>                :<span class="lineCov">        791 :     array-&gt;free_head = -1;</span>
+<span class="lineNum">     131 </span>                :            : 
+<span class="lineNum">     132 </span>                :            :     /* allocate the initial node buffer only if there is an initial capacity */
+<span class="lineNum">     133 </span>        [<span class="branchCov" title="Branch 0 was taken 784 times"> + </span><span class="branchCov" title="Branch 1 was taken 7 times"> + </span>]:<span class="lineCov">        791 :     if ( initial_capacity &gt; 0 )</span>
+<span class="lineNum">     134 </span>                :            :     {
+<span class="lineNum">     135 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 784 times"> + </span>]:<span class="lineCov">        784 :         if( !array_grow( array ) )</span>
+<span class="lineNum">     136 </span>                :            :         {
+<span class="lineNum">     137 </span>                :<span class="lineNoCov">          0 :             WARN(&quot;failed to grow the array\n&quot;);</span>
+<span class="lineNum">     138 </span>                :            :         }
+<span class="lineNum">     139 </span>                :            :     }
+<span class="lineNum">     140 </span>                :            : 
+<span class="lineNum">     141 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     142 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 791 times"> + </span>]:<span class="lineCov">        791 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     143 </span>                :            : #endif
+<span class="lineNum">     144 </span>                :            : 
+<span class="lineNum">     145 </span>                :            : #ifdef USE_THREADING
+<span class="lineNum">     146 </span>                :            :     /* initialize the mutex */
+<span class="lineNum">     147 </span>                :            :     pthread_mutex_init(&amp;array-&gt;lock, 0);
+<span class="lineNum">     148 </span>                :            : #endif
+<span class="lineNum">     149 </span>                :            : }
+<span class="lineNum">     150 </span>                :            : 
+<span class="lineNum">     151 </span>                :            : /*
+<span class="lineNum">     152 </span>                :            :  * This function allocates a new array structure and
+<a name="153"><span class="lineNum">     153 </span>                :            :  * initializes it.</a>
+<span class="lineNum">     154 </span>                :            :  */
+<span class="lineNum">     155 </span>                :<span class="lineCov">        136 : array_t * array_new( uint_t initial_capacity, delete_fn pfn )</span>
+<span class="lineNum">     156 </span>                :            : {
+<span class="lineNum">     157 </span>                :<span class="lineCov">        136 :     array_t * array = NULL;</span>
+<span class="lineNum">     158 </span>                :            : 
+<span class="lineNum">     159 </span>                :            :     /* allocate the array structure */
+<span class="lineNum">     160 </span>                :<span class="lineCov">        136 :     array = (array_t*)CALLOC( 1, sizeof(array_t) );</span>
+<span class="lineNum">     161 </span>                :            : 
+<span class="lineNum">     162 </span>                :            :     /* initialize the array */
+<span class="lineNum">     163 </span>                :<span class="lineCov">        136 :     array_initialize( array, initial_capacity, pfn );</span>
+<span class="lineNum">     164 </span>                :            : 
+<span class="lineNum">     165 </span>                :            :     /* return the new array */
+<span class="lineNum">     166 </span>                :<span class="lineCov">        136 :     return array;</span>
+<span class="lineNum">     167 </span>                :            : }
+<span class="lineNum">     168 </span>                :            : 
+<span class="lineNum">     169 </span>                :            : 
+<span class="lineNum">     170 </span>                :            : /*
+<span class="lineNum">     171 </span>                :            :  * This function iterates over the list of nodes passing each one to the
+<span class="lineNum">     172 </span>                :            :  * destroy function if one was provided.  If there wasn't one provided
+<a name="173"><span class="lineNum">     173 </span>                :            :  * then nothing will be done to clean up each node.</a>
+<span class="lineNum">     174 </span>                :            :  */
+<span class="lineNum">     175 </span>                :<span class="lineCov">        791 : void array_deinitialize(array_t * const array)</span>
+<span class="lineNum">     176 </span>                :            : {
+<span class="lineNum">     177 </span>                :<span class="lineCov">        791 :     int_t ret = 0;</span>
+<span class="lineNum">     178 </span>                :<span class="lineCov">        791 :     uint_t i = 0;</span>
+<span class="lineNum">     179 </span>                :<span class="lineCov">        791 :     array_node_t* pstart = NULL;</span>
+<span class="lineNum">     180 </span>                :<span class="lineCov">        791 :     array_node_t* node = NULL;</span>
+<span class="lineNum">     181 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 791 times"> + </span>]:<span class="lineCov">       1582 :     CHECK_PTR(array);</span>
+<span class="lineNum">     182 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     183 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 791 times"> + </span>]:<span class="lineCov">        791 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     184 </span>                :            : #endif
+<span class="lineNum">     185 </span>                :            : 
+<span class="lineNum">     186 </span>                :            :     /* iterate over the list calling the destructor for each node */
+<span class="lineNum">     187 </span>[<span class="branchCov" title="Branch 0 was taken 128 times"> + </span><span class="branchCov" title="Branch 1 was taken 663 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 113 times"> + </span><span class="branchCov" title="Branch 4 was taken 15 times"> + </span>]:<span class="lineCov">        791 :     if( (array-&gt;pfn != NULL) &amp;&amp; (array_size( array ) &gt; 0) )</span>
+<span class="lineNum">     188 </span>                :            :     {
+<span class="lineNum">     189 </span>                :<span class="lineCov">        113 :         node = pstart = NODE_AT(array, array-&gt;data_head);</span>
+<span class="lineNum">     190 </span>                :            :         do
+<span class="lineNum">     191 </span>                :            :         {
+<span class="lineNum">     192 </span>                :            :             /* if there is data, free it */
+<span class="lineNum">     193 </span>[<span class="branchCov" title="Branch 0 was taken 27241 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 27241 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">      27241 :             if((node != NULL) &amp;&amp; (node-&gt;data != NULL))</span>
+<span class="lineNum">     194 </span>                :            :             {
+<span class="lineNum">     195 </span>                :            :                 /* free up the data */
+<span class="lineNum">     196 </span>                :<span class="lineCov">      27241 :                 (*(array-&gt;pfn))(node-&gt;data);</span>
+<span class="lineNum">     197 </span>                :            : 
+<span class="lineNum">     198 </span>                :<span class="lineCov">      27241 :                 node-&gt;data = NULL;</span>
+<span class="lineNum">     199 </span>                :            :             }
+<span class="lineNum">     200 </span>                :            : 
+<span class="lineNum">     201 </span>                :            :             /* move to the next node in the list */
+<span class="lineNum">     202 </span>                :<span class="lineCov">      27241 :             node = NODE_AT( array, node-&gt;next);</span>
+<span class="lineNum">     203 </span>                :            : 
+<span class="lineNum">     204 </span>        [<span class="branchCov" title="Branch 0 was taken 27128 times"> + </span><span class="branchCov" title="Branch 1 was taken 113 times"> + </span>]:<span class="lineCov">      27241 :         } while( node != pstart );</span>
+<span class="lineNum">     205 </span>                :            :     }
+<span class="lineNum">     206 </span>                :            : 
+<span class="lineNum">     207 </span>                :            :     /* free up the node buffer */
+<span class="lineNum">     208 </span>        [<span class="branchCov" title="Branch 0 was taken 785 times"> + </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">        791 :     if ( array-&gt;node_buffer != NULL )</span>
+<span class="lineNum">     209 </span>                :            :     {
+<span class="lineNum">     210 </span>                :<span class="lineCov">        785 :         FREE( array-&gt;node_buffer );</span>
+<span class="lineNum">     211 </span>                :            :     }
+<span class="lineNum">     212 </span>                :<span class="lineCov">        791 :     array-&gt;node_buffer = NULL;</span>
+<span class="lineNum">     213 </span>                :            : 
+<span class="lineNum">     214 </span>                :            : #ifdef USE_THREADING
+<span class="lineNum">     215 </span>                :            :     /* destroy the lock */
+<span class="lineNum">     216 </span>                :            :     ret = pthread_mutex_destroy(&amp;array-&gt;lock);
+<span class="lineNum">     217 </span>                :            :     ASSERT(ret == 0);
+<span class="lineNum">     218 </span>                :            : #endif
+<span class="lineNum">     219 </span>                :            : 
+<span class="lineNum">     220 </span>                :            :     /* invalidate the delete function */
+<span class="lineNum">     221 </span>                :<span class="lineCov">        791 :     array-&gt;pfn = NULL;</span>
+<span class="lineNum">     222 </span>                :            : 
+<span class="lineNum">     223 </span>                :            :     /* invalidate the two list heads */
+<span class="lineNum">     224 </span>                :<span class="lineCov">        791 :     array-&gt;data_head = -1;</span>
+<span class="lineNum">     225 </span>                :<span class="lineCov">        791 :     array-&gt;free_head = -1;</span>
+<span class="lineNum">     226 </span>                :            : 
+<span class="lineNum">     227 </span>                :            :     /* clear out the counts */
+<span class="lineNum">     228 </span>                :<span class="lineCov">        791 :     array-&gt;num_nodes = 0;</span>
+<span class="lineNum">     229 </span>                :<span class="lineCov">        791 :     array-&gt;buffer_size = 0;</span>
+<span class="lineNum">     230 </span>                :            :     
+<span class="lineNum">     231 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     232 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 791 times"> + </span>]:<span class="lineCov">        791 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     233 </span>                :            : #endif
+<span class="lineNum">     234 </span>                :            : }
+<span class="lineNum">     235 </span>                :            : 
+<a name="236"><span class="lineNum">     236 </span>                :            : </a>
+<span class="lineNum">     237 </span>                :            : /* this frees an allocated array structure */
+<span class="lineNum">     238 </span>                :<span class="lineCov">        136 : void array_delete( void * arr )</span>
+<span class="lineNum">     239 </span>                :            : {
+<span class="lineNum">     240 </span>                :<span class="lineCov">        136 :     array_t * array = (array_t*)arr;</span>
+<span class="lineNum">     241 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 136 times"> + </span>]:<span class="lineCov">        272 :     CHECK_PTR(array);</span>
+<span class="lineNum">     242 </span>                :            : 
+<span class="lineNum">     243 </span>                :            :     /* deinit the array */
+<span class="lineNum">     244 </span>                :<span class="lineCov">        136 :     array_deinitialize(array);</span>
+<span class="lineNum">     245 </span>                :            : 
+<span class="lineNum">     246 </span>                :            :     /* free the array */
+<span class="lineNum">     247 </span>                :<span class="lineCov">        136 :     FREE( (void*)array );</span>
+<span class="lineNum">     248 </span>                :            : }
+<span class="lineNum">     249 </span>                :            : 
+<a name="250"><span class="lineNum">     250 </span>                :            : </a>
+<span class="lineNum">     251 </span>                :            : /* get the size of the array in a thread-safe way */
+<span class="lineNum">     252 </span>                :<span class="lineCov">     215130 : int_t array_size(array_t const * const array)</span>
+<span class="lineNum">     253 </span>                :            : {
+<span class="lineNum">     254 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 215130 times"> + </span>]:<span class="lineCov">     215130 :     CHECK_PTR_RET(array, -1);</span>
+<span class="lineNum">     255 </span>                :            : 
+<span class="lineNum">     256 </span>                :<span class="lineCov">     215130 :     return (int_t)array-&gt;num_nodes;</span>
+<span class="lineNum">     257 </span>                :            : }
+<span class="lineNum">     258 </span>                :            : 
+<span class="lineNum">     259 </span>                :            : 
+<span class="lineNum">     260 </span>                :            : /* 
+<span class="lineNum">     261 </span>                :            :  * this function doubles the node buffer size and moves the nodes from the old
+<a name="262"><span class="lineNum">     262 </span>                :            :  * buffer to the new buffer, compacting them at the same time</a>
+<span class="lineNum">     263 </span>                :            :  */
+<span class="lineNum">     264 </span>                :<span class="lineCov">       1734 : static int array_grow(array_t * const array)</span>
+<span class="lineNum">     265 </span>                :            : {
+<span class="lineNum">     266 </span>                :<span class="lineCov">       1734 :     uint_t i = 0;</span>
+<span class="lineNum">     267 </span>                :<span class="lineCov">       1734 :     uint_t old_size = 0;</span>
+<span class="lineNum">     268 </span>                :<span class="lineCov">       1734 :     uint_t new_size = 0;</span>
+<span class="lineNum">     269 </span>                :<span class="lineCov">       1734 :     array_node_t * new_buffer = NULL;</span>
+<span class="lineNum">     270 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1734 times"> + </span>]:<span class="lineCov">       1734 :     CHECK_PTR_RET( array, FALSE );</span>
+<span class="lineNum">     271 </span>                :            : 
+<span class="lineNum">     272 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     273 </span>                :            :     /* fail the grow if FAIL_GROW is true */
+<span class="lineNum">     274 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1734 times"> + </span>]:<span class="lineCov">       1734 :     if ( fail_grow == TRUE )</span>
+<span class="lineNum">     275 </span>                :<span class="lineNoCov">          0 :         return FALSE;</span>
+<span class="lineNum">     276 </span>                :            : #endif
+<span class="lineNum">     277 </span>                :            : 
+<span class="lineNum">     278 </span>                :            :     /* get the old size */
+<span class="lineNum">     279 </span>                :<span class="lineCov">       1734 :     old_size = array-&gt;buffer_size;</span>
+<span class="lineNum">     280 </span>                :            : 
+<span class="lineNum">     281 </span>                :            :     /* get the new size */
+<span class="lineNum">     282 </span>        [<span class="branchCov" title="Branch 0 was taken 785 times"> + </span><span class="branchCov" title="Branch 1 was taken 949 times"> + </span>]:<span class="lineCov">       1734 :     if ( old_size == 0 )</span>
+<span class="lineNum">     283 </span>                :            :     {
+<span class="lineNum">     284 </span>        [<span class="branchCov" title="Branch 0 was taken 784 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        785 :         new_size = ((array-&gt;initial_capacity &gt; 0) ? array-&gt;initial_capacity : DEFAULT_INITIAL_CAPACITY);</span>
+<span class="lineNum">     285 </span>                :            :     }
+<span class="lineNum">     286 </span>        [<span class="branchCov" title="Branch 0 was taken 200 times"> + </span><span class="branchCov" title="Branch 1 was taken 749 times"> + </span>]:<span class="lineCov">        949 :     else if ( old_size &gt;= 256 )</span>
+<span class="lineNum">     287 </span>                :            :     {
+<span class="lineNum">     288 </span>                :<span class="lineCov">        200 :         new_size = (old_size + 256);</span>
+<span class="lineNum">     289 </span>                :            :     }
+<span class="lineNum">     290 </span>                :            :     else
+<span class="lineNum">     291 </span>                :            :     {
+<span class="lineNum">     292 </span>                :<span class="lineCov">        749 :         new_size = (old_size * 2);</span>
+<span class="lineNum">     293 </span>                :            :     }
+<span class="lineNum">     294 </span>                :            : 
+<span class="lineNum">     295 </span>                :            :     /* resize the existing buffer */
+<span class="lineNum">     296 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1734 times"> + </span>]:<span class="lineCov">       1734 :     ASSERT( new_size &gt; old_size );</span>
+<span class="lineNum">     297 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1734 times"> + </span>]:<span class="lineCov">       1734 :     ASSERT( new_size &gt; 0 );</span>
+<span class="lineNum">     298 </span>        [<span class="branchCov" title="Branch 0 was taken 949 times"> + </span><span class="branchCov" title="Branch 1 was taken 785 times"> + </span>]:<span class="lineCov">       1734 :     if ( array-&gt;node_buffer != NULL )</span>
+<span class="lineNum">     299 </span>                :            :     {
+<span class="lineNum">     300 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 949 times"> + </span>]:<span class="lineCov">        949 :         ASSERT( new_size &gt; 0 );</span>
+<span class="lineNum">     301 </span>                :            :     }
+<span class="lineNum">     302 </span>                :            : 
+<span class="lineNum">     303 </span>                :<span class="lineCov">       1734 :     new_buffer = (array_node_t*)REALLOC( array-&gt;node_buffer, (new_size * sizeof(array_node_t)) );</span>
+<span class="lineNum">     304 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1734 times"> + </span>]:<span class="lineCov">       1734 :     ASSERT( new_buffer != NULL );</span>
+<span class="lineNum">     305 </span>                :<span class="lineCov">       1734 :     MEMSET( (void*)&amp;(new_buffer[old_size]), 0, ((new_size - old_size) * sizeof(array_node_t)) );</span>
+<span class="lineNum">     306 </span>                :<span class="lineCov">       1734 :     array-&gt;node_buffer = new_buffer;</span>
+<span class="lineNum">     307 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1734 times"> + </span>]:<span class="lineCov">       1734 :     ASSERT( array-&gt;node_buffer != NULL );</span>
+<span class="lineNum">     308 </span>                :            : 
+<span class="lineNum">     309 </span>                :            :     /* store the new size */
+<span class="lineNum">     310 </span>                :<span class="lineCov">       1734 :     array-&gt;buffer_size = new_size;</span>
+<span class="lineNum">     311 </span>                :            : 
+<span class="lineNum">     312 </span>                :            :     /* fix up the middle free nodes */
+<span class="lineNum">     313 </span>        [<span class="branchCov" title="Branch 0 was taken 181201 times"> + </span><span class="branchCov" title="Branch 1 was taken 1734 times"> + </span>]:<span class="lineCov">     182935 :     for(i = old_size; i &lt; array-&gt;buffer_size; i++)</span>
+<span class="lineNum">     314 </span>                :            :     {
+<span class="lineNum">     315 </span>                :            :         /* initialize the prev */
+<span class="lineNum">     316 </span>                :<span class="lineCov">     181201 :         array-&gt;node_buffer[i].prev = (i - 1);</span>
+<span class="lineNum">     317 </span>                :            : 
+<span class="lineNum">     318 </span>                :            :         /* initialize the next */
+<span class="lineNum">     319 </span>                :<span class="lineCov">     181201 :         array-&gt;node_buffer[i].next = (i + 1);</span>
+<span class="lineNum">     320 </span>                :            : 
+<span class="lineNum">     321 </span>                :            :         /* initialize the data pointer */
+<span class="lineNum">     322 </span>                :<span class="lineCov">     181201 :         array-&gt;node_buffer[i].data = NULL;</span>
+<span class="lineNum">     323 </span>                :            :     }
+<span class="lineNum">     324 </span>                :            : 
+<span class="lineNum">     325 </span>        [<span class="branchCov" title="Branch 0 was taken 785 times"> + </span><span class="branchCov" title="Branch 1 was taken 949 times"> + </span>]:<span class="lineCov">       1734 :     if ( old_size == 0 )</span>
+<span class="lineNum">     326 </span>                :            :     {
+<span class="lineNum">     327 </span>                :            :         /* initialize the free_head index */
+<span class="lineNum">     328 </span>                :<span class="lineCov">        785 :         array-&gt;free_head = 0;</span>
+<span class="lineNum">     329 </span>                :            :     }
+<span class="lineNum">     330 </span>                :            :     else
+<span class="lineNum">     331 </span>                :            :     {
+<span class="lineNum">     332 </span>                :            :         /* link the free_head with the head of the new block of ndoes */
+<span class="lineNum">     333 </span>                :<span class="lineCov">        949 :         array-&gt;node_buffer[array-&gt;free_head].next = old_size;</span>
+<span class="lineNum">     334 </span>                :            :     }
+<span class="lineNum">     335 </span>                :            : 
+<span class="lineNum">     336 </span>                :            :     /* link the free_head node with the tail of the new block of nodes */
+<span class="lineNum">     337 </span>                :<span class="lineCov">       1734 :     array-&gt;node_buffer[array-&gt;free_head].prev = (array-&gt;buffer_size - 1);</span>
+<span class="lineNum">     338 </span>                :<span class="lineCov">       1734 :     array-&gt;node_buffer[array-&gt;buffer_size - 1].next = array-&gt;free_head;</span>
+<span class="lineNum">     339 </span>                :            :     
+<span class="lineNum">     340 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     341 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 1734 times"> + </span>]:<span class="lineCov">       1734 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     342 </span>                :            : #endif
+<span class="lineNum">     343 </span>                :            : 
+<span class="lineNum">     344 </span>                :<span class="lineCov">       1734 :     return TRUE;</span>
+<span class="lineNum">     345 </span>                :            : }
+<a name="346"><span class="lineNum">     346 </span>                :            : </a>
+<span class="lineNum">     347 </span>                :            : 
+<span class="lineNum">     348 </span>                :<span class="lineCov">      88708 : static array_itr_t array_get_free_node( array_t * const array )</span>
+<span class="lineNum">     349 </span>                :            : {
+<span class="lineNum">     350 </span>                :<span class="lineCov">      88708 :     array_itr_t prev = array_itr_end_t;</span>
+<span class="lineNum">     351 </span>                :<span class="lineCov">      88708 :     array_itr_t ret = array_itr_end_t;</span>
+<span class="lineNum">     352 </span>                :<span class="lineCov">      88708 :     array_itr_t next = array_itr_end_t;</span>
+<span class="lineNum">     353 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 88708 times"> + </span>]:<span class="lineCov">      88708 :     CHECK_PTR_RET(array, array_itr_end_t);</span>
+<span class="lineNum">     354 </span>                :            : 
+<span class="lineNum">     355 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     356 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 88708 times"> + </span>]:<span class="lineCov">      88708 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     357 </span>                :            : #endif
+<span class="lineNum">     358 </span>                :            : 
+<span class="lineNum">     359 </span>                :            :     /* are we taking the last free node? better grow the buffer first */
+<span class="lineNum">     360 </span>        [<span class="branchCov" title="Branch 0 was taken 822 times"> + </span><span class="branchCov" title="Branch 1 was taken 87886 times"> + </span>]:<span class="lineCov">      88708 :     if((array-&gt;num_nodes + 1) &gt;= array-&gt;buffer_size)</span>
+<span class="lineNum">     361 </span>                :            :     {
+<span class="lineNum">     362 </span>                :            :         /* we need to grow the buffer */
+<span class="lineNum">     363 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 822 times"> + </span>]:<span class="lineCov">        822 :         if(!array_grow(array))</span>
+<span class="lineNum">     364 </span>                :            :         {
+<span class="lineNum">     365 </span>                :<span class="lineNoCov">          0 :             WARN(&quot;failed to grow the array!\n&quot;);</span>
+<span class="lineNum">     366 </span>                :<span class="lineNoCov">          0 :             return array_itr_end_t;</span>
+<span class="lineNum">     367 </span>                :            :         }
+<span class="lineNum">     368 </span>                :            :     }
+<span class="lineNum">     369 </span>                :            : 
+<span class="lineNum">     370 </span>                :            :     /* get the index of the node to return */
+<span class="lineNum">     371 </span>                :<span class="lineCov">      88708 :     ret = array-&gt;free_head;</span>
+<span class="lineNum">     372 </span>                :            : 
+<span class="lineNum">     373 </span>                :            :     /* get the index of the node previous to the free head in the list */
+<span class="lineNum">     374 </span>                :<span class="lineCov">      88708 :     prev = NODE_AT(array, ret)-&gt;prev;</span>
+<span class="lineNum">     375 </span>                :            : 
+<span class="lineNum">     376 </span>                :            :     /* get the index of the node next after the free head in the list */
+<span class="lineNum">     377 </span>                :<span class="lineCov">      88708 :     next = NODE_AT(array, ret)-&gt;next;</span>
+<span class="lineNum">     378 </span>                :            : 
+<span class="lineNum">     379 </span>                :            :     /* set the new free head to the next node in the free list */
+<span class="lineNum">     380 </span>                :<span class="lineCov">      88708 :     array-&gt;free_head = next;</span>
+<span class="lineNum">     381 </span>                :            : 
+<span class="lineNum">     382 </span>                :            :     /* remove the old head */
+<span class="lineNum">     383 </span>                :<span class="lineCov">      88708 :     NODE_AT(array, prev)-&gt;next = next;</span>
+<span class="lineNum">     384 </span>                :<span class="lineCov">      88708 :     NODE_AT(array, next)-&gt;prev = prev;</span>
+<span class="lineNum">     385 </span>                :<span class="lineCov">      88708 :     NODE_AT(array, ret)-&gt;next = array_itr_end_t;</span>
+<span class="lineNum">     386 </span>                :<span class="lineCov">      88708 :     NODE_AT(array, ret)-&gt;prev = array_itr_end_t;</span>
+<span class="lineNum">     387 </span>                :            : 
+<span class="lineNum">     388 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     389 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 88708 times"> + </span>]:<span class="lineCov">      88708 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     390 </span>                :            : #endif
+<span class="lineNum">     391 </span>                :            : 
+<span class="lineNum">     392 </span>                :            :     /* return the node removed from the free list */
+<span class="lineNum">     393 </span>                :<span class="lineCov">      88708 :     return ret;</span>
+<span class="lineNum">     394 </span>                :            : }
+<a name="395"><span class="lineNum">     395 </span>                :            : </a>
+<span class="lineNum">     396 </span>                :            : 
+<span class="lineNum">     397 </span>                :<span class="lineCov">        595 : static void array_put_free_node(</span>
+<span class="lineNum">     398 </span>                :            :     array_t * const array, 
+<span class="lineNum">     399 </span>                :            :     array_itr_t const itr )
+<span class="lineNum">     400 </span>                :            : {
+<span class="lineNum">     401 </span>                :<span class="lineCov">        595 :     array_itr_t prev = array_itr_end_t;</span>
+<span class="lineNum">     402 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 595 times"> + </span>]:<span class="lineCov">        595 :     CHECK_PTR(array);</span>
+<span class="lineNum">     403 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 595 times"> + </span>]:<span class="lineCov">        595 :     CHECK( itr != array_itr_end_t );</span>
+<span class="lineNum">     404 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     405 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 595 times"> + </span>]:<span class="lineCov">        595 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     406 </span>                :            : #endif
+<span class="lineNum">     407 </span>                :            : 
+<span class="lineNum">     408 </span>                :            :     /* clear the data pointer */
+<span class="lineNum">     409 </span>                :<span class="lineCov">        595 :     NODE_AT( array, itr )-&gt;data = NULL;</span>
+<span class="lineNum">     410 </span>                :            : 
+<span class="lineNum">     411 </span>                :            :     /* get the index of the node previous to the head */
+<span class="lineNum">     412 </span>                :<span class="lineCov">        595 :     prev = NODE_AT( array, array-&gt;free_head )-&gt;prev;</span>
+<span class="lineNum">     413 </span>                :            : 
+<span class="lineNum">     414 </span>                :            :     /* hook in the new head */
+<span class="lineNum">     415 </span>                :<span class="lineCov">        595 :     NODE_AT( array, itr)-&gt;prev = prev;</span>
+<span class="lineNum">     416 </span>                :<span class="lineCov">        595 :     NODE_AT( array, prev )-&gt;next = itr;</span>
+<span class="lineNum">     417 </span>                :<span class="lineCov">        595 :     NODE_AT( array, itr)-&gt;next = array-&gt;free_head;</span>
+<span class="lineNum">     418 </span>                :<span class="lineCov">        595 :     NODE_AT( array, array-&gt;free_head )-&gt;prev = itr;</span>
+<span class="lineNum">     419 </span>                :            : 
+<span class="lineNum">     420 </span>                :            :     /* calculate the new free head index */
+<span class="lineNum">     421 </span>                :<span class="lineCov">        595 :     array-&gt;free_head = itr;</span>
+<span class="lineNum">     422 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     423 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 595 times"> + </span>]:<span class="lineCov">        595 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     424 </span>                :            : #endif
+<span class="lineNum">     425 </span>                :            : }
+<a name="426"><span class="lineNum">     426 </span>                :            : </a>
+<span class="lineNum">     427 </span>                :            : /* get an iterator to the start of the array */
+<span class="lineNum">     428 </span>                :<span class="lineCov">      34013 : array_itr_t array_itr_begin(array_t const * const array)</span>
+<span class="lineNum">     429 </span>                :            : {
+<span class="lineNum">     430 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 34013 times"> + </span>]:<span class="lineCov">      34013 :     CHECK_PTR_RET(array, array_itr_end_t);</span>
+<span class="lineNum">     431 </span>        [<span class="branchCov" title="Branch 1 was taken 1799 times"> + </span><span class="branchCov" title="Branch 2 was taken 32214 times"> + </span>]:<span class="lineCov">      34013 :     CHECK_RET(array_size(array) &gt; 0, array_itr_end_t);</span>
+<span class="lineNum">     432 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     433 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 32214 times"> + </span>]:<span class="lineCov">      32214 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     434 </span>                :            : #endif
+<span class="lineNum">     435 </span>                :            : 
+<span class="lineNum">     436 </span>                :<span class="lineCov">      34013 :     return array-&gt;data_head;</span>
+<span class="lineNum">     437 </span>                :            : }
+<a name="438"><span class="lineNum">     438 </span>                :            : </a>
+<span class="lineNum">     439 </span>                :            : /* get an iterator to the end of the array */
+<span class="lineNum">     440 </span>                :<span class="lineCov">     209683 : array_itr_t array_itr_end(array_t const * const array)</span>
+<span class="lineNum">     441 </span>                :            : {
+<span class="lineNum">     442 </span>                :<span class="lineCov">     209683 :     return array_itr_end_t;</span>
+<span class="lineNum">     443 </span>                :            : }
+<a name="444"><span class="lineNum">     444 </span>                :            : </a>
+<span class="lineNum">     445 </span>                :            : /* get an iterator to the last item in the array */
+<span class="lineNum">     446 </span>                :<span class="lineCov">        641 : array_itr_t array_itr_tail(array_t const * const array)</span>
+<span class="lineNum">     447 </span>                :            : {
+<span class="lineNum">     448 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 641 times"> + </span>]:<span class="lineCov">        641 :     CHECK_PTR_RET(array, array_itr_end_t);</span>
+<span class="lineNum">     449 </span>        [<span class="branchCov" title="Branch 1 was taken 640 times"> + </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">        641 :     CHECK_RET(array_size(array) &gt; 0, array_itr_end_t);</span>
+<span class="lineNum">     450 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     451 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     452 </span>                :            : #endif
+<span class="lineNum">     453 </span>                :            :     
+<span class="lineNum">     454 </span>                :            :     /* return the index of the tail */
+<span class="lineNum">     455 </span>                :<span class="lineCov">        641 :     return (array_itr_t)NODE_AT(array, array-&gt;data_head)-&gt;prev;</span>
+<span class="lineNum">     456 </span>                :            : }
+<a name="457"><span class="lineNum">     457 </span>                :            : </a>
+<span class="lineNum">     458 </span>                :            : /* iterator based access to the array elements */
+<span class="lineNum">     459 </span>                :<span class="lineCov">      30348 : array_itr_t array_itr_next(</span>
+<span class="lineNum">     460 </span>                :            :     array_t const * const array, 
+<span class="lineNum">     461 </span>                :            :     array_itr_t const itr)
+<span class="lineNum">     462 </span>                :            : {
+<span class="lineNum">     463 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 30348 times"> + </span>]:<span class="lineCov">      30348 :     CHECK_PTR_RET(array, array_itr_end_t);</span>
+<span class="lineNum">     464 </span>        [<span class="branchCov" title="Branch 1 was taken 512 times"> + </span><span class="branchCov" title="Branch 2 was taken 29836 times"> + </span>]:<span class="lineCov">      30348 :     CHECK_RET(array_size(array) &gt; 0, array_itr_end_t);</span>
+<span class="lineNum">     465 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 29836 times"> + </span>]:<span class="lineCov">      29836 :     CHECK_RET(itr != array_itr_end_t, array_itr_end_t);</span>
+<span class="lineNum">     466 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     467 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 29836 times"> + </span>]:<span class="lineCov">      29836 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     468 </span>                :            : #endif
+<span class="lineNum">     469 </span>                :            : 
+<span class="lineNum">     470 </span>                :<span class="lineCov">      30348 :     return ( NODE_AT(array, itr)-&gt;next == array-&gt;data_head ) ? </span>
+<span class="lineNum">     471 </span>        [<span class="branchCov" title="Branch 0 was taken 29729 times"> + </span><span class="branchCov" title="Branch 1 was taken 107 times"> + </span>]:<span class="lineCov">      29836 :             array_itr_end_t :</span>
+<span class="lineNum">     472 </span>                :<span class="lineCov">      29729 :             NODE_AT(array, itr)-&gt;next;</span>
+<a name="473"><span class="lineNum">     473 </span>                :            : }</a>
+<span class="lineNum">     474 </span>                :            : 
+<span class="lineNum">     475 </span>                :<span class="lineCov">       1107 : array_itr_t array_itr_rnext(</span>
+<span class="lineNum">     476 </span>                :            :     array_t const * const array, 
+<span class="lineNum">     477 </span>                :            :     array_itr_t const itr)
+<span class="lineNum">     478 </span>                :            : {
+<span class="lineNum">     479 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1107 times"> + </span>]:<span class="lineCov">       1107 :     CHECK_PTR_RET(array, array_itr_end_t);</span>
+<span class="lineNum">     480 </span>        [<span class="branchCov" title="Branch 1 was taken 512 times"> + </span><span class="branchCov" title="Branch 2 was taken 595 times"> + </span>]:<span class="lineCov">       1107 :     CHECK_RET(array_size(array) &gt; 0, array_itr_end_t);</span>
+<span class="lineNum">     481 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 595 times"> + </span>]:<span class="lineCov">        595 :     CHECK_RET(itr != array_itr_end_t, array_itr_end_t);</span>
+<span class="lineNum">     482 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     483 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 595 times"> + </span>]:<span class="lineCov">        595 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     484 </span>                :            : #endif
+<span class="lineNum">     485 </span>                :            : 
+<span class="lineNum">     486 </span>        [<span class="branchCov" title="Branch 0 was taken 594 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">       1107 :     return ( itr == array-&gt;data_head ) ? array_itr_end_t : NODE_AT(array, itr)-&gt;prev;</span>
+<span class="lineNum">     487 </span>                :            : }
+<span class="lineNum">     488 </span>                :            : 
+<span class="lineNum">     489 </span>                :            : /* 
+<span class="lineNum">     490 </span>                :            :  * push a piece of data into the list at the iterator position
+<span class="lineNum">     491 </span>                :            :  * ahead of the piece of data already at that position.  To
+<span class="lineNum">     492 </span>                :            :  * push a piece of data at the tail so that it is the last item
+<span class="lineNum">     493 </span>                :            :  * in the array, you must use the iterator returned from the
+<a name="494"><span class="lineNum">     494 </span>                :            :  * array_itr_end() function.</a>
+<span class="lineNum">     495 </span>                :            :  */
+<span class="lineNum">     496 </span>                :<span class="lineCov">      88708 : void array_push(</span>
+<span class="lineNum">     497 </span>                :            :     array_t * const array, 
+<span class="lineNum">     498 </span>                :            :     void * const data, 
+<span class="lineNum">     499 </span>                :            :     array_itr_t const itr)
+<span class="lineNum">     500 </span>                :            : {
+<span class="lineNum">     501 </span>                :<span class="lineCov">      88708 :     array_itr_t free_itr = array_itr_end_t;</span>
+<span class="lineNum">     502 </span>                :            : 
+<span class="lineNum">     503 </span>                :            :     /* we insert before the iterator, and the data nodes form a circular
+<span class="lineNum">     504 </span>                :            :      * list, so if they are inserting at the tail, then we want to insert
+<span class="lineNum">     505 </span>                :            :      * before the data_head node */
+<span class="lineNum">     506 </span>        [<span class="branchCov" title="Branch 1 was taken 57196 times"> + </span><span class="branchCov" title="Branch 2 was taken 31512 times"> + </span>]:<span class="lineCov">      88708 :     array_itr_t const i = ((itr == array_itr_end(array)) ? array-&gt;data_head : itr);</span>
+<span class="lineNum">     507 </span>                :            : 
+<span class="lineNum">     508 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 88708 times"> + </span>]:<span class="lineCov">     177416 :     CHECK_PTR(array);</span>
+<span class="lineNum">     509 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     510 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 88708 times"> + </span>]:<span class="lineCov">      88708 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     511 </span>                :            : #endif
+<span class="lineNum">     512 </span>                :            :     
+<span class="lineNum">     513 </span>                :            :     /* a the index of a node from the free list */
+<span class="lineNum">     514 </span>                :<span class="lineCov">      88708 :     free_itr = array_get_free_node(array);</span>
+<span class="lineNum">     515 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 88708 times"> + </span>]:<span class="lineCov">      88708 :     ASSERT(free_itr != array_itr_end_t);</span>
+<span class="lineNum">     516 </span>                :            :     
+<span class="lineNum">     517 </span>                :            :     /* store the data pointer */
+<span class="lineNum">     518 </span>                :<span class="lineCov">      88708 :     NODE_AT( array, free_itr )-&gt;data = data;</span>
+<span class="lineNum">     519 </span>                :            :     
+<span class="lineNum">     520 </span>                :            :     /* hook the new node into the list where the iterator specifies */  
+<span class="lineNum">     521 </span>        [<span class="branchCov" title="Branch 1 was taken 88373 times"> + </span><span class="branchCov" title="Branch 2 was taken 335 times"> + </span>]:<span class="lineCov">      88708 :     if(array_size(array) &gt; 0)</span>
+<span class="lineNum">     522 </span>                :            :     {
+<span class="lineNum">     523 </span>                :<span class="lineCov">      88373 :         NODE_AT( array, free_itr )-&gt;prev = NODE_AT( array, i )-&gt;prev;</span>
+<span class="lineNum">     524 </span>                :<span class="lineCov">      88373 :         NODE_AT(array, NODE_AT(array, free_itr)-&gt;prev)-&gt;next = free_itr;</span>
+<span class="lineNum">     525 </span>                :<span class="lineCov">      88373 :         NODE_AT(array, free_itr)-&gt;next = i;</span>
+<span class="lineNum">     526 </span>                :<span class="lineCov">      88373 :         NODE_AT(array, i)-&gt;prev = free_itr;</span>
+<span class="lineNum">     527 </span>                :            :     }
+<span class="lineNum">     528 </span>                :            :     else
+<span class="lineNum">     529 </span>                :            :     {
+<span class="lineNum">     530 </span>                :<span class="lineCov">        335 :         NODE_AT(array, free_itr)-&gt;prev = free_itr;</span>
+<span class="lineNum">     531 </span>                :<span class="lineCov">        335 :         NODE_AT(array, free_itr)-&gt;next = free_itr;</span>
+<span class="lineNum">     532 </span>                :            :     }
+<span class="lineNum">     533 </span>                :            : 
+<span class="lineNum">     534 </span>                :            :     /* we only have to update the data_head index if they were pushing the 
+<span class="lineNum">     535 </span>                :            :      * new node at the beginning of the array */
+<span class="lineNum">     536 </span>        [<span class="branchCov" title="Branch 0 was taken 31847 times"> + </span><span class="branchCov" title="Branch 1 was taken 56861 times"> + </span>]:<span class="lineCov">      88708 :     if ( itr == array-&gt;data_head )</span>
+<span class="lineNum">     537 </span>                :            :     {
+<span class="lineNum">     538 </span>                :<span class="lineCov">      31847 :         array-&gt;data_head = free_itr;</span>
+<span class="lineNum">     539 </span>                :            :     }
+<span class="lineNum">     540 </span>                :            : 
+<span class="lineNum">     541 </span>                :            :     /* we added an item to the list */
+<span class="lineNum">     542 </span>                :<span class="lineCov">      88708 :     array-&gt;num_nodes++;</span>
+<span class="lineNum">     543 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     544 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 88708 times"> + </span>]:<span class="lineCov">      88708 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     545 </span>                :            : #endif
+<span class="lineNum">     546 </span>                :            : }
+<span class="lineNum">     547 </span>                :            : 
+<a name="548"><span class="lineNum">     548 </span>                :            : </a>
+<span class="lineNum">     549 </span>                :            : /* pop the data at the location specified by the iterator */
+<span class="lineNum">     550 </span>                :<span class="lineCov">        595 : void * array_pop(</span>
+<span class="lineNum">     551 </span>                :            :     array_t * const array, 
+<span class="lineNum">     552 </span>                :            :     array_itr_t const itr)
+<span class="lineNum">     553 </span>                :            : {
+<span class="lineNum">     554 </span>                :<span class="lineCov">        595 :     void * ret = NULL;</span>
+<span class="lineNum">     555 </span>                :<span class="lineCov">        595 :     array_itr_t new_head = array_itr_end_t;</span>
+<span class="lineNum">     556 </span>                :<span class="lineCov">        595 :     array_itr_t prev = array_itr_end_t;</span>
+<span class="lineNum">     557 </span>                :<span class="lineCov">        595 :     array_itr_t next = array_itr_end_t;</span>
+<span class="lineNum">     558 </span>                :            : 
+<span class="lineNum">     559 </span>                :            :     /* if the itr is at the end, then the node we're removing is the node
+<span class="lineNum">     560 </span>                :            :      * before the data_head node in the circular list */
+<span class="lineNum">     561 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 595 times"> + </span>]:<span class="lineCov">        595 :     array_itr_t const i = ((itr == array_itr_end(array)) ? array_itr_tail(array) : itr);</span>
+<span class="lineNum">     562 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 595 times"> + </span>]:<span class="lineCov">        595 :     CHECK_PTR_RET(array, NULL);</span>
+<span class="lineNum">     563 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     564 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 595 times"> + </span>]:<span class="lineCov">        595 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     565 </span>                :            : #endif
+<span class="lineNum">     566 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 595 times"> + </span>]:<span class="lineCov">        595 :     CHECK_RET(array_size(array) &gt; 0, NULL);</span>
+<span class="lineNum">     567 </span>                :            :     
+<span class="lineNum">     568 </span>                :            :     /* if we're removing the node at the start of the list, then get a pointer
+<span class="lineNum">     569 </span>                :            :      * to the node that will be the new first node */
+<span class="lineNum">     570 </span>        [<span class="branchCov" title="Branch 0 was taken 595 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        595 :     if(i == (array_itr_t)array-&gt;data_head)</span>
+<span class="lineNum">     571 </span>                :<span class="lineCov">        595 :         new_head = NODE_AT( array, array-&gt;data_head )-&gt;next;</span>
+<span class="lineNum">     572 </span>                :            : 
+<span class="lineNum">     573 </span>                :            :     /* get the index of the node previous to i */
+<span class="lineNum">     574 </span>                :<span class="lineCov">        595 :     prev = NODE_AT( array, i )-&gt;prev;</span>
+<span class="lineNum">     575 </span>                :            : 
+<span class="lineNum">     576 </span>                :            :     /* get the index of the node after i */
+<span class="lineNum">     577 </span>                :<span class="lineCov">        595 :     next = NODE_AT( array, i )-&gt;next;</span>
+<span class="lineNum">     578 </span>                :            : 
+<span class="lineNum">     579 </span>                :            :     /* unhook the node from the list */
+<span class="lineNum">     580 </span>                :<span class="lineCov">        595 :     NODE_AT( array, prev )-&gt;next = NODE_AT( array, i )-&gt;next;</span>
+<span class="lineNum">     581 </span>                :<span class="lineCov">        595 :     NODE_AT( array, next )-&gt;prev = NODE_AT( array, i )-&gt;prev;</span>
+<span class="lineNum">     582 </span>                :<span class="lineCov">        595 :     NODE_AT( array, i )-&gt;prev = array_itr_end_t;</span>
+<span class="lineNum">     583 </span>                :<span class="lineCov">        595 :     NODE_AT( array, i )-&gt;next = array_itr_end_t;</span>
+<span class="lineNum">     584 </span>                :            : 
+<span class="lineNum">     585 </span>                :            :     /* get the pointer to return */
+<span class="lineNum">     586 </span>                :<span class="lineCov">        595 :     ret = NODE_AT( array, i )-&gt;data;</span>
+<span class="lineNum">     587 </span>                :            : 
+<span class="lineNum">     588 </span>                :            :     /* put the node back on the free list */
+<span class="lineNum">     589 </span>                :<span class="lineCov">        595 :     array_put_free_node(array, i);</span>
+<span class="lineNum">     590 </span>                :            : 
+<span class="lineNum">     591 </span>                :            :     /* we removed an item from the list */
+<span class="lineNum">     592 </span>                :<span class="lineCov">        595 :     array-&gt;num_nodes--;</span>
+<span class="lineNum">     593 </span>                :            :     
+<span class="lineNum">     594 </span>                :            :     /* 
+<span class="lineNum">     595 </span>                :            :      * handle the special case where the iterator pointed to the head
+<span class="lineNum">     596 </span>                :            :      * by adjusting the head index correctly
+<span class="lineNum">     597 </span>                :            :      */
+<span class="lineNum">     598 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 594 times"> + </span>]:<span class="lineCov">        595 :     if(array-&gt;num_nodes == 0)</span>
+<span class="lineNum">     599 </span>                :            :     {
+<span class="lineNum">     600 </span>                :            :         /* the list is empty so reset the head index */
+<span class="lineNum">     601 </span>                :<span class="lineCov">          1 :         array-&gt;data_head = array_itr_end(array);</span>
+<span class="lineNum">     602 </span>                :            :     }
+<span class="lineNum">     603 </span>                :            :     else
+<span class="lineNum">     604 </span>                :            :     {
+<span class="lineNum">     605 </span>                :            :         /* calculate the new data head index */
+<span class="lineNum">     606 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 594 times"> + </span>]:<span class="lineCov">        594 :         ASSERT( new_head != array_itr_end_t );</span>
+<span class="lineNum">     607 </span>                :<span class="lineCov">        594 :         array-&gt;data_head = new_head;</span>
+<span class="lineNum">     608 </span>                :            :     }
+<span class="lineNum">     609 </span>                :            :     
+<span class="lineNum">     610 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     611 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 595 times"> + </span>]:<span class="lineCov">        595 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     612 </span>                :            : #endif
+<span class="lineNum">     613 </span>                :<span class="lineCov">        595 :     return ret;</span>
+<span class="lineNum">     614 </span>                :            : }
+<a name="615"><span class="lineNum">     615 </span>                :            : </a>
+<span class="lineNum">     616 </span>                :            : /* get a pointer to the data at the location specified by the iterator */
+<span class="lineNum">     617 </span>                :<span class="lineCov">      30431 : void* array_itr_get(</span>
+<span class="lineNum">     618 </span>                :            :     array_t const * const array, 
+<span class="lineNum">     619 </span>                :            :     array_itr_t const itr)
+<span class="lineNum">     620 </span>                :            : {
+<span class="lineNum">     621 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 30431 times"> + </span>]:<span class="lineCov">      30431 :     CHECK_PTR_RET(array, NULL);</span>
+<span class="lineNum">     622 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 30431 times"> + </span>]:<span class="lineCov">      30431 :     CHECK_RET(array_size(array) &gt; 0, NULL);</span>
+<span class="lineNum">     623 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 30431 times"> + </span>]:<span class="lineCov">      30431 :     CHECK_RET(itr != array_itr_end(array), NULL);</span>
+<span class="lineNum">     624 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     625 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 30431 times"> + </span>]:<span class="lineCov">      30431 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     626 </span>                :            : #endif
+<span class="lineNum">     627 </span>                :            : 
+<span class="lineNum">     628 </span>                :            :     /* return the pointer to the head's data */
+<span class="lineNum">     629 </span>                :<span class="lineCov">      30431 :     return array-&gt;node_buffer[itr].data;</span>
+<span class="lineNum">     630 </span>                :            : }
+<a name="631"><span class="lineNum">     631 </span>                :            : </a>
+<span class="lineNum">     632 </span>                :            : /* clear the contents of the array */
+<span class="lineNum">     633 </span>                :<span class="lineCov">          1 : void array_clear(array_t * const array)</span>
+<span class="lineNum">     634 </span>                :            : {
+<span class="lineNum">     635 </span>                :<span class="lineCov">          1 :     uint_t initial_capacity = 0;</span>
+<span class="lineNum">     636 </span>                :<span class="lineCov">          1 :     delete_fn pfn = NULL;</span>
+<span class="lineNum">     637 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          2 :     CHECK_PTR(array);</span>
+<span class="lineNum">     638 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     639 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     640 </span>                :            : #endif
+<span class="lineNum">     641 </span>                :            :     
+<span class="lineNum">     642 </span>                :            :     /* store the existing params */
+<span class="lineNum">     643 </span>                :<span class="lineCov">          1 :     pfn = array-&gt;pfn;</span>
+<span class="lineNum">     644 </span>                :<span class="lineCov">          1 :     initial_capacity = array-&gt;initial_capacity;</span>
+<span class="lineNum">     645 </span>                :            :     
+<span class="lineNum">     646 </span>                :            :     /* de-init the array and clean up all the memory except for
+<span class="lineNum">     647 </span>                :            :      * the array struct itself */
+<span class="lineNum">     648 </span>                :<span class="lineCov">          1 :     array_deinitialize( array );</span>
+<span class="lineNum">     649 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     650 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     651 </span>                :            : #endif
+<span class="lineNum">     652 </span>                :            :     
+<span class="lineNum">     653 </span>                :            :     /* clear out the array struct */
+<span class="lineNum">     654 </span>                :<span class="lineCov">          1 :     memset(array, 0, sizeof(array_t));</span>
+<span class="lineNum">     655 </span>                :            : 
+<span class="lineNum">     656 </span>                :            :     /* reinitialize the array with the saved params */
+<span class="lineNum">     657 </span>                :<span class="lineCov">          1 :     array_initialize( array, initial_capacity, pfn );</span>
+<span class="lineNum">     658 </span>                :            : }
+<a name="659"><span class="lineNum">     659 </span>                :            : </a>
+<span class="lineNum">     660 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     661 </span>                :<span class="lineCov">     454910 : static int array_sanity_check( array_t const * const array )</span>
+<span class="lineNum">     662 </span>                :            : {
+<span class="lineNum">     663 </span>                :<span class="lineCov">     454910 :     array_node_t * pstart = NULL;</span>
+<span class="lineNum">     664 </span>                :<span class="lineCov">     454910 :     array_node_t * p = NULL;</span>
+<span class="lineNum">     665 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 454910 times"> + </span>]:<span class="lineCov">     454910 :     CHECK_PTR_RET( array, FALSE );</span>
+<span class="lineNum">     666 </span>                :            : 
+<span class="lineNum">     667 </span>                :            :     ASSERT(array-&gt;buffer_size &gt;= 0);
+<span class="lineNum">     668 </span>                :            :     
+<span class="lineNum">     669 </span>        [<span class="branchCov" title="Branch 0 was taken 807 times"> + </span><span class="branchCov" title="Branch 1 was taken 454103 times"> + </span>]:<span class="lineCov">     454910 :     if ( array-&gt;buffer_size == 0 )</span>
+<span class="lineNum">     670 </span>                :            :     {
+<span class="lineNum">     671 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 807 times"> + </span>]:<span class="lineCov">        807 :         ASSERT(array-&gt;node_buffer == NULL);</span>
+<span class="lineNum">     672 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 807 times"> + </span>]:<span class="lineCov">        807 :         ASSERT(array-&gt;data_head == -1);</span>
+<span class="lineNum">     673 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 807 times"> + </span>]:<span class="lineCov">        807 :         ASSERT(array-&gt;free_head == -1);</span>
+<span class="lineNum">     674 </span>                :            :     }
+<span class="lineNum">     675 </span>                :            :     else
+<span class="lineNum">     676 </span>                :            :     {
+<span class="lineNum">     677 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 454103 times"> + </span>]:<span class="lineCov">     454103 :         ASSERT( (array-&gt;num_nodes &gt;= 0) &amp;&amp; (array-&gt;num_nodes &lt;= array-&gt;buffer_size) );</span>
+<span class="lineNum">     678 </span>[<span class="branchCov" title="Branch 0 was taken 454103 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 454103 times"> + </span>]:<span class="lineCov">     454103 :         ASSERT( (array-&gt;data_head &gt;= -1) &amp;&amp; (array-&gt;data_head &lt;= (int_t)array-&gt;buffer_size) );</span>
+<span class="lineNum">     679 </span>[<span class="branchCov" title="Branch 0 was taken 454103 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 454103 times"> + </span>]:<span class="lineCov">     454103 :         ASSERT( (array-&gt;free_head &gt;= -1) &amp;&amp; (array-&gt;free_head &lt;= (int_t)array-&gt;buffer_size) );</span>
+<span class="lineNum">     680 </span>                :            : 
+<span class="lineNum">     681 </span>                :            :         /* check the free list if we have one */
+<span class="lineNum">     682 </span>        [<span class="branchCov" title="Branch 0 was taken 454103 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">     454103 :         if ( array-&gt;free_head &gt;= 0 )</span>
+<span class="lineNum">     683 </span>                :            :         {
+<span class="lineNum">     684 </span>                :<span class="lineCov">     454103 :             p = pstart = NODE_AT( array, array-&gt;free_head );</span>
+<span class="lineNum">     685 </span>                :            :             do {
+<span class="lineNum">     686 </span>                :            :                 /* make sure next is in (0, buffer_size]  */
+<span class="lineNum">     687 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 40452475 times"> + </span>]:<span class="lineCov">   40452475 :                 ASSERT( p-&gt;next &gt;= 0 );</span>
+<span class="lineNum">     688 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 40452475 times"> + </span>]:<span class="lineCov">   40452475 :                 ASSERT( p-&gt;next &lt; (int_t)array-&gt;buffer_size );</span>
+<span class="lineNum">     689 </span>                :            :                 /* make sure prev is in (0, buffer_size] */
+<span class="lineNum">     690 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 40452475 times"> + </span>]:<span class="lineCov">   40452475 :                 ASSERT( p-&gt;prev &gt;= 0 );</span>
+<span class="lineNum">     691 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 40452475 times"> + </span>]:<span class="lineCov">   40452475 :                 ASSERT( p-&gt;prev &lt; (int_t)array-&gt;buffer_size );</span>
+<span class="lineNum">     692 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 40452475 times"> + </span>]:<span class="lineCov">   40452475 :                 ASSERT( p-&gt;data == NULL );</span>
+<span class="lineNum">     693 </span>                :<span class="lineCov">   40452475 :                 p = NODE_AT( array, p-&gt;next );</span>
+<span class="lineNum">     694 </span>                :            : 
+<span class="lineNum">     695 </span>        [<span class="branchCov" title="Branch 0 was taken 39998372 times"> + </span><span class="branchCov" title="Branch 1 was taken 454103 times"> + </span>]:<span class="lineCov">   40452475 :             } while ( p != pstart );</span>
+<span class="lineNum">     696 </span>                :            :         }
+<span class="lineNum">     697 </span>                :            : 
+<span class="lineNum">     698 </span>                :            :         /* check the data list if we have one */
+<span class="lineNum">     699 </span>        [<span class="branchCov" title="Branch 0 was taken 450433 times"> + </span><span class="branchCov" title="Branch 1 was taken 3670 times"> + </span>]:<span class="lineCov">     454103 :         if ( array-&gt;data_head &gt;= 0 )</span>
+<span class="lineNum">     700 </span>                :            :         {
+<span class="lineNum">     701 </span>                :<span class="lineCov">     450433 :             p = pstart = NODE_AT( array, array-&gt;free_head );</span>
+<span class="lineNum">     702 </span>                :            :             do {
+<span class="lineNum">     703 </span>                :            :                 /* make sure next is in (0, buffer_size] */
+<span class="lineNum">     704 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 40118104 times"> + </span>]:<span class="lineCov">   40118104 :                 ASSERT( p-&gt;next &gt;= 0 );</span>
+<span class="lineNum">     705 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 40118104 times"> + </span>]:<span class="lineCov">   40118104 :                 ASSERT( p-&gt;next &lt; (int_t)array-&gt;buffer_size );</span>
+<span class="lineNum">     706 </span>                :            :                 /* make sure prev is in (0, buffer_size] */
+<span class="lineNum">     707 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 40118104 times"> + </span>]:<span class="lineCov">   40118104 :                 ASSERT( p-&gt;prev &gt;= 0 );</span>
+<span class="lineNum">     708 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 40118104 times"> + </span>]:<span class="lineCov">   40118104 :                 ASSERT( p-&gt;prev &lt;= array-&gt;buffer_size );</span>
+<span class="lineNum">     709 </span>                :<span class="lineCov">   40118104 :                 p = NODE_AT( array, p-&gt;next );</span>
+<span class="lineNum">     710 </span>                :            : 
+<span class="lineNum">     711 </span>        [<span class="branchCov" title="Branch 0 was taken 39667671 times"> + </span><span class="branchCov" title="Branch 1 was taken 450433 times"> + </span>]:<span class="lineCov">   40118104 :             } while ( p != pstart );</span>
+<span class="lineNum">     712 </span>                :            :         }
+<span class="lineNum">     713 </span>                :            :     }
+<span class="lineNum">     714 </span>                :            : 
+<span class="lineNum">     715 </span>                :<span class="lineCov">     454910 :     return TRUE;</span>
+<a name="716"><span class="lineNum">     716 </span>                :            : }</a>
+<span class="lineNum">     717 </span>                :            : 
+<span class="lineNum">     718 </span>                :<span class="lineCov">        128 : void array_force_grow( array_t * const array )</span>
+<span class="lineNum">     719 </span>                :            : {
+<span class="lineNum">     720 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        256 :     CHECK_PTR( array );</span>
+<span class="lineNum">     721 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     722 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     723 </span>                :            : #endif
+<span class="lineNum">     724 </span>                :            : 
+<span class="lineNum">     725 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     726 </span>                :<span class="lineCov">        128 :     array_grow( array );</span>
+<span class="lineNum">     727 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     728 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     ASSERT( array_sanity_check( array ) );</span>
+<span class="lineNum">     729 </span>                :            : #endif
+<span class="lineNum">     730 </span>                :            : 
+<span class="lineNum">     731 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     ASSERT( array_sanity_check( array ) );</span>
+<a name="732"><span class="lineNum">     732 </span>                :            : }</a>
+<span class="lineNum">     733 </span>                :            : 
+<span class="lineNum">     734 </span>                :<span class="lineNoCov">          0 : void array_set_fail_grow( int fail )</span>
+<span class="lineNum">     735 </span>                :            : {
+<span class="lineNum">     736 </span>                :<span class="lineNoCov">          0 :     fail_grow = fail;</span>
+<span class="lineNum">     737 </span>                :<span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     738 </span>                :            : 
+<span class="lineNum">     739 </span>                :            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
