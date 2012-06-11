@@ -12,7 +12,6 @@ INSTALLDIRS = $(DIRS:%=install-%)
 UNINSTALLDIRS = $(DIRS:%=uninstall-%)
 CLEANDIRS = $(DIRS:%=clean-%)
 TESTDIRS = $(DIRS:%=test-%)
-FOODIRS = $(DIRS:%=foo-%)
 GCOVDIRS = $(DIRS:%=gcov-%)
 REPORTDIRS = $(DIRS:%=report-%)
 
