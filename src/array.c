@@ -575,6 +575,8 @@ void * array_pop(
 	 * to the node that will be the new first node */
 	if(i == (array_itr_t)array->data_head)
 		new_head = NODE_AT( array, array->data_head )->next;
+	else
+		new_head = array->data_head;
 
 	/* get the index of the node previous to i */
 	prev = NODE_AT( array, i )->prev;
