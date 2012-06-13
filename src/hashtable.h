@@ -171,4 +171,9 @@ void* ht_itr_get(
 	ht_itr_t const itr,
 	void** const key);
 
+#if defined(UNIT_TESTING)
+void ht_force_grow( ht_t * const ht );
+void ht_set_fail_grow( int fail );
+#endif
+
 #endif

@@ -27,6 +27,9 @@
 #include "macros.h"
 #include "hashtable.h"
 
+#ifdef UNIT_TESTING
+static int fail_grow = FALSE;
+#endif
 
 /* this load factor is how full the table will get before a resize is 
  * triggered */
@@ -54,6 +57,7 @@ struct tuple_s
 	uint_t				hash;				/* hash value of the key */
 	void *				key;				/* pointer to the key */
 	void *				value;				/* pointer to the value */
+	int_t				in_use;				/* flag if the tuple is in use */
 };
 
 
@@ -540,8 +544,6 @@ int ht_add( ht_t * const htable,
 	uint_t hash;
 	CHECK_PTR_RET(htable, 0);
 	CHECK_PTR_RET(htable->khfn, 0);
-	CHECK_PTR_RET(key, 0);
-	CHECK_PTR_RET(value, 0);
 
 	hash = (*(htable->khfn))(key);
 
@@ -556,9 +558,7 @@ int ht_add_prehash( ht_t * const htable,
 	int new_index = 0;
 	uint_t i = 0;
 	uint_t table_size = 0;
-	CHECK_PTR_RET(htable, 0);
-	CHECK_PTR_RET(key, 0);
-	CHECK_PTR_RET(value, 0);
+	CHECK_PTR_RET(htable, FALSE);
 
 	/* check to see if the table needs to grow if we add one more */
 	if((new_index = ht_needs_to_grow(htable, htable->num_tuples + 1)) > 0)
@@ -567,7 +567,7 @@ int ht_add_prehash( ht_t * const htable,
 		if(!ht_grow(htable, new_index))
 		{
 			WARN("failed to grow hashtable!");
-			return 0;
+			return FALSE;
 		}
 	}
 
@@ -578,44 +578,23 @@ int ht_add_prehash( ht_t * const htable,
 	i = (hash % table_size);
 
 	/* use linear probing to find a slot */
-	while(htable->tuples[i].hash != 0)
+	while( htable->tuples[i].hash != 0 )
 	{
-		/* check for hash collisions */
-		if(hash == htable->tuples[i].hash)
+		/* if we find a lazy deleted tuple, reuse it */
+		if( htable->tuples[i].in_use == FALSE )
 		{
-			/* check the keys to see if they are equal */
-			if((htable->tuples[i].key != NULL) &&
-			   (*(htable->kefn))(key, htable->tuples[i].key))
-			{
-				/* there should be a value in the table because
-				 * the key was not null. */
-				ASSERT(htable->tuples[i].value != NULL);
-				
-				/* there is alread an item in the hashtable with
-				 * the provided key so fail. */
-				return 0;
-			}
-			else
-			{
-				/* we have a hash collision but the slot is empty
-				 * so break out of here and use this spot to add
-				 * the new item.  the key and value should be null. */
-				 ASSERT(htable->tuples[i].key == NULL);
-				 ASSERT(htable->tuples[i].value == NULL);
-				 break;
-			}
+			break;
 		}
 
 		/* move to the next test index */
 		i = ((i + 1) % table_size);
 	}
 
-	/* if we get here, we either found a slot without a hash value
-	 * or we found an empty filler slot with a matching hash value. */
+	/* if we get here, we either found a slot not being used,
+	 * or we found a lazy deleted slot that we're reusing. */
 
-	/* the key and value should be NULL */
-	ASSERT(htable->tuples[i].key == NULL);
-	ASSERT(htable->tuples[i].value == NULL);
+	/* the tuple must not be in use */
+	ASSERT( htable->tuples[i].in_use == FALSE );
 
 	if(htable->tuples[i].hash == 0)
 	{
@@ -629,9 +608,10 @@ int ht_add_prehash( ht_t * const htable,
 	htable->tuples[i].hash = hash;
 	htable->tuples[i].key = key;
 	htable->tuples[i].value = value;
+	htable->tuples[i].in_use = TRUE;
 
 	/* success */
-	return 1;
+	return TRUE;
 }
 
 
@@ -696,7 +676,6 @@ static int ht_find_index
 	{
 		/* check for a match */
 		if((hash == htable->tuples[i].hash) &&			 /* do the hashes match? */
-		   (htable->tuples[i].key != NULL) &&			 /* is there a key? */
 		   (*(htable->kefn))(key, htable->tuples[i].key))/* do the keys match? */
 		{
 			*index = i;
@@ -789,7 +768,7 @@ void * ht_remove_prehash( ht_t * const htable,
 		 * at the next resize. */
 
 		/* clean up the key memory */
-		if((htable->tuples[i].key != NULL) && (htable->kdfn != NULL))
+		if( htable->kdfn != NULL )
 		{
 			/* clean up the key */
 			(*(htable->kdfn))(htable->tuples[i].key);
@@ -798,6 +777,7 @@ void * ht_remove_prehash( ht_t * const htable,
 		/* set the key and value pointers to NULL */
 		htable->tuples[i].key = NULL;
 		htable->tuples[i].value = NULL;
+		htable->tuples[i].in_use = FALSE;
 
 		/* NOTE: don't decrement the number of tuples
 		 * in the hashtable so that the emtpy filler
@@ -905,4 +885,21 @@ void* ht_itr_get(ht_t const * const htable, ht_itr_t const itr, void** key)
 	/* return the value at the iterator location in the tuple list */
 	return htable->tuples[itr].value;
 }
+
+
+#ifdef UNIT_TESTING
+void ht_force_grow( ht_t * const ht )
+{
+	int new_index = 0;
+	uint_t i = 0;
+	CHECK_PTR( ht );
+
+	ht_grow( ht, ht->prime_index + 1 );
+}
+
+void ht_set_fail_grow( int fail )
+{
+	fail_grow = fail;
+}
+#endif
 
