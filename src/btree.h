@@ -94,4 +94,8 @@ void* bt_itr_get(
     bt_t const * const btree, 
     bt_itr_t const itr);
 
+void* bt_itr_get_key(
+	bt_t const * const btree,
+	bt_itr_t const itr);
+
 #endif

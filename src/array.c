@@ -553,11 +553,11 @@ int array_push(
 
 
 /* pop the data at the location specified by the iterator */
-void * array_pop(
+array_itr_t array_pop(
 	array_t * const array, 
 	array_itr_t const itr )
 {
-	void * ret = NULL;
+	array_itr_t ret = array_itr_end_t;
 	array_itr_t new_head = array_itr_end_t;
 	array_itr_t prev = array_itr_end_t;
 	array_itr_t next = array_itr_end_t;
@@ -573,7 +573,7 @@ void * array_pop(
 	
 	/* if we're removing the node at the start of the list, then get a pointer
 	 * to the node that will be the new first node */
-	if(i == (array_itr_t)array->data_head)
+	if ( i == (array_itr_t)array->data_head )
 		new_head = NODE_AT( array, array->data_head )->next;
 	else
 		new_head = array->data_head;
@@ -584,14 +584,19 @@ void * array_pop(
 	/* get the index of the node after i */
 	next = NODE_AT( array, i )->next;
 
+	/* if we're removing the last node in the list, then the returned
+	 * iterator needs to be array_itr_end(), otherwise, the returned 
+	 * iterator needs to be the node after the one being removed */
+	if ( i == array_itr_tail(array) )
+		ret = array_itr_end(array);
+	else
+		ret = next;
+
 	/* unhook the node from the list */
 	NODE_AT( array, prev )->next = NODE_AT( array, i )->next;
 	NODE_AT( array, next )->prev = NODE_AT( array, i )->prev;
 	NODE_AT( array, i )->prev = array_itr_end_t;
 	NODE_AT( array, i )->next = array_itr_end_t;
-
-	/* get the pointer to return */
-	ret = NODE_AT( array, i )->data;
 
 	/* put the node back on the free list */
 	array_put_free_node(array, i);
@@ -621,6 +626,7 @@ void * array_pop(
 #ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
 #endif
+
 	return ret;
 }
 

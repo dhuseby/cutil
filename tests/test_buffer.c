@@ -32,6 +32,21 @@ void test_buffer_newdel( void )
 
 	for ( i = 0; i < 1024; i++ )
 	{
+		b = buffer_new( (void*)CALLOC( rand(), sizeof(uint8_t) ), size, FALSE );
+
+		CU_ASSERT_PTR_NOT_NULL( b );
+
+		buffer_delete( (void*)b );
+	}
+}
+
+void test_buffer_newdel_weak( void )
+{
+	int i;
+	buffer_t * b;
+
+	for ( i = 0; i < 1024; i++ )
+	{
 		b = buffer_new( (void*)buf, size, TRUE );
 
 		CU_ASSERT_PTR_NOT_NULL( b );
@@ -54,6 +69,7 @@ static int deinit_buffer_suite( void )
 static CU_pSuite add_buffer_tests( CU_pSuite pSuite )
 {
 	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of buffer", test_buffer_newdel), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of buffer weak", test_buffer_newdel_weak), NULL );
 	
 	return pSuite;
 }

@@ -223,6 +223,48 @@ void test_bitset_patternbitflips( void )
 	bset_deinitialize( &bset );
 }
 
+void test_bitset_patternbitclears( void )
+{
+	size_t i;
+	size_t size;
+	bitset_t bset;
+
+	size = (rand() % 65535);
+	MEMSET( &bset, 0, sizeof(bitset_t) );
+	bset_initialize( &bset, size );
+
+	CU_ASSERT_PTR_NOT_NULL( bset.bits );
+	CU_ASSERT_EQUAL( bset.num_bits, size );
+
+	/* set all bits */
+	bset_set_all( &bset );
+
+	/* clear all of the odd bits */
+	for ( i = 0; i < size; i++ )
+	{
+		if ( !(i & 1) )
+		{
+			bset_clear( &bset, i );
+		}
+	}
+
+	/* check to see if odd bits are cleared */
+	for ( i = 0; i < size; i++ )
+	{
+		if ( !(i & 1) )
+		{
+			CU_ASSERT_EQUAL( bset_test( &bset, i ), FALSE );
+		}
+		else
+		{
+			CU_ASSERT_EQUAL( bset_test( &bset, i ), TRUE );
+		}
+	}
+
+	bset_deinitialize( &bset );
+}
+
+
 void test_bitset_randombitflips( void )
 {
 	int test;
@@ -297,7 +339,8 @@ static CU_pSuite add_bitset_tests( CU_pSuite pSuite )
 	CHECK_PTR_RET( CU_add_test( pSuite, "max size bitset", test_bitset_maxsize), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "bitset setall test", test_bitset_setall), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "bitset clearall test", test_bitset_clearall), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "bitset pattern test", test_bitset_patternbitflips), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "bitset pattern set test", test_bitset_patternbitflips), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "bitset pattern clear test", test_bitset_patternbitclears), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "bitset random test", test_bitset_randombitflips), NULL );
 	
 	return pSuite;

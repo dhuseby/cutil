@@ -767,9 +767,9 @@ static node_t * bt_balance_tree( bt_t * const btree, node_t * n )
 }
 
 
-static void bt_insert_node( bt_t * const btree,
-							void * const key,
-							void * const value )
+static int bt_insert_node( bt_t * const btree,
+						   void * const key,
+						   void * const value )
 {
 	node_t ** p;
 	node_t * n;
@@ -777,10 +777,10 @@ static void bt_insert_node( bt_t * const btree,
 	node_t * inorder_successor = NULL;
 	node_t * inorder_predecessor = NULL;
 	int left;
-	CHECK_PTR( btree );
-	CHECK_PTR( key );
-	CHECK_PTR( value );
-	CHECK_PTR( btree->kcfn );
+	CHECK_PTR_RET( btree, FALSE );
+	CHECK_PTR_RET( key, FALSE );
+	CHECK_PTR_RET( value, FALSE );
+	CHECK_PTR_RET( btree->kcfn, FALSE );
 
 	/* start at the root */
 	p = &btree->tree;
@@ -795,12 +795,17 @@ static void bt_insert_node( bt_t * const btree,
 			p = &((*p)->left);
 			continue;
 		}
-		if ( (*(btree->kcfn))(key, (*p)->key ) > 0 )
+		else if ( (*(btree->kcfn))(key, (*p)->key ) > 0 )
 		{
 			parent = (*p);
 			inorder_predecessor = parent;
 			p = &((*p)->right);
 			continue;
+		}
+		else
+		{
+			/* duplicate key found */
+			return FALSE;
 		}
 	}
 
@@ -831,6 +836,8 @@ static void bt_insert_node( bt_t * const btree,
 
 	/* re-balance the tree */
 	bt_balance_tree( btree, n );
+
+	return TRUE;
 }
 
 
@@ -854,10 +861,7 @@ int bt_add( bt_t * const btree,
 	CHECK_PTR_RET_MSG( btree->free_list, FALSE, "failed to allocate more nodes\n" );
 
 	/* add it to the btree */
-	bt_insert_node( btree, key, value );
-
-	/* success */
-	return TRUE;
+	return bt_insert_node( btree, key, value );
 }
 
 
@@ -1133,5 +1137,14 @@ void* bt_itr_get(bt_t const * const btree, bt_itr_t const itr)
 	CHECK_RET( (itr != itr_end), NULL );
 
 	return p->val;
+}
+
+void* bt_itr_get_key(bt_t const * const btree, bt_itr_t const itr)
+{
+	node_t * p = (node_t*)itr;
+	CHECK_PTR_RET( btree, NULL );
+	CHECK_RET( (itr != itr_end), NULL );
+
+	return p->key;
 }
 

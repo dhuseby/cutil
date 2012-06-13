@@ -93,7 +93,7 @@ int array_push(
 #define array_push_tail(array, data) array_push(array, data, array_itr_end(array));
 
 /* O(1) functions for removing items from the array */
-void* array_pop(
+array_itr_t array_pop(
 	array_t * const array, 
 	array_itr_t const itr);
 #define array_pop_head(array) array_pop(array, array_itr_head(array))

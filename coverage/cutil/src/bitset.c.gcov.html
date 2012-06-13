@@ -31,27 +31,27 @@
             <td class="headerValue">cutil test coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">47</td>
             <td class="headerCovTableEntry">52</td>
-            <td class="headerCovTableEntryHi">90.4 %</td>
+            <td class="headerCovTableEntry">52</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-06-11</td>
+            <td class="headerValue">2012-06-12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">8</td>
             <td class="headerCovTableEntry">9</td>
-            <td class="headerCovTableEntryMed">88.9 %</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td></td>
             <td></td>
             <td></td>
             <td class="headerItem">Branches:</td>
-            <td class="headerCovTableEntry">25</td>
+            <td class="headerCovTableEntry">27</td>
             <td class="headerCovTableEntry">46</td>
-            <td class="headerCovTableEntryLo">54.3 %</td>
+            <td class="headerCovTableEntryLo">58.7 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -116,51 +116,51 @@
 <span class="lineNum">      45 </span>                :<span class="lineCov">       1023 :     FREE( bitset );</span>
 <a name="46"><span class="lineNum">      46 </span>                :            : }</a>
 <span class="lineNum">      47 </span>                :            : 
-<span class="lineNum">      48 </span>                :<span class="lineCov">       2053 : void bset_initialize( bitset_t * const bset, size_t const num_bits )</span>
+<span class="lineNum">      48 </span>                :<span class="lineCov">       2054 : void bset_initialize( bitset_t * const bset, size_t const num_bits )</span>
 <span class="lineNum">      49 </span>                :            : {
-<span class="lineNum">      50 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2053 times"> + </span>]:<span class="lineCov">       2053 :     CHECK_PTR( bset );</span>
+<span class="lineNum">      50 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2054 times"> + </span>]:<span class="lineCov">       2054 :     CHECK_PTR( bset );</span>
 <span class="lineNum">      51 </span>                :            : 
-<span class="lineNum">      52 </span>                :<span class="lineCov">       2053 :     bset-&gt;bits = NULL;</span>
-<span class="lineNum">      53 </span>        [<span class="branchCov" title="Branch 0 was taken 2052 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">       2053 :     if ( num_bits &gt; 0 )</span>
+<span class="lineNum">      52 </span>                :<span class="lineCov">       2054 :     bset-&gt;bits = NULL;</span>
+<span class="lineNum">      53 </span>        [<span class="branchCov" title="Branch 0 was taken 2053 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">       2054 :     if ( num_bits &gt; 0 )</span>
 <span class="lineNum">      54 </span>                :            :     {
-<span class="lineNum">      55 </span>                :<span class="lineCov">       2052 :         bset-&gt;bits = CALLOC( DWORDS_NEEDED( num_bits ), sizeof(uint32_t) );</span>
-<span class="lineNum">      56 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2052 times"> + </span>]:<span class="lineCov">       2052 :         CHECK_PTR( bset-&gt;bits );</span>
+<span class="lineNum">      55 </span>                :<span class="lineCov">       2053 :         bset-&gt;bits = CALLOC( DWORDS_NEEDED( num_bits ), sizeof(uint32_t) );</span>
+<span class="lineNum">      56 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2053 times"> + </span>]:<span class="lineCov">       2053 :         CHECK_PTR( bset-&gt;bits );</span>
 <span class="lineNum">      57 </span>                :            :     }
-<span class="lineNum">      58 </span>                :<span class="lineCov">       2053 :     bset-&gt;num_bits = num_bits;</span>
+<span class="lineNum">      58 </span>                :<span class="lineCov">       2054 :     bset-&gt;num_bits = num_bits;</span>
 <a name="59"><span class="lineNum">      59 </span>                :            : }</a>
 <span class="lineNum">      60 </span>                :            : 
-<span class="lineNum">      61 </span>                :<span class="lineCov">       2052 : void bset_deinitialize( bitset_t * const bset )</span>
+<span class="lineNum">      61 </span>                :<span class="lineCov">       2053 : void bset_deinitialize( bitset_t * const bset )</span>
 <span class="lineNum">      62 </span>                :            : {
-<span class="lineNum">      63 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2052 times"> + </span>]:<span class="lineCov">       2052 :     CHECK_PTR( bset );</span>
-<span class="lineNum">      64 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2052 times"> + </span>]:<span class="lineCov">       2052 :     CHECK( bset-&gt;num_bits &gt; 0 );</span>
-<span class="lineNum">      65 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2052 times"> + </span>]:<span class="lineCov">       2052 :     CHECK_PTR( bset-&gt;bits );</span>
+<span class="lineNum">      63 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2053 times"> + </span>]:<span class="lineCov">       2053 :     CHECK_PTR( bset );</span>
+<span class="lineNum">      64 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2053 times"> + </span>]:<span class="lineCov">       2053 :     CHECK( bset-&gt;num_bits &gt; 0 );</span>
+<span class="lineNum">      65 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2053 times"> + </span>]:<span class="lineCov">       2053 :     CHECK_PTR( bset-&gt;bits );</span>
 <span class="lineNum">      66 </span>                :            : 
-<span class="lineNum">      67 </span>                :<span class="lineCov">       2052 :     FREE( bset-&gt;bits );</span>
-<span class="lineNum">      68 </span>                :<span class="lineCov">       2052 :     bset-&gt;bits = NULL;</span>
-<span class="lineNum">      69 </span>                :<span class="lineCov">       2052 :     bset-&gt;num_bits = 0;</span>
+<span class="lineNum">      67 </span>                :<span class="lineCov">       2053 :     FREE( bset-&gt;bits );</span>
+<span class="lineNum">      68 </span>                :<span class="lineCov">       2053 :     bset-&gt;bits = NULL;</span>
+<span class="lineNum">      69 </span>                :<span class="lineCov">       2053 :     bset-&gt;num_bits = 0;</span>
 <a name="70"><span class="lineNum">      70 </span>                :            : }</a>
 <span class="lineNum">      71 </span>                :            : 
-<span class="lineNum">      72 </span>                :<span class="lineCov">      20518 : int bset_set( bitset_t * const bset, size_t const bit )</span>
+<span class="lineNum">      72 </span>                :<span class="lineCov">      34009 : int bset_set( bitset_t * const bset, size_t const bit )</span>
 <span class="lineNum">      73 </span>                :            : {
-<span class="lineNum">      74 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 20518 times"> + </span>]:<span class="lineCov">      20518 :     CHECK_PTR_RET( bset, FALSE );</span>
-<span class="lineNum">      75 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 20518 times"> + </span>]:<span class="lineCov">      20518 :     CHECK_RET( (bit &lt; bset-&gt;num_bits), FALSE );</span>
-<span class="lineNum">      76 </span>                :<span class="lineCov">      20518 :     bset-&gt;bits[ DWORD_INDEX(bit) ] |= BIT(bit);</span>
-<span class="lineNum">      77 </span>                :<span class="lineCov">      20518 :     return TRUE;</span>
+<span class="lineNum">      74 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 34009 times"> + </span>]:<span class="lineCov">      34009 :     CHECK_PTR_RET( bset, FALSE );</span>
+<span class="lineNum">      75 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 34009 times"> + </span>]:<span class="lineCov">      34009 :     CHECK_RET( (bit &lt; bset-&gt;num_bits), FALSE );</span>
+<span class="lineNum">      76 </span>                :<span class="lineCov">      34009 :     bset-&gt;bits[ DWORD_INDEX(bit) ] |= BIT(bit);</span>
+<span class="lineNum">      77 </span>                :<span class="lineCov">      34009 :     return TRUE;</span>
 <a name="78"><span class="lineNum">      78 </span>                :            : }</a>
 <span class="lineNum">      79 </span>                :            : 
-<span class="lineNum">      80 </span>                :<span class="lineNoCov">          0 : int bset_clear( bitset_t * const bset, size_t const bit )</span>
+<span class="lineNum">      80 </span>                :<span class="lineCov">      12169 : int bset_clear( bitset_t * const bset, size_t const bit )</span>
 <span class="lineNum">      81 </span>                :            : {
-<span class="lineNum">      82 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( bset, FALSE );</span>
-<span class="lineNum">      83 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( (bit &lt; bset-&gt;num_bits), FALSE );</span>
-<span class="lineNum">      84 </span>                :<span class="lineNoCov">          0 :     bset-&gt;bits[ DWORD_INDEX(bit) ] &amp;= ~BIT(bit);</span>
-<span class="lineNum">      85 </span>                :<span class="lineNoCov">          0 :     return TRUE;</span>
+<span class="lineNum">      82 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 12169 times"> + </span>]:<span class="lineCov">      12169 :     CHECK_PTR_RET( bset, FALSE );</span>
+<span class="lineNum">      83 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 12169 times"> + </span>]:<span class="lineCov">      12169 :     CHECK_RET( (bit &lt; bset-&gt;num_bits), FALSE );</span>
+<span class="lineNum">      84 </span>                :<span class="lineCov">      12169 :     bset-&gt;bits[ DWORD_INDEX(bit) ] &amp;= ~BIT(bit);</span>
+<span class="lineNum">      85 </span>                :<span class="lineCov">      12169 :     return TRUE;</span>
 <a name="86"><span class="lineNum">      86 </span>                :            : }</a>
 <span class="lineNum">      87 </span>                :            : 
-<span class="lineNum">      88 </span>                :<span class="lineCov">     118222 : int bset_test( bitset_t const * const bset, size_t const bit )</span>
+<span class="lineNum">      88 </span>                :<span class="lineCov">     166891 : int bset_test( bitset_t const * const bset, size_t const bit )</span>
 <span class="lineNum">      89 </span>                :            : {
-<span class="lineNum">      90 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 118222 times"> + </span>]:<span class="lineCov">     118222 :     CHECK_PTR_RET( bset, FALSE );</span>
-<span class="lineNum">      91 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 118222 times"> + </span>]:<span class="lineCov">     118222 :     CHECK_RET( (bit &lt; bset-&gt;num_bits), FALSE );</span>
-<span class="lineNum">      92 </span>                :<span class="lineCov">     118222 :     return (bset-&gt;bits[ DWORD_INDEX(bit) ] &amp; BIT(bit) ? TRUE : FALSE);</span>
+<span class="lineNum">      90 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 166891 times"> + </span>]:<span class="lineCov">     166891 :     CHECK_PTR_RET( bset, FALSE );</span>
+<span class="lineNum">      91 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 166891 times"> + </span>]:<span class="lineCov">     166891 :     CHECK_RET( (bit &lt; bset-&gt;num_bits), FALSE );</span>
+<span class="lineNum">      92 </span>                :<span class="lineCov">     166891 :     return (bset-&gt;bits[ DWORD_INDEX(bit) ] &amp; BIT(bit) ? TRUE : FALSE);</span>
 <a name="93"><span class="lineNum">      93 </span>                :            : }</a>
 <span class="lineNum">      94 </span>                :            : 
 <span class="lineNum">      95 </span>                :<span class="lineCov">          2 : void bset_clear_all( bitset_t * const bset )</span>
@@ -175,15 +175,15 @@
 <span class="lineNum">     104 </span>                :            :     }
 <a name="105"><span class="lineNum">     105 </span>                :            : }</a>
 <span class="lineNum">     106 </span>                :            : 
-<span class="lineNum">     107 </span>                :<span class="lineCov">          1 : void bset_set_all( bitset_t * const bset )</span>
+<span class="lineNum">     107 </span>                :<span class="lineCov">          2 : void bset_set_all( bitset_t * const bset )</span>
 <span class="lineNum">     108 </span>                :            : {
 <span class="lineNum">     109 </span>                :            :     size_t i;
-<span class="lineNum">     110 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR( bset );</span>
-<span class="lineNum">     111 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK( bset-&gt;num_bits &gt; 0 );</span>
-<span class="lineNum">     112 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR( bset-&gt;bits );</span>
-<span class="lineNum">     113 </span>        [<span class="branchCov" title="Branch 0 was taken 29760 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">      29761 :     for ( i = 0; i &lt; DWORDS_NEEDED( bset-&gt;num_bits ); i++ )</span>
+<span class="lineNum">     110 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :     CHECK_PTR( bset );</span>
+<span class="lineNum">     111 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :     CHECK( bset-&gt;num_bits &gt; 0 );</span>
+<span class="lineNum">     112 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :     CHECK_PTR( bset-&gt;bits );</span>
+<span class="lineNum">     113 </span>        [<span class="branchCov" title="Branch 0 was taken 54112 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">      54114 :     for ( i = 0; i &lt; DWORDS_NEEDED( bset-&gt;num_bits ); i++ )</span>
 <span class="lineNum">     114 </span>                :            :     {
-<span class="lineNum">     115 </span>                :<span class="lineCov">      29760 :         bset-&gt;bits[i] = 0xFFFFFFFF;</span>
+<span class="lineNum">     115 </span>                :<span class="lineCov">      54112 :         bset-&gt;bits[i] = 0xFFFFFFFF;</span>
 <span class="lineNum">     116 </span>                :            :     }
 <span class="lineNum">     117 </span>                :            : }
 <span class="lineNum">     118 </span>                :            : 

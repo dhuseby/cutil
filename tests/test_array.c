@@ -370,7 +370,8 @@ static void test_array_pop_head_static( void )
 
 	for ( i = 0; i < (size * multiple); i++ )
 	{
-		j = (int)array_pop_head( &arr );
+		j = (int)array_get_head( &arr );
+		array_pop_head( &arr );
 		CU_ASSERT_EQUAL( j, i );
 	}
 
@@ -435,7 +436,8 @@ static void test_array_pop_tail_static( void )
 
 	for ( i = ((size * multiple) - 1); i >= 0; i-- )
 	{
-		j = (int)array_pop_tail( &arr );
+		j = (int)array_get_tail( &arr );
+		array_pop_tail( &arr );
 		CU_ASSERT_EQUAL( j, i );
 	}
 
@@ -465,6 +467,28 @@ static void test_array_clear( void )
 
 	CU_ASSERT_EQUAL( array_size( &arr ), 0 );
 	array_deinitialize( &arr );
+}
+
+static void test_array_clear_empty( void )
+{
+	int i;
+	uint32_t size;
+	array_t arr;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &arr, 0, sizeof(array_t) );
+		size = (rand() % SIZEMAX);
+		array_initialize( &arr, size, NULL );
+
+		CU_ASSERT_EQUAL( array_size( &arr ), 0 );
+		CU_ASSERT_EQUAL( arr.buffer_size, size );
+		CU_ASSERT_EQUAL( arr.pfn, NULL );
+
+		array_clear( &arr );
+
+		array_deinitialize( &arr );
+	}
 }
 
 static void test_array_new_fail( void )
@@ -522,15 +546,130 @@ static void test_array_push_fail( void )
 	array_set_fail_grow( FALSE );
 }
 
+static void test_array_push_middle( void )
+{
+	int i, j;
+	uint32_t size;
+	uint32_t multiple;
+	array_t arr;
+	array_itr_t itr;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &arr, 0, sizeof(array_t) );
+		size = (rand() % SIZEMAX);
+		multiple = (rand() % MULTIPLE);
+		array_initialize( &arr, size, NULL );
+
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			array_push_head( &arr, (void*)j );
+		}
+
+		itr = array_itr_begin( &arr );
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			if ( j & 0x1 )
+			{
+				array_push( &arr, (void*)j, itr );
+			}
+			itr = array_itr_next( &arr, itr );
+		}
+
+		CU_ASSERT_EQUAL( array_size( &arr ), (((size*multiple) & ~0x1) / 2) + (size * multiple) );
+		CU_ASSERT_EQUAL( arr.pfn, NULL );
+
+		array_deinitialize( &arr );
+	}
+}
+
+static void test_array_pop_middle( void )
+{
+	int i, j;
+	uint32_t size;
+	uint32_t multiple;
+	array_t arr;
+	array_itr_t itr;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &arr, 0, sizeof(array_t) );
+		size = (rand() % SIZEMAX);
+		multiple = (rand() % MULTIPLE);
+		array_initialize( &arr, size, NULL );
+
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			array_push_head( &arr, (void*)j );
+		}
+
+		itr = array_itr_begin( &arr );
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			if ( j & 0x1 )
+			{
+				array_push( &arr, (void*)j, itr );
+			}
+			itr = array_itr_next( &arr, itr );
+		}
+
+		itr = array_itr_begin( &arr );
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			if ( j & 0x1 )
+			{
+				itr = array_pop( &arr, itr );
+			}
+			itr = array_itr_next( &arr, itr );
+		}
+
+		CU_ASSERT_EQUAL( array_size( &arr ), (size * multiple) );
+		CU_ASSERT_EQUAL( arr.pfn, NULL );
+
+		array_deinitialize( &arr );
+	}
+}
+
+static void test_array_get_middle( void )
+{
+	int i, j, k;
+	uint32_t size;
+	uint32_t multiple;
+	array_t arr;
+	array_itr_t itr;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &arr, 0, sizeof(array_t) );
+		size = (rand() % SIZEMAX);
+		multiple = (rand() % MULTIPLE);
+		array_initialize( &arr, size, NULL );
+
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			array_push_tail( &arr, (void*)j );
+		}
+
+		itr = array_itr_begin( &arr );
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			if ( j & 0x1 )
+			{
+				k = (int)array_itr_get( &arr, itr );
+				CU_ASSERT_EQUAL( j, k );
+			}
+			itr = array_itr_next( &arr, itr );
+		}
+
+		CU_ASSERT_EQUAL( array_size( &arr ), (size * multiple) );
+		CU_ASSERT_EQUAL( arr.pfn, NULL );
+
+		array_deinitialize( &arr );
+	}
+}
+
 
 /*TODO:
- *	- middle itr push test
- *	- middle itr pop test
- *	- head get test
- *	- tail get test
- *	- middle itr get test
- *	- clear of empty array
- *	- clear of non-empty array
  *	- threading tests
  */
 
@@ -561,9 +700,13 @@ static CU_pSuite add_array_tests( CU_pSuite pSuite )
 	CHECK_PTR_RET( CU_add_test( pSuite, "pop head static", test_array_pop_head_static), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "pop tail static", test_array_pop_tail_static), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "array clear", test_array_clear), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "array clear empty", test_array_clear_empty), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "array new fail", test_array_new_fail), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "array init fail", test_array_init_fail), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "array push fail", test_array_push_fail), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "array push middle", test_array_push_middle), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "array pop middle", test_array_pop_middle), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "array get middle", test_array_get_middle), NULL );
 	return pSuite;
 }
 

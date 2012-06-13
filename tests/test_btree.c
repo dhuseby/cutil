@@ -50,6 +50,18 @@ static int int_less( void * l, void * r )
 	return 0;
 }
 
+static int pint_less( void * l, void * r )
+{
+	int_t li = *((int_t*)l);
+	int_t ri = *((int_t*)r);
+
+	if ( li < ri )
+		return -1;
+	else if ( li > ri )
+		return 1;
+	return 0;
+}
+
 void test_btree_iterator( void )
 {
 	int_t i;
@@ -127,6 +139,8 @@ void test_btree_random( void )
 		CU_ASSERT_EQUAL( bt_add( bt, (void*)v, (void*)v ), TRUE );
 	}
 
+	CU_ASSERT_EQUAL( bt_size( bt ), size );
+
 	itr = bt_itr_begin( bt );
 	prev = (int_t)bt_itr_get( bt, itr ) - 1;
 	for ( ; itr != bt_itr_end( bt ); itr = bt_itr_next( bt, itr ) )
@@ -134,6 +148,115 @@ void test_btree_random( void )
 		cur = (int_t)bt_itr_get( bt, itr );
 		CU_ASSERT( cur > prev );
 		prev = cur;
+	}
+	CU_ASSERT_EQUAL( itr, bt_itr_end( bt ) );
+
+	bt_delete( (void*)bt );
+}
+
+void test_btree_random_default( void )
+{
+	int_t i = 0;
+	int_t v = 0;
+	int_t cur, prev;
+	bt_t * bt;
+	bt_itr_t itr;
+	size_t size = (rand() % 1024);
+
+	bt = bt_new( 10, NULL, NULL, NULL );
+	for ( i = 0; i < size; i++ )
+	{
+		v = rand();
+		CU_ASSERT_EQUAL( bt_add( bt, (void*)v, (void*)v ), TRUE );
+	}
+
+	CU_ASSERT_EQUAL( bt_size( bt ), size );
+
+	itr = bt_itr_begin( bt );
+	prev = (int_t)bt_itr_get( bt, itr ) - 1;
+	for ( ; itr != bt_itr_end( bt ); itr = bt_itr_next( bt, itr ) )
+	{
+		cur = (int_t)bt_itr_get( bt, itr );
+		CU_ASSERT( cur > prev );
+		prev = cur;
+	}
+	CU_ASSERT_EQUAL( itr, bt_itr_end( bt ) );
+
+	bt_delete( (void*)bt );
+}
+
+void test_btree_random_duplicate( void )
+{
+	int_t i = 0;
+	int_t v = 0;
+	int_t cur, prev;
+	bt_t * bt;
+	bt_itr_t itr;
+	size_t size = (rand() % 1024);
+
+	bt = bt_new( 10, NULL, NULL, NULL );
+	for ( i = 0; i < size; i++ )
+	{
+		v = rand();
+		CU_ASSERT_EQUAL( bt_add( bt, (void*)v, (void*)v ), TRUE );
+		CU_ASSERT_EQUAL( bt_add( bt, (void*)v, (void*)v ), FALSE );
+	}
+
+	CU_ASSERT_EQUAL( bt_size( bt ), size );
+
+	itr = bt_itr_begin( bt );
+	prev = (int_t)bt_itr_get( bt, itr ) - 1;
+	for ( ; itr != bt_itr_end( bt ); itr = bt_itr_next( bt, itr ) )
+	{
+		cur = (int_t)bt_itr_get( bt, itr );
+		CU_ASSERT( cur > prev );
+		prev = cur;
+	}
+	CU_ASSERT_EQUAL( itr, bt_itr_end( bt ) );
+
+	bt_delete( (void*)bt );
+}
+
+void test_btree_random_dynamic( void )
+{
+	int_t i = 0;
+	int_t* v = NULL;
+	int_t* k = NULL;
+	int_t cur;
+	int_t prev = -1;
+	bt_t * bt;
+	bt_itr_t itr;
+	size_t size = (rand() % 1024);
+
+	bt = bt_new( 10, pint_less, FREE, FREE );
+	for ( i = 0; i < size; i++ )
+	{
+		v = CALLOC( 1, sizeof(int_t) );
+		CU_ASSERT_PTR_NOT_NULL( v );
+		k = CALLOC( 1, sizeof(int_t) );
+		CU_ASSERT_PTR_NOT_NULL( k );
+
+		(*k) = rand();
+		(*v) = rand();
+		CU_ASSERT_EQUAL( bt_add( bt, (void*)k, (void*)v ), TRUE );
+		CU_ASSERT_EQUAL( bt_add( bt, (void*)k, (void*)v ), FALSE );
+	}
+
+	CU_ASSERT_EQUAL( bt_size( bt ), size );
+
+	itr = bt_itr_begin( bt );
+	for ( itr = bt_itr_begin( bt ); itr != bt_itr_end( bt ); itr = bt_itr_next( bt, itr ) )
+	{
+		if ( prev == -1 )
+		{
+			prev = *((int_t*)bt_itr_get_key( bt, itr ));
+		}
+		else
+		{
+			prev = cur;
+			cur = *((int_t*)bt_itr_get_key( bt, itr ));
+			CU_ASSERT( cur > prev );
+		}
 	}
 	CU_ASSERT_EQUAL( itr, bt_itr_end( bt ) );
 
@@ -158,6 +281,9 @@ static CU_pSuite add_btree_tests( CU_pSuite pSuite )
 	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of btree", test_btree_newdel), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "iteration of btree", test_btree_iterator), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "iteration of random btree", test_btree_random), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "iteration of random btree using default compare", test_btree_random_default), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "iteration of random btree add duplicates", test_btree_random_duplicate), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "random btree with dynamically allocated keys and values", test_btree_random_dynamic), NULL );
 	
 	return pSuite;
 }
