@@ -52,8 +52,13 @@ static void test_hashtable_newdel_default_fns( void )
 		CU_ASSERT_EQUAL( ht->kdfn, NULL );
 		CU_ASSERT_EQUAL( ht->vdfn, NULL );
 
+		if ( ht_load( ht ) != 0.0f )
+		{
+			printf("(size: %d)  %f != %f\n", size, ht_load( ht ), 0.0f);
+		}
+
 		CU_ASSERT_EQUAL( ht_load( ht ), 0.0f );
-		CU_ASSERT_EQUAL( ht_get_resize_load_factor( ht ), 0.65f );
+		CU_ASSERT_EQUAL( ht_get_resize_load_factor( ht ), ht->load_factor );
 
 		ht_delete( ht );
 	}
@@ -79,7 +84,7 @@ static void test_hashtable_initdeinit_default_fns( void )
 		CU_ASSERT_EQUAL( ht.vdfn, NULL );
 
 		CU_ASSERT_EQUAL( ht_load( &ht ), 0.0f );
-		CU_ASSERT_EQUAL( ht_get_resize_load_factor( &ht ), 0.65f );
+		CU_ASSERT_EQUAL( ht_get_resize_load_factor( &ht ), ht.load_factor );
 
 		ht_deinitialize( &ht );
 	}
@@ -182,16 +187,15 @@ static void test_hashtable_dynamic_grow( void )
 	}
 }
 
-static void test_hashtable_add_static( void )
+static void test_hashtable_compact( void )
 {
 	int i, j, k;
+	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
 
-	/*
 	for ( i = 0; i < REPEAT; i++ )
 	{
-	*/
 		MEMSET( &ht, 0, sizeof(ht_t) );
 		size = (rand() % SIZEMAX);
 		multiple = (rand() % MULTIPLE);
@@ -199,31 +203,269 @@ static void test_hashtable_add_static( void )
 
 		for ( j = 0; j < (size * multiple); j++ )
 		{
-			if ( ht_add( &ht, (void*)j, (void*)j ) == FALSE )
-			{
-				printf("failed to add %d\n", j);
-			}
+			CU_ASSERT_EQUAL( ht_add( &ht, (void*)j, (void*)j ), TRUE );
+			CU_ASSERT_EQUAL( ht_size( &ht ), (j + 1) );
 
-			printf("%d == %d\n", ht_size( &ht ), (size * multiple));
-			CU_ASSERT_EQUAL( ht_size( &ht ), (size * multiple) );
+			itr = ht_find( &ht, (void*)j );
+			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
 
-			k = (int)ht_find( &ht, (void*)j );
-			if ( k != j )
-			{
-				printf("failed to find %d\n", j );
-			}
+			k = (int)ht_itr_get( &ht, itr, NULL );
+			CU_ASSERT_EQUAL( k, j );
 		}
 
-		printf("%d == %d\n", ht_size( &ht ), (size * multiple));
+		ht_compact( &ht );
+
 		CU_ASSERT_EQUAL( ht_size( &ht ), (size * multiple) );
 
 		ht_deinitialize( &ht );
-	/*}*/
+	}
+}
+
+static void test_hashtable_change_load_factor( void )
+{
+	int i, j, k;
+	ht_itr_t itr;
+	uint32_t size, multiple;
+	ht_t ht;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &ht, 0, sizeof(ht_t) );
+		size = (rand() % SIZEMAX);
+		multiple = (rand() % MULTIPLE);
+		ht_initialize( &ht, size, NULL, NULL, NULL, NULL );
+
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			CU_ASSERT_EQUAL( ht_add( &ht, (void*)j, (void*)j ), TRUE );
+			CU_ASSERT_EQUAL( ht_size( &ht ), (j + 1) );
+
+			itr = ht_find( &ht, (void*)j );
+			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
+
+			k = (int)ht_itr_get( &ht, itr, NULL );
+			CU_ASSERT_EQUAL( k, j );
+		}
+
+		ht_set_resize_load_factor( &ht, 0.25f );
+
+		CU_ASSERT_EQUAL( ht_size( &ht ), (size * multiple) );
+
+		ht_deinitialize( &ht );
+	}
+}
+
+static void test_hashtable_clear( void )
+{
+	int i, j, k;
+	ht_itr_t itr;
+	uint32_t size, multiple;
+	ht_t ht;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &ht, 0, sizeof(ht_t) );
+		size = (rand() % SIZEMAX);
+		multiple = (rand() % MULTIPLE);
+		ht_initialize( &ht, size, NULL, NULL, NULL, NULL );
+
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			CU_ASSERT_EQUAL( ht_add( &ht, (void*)j, (void*)j ), TRUE );
+			CU_ASSERT_EQUAL( ht_size( &ht ), (j + 1) );
+
+			itr = ht_find( &ht, (void*)j );
+			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
+
+			k = (int)ht_itr_get( &ht, itr, NULL );
+			CU_ASSERT_EQUAL( k, j );
+		}
+
+		CU_ASSERT_EQUAL( ht_size( &ht ), (size * multiple) );
+		ht_clear( &ht );
+		CU_ASSERT_EQUAL( ht_size( &ht ), 0 );
+
+		ht_deinitialize( &ht );
+	}
+}
+
+static void test_hashtable_forward_itr( void )
+{
+	int i, j, k, v;
+	ht_itr_t itr;
+	uint32_t size, multiple;
+	ht_t ht;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &ht, 0, sizeof(ht_t) );
+		size = (rand() % SIZEMAX);
+		multiple = (rand() % MULTIPLE);
+		ht_initialize( &ht, size, NULL, NULL, NULL, NULL );
+
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			CU_ASSERT_EQUAL( ht_add( &ht, (void*)j, (void*)j ), TRUE );
+			CU_ASSERT_EQUAL( ht_size( &ht ), (j + 1) );
+		}
+
+		itr = ht_itr_begin( &ht );
+		for ( ; itr != ht_itr_end( &ht ); itr = ht_itr_next( &ht, itr ) )
+		{
+			k = (int)ht_itr_get( &ht, itr, (void**)&v );
+			CU_ASSERT_EQUAL( k, v );
+		}
+
+		CU_ASSERT_EQUAL( ht_size( &ht ), (size * multiple) );
+
+		ht_deinitialize( &ht );
+	}
+}
+
+static void test_hashtable_reverse_itr( void )
+{
+	int i, j, k, v;
+	ht_itr_t itr;
+	uint32_t size, multiple;
+	ht_t ht;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &ht, 0, sizeof(ht_t) );
+		size = (rand() % SIZEMAX);
+		multiple = (rand() % MULTIPLE);
+		ht_initialize( &ht, size, NULL, NULL, NULL, NULL );
+
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			CU_ASSERT_EQUAL( ht_add( &ht, (void*)j, (void*)j ), TRUE );
+			CU_ASSERT_EQUAL( ht_size( &ht ), (j + 1) );
+		}
+
+		itr = ht_itr_rbegin( &ht );
+		for ( ; itr != ht_itr_rend( &ht ); itr = ht_itr_rnext( &ht, itr ) )
+		{
+			k = (int)ht_itr_get( &ht, itr, (void**)&v );
+			CU_ASSERT_EQUAL( k, v );
+		}
+
+		CU_ASSERT_EQUAL( ht_size( &ht ), (size * multiple) );
+
+		ht_deinitialize( &ht );
+	}
+}
+
+
+static void test_hashtable_clear_empty( void )
+{
+	int i;
+	uint32_t size;
+	ht_t ht;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &ht, 0, sizeof(ht_t) );
+		size = (rand() % SIZEMAX);
+		ht_initialize( &ht, size, NULL, NULL, NULL, NULL );
+
+		CU_ASSERT_EQUAL( ht_size( &ht ), 0 );
+		CU_ASSERT_EQUAL( ht.initial_capacity, size );
+		CU_ASSERT_NOT_EQUAL( ht.khfn, NULL );
+		CU_ASSERT_NOT_EQUAL( ht.kefn, NULL );
+		CU_ASSERT_EQUAL( ht.kdfn, NULL );
+		CU_ASSERT_EQUAL( ht.vdfn, NULL );
+
+		CU_ASSERT_EQUAL( ht_load( &ht ), 0.0f );
+		CU_ASSERT_EQUAL( ht_get_resize_load_factor( &ht ), ht.load_factor );
+
+		ht_clear( &ht );
+		CU_ASSERT_EQUAL( ht_size( &ht ), 0 );
+
+		ht_deinitialize( &ht );
+	}
+}
+
+static void test_hashtable_remove( void )
+{
+	int i, j, k;
+	ht_itr_t itr;
+	uint32_t size, multiple;
+	ht_t ht;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &ht, 0, sizeof(ht_t) );
+		size = (rand() % SIZEMAX);
+		multiple = (rand() % MULTIPLE);
+		ht_initialize( &ht, size, NULL, NULL, NULL, NULL );
+
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			CU_ASSERT_EQUAL( ht_add( &ht, (void*)j, (void*)j ), TRUE );
+			CU_ASSERT_EQUAL( ht_size( &ht ), (j + 1) );
+
+			itr = ht_find( &ht, (void*)j );
+			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
+
+			k = (int)ht_itr_get( &ht, itr, NULL );
+			CU_ASSERT_EQUAL( k, j );
+		}
+
+		CU_ASSERT_EQUAL( ht_size( &ht ), (size * multiple) );
+
+		itr = ht_itr_begin( &ht );
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			if ( j & 0x1 )
+			{
+				CU_ASSERT_EQUAL( ht_remove( &ht, itr ), TRUE );
+			}
+
+			itr = ht_itr_next( &ht, itr );
+		}
+
+		CU_ASSERT_EQUAL( ht_size( &ht ), (size * multiple) / 2 );
+
+		ht_deinitialize( &ht );
+	}
+}
+
+static void test_hashtable_add_static( void )
+{
+	int i, j, k;
+	ht_itr_t itr;
+	uint32_t size, multiple;
+	ht_t ht;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &ht, 0, sizeof(ht_t) );
+		size = (rand() % SIZEMAX);
+		multiple = (rand() % MULTIPLE);
+		ht_initialize( &ht, size, NULL, NULL, NULL, NULL );
+
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			CU_ASSERT_EQUAL( ht_add( &ht, (void*)j, (void*)j ), TRUE );
+			CU_ASSERT_EQUAL( ht_size( &ht ), (j + 1) );
+
+			itr = ht_find( &ht, (void*)j );
+			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
+
+			k = (int)ht_itr_get( &ht, itr, NULL );
+			CU_ASSERT_EQUAL( k, j );
+		}
+
+		CU_ASSERT_EQUAL( ht_size( &ht ), (size * multiple) );
+
+		ht_deinitialize( &ht );
+	}
 }
 
 static void test_hashtable_find_static( void )
 {
 	int i, j, k;
+	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
 
@@ -236,16 +478,72 @@ static void test_hashtable_find_static( void )
 
 		for ( j = 0; j < (size * multiple); j++ )
 		{
-			ht_add( &ht, (void*)j, (void*)j );
+			CU_ASSERT_EQUAL( ht_add( &ht, (void*)j, (void*)j ), TRUE );
+			CU_ASSERT_EQUAL( ht_size( &ht ), (j + 1) );
 		}
 
 		CU_ASSERT_EQUAL( ht_size( &ht ), (size * multiple) );
 
 		for ( j = 0; j < (size * multiple); j++ )
 		{
-			k = (int)ht_find( &ht, (void*)j );
+			itr = ht_find( &ht, (void*)j );
+			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
+
+			k = (int)ht_itr_get( &ht, itr, NULL );
 			CU_ASSERT_EQUAL( k, j );
 		}
+
+		ht_deinitialize( &ht );
+	}
+}
+
+static uint_t dynamic_key_hash(void const * const key)
+{
+	return *((uint_t*)key);
+}
+
+static int dynamic_key_eq(void const * const l, void const * const r)
+{
+	return ( *((uint_t*)l) == *((uint_t*)r) );
+}
+
+
+
+static void test_hashtable_add_dynamic( void )
+{
+	int i, j;
+	int * k;
+	int * v;;
+	ht_itr_t itr;
+	uint32_t size, multiple;
+	ht_t ht;
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &ht, 0, sizeof(ht_t) );
+		size = (rand() % SIZEMAX);
+		multiple = (rand() % MULTIPLE);
+		ht_initialize( &ht, size, &dynamic_key_hash, FREE, &dynamic_key_eq, FREE );
+
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			k = (int*)CALLOC( 1, sizeof(int) );
+			(*k) = j;
+			v = (int*)CALLOC( 1, sizeof(int) );
+			(*v) = j;
+
+			CU_ASSERT_EQUAL( ht_add( &ht, (void*)k, (void*)v ), TRUE );
+			CU_ASSERT_EQUAL( ht_size( &ht ), (j + 1) );
+
+			itr = ht_find( &ht, (void*)k );
+			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
+
+			v = (int*)ht_itr_get( &ht, itr, (void**)&k );
+			CU_ASSERT_EQUAL( (*k), j );
+			CU_ASSERT_EQUAL( (*v), j );
+		}
+
+		CU_ASSERT_EQUAL( ht_size( &ht ), (size * multiple) );
 
 		ht_deinitialize( &ht );
 	}
@@ -270,8 +568,16 @@ static CU_pSuite add_hashtable_tests( CU_pSuite pSuite )
 	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of hashtable with custom key fns", test_hashtable_newdel_custom_key_fns), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "grow of stack hashtable", test_hashtable_static_grow), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "grow of heap hashtable", test_hashtable_dynamic_grow), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "hashtable compact", test_hashtable_compact), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "hashtable change load factor", test_hashtable_change_load_factor), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "hashtable clear", test_hashtable_clear), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "hashtable clear empty", test_hashtable_clear_empty), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "hashtable forward iterator", test_hashtable_forward_itr), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "hashtable reverse iterator", test_hashtable_reverse_itr), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "hashtable remove", test_hashtable_remove), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "hashtable add static values", test_hashtable_add_static), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "hashtable find static values", test_hashtable_find_static), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "hashtable add dynamic values", test_hashtable_add_dynamic), NULL );
 	return pSuite;
 }
 
