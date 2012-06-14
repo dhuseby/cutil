@@ -31,13 +31,14 @@
 static int fail_grow = FALSE;
 #endif
 
+static int ht_grow( ht_t * const htable, uint_t new_prime_index );
+
 /* index constants */
 ht_itr_t const ht_itr_end_t = -1;
 
 /* this load factor is how full the table will get before a resize is 
  * triggered */
 float const default_load_factor = 0.65f;
-
 
 /* this list of primes are the table size used by the hashtable.  each prime 
  * is roughly double the size of the previous prime to get amortized resize
@@ -120,18 +121,15 @@ pthread_mutex_t * ht_get_mutex(ht_t * const htable)
 #endif
 
 /* initializes a hashtable */
-void ht_initialize
-(
-	ht_t * const htable, 
-	uint_t initial_capacity, 
-	key_hash_fn khfn, 
-	ht_delete_fn vdfn,
-	key_eq_fn kefn,
-	ht_delete_fn kdfn
-)
+int ht_initialize( ht_t * const htable, 
+				   uint_t initial_capacity, 
+				   key_hash_fn khfn, 
+				   ht_delete_fn vdfn,
+				   key_eq_fn kefn,
+				   ht_delete_fn kdfn )
 {
 	uint_t i = 0;
-	CHECK_PTR(htable);
+	CHECK_PTR_RET( htable, FALSE );
 
 	/* zero out the memory */
 	MEMSET( htable, 0, sizeof(ht_t) );
@@ -147,7 +145,10 @@ void ht_initialize
 			i++;
 
 		/* allocate room for the key/value structs */
-		htable->tuples = (tuple_t*)CALLOC(hashtable_primes[i], sizeof(tuple_t));
+		if ( !ht_grow( htable, i ) )
+		{
+			return FALSE;
+		}
 		ASSERT(htable->tuples != NULL);
 	}
 
@@ -158,7 +159,7 @@ void ht_initialize
 	htable->num_tuples = 0;
 
 	/* initialize the key hashing function */
-	if(khfn != NULL)
+	if ( khfn != NULL )
 		htable->khfn = khfn;
 	else
 		htable->khfn = default_key_hash;
@@ -167,7 +168,7 @@ void ht_initialize
 	htable->vdfn = vdfn;
 	
 	/* initialize the key compare function */
-	if(kefn != NULL)
+	if ( kefn != NULL )
 		htable->kefn = kefn;
 	else
 		htable->kefn = default_key_eq;
@@ -182,44 +183,44 @@ void ht_initialize
 	/* initialize the mutex */
 	pthread_mutex_init(&htable->lock, 0);
 #endif
+
+	return TRUE;
 }
 
 
 /* dynamically allocates and initializes a hashtable */
 /* NOTE: If NULL is passed in for the key_eq_fn function, the default
  * key compare function will be used */
-ht_t* ht_new
-(
-	uint_t initial_capacity, 
-	key_hash_fn khfn, 
-	ht_delete_fn vdfn, 
-	key_eq_fn kefn, 
-	ht_delete_fn kdfn
-)
+ht_t* ht_new( uint_t initial_capacity, 
+			  key_hash_fn khfn, 
+			  ht_delete_fn vdfn, 
+			  key_eq_fn kefn, 
+			  ht_delete_fn kdfn )
 {
 	ht_t* htable = NULL;
 
 	/* allocate a hashtable struct */
-	DEBUG("heap allocating hash table\n");
 	htable = (ht_t*)CALLOC(1, sizeof(ht_t));
 	CHECK_PTR_RET(htable, NULL);
 
 	/* initialize the hashtable */
-	ht_initialize(htable, initial_capacity, khfn, vdfn, kefn, kdfn);
+	if ( !ht_initialize(htable, initial_capacity, khfn, vdfn, kefn, kdfn) )
+	{
+		FREE( htable );
+		return NULL;
+	}
 
 	/* return the new hashtable */
 	return htable;
 }
 
-
-/* deinitialize a hashtable. */
-void ht_deinitialize(ht_t * const htable)
+static void ht_free_tuples( ht_t * const htable )
 {
-	int_t ret = 0;
 	int_t i = 0;
 	int_t table_size = 0;
-	tuple_t* tuple = NULL;
-	CHECK_PTR(htable);
+	tuple_t * tuple = NULL;
+
+	CHECK_PTR( htable );
 
 	if ( htable->tuples != NULL )
 	{
@@ -239,23 +240,49 @@ void ht_deinitialize(ht_t * const htable)
 			{
 				/* clean up the key */
 				(*(htable->kdfn))(tuple->key);
+
+				/* reset the pointer */
+				tuple->key = NULL;
 			}
 
 			if( htable->vdfn != NULL )
 			{
 				/* clean up the value */
 				(*(htable->vdfn))(tuple->value);
+
+				/* reset the pointer */
+				tuple->value = NULL;
 			}
+
+			/* reset the other tuple members */
+			tuple->hash = 0;
+			tuple->in_use = EMPTY;
 		}
 
 		/* free the tuple memory */
 		FREE((void*)htable->tuples);
+
+		/* reset the pointer */
+		htable->tuples = NULL;
 	}
+
+	/* no more tuples in the list */
+	htable->num_tuples = 0;
+}
+
+
+/* deinitialize a hashtable. */
+void ht_deinitialize( ht_t * const htable )
+{
+	int_t ret = 0;
+	CHECK_PTR( htable );
+
+	ht_free_tuples( htable );
 
 #ifdef USE_THREADING
 	/* destroy the lock */
 	ret = pthread_mutex_destroy(&htable->lock);
-	ASSERT(ret == 0);
+	ASSERT( ret == 0 );
 #endif
 }
 
@@ -311,7 +338,7 @@ float ht_get_resize_load_factor(ht_t const * const htable)
 /* private function for growing the hash table.
  * NOTE: it only supports keeping the table the same size (compacting)
  * and growing the table.  this does not support shrinking the hash table. */
-static int ht_grow(ht_t * const htable, uint_t new_prime_index)
+static int ht_grow( ht_t * const htable, uint_t new_prime_index )
 {
 	uint_t i = 0;
 	uint_t j = 0;
@@ -325,6 +352,12 @@ static int ht_grow(ht_t * const htable, uint_t new_prime_index)
 	CHECK_RET(htable->prime_index <= new_prime_index, FALSE);
 	CHECK_RET(new_prime_index < num_primes, FALSE);
 
+#ifdef UNIT_TESTING
+	/* fail the grow if FAIL_GROW is true */
+	if ( fail_grow == TRUE )
+		return FALSE;
+#endif
+
 	/* get the current table size */
 	old_table_size = hashtable_primes[htable->prime_index];
 
@@ -332,9 +365,9 @@ static int ht_grow(ht_t * const htable, uint_t new_prime_index)
 	new_table_size = hashtable_primes[new_prime_index];
 
 	/* allocate a new tuples table */
-	DEBUG("growing hash table to: %d\n", new_table_size)
+	DEBUG( "growing hash table to: %d\n", new_table_size )
 	tuples = (tuple_t *)CALLOC(new_table_size, sizeof(tuple_t));
-	CHECK_PTR_RET(tuples, 0);
+	CHECK_PTR_RET( tuples, FALSE );
 
 	if ( htable->tuples != NULL )
 	{
@@ -439,23 +472,30 @@ static int ht_needs_to_grow( ht_t const * const htable,
 
 /* set the load limit that will trigger a resize.  this defaults
  * 0.65f or 65% full. */
-int ht_set_resize_load_factor(ht_t * const htable, float load)
+int ht_set_resize_load_factor( ht_t * const htable, float load )
 {
 	int new_index = 0;
-	CHECK_PTR_RET(htable, FALSE);
-	CHECK_RET(load > 0.0f, FALSE);
-	CHECK_RET(load < 1.0f, FALSE);
+	float old_load = 0.0f;
+	CHECK_PTR_RET( htable, FALSE );
+	CHECK_RET( load > 0.0f, FALSE );
+	CHECK_RET( load < 1.0f, FALSE );
+
+	/* save the old load factor */
+	old_load = htable->load_factor;
 
 	/* adjust the load factor */
 	htable->load_factor = load;
 	
 	/* check to see if a resize is necessary */
-	if((new_index = ht_needs_to_grow(htable, htable->num_tuples)) > 0)
+	if ( (new_index = ht_needs_to_grow(htable, htable->num_tuples)) > 0 )
 	{
 		/* it does, so try to grow it */
-		if(!ht_grow(htable, new_index))
+		if ( !ht_grow(htable, new_index) )
 		{
-			WARN("failed to grow hashtable!");
+			/* reset the load_factor to the original value */
+			htable->load_factor = old_load;
+
+			DEBUG( "failed to grow hashtable!" );
 			return FALSE;
 		}
 	}
@@ -471,9 +511,9 @@ int ht_set_resize_load_factor(ht_t * const htable, float load)
  * nodes into it and freeing the old table.  this operation elliminates
  * the filler nodes and "compacts" the table.  use this to keep your
  * load factor from endlessly climbing and causing resizes. */
-int ht_compact(ht_t * const htable)
+int ht_compact( ht_t * const htable )
 {
-	CHECK_PTR_RET(htable, FALSE);
+	CHECK_PTR_RET( htable, FALSE );
 
 	if ( htable->tuples == NULL )
 	{
@@ -485,9 +525,9 @@ int ht_compact(ht_t * const htable)
 	 * the non-filler tuples into the new table, effectively
 	 * removing them from the hashtable and reducing how full
 	 * the table is. */
-	if(!ht_grow(htable, htable->prime_index))
+	if ( !ht_grow(htable, htable->prime_index) )
 	{
-		WARN("failed to compact");
+		DEBUG( "failed to compact" );
 		return FALSE;
 	}
 	
@@ -527,7 +567,7 @@ int ht_add_prehash( ht_t * const htable,
 		/* it does, so try to grow it to the new size */
 		if ( !ht_grow(htable, new_index) )
 		{
-			WARN("failed to grow hashtable!");
+			DEBUG( "failed to grow hashtable!" );
 			return FALSE;
 		}
 	}
@@ -570,26 +610,11 @@ int ht_add_prehash( ht_t * const htable,
 /* clears all key/value pairs from the hashtable and compacts it */
 int ht_clear(ht_t * const htable)
 {
-	uint_t initial_capacity = 0;
-	key_hash_fn khfn = NULL;
-	ht_delete_fn vdfn = NULL;
-	key_eq_fn kefn = NULL;
-	ht_delete_fn kdfn = NULL;
 	CHECK_PTR_RET(htable, FALSE);
 
-	/* save off the htable params */
-	initial_capacity = htable->initial_capacity;
-	khfn = htable->khfn;
-	vdfn = htable->vdfn;
-	kefn = htable->kefn;
-	kdfn = htable->kdfn;
-
-	/* de-init the entire hashtable cleaning up all memory except
-	 * for the htable struct itself */
-	ht_deinitialize(htable);
-	
-	/* re-initialize the htable with the saved params */
-	ht_initialize(htable, initial_capacity, khfn, vdfn, kefn, kdfn);
+	/* this will destroy all of the keys and values and free up the
+	 * tuple array and reset the num_tuples number */
+	ht_free_tuples( htable );
 
 	return TRUE;
 }

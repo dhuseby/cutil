@@ -69,12 +69,12 @@ void ht_unlock(ht_t * const htable);
 pthread_mutex_t * ht_get_mutex(ht_t * const htable);
 #endif
 
-void ht_initialize( ht_t * const htable, 
-					uint_t initial_capacity, 
-					key_hash_fn khfn, 
-					ht_delete_fn vdfn,
-					key_eq_fn kefn,
-					ht_delete_fn kdfn );
+int ht_initialize( ht_t * const htable, 
+				   uint_t initial_capacity, 
+				   key_hash_fn khfn, 
+				   ht_delete_fn vdfn,
+				   key_eq_fn kefn,
+				   ht_delete_fn kdfn );
 void ht_deinitialize( ht_t * const htable );
 
 /* dynamically allocates and initializes a hashtable */
