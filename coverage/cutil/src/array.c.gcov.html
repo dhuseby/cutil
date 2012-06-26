@@ -636,11 +636,11 @@
 <span class="lineNum">     565 </span>                :            :     /* if the itr is at the end, then the node we're removing is the node
 <span class="lineNum">     566 </span>                :            :      * before the data_head node in the circular list */
 <span class="lineNum">     567 </span>        [<span class="branchCov" title="Branch 1 was taken 456 times"> + </span><span class="branchCov" title="Branch 2 was taken 15950 times"> + </span>]:<span class="lineCov">      16406 :     array_itr_t const i = ((itr == array_itr_end(array)) ? array_itr_tail(array) : itr);</span>
-<span class="lineNum">     568 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 16406 times"> + </span>]:<span class="lineCov">      16406 :     CHECK_PTR_RET(array, NULL);</span>
+<span class="lineNum">     568 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 16406 times"> + </span>]:<span class="lineCov">      16406 :     CHECK_PTR_RET(array, array_itr_end_t);</span>
 <span class="lineNum">     569 </span>                :            : #ifdef UNIT_TESTING
 <span class="lineNum">     570 </span>        [<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 16406 times"> + </span>]:<span class="lineCov">      16406 :     ASSERT( array_sanity_check( array ) );</span>
 <span class="lineNum">     571 </span>                :            : #endif
-<span class="lineNum">     572 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 16406 times"> + </span>]:<span class="lineCov">      16406 :     CHECK_RET(array_size(array) &gt; 0, NULL);</span>
+<span class="lineNum">     572 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 16406 times"> + </span>]:<span class="lineCov">      16406 :     CHECK_RET(array_size(array) &gt; 0, array_itr_end_t);</span>
 <span class="lineNum">     573 </span>                :            :     
 <span class="lineNum">     574 </span>                :            :     /* if we're removing the node at the start of the list, then get a pointer
 <span class="lineNum">     575 </span>                :            :      * to the node that will be the new first node */

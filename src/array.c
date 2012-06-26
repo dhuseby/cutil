@@ -565,11 +565,11 @@ array_itr_t array_pop(
 	/* if the itr is at the end, then the node we're removing is the node
 	 * before the data_head node in the circular list */
 	array_itr_t const i = ((itr == array_itr_end(array)) ? array_itr_tail(array) : itr);
-	CHECK_PTR_RET(array, NULL);
+	CHECK_PTR_RET(array, array_itr_end_t);
 #ifdef UNIT_TESTING
 	ASSERT( array_sanity_check( array ) );
 #endif
-	CHECK_RET(array_size(array) > 0, NULL);
+	CHECK_RET(array_size(array) > 0, array_itr_end_t);
 	
 	/* if we're removing the node at the start of the list, then get a pointer
 	 * to the node that will be the new first node */
