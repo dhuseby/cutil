@@ -22,6 +22,8 @@
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 /* 
  * local definitions for porting purposes
@@ -36,10 +38,10 @@
 
 /* used for debugging purposes */
 #define ASSERT(x) assert(x)
-#define WARN(fmt, ...) { fprintf(stderr, "WARNING:%12s:%-5d -- " fmt,  __FILE__, __LINE__, ##__VA_ARGS__); fflush(stderr); }
-#define NOTICE(fmt, ...) { fprintf(stderr, "NOTICE:%13s:%-5d -- " fmt,  __FILE__, __LINE__, ##__VA_ARGS__); fflush(stderr); }
+#define WARN(fmt, ...) { fprintf(stderr, "WARNING:%12s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); }
+#define NOTICE(fmt, ...) { fprintf(stderr, "NOTICE:%13s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); }
 #define LOG(...) { fprintf(stderr, __VA_ARGS__); fflush(stderr); }
-#define FAIL(fmt, ...) { fprintf(stderr, "ERR:%16s:%-5d -- " fmt,  __FILE__, __LINE__, ##__VA_ARGS__); fflush(stderr); assert(0); }
+#define FAIL(fmt, ...) { fprintf(stderr, "ERR:%16s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); assert(0); }
 
 /* runtime check macros */
 #define CHECK(x) { if(!(x)) return; }

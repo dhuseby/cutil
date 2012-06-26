@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>LCOV - cutil test coverage - cutil/src/hashtable.c</title>
   <link rel="stylesheet" type="text/css" href="../../gcov.css">
 </head>
@@ -31,13 +31,13 @@
             <td class="headerValue">cutil test coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">257</td>
-            <td class="headerCovTableEntry">262</td>
+            <td class="headerCovTableEntry">260</td>
+            <td class="headerCovTableEntry">265</td>
             <td class="headerCovTableEntryHi">98.1 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-06-25</td>
+            <td class="headerValue">2012-06-26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">29</td>
@@ -49,9 +49,9 @@
             <td></td>
             <td></td>
             <td class="headerItem">Branches:</td>
-            <td class="headerCovTableEntry">128</td>
-            <td class="headerCovTableEntry">182</td>
-            <td class="headerCovTableEntryLo">70.3 %</td>
+            <td class="headerCovTableEntry">126</td>
+            <td class="headerCovTableEntry">180</td>
+            <td class="headerCovTableEntryLo">70.0 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -139,18 +139,18 @@
 <span class="lineNum">      68 </span>                :            : #define EMPTY (0)
 <span class="lineNum">      69 </span>                :            : #define ACTIVE (1)
 <span class="lineNum">      70 </span>                :            : #define DELETED (2)
-<span class="lineNum">      71 </span>                :            : 
-<a name="72"><span class="lineNum">      72 </span>                :            : /* the default key hashing function just casts the pointer value to an uint_t */</a>
-<span class="lineNum">      73 </span>                :            : static uint_t default_key_hash(void const * const key)
-<span class="lineNum">      74 </span>                :<span class="lineCov">     646721 : {</span>
-<span class="lineNum">      75 </span>                :<span class="lineCov">     646721 :     return (uint_t)key;</span>
+<a name="71"><span class="lineNum">      71 </span>                :            : </a>
+<span class="lineNum">      72 </span>                :            : /* the default key hashing function just casts the pointer value to an uint_t */
+<span class="lineNum">      73 </span>                :<span class="lineCov">     633487 : static uint_t default_key_hash(void const * const key)</span>
+<span class="lineNum">      74 </span>                :            : {
+<span class="lineNum">      75 </span>                :<span class="lineCov">     633487 :     return (uint_t)key;</span>
 <span class="lineNum">      76 </span>                :            : }
 <span class="lineNum">      77 </span>                :            : 
-<span class="lineNum">      78 </span>                :            : /* the default key compare function just casts the pointers to uint_t
-<a name="79"><span class="lineNum">      79 </span>                :            :  * and compares them.  this works with the default key hash function */</a>
-<span class="lineNum">      80 </span>                :            : static int default_key_eq(void const * const l, void const * const r)
-<span class="lineNum">      81 </span>                :<span class="lineCov">     261226 : {</span>
-<span class="lineNum">      82 </span>                :<span class="lineCov">     261226 :     return ((uint_t)l == (uint_t)r);</span>
+<a name="78"><span class="lineNum">      78 </span>                :            : /* the default key compare function just casts the pointers to uint_t</a>
+<span class="lineNum">      79 </span>                :            :  * and compares them.  this works with the default key hash function */
+<span class="lineNum">      80 </span>                :<span class="lineCov">     260202 : static int default_key_eq(void const * const l, void const * const r)</span>
+<span class="lineNum">      81 </span>                :            : {
+<span class="lineNum">      82 </span>                :<span class="lineCov">     260202 :     return ((uint_t)l == (uint_t)r);</span>
 <span class="lineNum">      83 </span>                :            : }
 <span class="lineNum">      84 </span>                :            : 
 <span class="lineNum">      85 </span>                :            : 
@@ -190,37 +190,37 @@
 <span class="lineNum">     119 </span>                :            :     return &amp;htable-&gt;lock;    
 <span class="lineNum">     120 </span>                :            : }
 <span class="lineNum">     121 </span>                :            : #endif
-<span class="lineNum">     122 </span>                :            : 
+<a name="122"><span class="lineNum">     122 </span>                :            : </a>
 <span class="lineNum">     123 </span>                :            : /* initializes a hashtable */
-<span class="lineNum">     124 </span>                :            : int ht_initialize( ht_t * const htable, 
+<span class="lineNum">     124 </span>                :<span class="lineCov">       2322 : int ht_initialize( ht_t * const htable, </span>
 <span class="lineNum">     125 </span>                :            :                    uint_t initial_capacity, 
 <span class="lineNum">     126 </span>                :            :                    key_hash_fn khfn, 
 <span class="lineNum">     127 </span>                :            :                    ht_delete_fn vdfn,
-<a name="128"><span class="lineNum">     128 </span>                :            :                    key_eq_fn kefn,</a>
+<span class="lineNum">     128 </span>                :            :                    key_eq_fn kefn,
 <span class="lineNum">     129 </span>                :            :                    ht_delete_fn kdfn )
-<span class="lineNum">     130 </span>                :<span class="lineCov">       2322 : {</span>
+<span class="lineNum">     130 </span>                :            : {
 <span class="lineNum">     131 </span>                :<span class="lineCov">       2322 :     uint_t i = 0;</span>
 <span class="lineNum">     132 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2322 times"> + </span>]:<span class="lineCov">       2322 :     CHECK_PTR_RET( htable, FALSE );</span>
 <span class="lineNum">     133 </span>                :            : 
 <span class="lineNum">     134 </span>                :            :     /* zero out the memory */
-<span class="lineNum">     135 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 2322 times"> + </span>]:<span class="lineCov">       2322 :     MEMSET( htable, 0, sizeof(ht_t) );</span>
+<span class="lineNum">     135 </span>                :<span class="lineCov">       2322 :     MEMSET( htable, 0, sizeof(ht_t) );</span>
 <span class="lineNum">     136 </span>                :            : 
 <span class="lineNum">     137 </span>                :            :     /* set the default load factor */
 <span class="lineNum">     138 </span>                :<span class="lineCov">       2322 :     htable-&gt;load_factor = default_load_factor;</span>
 <span class="lineNum">     139 </span>                :            : 
-<span class="lineNum">     140 </span>        [<span class="branchCov" title="Branch 0 was taken 2041 times"> + </span><span class="branchCov" title="Branch 1 was taken 281 times"> + </span>]:<span class="lineCov">       2322 :     if ( initial_capacity &gt; 0 )</span>
+<span class="lineNum">     140 </span>        [<span class="branchCov" title="Branch 0 was taken 2052 times"> + </span><span class="branchCov" title="Branch 1 was taken 270 times"> + </span>]:<span class="lineCov">       2322 :     if ( initial_capacity &gt; 0 )</span>
 <span class="lineNum">     141 </span>                :            :     {
 <span class="lineNum">     142 </span>                :            :         /* figure out the initial table size */
-<span class="lineNum">     143 </span>[<span class="branchCov" title="Branch 0 was taken 10261 times"> + </span><span class="branchCov" title="Branch 1 was taken 2041 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 10261 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">      12302 :         while(((uint_t)(hashtable_primes[i] * htable-&gt;load_factor) &lt; initial_capacity) &amp;&amp;</span>
-<span class="lineNum">     144 </span>                :            :               (i &lt; (num_primes - 1)))
-<span class="lineNum">     145 </span>                :<span class="lineCov">      10261 :             i++;</span>
+<span class="lineNum">     143 </span>[<span class="branchCov" title="Branch 0 was taken 10408 times"> + </span><span class="branchCov" title="Branch 1 was taken 2052 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 10408 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">      12460 :         while(((uint_t)(hashtable_primes[i] * htable-&gt;load_factor) &lt; initial_capacity) &amp;&amp;</span>
+<span class="lineNum">     144 </span>                :<span class="lineCov">      10408 :               (i &lt; (num_primes - 1)))</span>
+<span class="lineNum">     145 </span>                :<span class="lineCov">      10408 :             i++;</span>
 <span class="lineNum">     146 </span>                :            : 
 <span class="lineNum">     147 </span>                :            :         /* allocate room for the key/value structs */
-<span class="lineNum">     148 </span>        [<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchCov" title="Branch 2 was taken 2039 times"> + </span>]:<span class="lineCov">       2041 :         if ( !ht_grow( htable, i ) )</span>
+<span class="lineNum">     148 </span>        [<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchCov" title="Branch 2 was taken 2050 times"> + </span>]:<span class="lineCov">       2052 :         if ( !ht_grow( htable, i ) )</span>
 <span class="lineNum">     149 </span>                :            :         {
 <span class="lineNum">     150 </span>                :<span class="lineCov">          2 :             return FALSE;</span>
 <span class="lineNum">     151 </span>                :            :         }
-<span class="lineNum">     152 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 2039 times"> + </span>]:<span class="lineCov">       2039 :         ASSERT(htable-&gt;tuples != NULL);</span>
+<span class="lineNum">     152 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2050 times"> + </span>]:<span class="lineCov">       2050 :         ASSERT(htable-&gt;tuples != NULL);</span>
 <span class="lineNum">     153 </span>                :            :     }
 <span class="lineNum">     154 </span>                :            : 
 <span class="lineNum">     155 </span>                :            :     /* store the prime index */
@@ -260,14 +260,14 @@
 <span class="lineNum">     189 </span>                :            : 
 <span class="lineNum">     190 </span>                :            : 
 <span class="lineNum">     191 </span>                :            : /* dynamically allocates and initializes a hashtable */
-<span class="lineNum">     192 </span>                :            : /* NOTE: If NULL is passed in for the key_eq_fn function, the default
+<a name="192"><span class="lineNum">     192 </span>                :            : /* NOTE: If NULL is passed in for the key_eq_fn function, the default</a>
 <span class="lineNum">     193 </span>                :            :  * key compare function will be used */
-<span class="lineNum">     194 </span>                :            : ht_t* ht_new( uint_t initial_capacity, 
+<span class="lineNum">     194 </span>                :<span class="lineCov">        265 : ht_t* ht_new( uint_t initial_capacity, </span>
 <span class="lineNum">     195 </span>                :            :               key_hash_fn khfn, 
 <span class="lineNum">     196 </span>                :            :               ht_delete_fn vdfn, 
-<a name="197"><span class="lineNum">     197 </span>                :            :               key_eq_fn kefn, </a>
+<span class="lineNum">     197 </span>                :            :               key_eq_fn kefn, 
 <span class="lineNum">     198 </span>                :            :               ht_delete_fn kdfn )
-<span class="lineNum">     199 </span>                :<span class="lineCov">        265 : {</span>
+<span class="lineNum">     199 </span>                :            : {
 <span class="lineNum">     200 </span>                :<span class="lineCov">        265 :     ht_t* htable = NULL;</span>
 <span class="lineNum">     201 </span>                :            : 
 <span class="lineNum">     202 </span>                :            :     /* allocate a hashtable struct */
@@ -283,70 +283,70 @@
 <span class="lineNum">     212 </span>                :            : 
 <span class="lineNum">     213 </span>                :            :     /* return the new hashtable */
 <span class="lineNum">     214 </span>                :<span class="lineCov">        265 :     return htable;</span>
-<span class="lineNum">     215 </span>                :            : }
-<a name="216"><span class="lineNum">     216 </span>                :            : </a>
-<span class="lineNum">     217 </span>                :            : static void ht_free_tuples( ht_t * const htable )
-<span class="lineNum">     218 </span>                :<span class="lineCov">       2577 : {</span>
+<a name="215"><span class="lineNum">     215 </span>                :            : }</a>
+<span class="lineNum">     216 </span>                :            : 
+<span class="lineNum">     217 </span>                :<span class="lineCov">       2577 : static void ht_free_tuples( ht_t * const htable )</span>
+<span class="lineNum">     218 </span>                :            : {
 <span class="lineNum">     219 </span>                :<span class="lineCov">       2577 :     int_t i = 0;</span>
 <span class="lineNum">     220 </span>                :<span class="lineCov">       2577 :     int_t table_size = 0;</span>
 <span class="lineNum">     221 </span>                :<span class="lineCov">       2577 :     tuple_t * tuple = NULL;</span>
 <span class="lineNum">     222 </span>                :            : 
-<span class="lineNum">     223 </span>        [<span class="branchCov" title="Branch 0 was taken 2577 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       2577 :     CHECK_PTR( htable );</span>
+<span class="lineNum">     223 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2577 times"> + </span>]:<span class="lineCov">       5154 :     CHECK_PTR( htable );</span>
 <span class="lineNum">     224 </span>                :            : 
-<span class="lineNum">     225 </span>        [<span class="branchCov" title="Branch 0 was taken 2146 times"> + </span><span class="branchCov" title="Branch 1 was taken 431 times"> + </span>]:<span class="lineCov">       2577 :     if ( htable-&gt;tuples != NULL )</span>
+<span class="lineNum">     225 </span>        [<span class="branchCov" title="Branch 0 was taken 2156 times"> + </span><span class="branchCov" title="Branch 1 was taken 421 times"> + </span>]:<span class="lineCov">       2577 :     if ( htable-&gt;tuples != NULL )</span>
 <span class="lineNum">     226 </span>                :            :     {
 <span class="lineNum">     227 </span>                :            :         /* get the table size */
-<span class="lineNum">     228 </span>                :<span class="lineCov">       2146 :         table_size = hashtable_primes[htable-&gt;prime_index];</span>
+<span class="lineNum">     228 </span>                :<span class="lineCov">       2156 :         table_size = hashtable_primes[htable-&gt;prime_index];</span>
 <span class="lineNum">     229 </span>                :            : 
 <span class="lineNum">     230 </span>                :            :         /* go through the tuples and free the keys and values */
-<span class="lineNum">     231 </span>        [<span class="branchCov" title="Branch 0 was taken 1494398 times"> + </span><span class="branchCov" title="Branch 1 was taken 2146 times"> + </span>]:<span class="lineCov">    1496544 :         for(i = 0; i &lt; table_size; i++)</span>
+<span class="lineNum">     231 </span>        [<span class="branchCov" title="Branch 0 was taken 1593186 times"> + </span><span class="branchCov" title="Branch 1 was taken 2156 times"> + </span>]:<span class="lineCov">    1595342 :         for(i = 0; i &lt; table_size; i++)</span>
 <span class="lineNum">     232 </span>                :            :         {
 <span class="lineNum">     233 </span>                :            :             /* get a pointer to the first tuple */
-<span class="lineNum">     234 </span>                :<span class="lineCov">    1494398 :             tuple = &amp;(htable-&gt;tuples[i]);</span>
+<span class="lineNum">     234 </span>                :<span class="lineCov">    1593186 :             tuple = &amp;(htable-&gt;tuples[i]);</span>
 <span class="lineNum">     235 </span>                :            : 
-<span class="lineNum">     236 </span>        [<span class="branchCov" title="Branch 0 was taken 1140730 times"> + </span><span class="branchCov" title="Branch 1 was taken 353668 times"> + </span>]:<span class="lineCov">    1494398 :             if ( tuple-&gt;in_use != ACTIVE )</span>
-<span class="lineNum">     237 </span>                :<span class="lineCov">    1140730 :                 continue;</span>
+<span class="lineNum">     236 </span>        [<span class="branchCov" title="Branch 0 was taken 1248689 times"> + </span><span class="branchCov" title="Branch 1 was taken 344497 times"> + </span>]:<span class="lineCov">    1593186 :             if ( tuple-&gt;in_use != ACTIVE )</span>
+<span class="lineNum">     237 </span>                :<span class="lineCov">    1248689 :                 continue;</span>
 <span class="lineNum">     238 </span>                :            : 
-<span class="lineNum">     239 </span>        [<span class="branchCov" title="Branch 0 was taken 45103 times"> + </span><span class="branchCov" title="Branch 1 was taken 308565 times"> + </span>]:<span class="lineCov">     353668 :             if( htable-&gt;kdfn != NULL )</span>
+<span class="lineNum">     239 </span>        [<span class="branchCov" title="Branch 0 was taken 40387 times"> + </span><span class="branchCov" title="Branch 1 was taken 304110 times"> + </span>]:<span class="lineCov">     344497 :             if( htable-&gt;kdfn != NULL )</span>
 <span class="lineNum">     240 </span>                :            :             {
 <span class="lineNum">     241 </span>                :            :                 /* clean up the key */
-<span class="lineNum">     242 </span>                :<span class="lineCov">      45103 :                 (*(htable-&gt;kdfn))(tuple-&gt;key);</span>
+<span class="lineNum">     242 </span>                :<span class="lineCov">      40387 :                 (*(htable-&gt;kdfn))(tuple-&gt;key);</span>
 <span class="lineNum">     243 </span>                :            : 
 <span class="lineNum">     244 </span>                :            :                 /* reset the pointer */
-<span class="lineNum">     245 </span>                :<span class="lineCov">      45103 :                 tuple-&gt;key = NULL;</span>
+<span class="lineNum">     245 </span>                :<span class="lineCov">      40387 :                 tuple-&gt;key = NULL;</span>
 <span class="lineNum">     246 </span>                :            :             }
 <span class="lineNum">     247 </span>                :            : 
-<span class="lineNum">     248 </span>        [<span class="branchCov" title="Branch 0 was taken 45103 times"> + </span><span class="branchCov" title="Branch 1 was taken 308565 times"> + </span>]:<span class="lineCov">     353668 :             if( htable-&gt;vdfn != NULL )</span>
+<span class="lineNum">     248 </span>        [<span class="branchCov" title="Branch 0 was taken 40387 times"> + </span><span class="branchCov" title="Branch 1 was taken 304110 times"> + </span>]:<span class="lineCov">     344497 :             if( htable-&gt;vdfn != NULL )</span>
 <span class="lineNum">     249 </span>                :            :             {
 <span class="lineNum">     250 </span>                :            :                 /* clean up the value */
-<span class="lineNum">     251 </span>                :<span class="lineCov">      45103 :                 (*(htable-&gt;vdfn))(tuple-&gt;value);</span>
+<span class="lineNum">     251 </span>                :<span class="lineCov">      40387 :                 (*(htable-&gt;vdfn))(tuple-&gt;value);</span>
 <span class="lineNum">     252 </span>                :            : 
 <span class="lineNum">     253 </span>                :            :                 /* reset the pointer */
-<span class="lineNum">     254 </span>                :<span class="lineCov">      45103 :                 tuple-&gt;value = NULL;</span>
+<span class="lineNum">     254 </span>                :<span class="lineCov">      40387 :                 tuple-&gt;value = NULL;</span>
 <span class="lineNum">     255 </span>                :            :             }
 <span class="lineNum">     256 </span>                :            : 
 <span class="lineNum">     257 </span>                :            :             /* reset the other tuple members */
-<span class="lineNum">     258 </span>                :<span class="lineCov">     353668 :             tuple-&gt;hash = 0;</span>
-<span class="lineNum">     259 </span>                :<span class="lineCov">     353668 :             tuple-&gt;in_use = EMPTY;</span>
+<span class="lineNum">     258 </span>                :<span class="lineCov">     344497 :             tuple-&gt;hash = 0;</span>
+<span class="lineNum">     259 </span>                :<span class="lineCov">     344497 :             tuple-&gt;in_use = EMPTY;</span>
 <span class="lineNum">     260 </span>                :            :         }
 <span class="lineNum">     261 </span>                :            : 
 <span class="lineNum">     262 </span>                :            :         /* free the tuple memory */
-<span class="lineNum">     263 </span>                :<span class="lineCov">       2146 :         FREE((void*)htable-&gt;tuples);</span>
+<span class="lineNum">     263 </span>                :<span class="lineCov">       2156 :         FREE((void*)htable-&gt;tuples);</span>
 <span class="lineNum">     264 </span>                :            : 
 <span class="lineNum">     265 </span>                :            :         /* reset the pointer */
-<span class="lineNum">     266 </span>                :<span class="lineCov">       2146 :         htable-&gt;tuples = NULL;</span>
+<span class="lineNum">     266 </span>                :<span class="lineCov">       2156 :         htable-&gt;tuples = NULL;</span>
 <span class="lineNum">     267 </span>                :            :     }
 <span class="lineNum">     268 </span>                :            : 
 <span class="lineNum">     269 </span>                :            :     /* no more tuples in the list */
 <span class="lineNum">     270 </span>                :<span class="lineCov">       2577 :     htable-&gt;num_tuples = 0;</span>
 <span class="lineNum">     271 </span>                :            : }
 <span class="lineNum">     272 </span>                :            : 
-<span class="lineNum">     273 </span>                :            : 
-<a name="274"><span class="lineNum">     274 </span>                :            : /* deinitialize a hashtable. */</a>
-<span class="lineNum">     275 </span>                :            : void ht_deinitialize( ht_t * const htable )
-<span class="lineNum">     276 </span>                :<span class="lineCov">       2321 : {</span>
+<a name="273"><span class="lineNum">     273 </span>                :            : </a>
+<span class="lineNum">     274 </span>                :            : /* deinitialize a hashtable. */
+<span class="lineNum">     275 </span>                :<span class="lineCov">       2321 : void ht_deinitialize( ht_t * const htable )</span>
+<span class="lineNum">     276 </span>                :            : {
 <span class="lineNum">     277 </span>                :<span class="lineCov">       2321 :     int_t ret = 0;</span>
-<span class="lineNum">     278 </span>        [<span class="branchCov" title="Branch 0 was taken 2321 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       2321 :     CHECK_PTR( htable );</span>
+<span class="lineNum">     278 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2321 times"> + </span>]:<span class="lineCov">       4642 :     CHECK_PTR( htable );</span>
 <span class="lineNum">     279 </span>                :            : 
 <span class="lineNum">     280 </span>                :<span class="lineCov">       2321 :     ht_free_tuples( htable );</span>
 <span class="lineNum">     281 </span>                :            : 
@@ -357,180 +357,180 @@
 <span class="lineNum">     286 </span>                :            : #endif
 <span class="lineNum">     287 </span>                :            : }
 <span class="lineNum">     288 </span>                :            : 
-<span class="lineNum">     289 </span>                :            : 
-<a name="290"><span class="lineNum">     290 </span>                :            : /* deinitializes and frees a hashtable allocated with ht_new() */</a>
-<span class="lineNum">     291 </span>                :            : void ht_delete(void * ht)
-<span class="lineNum">     292 </span>                :<span class="lineCov">        265 : {</span>
+<a name="289"><span class="lineNum">     289 </span>                :            : </a>
+<span class="lineNum">     290 </span>                :            : /* deinitializes and frees a hashtable allocated with ht_new() */
+<span class="lineNum">     291 </span>                :<span class="lineCov">        265 : void ht_delete(void * ht)</span>
+<span class="lineNum">     292 </span>                :            : {
 <span class="lineNum">     293 </span>                :<span class="lineCov">        265 :     ht_t * htable = (ht_t*)ht;</span>
-<span class="lineNum">     294 </span>        [<span class="branchCov" title="Branch 0 was taken 264 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        265 :     CHECK_PTR(htable);</span>
+<span class="lineNum">     294 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 264 times"> + </span>]:<span class="lineCov">        529 :     CHECK_PTR(htable);</span>
 <span class="lineNum">     295 </span>                :            : 
 <span class="lineNum">     296 </span>                :            :     /* de-init the hashtable if needed */
 <span class="lineNum">     297 </span>                :<span class="lineCov">        264 :     ht_deinitialize(htable);</span>
 <span class="lineNum">     298 </span>                :            : 
 <span class="lineNum">     299 </span>                :            :     /* free the hashtable */
-<span class="lineNum">     300 </span>                :<span class="lineCov">        265 :     FREE((void*)htable);</span>
+<span class="lineNum">     300 </span>                :<span class="lineCov">        264 :     FREE((void*)htable);</span>
 <span class="lineNum">     301 </span>                :            : }
 <span class="lineNum">     302 </span>                :            : 
-<span class="lineNum">     303 </span>                :            : 
-<a name="304"><span class="lineNum">     304 </span>                :            : /* returns the number of key/value pairs stored in the hashtable */</a>
-<span class="lineNum">     305 </span>                :            : uint_t ht_size(ht_t * const htable)
-<span class="lineNum">     306 </span>                :<span class="lineCov">     413133 : {</span>
-<span class="lineNum">     307 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 413132 times"> + </span>]:<span class="lineCov">     413133 :     CHECK_PTR_RET(htable, 0);</span>
+<a name="303"><span class="lineNum">     303 </span>                :            : </a>
+<span class="lineNum">     304 </span>                :            : /* returns the number of key/value pairs stored in the hashtable */
+<span class="lineNum">     305 </span>                :<span class="lineCov">     402506 : uint_t ht_size(ht_t * const htable)</span>
+<span class="lineNum">     306 </span>                :            : {
+<span class="lineNum">     307 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 402505 times"> + </span>]:<span class="lineCov">     402506 :     CHECK_PTR_RET(htable, 0);</span>
 <span class="lineNum">     308 </span>                :            : 
-<span class="lineNum">     309 </span>                :<span class="lineCov">     413133 :     return htable-&gt;num_tuples;</span>
+<span class="lineNum">     309 </span>                :<span class="lineCov">     402506 :     return htable-&gt;num_tuples;</span>
 <span class="lineNum">     310 </span>                :            : }
 <span class="lineNum">     311 </span>                :            : 
 <span class="lineNum">     312 </span>                :            : 
-<span class="lineNum">     313 </span>                :            : /* returns the current fraction of how full the hash table is.
-<a name="314"><span class="lineNum">     314 </span>                :            :  * the range is 0.0f to 1.0f, where 1.0f is completly full */</a>
-<span class="lineNum">     315 </span>                :            : float ht_load(ht_t * const htable)
-<span class="lineNum">     316 </span>                :<span class="lineCov">        512 : {</span>
+<a name="313"><span class="lineNum">     313 </span>                :            : /* returns the current fraction of how full the hash table is.</a>
+<span class="lineNum">     314 </span>                :            :  * the range is 0.0f to 1.0f, where 1.0f is completly full */
+<span class="lineNum">     315 </span>                :<span class="lineCov">        512 : float ht_load(ht_t * const htable)</span>
+<span class="lineNum">     316 </span>                :            : {
 <span class="lineNum">     317 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 512 times"> + </span>]:<span class="lineCov">        512 :     CHECK_PTR_RET(htable, 0.0f);</span>
 <span class="lineNum">     318 </span>                :            : 
 <span class="lineNum">     319 </span>                :            :     /* don't return -nan when the initial_capacity is 0 */
-<span class="lineNum">     320 </span>[<span class="branchCov" title="Branch 0 was taken 512 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 2 times"> + </span><span class="branchCov" title="Branch 3 was taken 510 times"> + </span>]:<span class="lineCov">        512 :     if ( (htable-&gt;num_tuples == 0) &amp;&amp; (hashtable_primes[htable-&gt;prime_index] == 0) )</span>
-<span class="lineNum">     321 </span>                :<span class="lineCov">          2 :         return 0.0f;</span>
+<span class="lineNum">     320 </span>[<span class="branchCov" title="Branch 0 was taken 512 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 3 times"> + </span><span class="branchCov" title="Branch 3 was taken 509 times"> + </span>]:<span class="lineCov">        512 :     if ( (htable-&gt;num_tuples == 0) &amp;&amp; (hashtable_primes[htable-&gt;prime_index] == 0) )</span>
+<span class="lineNum">     321 </span>                :<span class="lineCov">          3 :         return 0.0f;</span>
 <span class="lineNum">     322 </span>                :            : 
 <span class="lineNum">     323 </span>                :            :     /* return the number of tuples divided by the size of
 <span class="lineNum">     324 </span>                :            :      * the hashtable. */
 <span class="lineNum">     325 </span>                :<span class="lineCov">        512 :     return ((float)htable-&gt;num_tuples / </span>
-<span class="lineNum">     326 </span>                :            :             (float)hashtable_primes[htable-&gt;prime_index]);
+<span class="lineNum">     326 </span>                :<span class="lineCov">        509 :             (float)hashtable_primes[htable-&gt;prime_index]);</span>
 <span class="lineNum">     327 </span>                :            : }
 <span class="lineNum">     328 </span>                :            : 
-<span class="lineNum">     329 </span>                :            : /* returns the load limit that will trigger a resize when the 
-<a name="330"><span class="lineNum">     330 </span>                :            :  * hashtable where to exceed it during a ht_add(). */</a>
-<span class="lineNum">     331 </span>                :            : float ht_get_resize_load_factor(ht_t const * const htable)
-<span class="lineNum">     332 </span>                :<span class="lineCov">        384 : {</span>
+<a name="329"><span class="lineNum">     329 </span>                :            : /* returns the load limit that will trigger a resize when the </a>
+<span class="lineNum">     330 </span>                :            :  * hashtable where to exceed it during a ht_add(). */
+<span class="lineNum">     331 </span>                :<span class="lineCov">        384 : float ht_get_resize_load_factor(ht_t const * const htable)</span>
+<span class="lineNum">     332 </span>                :            : {
 <span class="lineNum">     333 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 384 times"> + </span>]:<span class="lineCov">        384 :     CHECK_PTR_RET(htable, -1.0f);</span>
 <span class="lineNum">     334 </span>                :            : 
 <span class="lineNum">     335 </span>                :<span class="lineCov">        384 :     return htable-&gt;load_factor;</span>
 <span class="lineNum">     336 </span>                :            : }
 <span class="lineNum">     337 </span>                :            : 
 <span class="lineNum">     338 </span>                :            : /* private function for growing the hash table.
-<span class="lineNum">     339 </span>                :            :  * NOTE: it only supports keeping the table the same size (compacting)
-<a name="340"><span class="lineNum">     340 </span>                :            :  * and growing the table.  this does not support shrinking the hash table. */</a>
-<span class="lineNum">     341 </span>                :            : static int ht_grow( ht_t * const htable, uint_t new_prime_index )
-<span class="lineNum">     342 </span>                :<span class="lineCov">      37070 : {</span>
-<span class="lineNum">     343 </span>                :<span class="lineCov">      37070 :     uint_t i = 0;</span>
-<span class="lineNum">     344 </span>                :<span class="lineCov">      37070 :     uint_t j = 0;</span>
-<span class="lineNum">     345 </span>                :<span class="lineCov">      37070 :     uint_t hash = 0;</span>
-<span class="lineNum">     346 </span>                :<span class="lineCov">      37070 :     tuple_t * tuple = NULL;</span>
-<span class="lineNum">     347 </span>                :<span class="lineCov">      37070 :     tuple_t * tuples = NULL;</span>
-<span class="lineNum">     348 </span>                :<span class="lineCov">      37070 :     uint_t old_table_size = 0;</span>
-<span class="lineNum">     349 </span>                :<span class="lineCov">      37070 :     uint_t new_table_size = 0;</span>
-<span class="lineNum">     350 </span>                :<span class="lineCov">      37070 :     uint_t new_num_tuples = 0;</span>
-<span class="lineNum">     351 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 37070 times"> + </span>]:<span class="lineCov">      37070 :     CHECK_PTR_RET(htable, FALSE);</span>
-<span class="lineNum">     352 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 37070 times"> + </span>]:<span class="lineCov">      37070 :     CHECK_RET(htable-&gt;prime_index &lt;= new_prime_index, FALSE);</span>
-<span class="lineNum">     353 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 37070 times"> + </span>]:<span class="lineCov">      37070 :     CHECK_RET(new_prime_index &lt; num_primes, FALSE);</span>
+<a name="339"><span class="lineNum">     339 </span>                :            :  * NOTE: it only supports keeping the table the same size (compacting)</a>
+<span class="lineNum">     340 </span>                :            :  * and growing the table.  this does not support shrinking the hash table. */
+<span class="lineNum">     341 </span>                :<span class="lineCov">      33152 : static int ht_grow( ht_t * const htable, uint_t new_prime_index )</span>
+<span class="lineNum">     342 </span>                :            : {
+<span class="lineNum">     343 </span>                :<span class="lineCov">      33152 :     uint_t i = 0;</span>
+<span class="lineNum">     344 </span>                :<span class="lineCov">      33152 :     uint_t j = 0;</span>
+<span class="lineNum">     345 </span>                :<span class="lineCov">      33152 :     uint_t hash = 0;</span>
+<span class="lineNum">     346 </span>                :<span class="lineCov">      33152 :     tuple_t * tuple = NULL;</span>
+<span class="lineNum">     347 </span>                :<span class="lineCov">      33152 :     tuple_t * tuples = NULL;</span>
+<span class="lineNum">     348 </span>                :<span class="lineCov">      33152 :     uint_t old_table_size = 0;</span>
+<span class="lineNum">     349 </span>                :<span class="lineCov">      33152 :     uint_t new_table_size = 0;</span>
+<span class="lineNum">     350 </span>                :<span class="lineCov">      33152 :     uint_t new_num_tuples = 0;</span>
+<span class="lineNum">     351 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 33152 times"> + </span>]:<span class="lineCov">      33152 :     CHECK_PTR_RET(htable, FALSE);</span>
+<span class="lineNum">     352 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 33152 times"> + </span>]:<span class="lineCov">      33152 :     CHECK_RET(htable-&gt;prime_index &lt;= new_prime_index, FALSE);</span>
+<span class="lineNum">     353 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 33152 times"> + </span>]:<span class="lineCov">      33152 :     CHECK_RET(new_prime_index &lt; num_primes, FALSE);</span>
 <span class="lineNum">     354 </span>                :            : 
 <span class="lineNum">     355 </span>                :            : #ifdef UNIT_TESTING
 <span class="lineNum">     356 </span>                :            :     /* fail the grow if FAIL_GROW is true */
-<span class="lineNum">     357 </span>        [<span class="branchCov" title="Branch 0 was taken 31415 times"> + </span><span class="branchCov" title="Branch 1 was taken 5655 times"> + </span>]:<span class="lineCov">      37070 :     if ( fail_grow == TRUE )</span>
-<span class="lineNum">     358 </span>                :<span class="lineCov">      31415 :         return FALSE;</span>
+<span class="lineNum">     357 </span>        [<span class="branchCov" title="Branch 0 was taken 27614 times"> + </span><span class="branchCov" title="Branch 1 was taken 5538 times"> + </span>]:<span class="lineCov">      33152 :     if ( fail_grow == TRUE )</span>
+<span class="lineNum">     358 </span>                :<span class="lineCov">      27614 :         return FALSE;</span>
 <span class="lineNum">     359 </span>                :            : #endif
 <span class="lineNum">     360 </span>                :            : 
 <span class="lineNum">     361 </span>                :            :     /* get the current table size */
-<span class="lineNum">     362 </span>                :<span class="lineCov">       5655 :     old_table_size = hashtable_primes[htable-&gt;prime_index];</span>
+<span class="lineNum">     362 </span>                :<span class="lineCov">       5538 :     old_table_size = hashtable_primes[htable-&gt;prime_index];</span>
 <span class="lineNum">     363 </span>                :            : 
 <span class="lineNum">     364 </span>                :            :     /* get the new table size */
-<span class="lineNum">     365 </span>                :<span class="lineCov">       5655 :     new_table_size = hashtable_primes[new_prime_index];</span>
+<span class="lineNum">     365 </span>                :<span class="lineCov">       5538 :     new_table_size = hashtable_primes[new_prime_index];</span>
 <span class="lineNum">     366 </span>                :            : 
 <span class="lineNum">     367 </span>                :            :     /* allocate a new tuples table */
 <span class="lineNum">     368 </span>                :            :     DEBUG( &quot;growing hash table to: %d\n&quot;, new_table_size )
-<span class="lineNum">     369 </span>                :<span class="lineCov">       5655 :     tuples = (tuple_t *)CALLOC(new_table_size, sizeof(tuple_t));</span>
-<span class="lineNum">     370 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 5655 times"> + </span>]:<span class="lineCov">       5655 :     CHECK_PTR_RET( tuples, FALSE );</span>
+<span class="lineNum">     369 </span>                :<span class="lineCov">       5538 :     tuples = (tuple_t *)CALLOC(new_table_size, sizeof(tuple_t));</span>
+<span class="lineNum">     370 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 5538 times"> + </span>]:<span class="lineCov">       5538 :     CHECK_PTR_RET( tuples, FALSE );</span>
 <span class="lineNum">     371 </span>                :            : 
-<span class="lineNum">     372 </span>        [<span class="branchCov" title="Branch 0 was taken 3509 times"> + </span><span class="branchCov" title="Branch 1 was taken 2146 times"> + </span>]:<span class="lineCov">       5655 :     if ( htable-&gt;tuples != NULL )</span>
+<span class="lineNum">     372 </span>        [<span class="branchCov" title="Branch 0 was taken 3382 times"> + </span><span class="branchCov" title="Branch 1 was taken 2156 times"> + </span>]:<span class="lineCov">       5538 :     if ( htable-&gt;tuples != NULL )</span>
 <span class="lineNum">     373 </span>                :            :     {
 <span class="lineNum">     374 </span>                :            :         /* go through the old table and hash the items into the new table */
-<span class="lineNum">     375 </span>        [<span class="branchCov" title="Branch 0 was taken 1257089 times"> + </span><span class="branchCov" title="Branch 1 was taken 3509 times"> + </span>]:<span class="lineCov">    1260598 :         for(i = 0; i &lt; old_table_size; i++)</span>
+<span class="lineNum">     375 </span>        [<span class="branchCov" title="Branch 0 was taken 1366766 times"> + </span><span class="branchCov" title="Branch 1 was taken 3382 times"> + </span>]:<span class="lineCov">    1370148 :         for(i = 0; i &lt; old_table_size; i++)</span>
 <span class="lineNum">     376 </span>                :            :         {
-<span class="lineNum">     377 </span>                :<span class="lineCov">    1257089 :             tuple = &amp;(htable-&gt;tuples[i]);</span>
+<span class="lineNum">     377 </span>                :<span class="lineCov">    1366766 :             tuple = &amp;(htable-&gt;tuples[i]);</span>
 <span class="lineNum">     378 </span>                :            : 
 <span class="lineNum">     379 </span>                :            :             /* skip over tuples that are empty or lazy deleted */
-<span class="lineNum">     380 </span>        [<span class="branchCov" title="Branch 0 was taken 763830 times"> + </span><span class="branchCov" title="Branch 1 was taken 493259 times"> + </span>]:<span class="lineCov">    1257089 :             if ( tuple-&gt;in_use != ACTIVE )</span>
-<span class="lineNum">     381 </span>                :<span class="lineCov">     763830 :                 continue;</span>
+<span class="lineNum">     380 </span>        [<span class="branchCov" title="Branch 0 was taken 886375 times"> + </span><span class="branchCov" title="Branch 1 was taken 480391 times"> + </span>]:<span class="lineCov">    1366766 :             if ( tuple-&gt;in_use != ACTIVE )</span>
+<span class="lineNum">     381 </span>                :<span class="lineCov">     886375 :                 continue;</span>
 <span class="lineNum">     382 </span>                :            : 
 <span class="lineNum">     383 </span>                :            :             /* get the hash of the key */
-<span class="lineNum">     384 </span>                :<span class="lineCov">     493259 :             hash = tuple-&gt;hash;</span>
+<span class="lineNum">     384 </span>                :<span class="lineCov">     480391 :             hash = tuple-&gt;hash;</span>
 <span class="lineNum">     385 </span>                :            : 
 <span class="lineNum">     386 </span>                :            :             /* get the starting index of the probing */
-<span class="lineNum">     387 </span>                :<span class="lineCov">     493259 :             j = (hash % new_table_size);</span>
+<span class="lineNum">     387 </span>                :<span class="lineCov">     480391 :             j = (hash % new_table_size);</span>
 <span class="lineNum">     388 </span>                :            :             
 <span class="lineNum">     389 </span>                :            :             /* use linear probing to find an empty or laxy deleted tuple */
-<span class="lineNum">     390 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 493259 times"> + </span>]:<span class="lineCov">     493259 :             while( tuples[j].in_use == ACTIVE )</span>
+<span class="lineNum">     390 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 480391 times"> + </span>]:<span class="lineCov">     480391 :             while( tuples[j].in_use == ACTIVE )</span>
 <span class="lineNum">     391 </span>                :            :             {
 <span class="lineNum">     392 </span>                :<span class="lineNoCov">          0 :                 j = ((j + 1) % new_table_size);</span>
 <span class="lineNum">     393 </span>                :            :             }
 <span class="lineNum">     394 </span>                :            : 
 <span class="lineNum">     395 </span>                :            :             /* we found a slot, copy the tuple from the old table to
 <span class="lineNum">     396 </span>                :            :              * the new one */
-<span class="lineNum">     397 </span>                :<span class="lineCov">     493259 :             tuples[j].hash = tuple-&gt;hash;</span>
-<span class="lineNum">     398 </span>                :<span class="lineCov">     493259 :             tuples[j].key = tuple-&gt;key;</span>
-<span class="lineNum">     399 </span>                :<span class="lineCov">     493259 :             tuples[j].value = tuple-&gt;value;</span>
-<span class="lineNum">     400 </span>                :<span class="lineCov">     493259 :             tuples[j].in_use = ACTIVE;</span>
+<span class="lineNum">     397 </span>                :<span class="lineCov">     480391 :             tuples[j].hash = tuple-&gt;hash;</span>
+<span class="lineNum">     398 </span>                :<span class="lineCov">     480391 :             tuples[j].key = tuple-&gt;key;</span>
+<span class="lineNum">     399 </span>                :<span class="lineCov">     480391 :             tuples[j].value = tuple-&gt;value;</span>
+<span class="lineNum">     400 </span>                :<span class="lineCov">     480391 :             tuples[j].in_use = ACTIVE;</span>
 <span class="lineNum">     401 </span>                :            :             
 <span class="lineNum">     402 </span>                :            :             /* update the count of tuples in the new table */
-<span class="lineNum">     403 </span>                :<span class="lineCov">     493259 :             new_num_tuples++;</span>
+<span class="lineNum">     403 </span>                :<span class="lineCov">     480391 :             new_num_tuples++;</span>
 <span class="lineNum">     404 </span>                :            :         }
 <span class="lineNum">     405 </span>                :            : 
 <span class="lineNum">     406 </span>                :            :         /* free the old table */
-<span class="lineNum">     407 </span>                :<span class="lineCov">       3509 :         FREE(htable-&gt;tuples);</span>
+<span class="lineNum">     407 </span>                :<span class="lineCov">       3382 :         FREE(htable-&gt;tuples);</span>
 <span class="lineNum">     408 </span>                :            :     }
 <span class="lineNum">     409 </span>                :            : 
 <span class="lineNum">     410 </span>                :            :     /* store the new tuples table */
-<span class="lineNum">     411 </span>                :<span class="lineCov">       5655 :     htable-&gt;tuples = tuples;</span>
+<span class="lineNum">     411 </span>                :<span class="lineCov">       5538 :     htable-&gt;tuples = tuples;</span>
 <span class="lineNum">     412 </span>                :            :     
 <span class="lineNum">     413 </span>                :            :     /* store the new number of tuples */
-<span class="lineNum">     414 </span>                :<span class="lineCov">       5655 :     htable-&gt;num_tuples = new_num_tuples;</span>
+<span class="lineNum">     414 </span>                :<span class="lineCov">       5538 :     htable-&gt;num_tuples = new_num_tuples;</span>
 <span class="lineNum">     415 </span>                :            : 
 <span class="lineNum">     416 </span>                :            :     /* store the new prime index */
-<span class="lineNum">     417 </span>                :<span class="lineCov">       5655 :     htable-&gt;prime_index = new_prime_index;</span>
+<span class="lineNum">     417 </span>                :<span class="lineCov">       5538 :     htable-&gt;prime_index = new_prime_index;</span>
 <span class="lineNum">     418 </span>                :            : 
 <span class="lineNum">     419 </span>                :            :     /* success */
-<span class="lineNum">     420 </span>                :<span class="lineCov">      37070 :     return TRUE;</span>
+<span class="lineNum">     420 </span>                :<span class="lineCov">      33152 :     return TRUE;</span>
 <span class="lineNum">     421 </span>                :            : }
 <span class="lineNum">     422 </span>                :            : 
 <span class="lineNum">     423 </span>                :            : /* determines if the hashtable needs to grow based on the number
 <span class="lineNum">     424 </span>                :            :  * of tuples and the current load factor limit for the table.  if
 <span class="lineNum">     425 </span>                :            :  * the table needs to grow, it returns the index of the first prime
 <span class="lineNum">     426 </span>                :            :  * table size that is large enough to make the hash table load 
-<span class="lineNum">     427 </span>                :            :  * factor less than the limit.  if the table does not need to grow
+<a name="427"><span class="lineNum">     427 </span>                :            :  * factor less than the limit.  if the table does not need to grow</a>
 <span class="lineNum">     428 </span>                :            :  * the function returns 0. */
-<a name="429"><span class="lineNum">     429 </span>                :            : static int ht_needs_to_grow( ht_t const * const htable, </a>
+<span class="lineNum">     429 </span>                :<span class="lineCov">     399928 : static int ht_needs_to_grow( ht_t const * const htable, </span>
 <span class="lineNum">     430 </span>                :            :                              uint_t new_size )
-<span class="lineNum">     431 </span>                :<span class="lineCov">     410555 : {</span>
-<span class="lineNum">     432 </span>                :<span class="lineCov">     410555 :     uint_t new_index = 0;</span>
-<span class="lineNum">     433 </span>                :<span class="lineCov">     410555 :     uint_t load = 0;</span>
-<span class="lineNum">     434 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 410555 times"> + </span>]:<span class="lineCov">     410555 :     CHECK_PTR_RET(htable, FALSE);</span>
-<span class="lineNum">     435 </span>[<span class="branchCov" title="Branch 0 was taken 410555 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 410555 times"> + </span>]:<span class="lineCov">     410555 :     CHECK_RET((((int)new_index &gt;= 0) &amp;&amp; (new_index &lt; num_primes)), FALSE);</span>
+<span class="lineNum">     431 </span>                :            : {
+<span class="lineNum">     432 </span>                :<span class="lineCov">     399928 :     uint_t new_index = 0;</span>
+<span class="lineNum">     433 </span>                :<span class="lineCov">     399928 :     uint_t load = 0;</span>
+<span class="lineNum">     434 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 399928 times"> + </span>]:<span class="lineCov">     399928 :     CHECK_PTR_RET(htable, FALSE);</span>
+<span class="lineNum">     435 </span>[<span class="branchCov" title="Branch 0 was taken 399928 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 399928 times"> + </span>]:<span class="lineCov">     399928 :     CHECK_RET((((int)new_index &gt;= 0) &amp;&amp; (new_index &lt; num_primes)), FALSE);</span>
 <span class="lineNum">     436 </span>                :            : 
 <span class="lineNum">     437 </span>                :            :     /* there is no tuple table, then we always need to grow */
-<span class="lineNum">     438 </span>        [<span class="branchCov" title="Branch 0 was taken 31279 times"> + </span><span class="branchCov" title="Branch 1 was taken 379276 times"> + </span>]:<span class="lineCov">     410555 :     if ( htable-&gt;tuples == NULL )</span>
+<span class="lineNum">     438 </span>        [<span class="branchCov" title="Branch 0 was taken 27473 times"> + </span><span class="branchCov" title="Branch 1 was taken 372455 times"> + </span>]:<span class="lineCov">     399928 :     if ( htable-&gt;tuples == NULL )</span>
 <span class="lineNum">     439 </span>                :            :     {
-<span class="lineNum">     440 </span>                :<span class="lineCov">      31279 :         return TRUE;</span>
+<span class="lineNum">     440 </span>                :<span class="lineCov">      27473 :         return TRUE;</span>
 <span class="lineNum">     441 </span>                :            :     }
 <span class="lineNum">     442 </span>                :            : 
 <span class="lineNum">     443 </span>                :            :     /* start at the existing index */
-<span class="lineNum">     444 </span>                :<span class="lineCov">     379276 :     new_index = htable-&gt;prime_index;</span>
+<span class="lineNum">     444 </span>                :<span class="lineCov">     372455 :     new_index = htable-&gt;prime_index;</span>
 <span class="lineNum">     445 </span>                :            : 
 <span class="lineNum">     446 </span>                :            :     /* if the table doesn't need to grow, return 0 */
-<span class="lineNum">     447 </span>        [<span class="branchCov" title="Branch 0 was taken 375906 times"> + </span><span class="branchCov" title="Branch 1 was taken 3370 times"> + </span>]:<span class="lineCov">     379276 :     if(new_size &lt; (uint_t)((float)hashtable_primes[new_index] * htable-&gt;load_factor))</span>
+<span class="lineNum">     447 </span>        [<span class="branchCov" title="Branch 0 was taken 369211 times"> + </span><span class="branchCov" title="Branch 1 was taken 3244 times"> + </span>]:<span class="lineCov">     372455 :     if(new_size &lt; (uint_t)((float)hashtable_primes[new_index] * htable-&gt;load_factor))</span>
 <span class="lineNum">     448 </span>                :            :     {
-<span class="lineNum">     449 </span>                :<span class="lineCov">     375906 :         return FALSE;</span>
+<span class="lineNum">     449 </span>                :<span class="lineCov">     369211 :         return FALSE;</span>
 <span class="lineNum">     450 </span>                :            :     }
 <span class="lineNum">     451 </span>                :            : 
 <span class="lineNum">     452 </span>                :            :     /* the table needs to grow, so find the prime index for the
 <span class="lineNum">     453 </span>                :            :      * new size */
-<span class="lineNum">     454 </span>                :<span class="lineCov">       3370 :     load = (uint_t)((float)hashtable_primes[new_index] * htable-&gt;load_factor);</span>
-<span class="lineNum">     455 </span>[<span class="branchCov" title="Branch 0 was taken 6830 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 3460 times"> + </span><span class="branchCov" title="Branch 3 was taken 3370 times"> + </span>]:<span class="lineCov">       6830 :     while((new_index &lt; num_primes) &amp;&amp; (new_size &gt;= load))</span>
+<span class="lineNum">     454 </span>                :<span class="lineCov">       3244 :     load = (uint_t)((float)hashtable_primes[new_index] * htable-&gt;load_factor);</span>
+<span class="lineNum">     455 </span>[<span class="branchCov" title="Branch 0 was taken 6572 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 3328 times"> + </span><span class="branchCov" title="Branch 3 was taken 3244 times"> + </span>]:<span class="lineCov">       6572 :     while((new_index &lt; num_primes) &amp;&amp; (new_size &gt;= load))</span>
 <span class="lineNum">     456 </span>                :            :     {
-<span class="lineNum">     457 </span>                :<span class="lineCov">       3460 :         new_index++;</span>
-<span class="lineNum">     458 </span>                :<span class="lineCov">       3460 :         load = (uint_t)((float)hashtable_primes[new_index] * htable-&gt;load_factor);</span>
+<span class="lineNum">     457 </span>                :<span class="lineCov">       3328 :         new_index++;</span>
+<span class="lineNum">     458 </span>                :<span class="lineCov">       3328 :         load = (uint_t)((float)hashtable_primes[new_index] * htable-&gt;load_factor);</span>
 <span class="lineNum">     459 </span>                :            :     }
 <span class="lineNum">     460 </span>                :            : 
 <span class="lineNum">     461 </span>                :            :     /* can the table grow? */
-<span class="lineNum">     462 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3370 times"> + </span>]:<span class="lineCov">       3370 :     if(new_index &gt;= num_primes)</span>
+<span class="lineNum">     462 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3244 times"> + </span>]:<span class="lineCov">       3244 :     if(new_index &gt;= num_primes)</span>
 <span class="lineNum">     463 </span>                :            :     {
 <span class="lineNum">     464 </span>                :            :         /* AAGH! the table needs to grow but we've run out of primes */
 <span class="lineNum">     465 </span>                :<span class="lineNoCov">          0 :         WARN(&quot;hashtable has run out of primes!&quot;);</span>
@@ -538,13 +538,13 @@
 <span class="lineNum">     467 </span>                :            :     }
 <span class="lineNum">     468 </span>                :            : 
 <span class="lineNum">     469 </span>                :            :     /* the table doesn't need to grow */
-<span class="lineNum">     470 </span>                :<span class="lineCov">     410555 :     return new_index;</span>
+<span class="lineNum">     470 </span>                :<span class="lineCov">     399928 :     return new_index;</span>
 <span class="lineNum">     471 </span>                :            : }
 <span class="lineNum">     472 </span>                :            : 
-<span class="lineNum">     473 </span>                :            : /* set the load limit that will trigger a resize.  this defaults
-<a name="474"><span class="lineNum">     474 </span>                :            :  * 0.65f or 65% full. */</a>
-<span class="lineNum">     475 </span>                :            : int ht_set_resize_load_factor( ht_t * const htable, float load )
-<span class="lineNum">     476 </span>                :<span class="lineCov">        256 : {</span>
+<a name="473"><span class="lineNum">     473 </span>                :            : /* set the load limit that will trigger a resize.  this defaults</a>
+<span class="lineNum">     474 </span>                :            :  * 0.65f or 65% full. */
+<span class="lineNum">     475 </span>                :<span class="lineCov">        256 : int ht_set_resize_load_factor( ht_t * const htable, float load )</span>
+<span class="lineNum">     476 </span>                :            : {
 <span class="lineNum">     477 </span>                :<span class="lineCov">        256 :     int new_index = 0;</span>
 <span class="lineNum">     478 </span>                :<span class="lineCov">        256 :     float old_load = 0.0f;</span>
 <span class="lineNum">     479 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     CHECK_PTR_RET( htable, FALSE );</span>
@@ -558,10 +558,10 @@
 <span class="lineNum">     487 </span>                :<span class="lineCov">        256 :     htable-&gt;load_factor = load;</span>
 <span class="lineNum">     488 </span>                :            :     
 <span class="lineNum">     489 </span>                :            :     /* check to see if a resize is necessary */
-<span class="lineNum">     490 </span>        [<span class="branchCov" title="Branch 1 was taken 230 times"> + </span><span class="branchCov" title="Branch 2 was taken 26 times"> + </span>]:<span class="lineCov">        256 :     if ( (new_index = ht_needs_to_grow(htable, htable-&gt;num_tuples)) &gt; 0 )</span>
+<span class="lineNum">     490 </span>        [<span class="branchCov" title="Branch 1 was taken 225 times"> + </span><span class="branchCov" title="Branch 2 was taken 31 times"> + </span>]:<span class="lineCov">        256 :     if ( (new_index = ht_needs_to_grow(htable, htable-&gt;num_tuples)) &gt; 0 )</span>
 <span class="lineNum">     491 </span>                :            :     {
 <span class="lineNum">     492 </span>                :            :         /* it does, so try to grow it */
-<span class="lineNum">     493 </span>        [<span class="branchCov" title="Branch 1 was taken 118 times"> + </span><span class="branchCov" title="Branch 2 was taken 112 times"> + </span>]:<span class="lineCov">        230 :         if ( !ht_grow(htable, new_index) )</span>
+<span class="lineNum">     493 </span>        [<span class="branchCov" title="Branch 1 was taken 118 times"> + </span><span class="branchCov" title="Branch 2 was taken 107 times"> + </span>]:<span class="lineCov">        225 :         if ( !ht_grow(htable, new_index) )</span>
 <span class="lineNum">     494 </span>                :            :         {
 <span class="lineNum">     495 </span>                :            :             /* reset the load_factor to the original value */
 <span class="lineNum">     496 </span>                :<span class="lineCov">        118 :             htable-&gt;load_factor = old_load;</span>
@@ -580,15 +580,15 @@
 <span class="lineNum">     509 </span>                :            :  * to keep the probing chains from breaking.  this function clears
 <span class="lineNum">     510 </span>                :            :  * them out by allocating a new table and rehashing the non-filler
 <span class="lineNum">     511 </span>                :            :  * nodes into it and freeing the old table.  this operation elliminates
-<span class="lineNum">     512 </span>                :            :  * the filler nodes and &quot;compacts&quot; the table.  use this to keep your
-<a name="513"><span class="lineNum">     513 </span>                :            :  * load factor from endlessly climbing and causing resizes. */</a>
-<span class="lineNum">     514 </span>                :            : int ht_compact( ht_t * const htable )
-<span class="lineNum">     515 </span>                :<span class="lineCov">        256 : {</span>
+<a name="512"><span class="lineNum">     512 </span>                :            :  * the filler nodes and &quot;compacts&quot; the table.  use this to keep your</a>
+<span class="lineNum">     513 </span>                :            :  * load factor from endlessly climbing and causing resizes. */
+<span class="lineNum">     514 </span>                :<span class="lineCov">        256 : int ht_compact( ht_t * const htable )</span>
+<span class="lineNum">     515 </span>                :            : {
 <span class="lineNum">     516 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     CHECK_PTR_RET( htable, FALSE );</span>
 <span class="lineNum">     517 </span>                :            : 
-<span class="lineNum">     518 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 252 times"> + </span>]:<span class="lineCov">        256 :     if ( htable-&gt;tuples == NULL )</span>
+<span class="lineNum">     518 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 255 times"> + </span>]:<span class="lineCov">        256 :     if ( htable-&gt;tuples == NULL )</span>
 <span class="lineNum">     519 </span>                :            :     {
-<span class="lineNum">     520 </span>                :<span class="lineCov">          4 :         return TRUE;</span>
+<span class="lineNum">     520 </span>                :<span class="lineCov">          1 :         return TRUE;</span>
 <span class="lineNum">     521 </span>                :            :     }
 <span class="lineNum">     522 </span>                :            :     
 <span class="lineNum">     523 </span>                :            :     /* call the grow function with our current size. this will
@@ -596,10 +596,10 @@
 <span class="lineNum">     525 </span>                :            :      * the non-filler tuples into the new table, effectively
 <span class="lineNum">     526 </span>                :            :      * removing them from the hashtable and reducing how full
 <span class="lineNum">     527 </span>                :            :      * the table is. */
-<span class="lineNum">     528 </span>        [<span class="branchCov" title="Branch 1 was taken 126 times"> + </span><span class="branchCov" title="Branch 2 was taken 126 times"> + </span>]:<span class="lineCov">        252 :     if ( !ht_grow(htable, htable-&gt;prime_index) )</span>
+<span class="lineNum">     528 </span>        [<span class="branchCov" title="Branch 1 was taken 128 times"> + </span><span class="branchCov" title="Branch 2 was taken 127 times"> + </span>]:<span class="lineCov">        255 :     if ( !ht_grow(htable, htable-&gt;prime_index) )</span>
 <span class="lineNum">     529 </span>                :            :     {
 <span class="lineNum">     530 </span>                :            :         DEBUG( &quot;failed to compact&quot; );
-<span class="lineNum">     531 </span>                :<span class="lineCov">        126 :         return FALSE;</span>
+<span class="lineNum">     531 </span>                :<span class="lineCov">        128 :         return FALSE;</span>
 <span class="lineNum">     532 </span>                :            :     }
 <span class="lineNum">     533 </span>                :            :     
 <span class="lineNum">     534 </span>                :<span class="lineCov">        256 :     return TRUE;</span>
@@ -607,50 +607,50 @@
 <span class="lineNum">     536 </span>                :            : 
 <span class="lineNum">     537 </span>                :            : 
 <span class="lineNum">     538 </span>                :            : /* adds a key/value pair to the hashtable. */
-<span class="lineNum">     539 </span>                :            : /* NOTE: if the number of values stored in the table will exceed a load 
+<a name="539"><span class="lineNum">     539 </span>                :            : /* NOTE: if the number of values stored in the table will exceed a load </a>
 <span class="lineNum">     540 </span>                :            :  * factor of 65% then the hashtable grows to make more room. */
-<span class="lineNum">     541 </span>                :            : int ht_add( ht_t * const htable, 
-<a name="542"><span class="lineNum">     542 </span>                :            :             void * const key,</a>
+<span class="lineNum">     541 </span>                :<span class="lineCov">     399672 : int ht_add( ht_t * const htable, </span>
+<span class="lineNum">     542 </span>                :            :             void * const key,
 <span class="lineNum">     543 </span>                :            :             void * const value)
-<span class="lineNum">     544 </span>                :<span class="lineCov">     410299 : {</span>
+<span class="lineNum">     544 </span>                :            : {
 <span class="lineNum">     545 </span>                :            :     uint_t hash;
-<span class="lineNum">     546 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 410299 times"> + </span>]:<span class="lineCov">     410299 :     CHECK_PTR_RET(htable, FALSE);</span>
-<span class="lineNum">     547 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 410299 times"> + </span>]:<span class="lineCov">     410299 :     CHECK_PTR_RET(htable-&gt;khfn, FALSE);</span>
+<span class="lineNum">     546 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 399672 times"> + </span>]:<span class="lineCov">     399672 :     CHECK_PTR_RET(htable, FALSE);</span>
+<span class="lineNum">     547 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 399672 times"> + </span>]:<span class="lineCov">     399672 :     CHECK_PTR_RET(htable-&gt;khfn, FALSE);</span>
 <span class="lineNum">     548 </span>                :            : 
-<span class="lineNum">     549 </span>                :<span class="lineCov">     410299 :     hash = (*(htable-&gt;khfn))(key);</span>
+<span class="lineNum">     549 </span>                :<span class="lineCov">     399672 :     hash = (*(htable-&gt;khfn))(key);</span>
 <span class="lineNum">     550 </span>                :            : 
-<span class="lineNum">     551 </span>                :<span class="lineCov">     410299 :     return ht_add_prehash( htable, hash, key, value );</span>
-<span class="lineNum">     552 </span>                :            : }
+<span class="lineNum">     551 </span>                :<span class="lineCov">     399672 :     return ht_add_prehash( htable, hash, key, value );</span>
+<a name="552"><span class="lineNum">     552 </span>                :            : }</a>
 <span class="lineNum">     553 </span>                :            : 
-<span class="lineNum">     554 </span>                :            : int ht_add_prehash( ht_t * const htable, 
+<span class="lineNum">     554 </span>                :<span class="lineCov">     399672 : int ht_add_prehash( ht_t * const htable, </span>
 <span class="lineNum">     555 </span>                :            :                     uint_t const hash,
-<a name="556"><span class="lineNum">     556 </span>                :            :                     void * const key,</a>
+<span class="lineNum">     556 </span>                :            :                     void * const key,
 <span class="lineNum">     557 </span>                :            :                     void * const value )
-<span class="lineNum">     558 </span>                :<span class="lineCov">     410299 : {</span>
-<span class="lineNum">     559 </span>                :<span class="lineCov">     410299 :     int new_index = 0;</span>
-<span class="lineNum">     560 </span>                :<span class="lineCov">     410299 :     uint_t i = 0;</span>
-<span class="lineNum">     561 </span>                :<span class="lineCov">     410299 :     uint_t table_size = 0;</span>
-<span class="lineNum">     562 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 410299 times"> + </span>]:<span class="lineCov">     410299 :     CHECK_PTR_RET(htable, FALSE);</span>
+<span class="lineNum">     558 </span>                :            : {
+<span class="lineNum">     559 </span>                :<span class="lineCov">     399672 :     int new_index = 0;</span>
+<span class="lineNum">     560 </span>                :<span class="lineCov">     399672 :     uint_t i = 0;</span>
+<span class="lineNum">     561 </span>                :<span class="lineCov">     399672 :     uint_t table_size = 0;</span>
+<span class="lineNum">     562 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 399672 times"> + </span>]:<span class="lineCov">     399672 :     CHECK_PTR_RET(htable, FALSE);</span>
 <span class="lineNum">     563 </span>                :            : 
 <span class="lineNum">     564 </span>                :            :     /* check to see if the table needs to grow if we add one more */
-<span class="lineNum">     565 </span>        [<span class="branchCov" title="Branch 1 was taken 34419 times"> + </span><span class="branchCov" title="Branch 2 was taken 375880 times"> + </span>]:<span class="lineCov">     410299 :     if ( (new_index = ht_needs_to_grow(htable, htable-&gt;num_tuples + 1)) &gt; 0 )</span>
+<span class="lineNum">     565 </span>        [<span class="branchCov" title="Branch 1 was taken 30492 times"> + </span><span class="branchCov" title="Branch 2 was taken 369180 times"> + </span>]:<span class="lineCov">     399672 :     if ( (new_index = ht_needs_to_grow(htable, htable-&gt;num_tuples + 1)) &gt; 0 )</span>
 <span class="lineNum">     566 </span>                :            :     {
 <span class="lineNum">     567 </span>                :            :         /* it does, so try to grow it to the new size */
-<span class="lineNum">     568 </span>        [<span class="branchCov" title="Branch 1 was taken 31169 times"> + </span><span class="branchCov" title="Branch 2 was taken 3250 times"> + </span>]:<span class="lineCov">      34419 :         if ( !ht_grow(htable, new_index) )</span>
+<span class="lineNum">     568 </span>        [<span class="branchCov" title="Branch 1 was taken 27366 times"> + </span><span class="branchCov" title="Branch 2 was taken 3126 times"> + </span>]:<span class="lineCov">      30492 :         if ( !ht_grow(htable, new_index) )</span>
 <span class="lineNum">     569 </span>                :            :         {
 <span class="lineNum">     570 </span>                :            :             DEBUG( &quot;failed to grow hashtable!&quot; );
-<span class="lineNum">     571 </span>                :<span class="lineCov">      31169 :             return FALSE;</span>
+<span class="lineNum">     571 </span>                :<span class="lineCov">      27366 :             return FALSE;</span>
 <span class="lineNum">     572 </span>                :            :         }
 <span class="lineNum">     573 </span>                :            :     }
 <span class="lineNum">     574 </span>                :            : 
 <span class="lineNum">     575 </span>                :            :     /* get the table size */
-<span class="lineNum">     576 </span>                :<span class="lineCov">     379130 :     table_size = hashtable_primes[htable-&gt;prime_index];</span>
+<span class="lineNum">     576 </span>                :<span class="lineCov">     372306 :     table_size = hashtable_primes[htable-&gt;prime_index];</span>
 <span class="lineNum">     577 </span>                :            : 
 <span class="lineNum">     578 </span>                :            :     /* get the starting index of the probing */
-<span class="lineNum">     579 </span>                :<span class="lineCov">     379130 :     i = (hash % table_size);</span>
+<span class="lineNum">     579 </span>                :<span class="lineCov">     372306 :     i = (hash % table_size);</span>
 <span class="lineNum">     580 </span>                :            : 
 <span class="lineNum">     581 </span>                :            :     /* use linear probing to find an empty or lazy deleted tuple */
-<span class="lineNum">     582 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 379130 times"> + </span>]:<span class="lineCov">     379130 :     while ( htable-&gt;tuples[i].in_use == ACTIVE )</span>
+<span class="lineNum">     582 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 372306 times"> + </span>]:<span class="lineCov">     372306 :     while ( htable-&gt;tuples[i].in_use == ACTIVE )</span>
 <span class="lineNum">     583 </span>                :            :     {
 <span class="lineNum">     584 </span>                :            :         /* move to the next test index */
 <span class="lineNum">     585 </span>                :<span class="lineNoCov">          0 :         i = ((i + 1) % table_size);</span>
@@ -659,28 +659,28 @@
 <span class="lineNum">     588 </span>                :            :     /* if we get here, we either found a slot not being used,
 <span class="lineNum">     589 </span>                :            :      * or we found a lazy deleted slot that we're reusing. */
 <span class="lineNum">     590 </span>                :            : 
-<span class="lineNum">     591 </span>        [<span class="branchCov" title="Branch 0 was taken 379130 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">     379130 :     if ( htable-&gt;tuples[i].in_use == EMPTY )</span>
+<span class="lineNum">     591 </span>        [<span class="branchCov" title="Branch 0 was taken 372306 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">     372306 :     if ( htable-&gt;tuples[i].in_use == EMPTY )</span>
 <span class="lineNum">     592 </span>                :            :     {
 <span class="lineNum">     593 </span>                :            :         /* we're aren't reusing a lazy deleted tuple so
 <span class="lineNum">     594 </span>                :            :          * increment the number of tuples stored in the
 <span class="lineNum">     595 </span>                :            :          * table so that we have an accurate load factor. */
-<span class="lineNum">     596 </span>                :<span class="lineCov">     379130 :         htable-&gt;num_tuples++;</span>
+<span class="lineNum">     596 </span>                :<span class="lineCov">     372306 :         htable-&gt;num_tuples++;</span>
 <span class="lineNum">     597 </span>                :            :     }
 <span class="lineNum">     598 </span>                :            : 
 <span class="lineNum">     599 </span>                :            :     /* we found a slot, so store the new value there. */
-<span class="lineNum">     600 </span>                :<span class="lineCov">     379130 :     htable-&gt;tuples[i].hash = hash;</span>
-<span class="lineNum">     601 </span>                :<span class="lineCov">     379130 :     htable-&gt;tuples[i].key = key;</span>
-<span class="lineNum">     602 </span>                :<span class="lineCov">     379130 :     htable-&gt;tuples[i].value = value;</span>
-<span class="lineNum">     603 </span>                :<span class="lineCov">     379130 :     htable-&gt;tuples[i].in_use = ACTIVE;</span>
+<span class="lineNum">     600 </span>                :<span class="lineCov">     372306 :     htable-&gt;tuples[i].hash = hash;</span>
+<span class="lineNum">     601 </span>                :<span class="lineCov">     372306 :     htable-&gt;tuples[i].key = key;</span>
+<span class="lineNum">     602 </span>                :<span class="lineCov">     372306 :     htable-&gt;tuples[i].value = value;</span>
+<span class="lineNum">     603 </span>                :<span class="lineCov">     372306 :     htable-&gt;tuples[i].in_use = ACTIVE;</span>
 <span class="lineNum">     604 </span>                :            : 
 <span class="lineNum">     605 </span>                :            :     /* success */
-<span class="lineNum">     606 </span>                :<span class="lineCov">     410299 :     return TRUE;</span>
+<span class="lineNum">     606 </span>                :<span class="lineCov">     399672 :     return TRUE;</span>
 <span class="lineNum">     607 </span>                :            : }
 <span class="lineNum">     608 </span>                :            : 
-<span class="lineNum">     609 </span>                :            : 
-<a name="610"><span class="lineNum">     610 </span>                :            : /* clears all key/value pairs from the hashtable and compacts it */</a>
-<span class="lineNum">     611 </span>                :            : int ht_clear(ht_t * const htable)
-<span class="lineNum">     612 </span>                :<span class="lineCov">        256 : {</span>
+<a name="609"><span class="lineNum">     609 </span>                :            : </a>
+<span class="lineNum">     610 </span>                :            : /* clears all key/value pairs from the hashtable and compacts it */
+<span class="lineNum">     611 </span>                :<span class="lineCov">        256 : int ht_clear(ht_t * const htable)</span>
+<span class="lineNum">     612 </span>                :            : {
 <span class="lineNum">     613 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     CHECK_PTR_RET(htable, FALSE);</span>
 <span class="lineNum">     614 </span>                :            : 
 <span class="lineNum">     615 </span>                :            :     /* this will destroy all of the keys and values and free up the
@@ -690,34 +690,34 @@
 <span class="lineNum">     619 </span>                :<span class="lineCov">        256 :     return TRUE;</span>
 <span class="lineNum">     620 </span>                :            : }
 <span class="lineNum">     621 </span>                :            : 
-<span class="lineNum">     622 </span>                :            : 
+<a name="622"><span class="lineNum">     622 </span>                :            : </a>
 <span class="lineNum">     623 </span>                :            : /* private helper function for ht_find and ht_remove */
-<span class="lineNum">     624 </span>                :            : static ht_itr_t ht_find_index( ht_t const * const htable, 
-<a name="625"><span class="lineNum">     625 </span>                :            :                                uint_t const hash,</a>
+<span class="lineNum">     624 </span>                :<span class="lineCov">     341321 : static ht_itr_t ht_find_index( ht_t const * const htable, </span>
+<span class="lineNum">     625 </span>                :            :                                uint_t const hash,
 <span class="lineNum">     626 </span>                :            :                                void const * const key )
-<span class="lineNum">     627 </span>                :<span class="lineCov">     348368 : {</span>
-<span class="lineNum">     628 </span>                :<span class="lineCov">     348368 :     ht_itr_t i = 0;</span>
-<span class="lineNum">     629 </span>                :<span class="lineCov">     348368 :     uint_t table_size = 0;</span>
-<span class="lineNum">     630 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 348368 times"> + </span>]:<span class="lineCov">     348368 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
+<span class="lineNum">     627 </span>                :            : {
+<span class="lineNum">     628 </span>                :<span class="lineCov">     341321 :     ht_itr_t i = 0;</span>
+<span class="lineNum">     629 </span>                :<span class="lineCov">     341321 :     uint_t table_size = 0;</span>
+<span class="lineNum">     630 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 341321 times"> + </span>]:<span class="lineCov">     341321 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
 <span class="lineNum">     631 </span>                :            :     CHECK_PTR_RET( index, ht_itr_end_t );
-<span class="lineNum">     632 </span>        [<span class="branchCov" title="Branch 0 was taken 31169 times"> + </span><span class="branchCov" title="Branch 1 was taken 317199 times"> + </span>]:<span class="lineCov">     348368 :     CHECK_PTR_RET( htable-&gt;tuples, ht_itr_end_t );</span>
+<span class="lineNum">     632 </span>        [<span class="branchCov" title="Branch 0 was taken 27366 times"> + </span><span class="branchCov" title="Branch 1 was taken 313955 times"> + </span>]:<span class="lineCov">     341321 :     CHECK_PTR_RET( htable-&gt;tuples, ht_itr_end_t );</span>
 <span class="lineNum">     633 </span>                :            : 
 <span class="lineNum">     634 </span>                :            :     /* get the table size */
-<span class="lineNum">     635 </span>                :<span class="lineCov">     317199 :     table_size = hashtable_primes[htable-&gt;prime_index];</span>
+<span class="lineNum">     635 </span>                :<span class="lineCov">     313955 :     table_size = hashtable_primes[htable-&gt;prime_index];</span>
 <span class="lineNum">     636 </span>                :            : 
 <span class="lineNum">     637 </span>                :            :     /* find where it should be in the table and probe that
 <span class="lineNum">     638 </span>                :            :      * position first. */
-<span class="lineNum">     639 </span>                :<span class="lineCov">     317199 :     i = (hash % table_size);</span>
+<span class="lineNum">     639 </span>                :<span class="lineCov">     313955 :     i = (hash % table_size);</span>
 <span class="lineNum">     640 </span>                :            : 
 <span class="lineNum">     641 </span>                :            :     /* do a linear search from the probe position looking
 <span class="lineNum">     642 </span>                :            :      * for a matching hash and key */
-<span class="lineNum">     643 </span>        [<span class="branchCov" title="Branch 0 was taken 317199 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">     317199 :     while ( htable-&gt;tuples[i].in_use == ACTIVE )</span>
+<span class="lineNum">     643 </span>        [<span class="branchCov" title="Branch 0 was taken 313955 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">     313955 :     while ( htable-&gt;tuples[i].in_use == ACTIVE )</span>
 <span class="lineNum">     644 </span>                :            :     {
 <span class="lineNum">     645 </span>                :            :         /* check for a match */
-<span class="lineNum">     646 </span>[<span class="branchCov" title="Branch 0 was taken 317199 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 317199 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     317199 :         if( (hash == htable-&gt;tuples[i].hash) &amp;&amp;              /* do the hashes match? */</span>
-<span class="lineNum">     647 </span>                :            :             (*(htable-&gt;kefn))(key, htable-&gt;tuples[i].key) ) /* do the keys match? */
+<span class="lineNum">     646 </span>  [<span class="branchCov" title="Branch 0 was taken 313955 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 313955 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     627910 :         if( (hash == htable-&gt;tuples[i].hash) &amp;&amp;              /* do the hashes match? */</span>
+<span class="lineNum">     647 </span>                :<span class="lineCov">     313955 :             (*(htable-&gt;kefn))(key, htable-&gt;tuples[i].key) ) /* do the keys match? */</span>
 <span class="lineNum">     648 </span>                :            :         {
-<span class="lineNum">     649 </span>                :<span class="lineCov">     317199 :             return i;</span>
+<span class="lineNum">     649 </span>                :<span class="lineCov">     313955 :             return i;</span>
 <span class="lineNum">     650 </span>                :            :         }
 <span class="lineNum">     651 </span>                :            : 
 <span class="lineNum">     652 </span>                :            :         /* move to the next test index */
@@ -725,169 +725,169 @@
 <span class="lineNum">     654 </span>                :            :     }
 <span class="lineNum">     655 </span>                :            : 
 <span class="lineNum">     656 </span>                :            :     /* if we get here we didn't find what we were looking for so fail. */
-<span class="lineNum">     657 </span>                :<span class="lineCov">     348368 :     return ht_itr_end_t;</span>
+<span class="lineNum">     657 </span>                :<span class="lineCov">     341321 :     return ht_itr_end_t;</span>
 <span class="lineNum">     658 </span>                :            : }
 <span class="lineNum">     659 </span>                :            : 
-<span class="lineNum">     660 </span>                :            : 
-<a name="661"><span class="lineNum">     661 </span>                :            : /* find a value by it's key. */</a>
-<span class="lineNum">     662 </span>                :            : ht_itr_t ht_find(ht_t const * const htable, void const * const key)
-<span class="lineNum">     663 </span>                :<span class="lineCov">     348368 : {</span>
-<span class="lineNum">     664 </span>                :<span class="lineCov">     348368 :     uint_t hash = 0;</span>
-<span class="lineNum">     665 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 348368 times"> + </span>]:<span class="lineCov">     348368 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
-<span class="lineNum">     666 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 348368 times"> + </span>]:<span class="lineCov">     348368 :     CHECK_PTR_RET( htable-&gt;khfn, ht_itr_end_t );</span>
+<a name="660"><span class="lineNum">     660 </span>                :            : </a>
+<span class="lineNum">     661 </span>                :            : /* find a value by it's key. */
+<span class="lineNum">     662 </span>                :<span class="lineCov">     341321 : ht_itr_t ht_find(ht_t const * const htable, void const * const key)</span>
+<span class="lineNum">     663 </span>                :            : {
+<span class="lineNum">     664 </span>                :<span class="lineCov">     341321 :     uint_t hash = 0;</span>
+<span class="lineNum">     665 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 341321 times"> + </span>]:<span class="lineCov">     341321 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
+<span class="lineNum">     666 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 341321 times"> + </span>]:<span class="lineCov">     341321 :     CHECK_PTR_RET( htable-&gt;khfn, ht_itr_end_t );</span>
 <span class="lineNum">     667 </span>                :            : 
 <span class="lineNum">     668 </span>                :            :     /* get the hash of the key */
-<span class="lineNum">     669 </span>                :<span class="lineCov">     348368 :     hash = (*(htable-&gt;khfn))(key);</span>
+<span class="lineNum">     669 </span>                :<span class="lineCov">     341321 :     hash = (*(htable-&gt;khfn))(key);</span>
 <span class="lineNum">     670 </span>                :            : 
-<span class="lineNum">     671 </span>                :<span class="lineCov">     348368 :     return ht_find_prehash( htable, hash, key );</span>
-<span class="lineNum">     672 </span>                :            : }
+<span class="lineNum">     671 </span>                :<span class="lineCov">     341321 :     return ht_find_prehash( htable, hash, key );</span>
+<a name="672"><span class="lineNum">     672 </span>                :            : }</a>
 <span class="lineNum">     673 </span>                :            : 
-<span class="lineNum">     674 </span>                :            : ht_itr_t ht_find_prehash( ht_t const * const htable,
-<a name="675"><span class="lineNum">     675 </span>                :            :                           uint_t const hash,</a>
+<span class="lineNum">     674 </span>                :<span class="lineCov">     341321 : ht_itr_t ht_find_prehash( ht_t const * const htable,</span>
+<span class="lineNum">     675 </span>                :            :                           uint_t const hash,
 <span class="lineNum">     676 </span>                :            :                           void const * const key )
-<span class="lineNum">     677 </span>                :<span class="lineCov">     348368 : {</span>
-<span class="lineNum">     678 </span>                :<span class="lineCov">     348368 :     ht_itr_t i = 0;</span>
-<span class="lineNum">     679 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 348368 times"> + </span>]:<span class="lineCov">     348368 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
+<span class="lineNum">     677 </span>                :            : {
+<span class="lineNum">     678 </span>                :<span class="lineCov">     341321 :     ht_itr_t i = 0;</span>
+<span class="lineNum">     679 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 341321 times"> + </span>]:<span class="lineCov">     341321 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
 <span class="lineNum">     680 </span>                :            : 
 <span class="lineNum">     681 </span>                :            :     /* get the index of the tuple if it is there */
-<span class="lineNum">     682 </span>                :<span class="lineCov">     348368 :     i = ht_find_index( htable, hash, key );</span>
+<span class="lineNum">     682 </span>                :<span class="lineCov">     341321 :     i = ht_find_index( htable, hash, key );</span>
 <span class="lineNum">     683 </span>                :            : 
-<span class="lineNum">     684 </span>        [<span class="branchCov" title="Branch 0 was taken 317199 times"> + </span><span class="branchCov" title="Branch 1 was taken 31169 times"> + </span>]:<span class="lineCov">     348368 :     if( i != ht_itr_end_t )</span>
+<span class="lineNum">     684 </span>        [<span class="branchCov" title="Branch 0 was taken 313955 times"> + </span><span class="branchCov" title="Branch 1 was taken 27366 times"> + </span>]:<span class="lineCov">     341321 :     if( i != ht_itr_end_t )</span>
 <span class="lineNum">     685 </span>                :            :     {
-<span class="lineNum">     686 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 317199 times"> + </span>]:<span class="lineCov">     317199 :         ASSERT( hash == htable-&gt;tuples[i].hash );</span>
+<span class="lineNum">     686 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 313955 times"> + </span>]:<span class="lineCov">     313955 :         ASSERT( hash == htable-&gt;tuples[i].hash );</span>
 <span class="lineNum">     687 </span>                :            : 
 <span class="lineNum">     688 </span>                :            :         /* return iterator to matching value */
-<span class="lineNum">     689 </span>                :<span class="lineCov">     317199 :         return i;</span>
+<span class="lineNum">     689 </span>                :<span class="lineCov">     313955 :         return i;</span>
 <span class="lineNum">     690 </span>                :            :     }
 <span class="lineNum">     691 </span>                :            : 
-<span class="lineNum">     692 </span>                :<span class="lineCov">     348368 :     return ht_itr_end_t;</span>
+<span class="lineNum">     692 </span>                :<span class="lineCov">     341321 :     return ht_itr_end_t;</span>
 <span class="lineNum">     693 </span>                :            : }
 <span class="lineNum">     694 </span>                :            : 
-<span class="lineNum">     695 </span>                :            : 
-<a name="696"><span class="lineNum">     696 </span>                :            : /* remove the value associated with the key from the hashtable */</a>
-<span class="lineNum">     697 </span>                :            : int ht_remove( ht_t * const htable, ht_itr_t const itr )
-<span class="lineNum">     698 </span>                :<span class="lineCov">      25462 : {</span>
-<span class="lineNum">     699 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 25462 times"> + </span>]:<span class="lineCov">      25462 :     CHECK_PTR_RET( htable, FALSE );</span>
-<span class="lineNum">     700 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 25462 times"> + </span>]:<span class="lineCov">      25462 :     CHECK_RET( itr != ht_itr_end_t, FALSE );</span>
-<span class="lineNum">     701 </span>[<span class="branchCov" title="Branch 0 was taken 25462 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 25462 times"> + </span>]:<span class="lineCov">      25462 :     CHECK_RET( (itr &gt;= 0) &amp;&amp; (itr &lt; hashtable_primes[htable-&gt;prime_index]), FALSE )</span>
+<a name="695"><span class="lineNum">     695 </span>                :            : </a>
+<span class="lineNum">     696 </span>                :            : /* remove the value associated with the key from the hashtable */
+<span class="lineNum">     697 </span>                :<span class="lineCov">      27809 : int ht_remove( ht_t * const htable, ht_itr_t const itr )</span>
+<span class="lineNum">     698 </span>                :            : {
+<span class="lineNum">     699 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 27809 times"> + </span>]:<span class="lineCov">      27809 :     CHECK_PTR_RET( htable, FALSE );</span>
+<span class="lineNum">     700 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 27809 times"> + </span>]:<span class="lineCov">      27809 :     CHECK_RET( itr != ht_itr_end_t, FALSE );</span>
+<span class="lineNum">     701 </span>[<span class="branchCov" title="Branch 0 was taken 27809 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 27809 times"> + </span>]:<span class="lineCov">      27809 :     CHECK_RET( (itr &gt;= 0) &amp;&amp; (itr &lt; hashtable_primes[htable-&gt;prime_index]), FALSE )</span>
 <span class="lineNum">     702 </span>                :            : 
 <span class="lineNum">     703 </span>                :            :     /* NOTE: clear the key and value but keep the hash there 
 <span class="lineNum">     704 </span>                :            :      * so that probe chains don't break.  the hash tuples 
 <span class="lineNum">     705 </span>                :            :      * with a hash but no key or value will be pruned/freed
 <span class="lineNum">     706 </span>                :            :      * at the next resize. */
 <span class="lineNum">     707 </span>                :            : 
-<span class="lineNum">     708 </span>        [<span class="branchCov" title="Branch 0 was taken 10870 times"> + </span><span class="branchCov" title="Branch 1 was taken 14592 times"> + </span>]:<span class="lineCov">      25462 :     if( htable-&gt;kdfn != NULL )</span>
+<span class="lineNum">     708 </span>        [<span class="branchCov" title="Branch 0 was taken 13366 times"> + </span><span class="branchCov" title="Branch 1 was taken 14443 times"> + </span>]:<span class="lineCov">      27809 :     if( htable-&gt;kdfn != NULL )</span>
 <span class="lineNum">     709 </span>                :            :     {
 <span class="lineNum">     710 </span>                :            :         /* clean up the key memory */
-<span class="lineNum">     711 </span>                :<span class="lineCov">      10870 :         (*(htable-&gt;kdfn))(htable-&gt;tuples[itr].key);</span>
+<span class="lineNum">     711 </span>                :<span class="lineCov">      13366 :         (*(htable-&gt;kdfn))(htable-&gt;tuples[itr].key);</span>
 <span class="lineNum">     712 </span>                :            :     }
 <span class="lineNum">     713 </span>                :            : 
 <span class="lineNum">     714 </span>                :            :     /* set the key and value pointers to NULL */
-<span class="lineNum">     715 </span>                :<span class="lineCov">      25462 :     htable-&gt;tuples[itr].key = NULL;</span>
-<span class="lineNum">     716 </span>                :<span class="lineCov">      25462 :     htable-&gt;tuples[itr].value = NULL;</span>
-<span class="lineNum">     717 </span>                :<span class="lineCov">      25462 :     htable-&gt;tuples[itr].in_use = DELETED;</span>
+<span class="lineNum">     715 </span>                :<span class="lineCov">      27809 :     htable-&gt;tuples[itr].key = NULL;</span>
+<span class="lineNum">     716 </span>                :<span class="lineCov">      27809 :     htable-&gt;tuples[itr].value = NULL;</span>
+<span class="lineNum">     717 </span>                :<span class="lineCov">      27809 :     htable-&gt;tuples[itr].in_use = DELETED;</span>
 <span class="lineNum">     718 </span>                :            : 
 <span class="lineNum">     719 </span>                :            :     /* one less key value pair in the hashtable */
-<span class="lineNum">     720 </span>                :<span class="lineCov">      25462 :     htable-&gt;num_tuples--;</span>
+<span class="lineNum">     720 </span>                :<span class="lineCov">      27809 :     htable-&gt;num_tuples--;</span>
 <span class="lineNum">     721 </span>                :            : 
 <span class="lineNum">     722 </span>                :            :     /* return success */
-<span class="lineNum">     723 </span>                :<span class="lineCov">      25462 :     return TRUE;</span>
+<span class="lineNum">     723 </span>                :<span class="lineCov">      27809 :     return TRUE;</span>
 <span class="lineNum">     724 </span>                :            : }
-<span class="lineNum">     725 </span>                :            : 
-<a name="726"><span class="lineNum">     726 </span>                :            : </a>
-<span class="lineNum">     727 </span>                :            : ht_itr_t ht_itr_begin(ht_t const * const htable)
-<span class="lineNum">     728 </span>                :<span class="lineCov">        384 : {</span>
+<a name="725"><span class="lineNum">     725 </span>                :            : </a>
+<span class="lineNum">     726 </span>                :            : 
+<span class="lineNum">     727 </span>                :<span class="lineCov">        384 : ht_itr_t ht_itr_begin(ht_t const * const htable)</span>
+<span class="lineNum">     728 </span>                :            : {
 <span class="lineNum">     729 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 384 times"> + </span>]:<span class="lineCov">        384 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
-<span class="lineNum">     730 </span>        [<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchCov" title="Branch 1 was taken 377 times"> + </span>]:<span class="lineCov">        384 :     CHECK_RET( htable-&gt;tuples != NULL, ht_itr_end_t );</span>
+<span class="lineNum">     730 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 380 times"> + </span>]:<span class="lineCov">        384 :     CHECK_RET( htable-&gt;tuples != NULL, ht_itr_end_t );</span>
 <span class="lineNum">     731 </span>                :            : 
 <span class="lineNum">     732 </span>                :            :     /* start at 0 and find the first real, non-filler tuple */
 <span class="lineNum">     733 </span>                :<span class="lineCov">        384 :     return ht_itr_next( htable, ht_itr_end_t );</span>
-<span class="lineNum">     734 </span>                :            : }
-<a name="735"><span class="lineNum">     735 </span>                :            : </a>
-<span class="lineNum">     736 </span>                :            : ht_itr_t ht_itr_end(ht_t const * const htable)
-<span class="lineNum">     737 </span>                :<span class="lineCov">     410555 : {</span>
-<span class="lineNum">     738 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 410555 times"> + </span>]:<span class="lineCov">     410555 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
-<span class="lineNum">     739 </span>                :<span class="lineCov">     410555 :     return ht_itr_end_t;</span>
-<span class="lineNum">     740 </span>                :            : }
-<a name="741"><span class="lineNum">     741 </span>                :            : </a>
-<span class="lineNum">     742 </span>                :            : ht_itr_t ht_itr_rbegin(ht_t const * const htable)
-<span class="lineNum">     743 </span>                :<span class="lineCov">        128 : {</span>
+<a name="734"><span class="lineNum">     734 </span>                :            : }</a>
+<span class="lineNum">     735 </span>                :            : 
+<span class="lineNum">     736 </span>                :<span class="lineCov">     399928 : ht_itr_t ht_itr_end(ht_t const * const htable)</span>
+<span class="lineNum">     737 </span>                :            : {
+<span class="lineNum">     738 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 399928 times"> + </span>]:<span class="lineCov">     399928 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
+<span class="lineNum">     739 </span>                :<span class="lineCov">     399928 :     return ht_itr_end_t;</span>
+<a name="740"><span class="lineNum">     740 </span>                :            : }</a>
+<span class="lineNum">     741 </span>                :            : 
+<span class="lineNum">     742 </span>                :<span class="lineCov">        128 : ht_itr_t ht_itr_rbegin(ht_t const * const htable)</span>
+<span class="lineNum">     743 </span>                :            : {
 <span class="lineNum">     744 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
-<span class="lineNum">     745 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 127 times"> + </span>]:<span class="lineCov">        128 :     CHECK_RET( htable-&gt;tuples != NULL, ht_itr_end_t );</span>
+<span class="lineNum">     745 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     CHECK_RET( htable-&gt;tuples != NULL, ht_itr_end_t );</span>
 <span class="lineNum">     746 </span>                :            : 
 <span class="lineNum">     747 </span>                :            :     /* start at hashtable_primes[htable-&gt;prime_index] and search down to find
 <span class="lineNum">     748 </span>                :            :      * the first non-filler tuple */
 <span class="lineNum">     749 </span>                :<span class="lineCov">        128 :     return ht_itr_rnext( htable, (ht_itr_t)hashtable_primes[htable-&gt;prime_index]);</span>
-<span class="lineNum">     750 </span>                :            : }
-<a name="751"><span class="lineNum">     751 </span>                :            : </a>
-<span class="lineNum">     752 </span>                :            : ht_itr_t ht_itr_next(ht_t const * const htable, ht_itr_t const itr)
-<span class="lineNum">     753 </span>                :<span class="lineCov">      84913 : {</span>
-<span class="lineNum">     754 </span>                :<span class="lineCov">      84913 :     int_t i = itr;</span>
-<span class="lineNum">     755 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 84913 times"> + </span>]:<span class="lineCov">      84913 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
-<span class="lineNum">     756 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 84913 times"> + </span>]:<span class="lineCov">      84913 :     CHECK_RET( htable-&gt;tuples != NULL, ht_itr_end_t );</span>
+<a name="750"><span class="lineNum">     750 </span>                :            : }</a>
+<span class="lineNum">     751 </span>                :            : 
+<span class="lineNum">     752 </span>                :<span class="lineCov">      84441 : ht_itr_t ht_itr_next(ht_t const * const htable, ht_itr_t const itr)</span>
+<span class="lineNum">     753 </span>                :            : {
+<span class="lineNum">     754 </span>                :<span class="lineCov">      84441 :     int_t i = itr;</span>
+<span class="lineNum">     755 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 84441 times"> + </span>]:<span class="lineCov">      84441 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
+<span class="lineNum">     756 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 84441 times"> + </span>]:<span class="lineCov">      84441 :     CHECK_RET( htable-&gt;tuples != NULL, ht_itr_end_t );</span>
 <span class="lineNum">     757 </span>                :            : 
 <span class="lineNum">     758 </span>                :            :     /* move to the next tuple */
-<span class="lineNum">     759 </span>                :<span class="lineCov">      84913 :     i++;</span>
+<span class="lineNum">     759 </span>                :<span class="lineCov">      84441 :     i++;</span>
 <span class="lineNum">     760 </span>                :            : 
-<span class="lineNum">     761 </span>        [<span class="branchCov" title="Branch 0 was taken 195849 times"> + </span><span class="branchCov" title="Branch 1 was taken 377 times"> + </span>]:<span class="lineCov">     196226 :     for ( ; i &lt; (int_t)hashtable_primes[htable-&gt;prime_index]; i++ )</span>
+<span class="lineNum">     761 </span>        [<span class="branchCov" title="Branch 0 was taken 195322 times"> + </span><span class="branchCov" title="Branch 1 was taken 380 times"> + </span>]:<span class="lineCov">     195702 :     for ( ; i &lt; (int_t)hashtable_primes[htable-&gt;prime_index]; i++ )</span>
 <span class="lineNum">     762 </span>                :            :     {
 <span class="lineNum">     763 </span>                :            :         /* if is is a live tuple, return the itr to that */
-<span class="lineNum">     764 </span>        [<span class="branchCov" title="Branch 0 was taken 84536 times"> + </span><span class="branchCov" title="Branch 1 was taken 111313 times"> + </span>]:<span class="lineCov">     195849 :         if ( htable-&gt;tuples[i].in_use == ACTIVE )</span>
-<span class="lineNum">     765 </span>                :<span class="lineCov">      84536 :             return i;</span>
+<span class="lineNum">     764 </span>        [<span class="branchCov" title="Branch 0 was taken 84061 times"> + </span><span class="branchCov" title="Branch 1 was taken 111261 times"> + </span>]:<span class="lineCov">     195322 :         if ( htable-&gt;tuples[i].in_use == ACTIVE )</span>
+<span class="lineNum">     765 </span>                :<span class="lineCov">      84061 :             return i;</span>
 <span class="lineNum">     766 </span>                :            :     }
 <span class="lineNum">     767 </span>                :            : 
-<span class="lineNum">     768 </span>                :<span class="lineCov">      84913 :     return ht_itr_end_t;</span>
-<span class="lineNum">     769 </span>                :            : }
-<a name="770"><span class="lineNum">     770 </span>                :            : </a>
-<span class="lineNum">     771 </span>                :            : ht_itr_t ht_itr_rnext(ht_t const * const htable, ht_itr_t const itr)
-<span class="lineNum">     772 </span>                :<span class="lineCov">      28514 : {</span>
-<span class="lineNum">     773 </span>                :<span class="lineCov">      28514 :     int_t i = itr;</span>
-<span class="lineNum">     774 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 28514 times"> + </span>]:<span class="lineCov">      28514 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
-<span class="lineNum">     775 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 28514 times"> + </span>]:<span class="lineCov">      28514 :     CHECK_RET( htable-&gt;tuples != NULL, ht_itr_end_t );</span>
+<span class="lineNum">     768 </span>                :<span class="lineCov">      84441 :     return ht_itr_end_t;</span>
+<a name="769"><span class="lineNum">     769 </span>                :            : }</a>
+<span class="lineNum">     770 </span>                :            : 
+<span class="lineNum">     771 </span>                :<span class="lineCov">      30100 : ht_itr_t ht_itr_rnext(ht_t const * const htable, ht_itr_t const itr)</span>
+<span class="lineNum">     772 </span>                :            : {
+<span class="lineNum">     773 </span>                :<span class="lineCov">      30100 :     int_t i = itr;</span>
+<span class="lineNum">     774 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 30100 times"> + </span>]:<span class="lineCov">      30100 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
+<span class="lineNum">     775 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 30100 times"> + </span>]:<span class="lineCov">      30100 :     CHECK_RET( htable-&gt;tuples != NULL, ht_itr_end_t );</span>
 <span class="lineNum">     776 </span>                :            : 
 <span class="lineNum">     777 </span>                :            :     /* move to the next previous tuple */
-<span class="lineNum">     778 </span>                :<span class="lineCov">      28514 :     i--;</span>
+<span class="lineNum">     778 </span>                :<span class="lineCov">      30100 :     i--;</span>
 <span class="lineNum">     779 </span>                :            : 
-<span class="lineNum">     780 </span>        [<span class="branchCov" title="Branch 0 was taken 66865 times"> + </span><span class="branchCov" title="Branch 1 was taken 127 times"> + </span>]:<span class="lineCov">      66992 :     for ( ; i &gt;= (int_t)0; i-- )</span>
+<span class="lineNum">     780 </span>        [<span class="branchCov" title="Branch 0 was taken 70740 times"> + </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">      70868 :     for ( ; i &gt;= (int_t)0; i-- )</span>
 <span class="lineNum">     781 </span>                :            :     {
 <span class="lineNum">     782 </span>                :            :         /* if is is a live tuple, return the itr to that */
-<span class="lineNum">     783 </span>        [<span class="branchCov" title="Branch 0 was taken 28387 times"> + </span><span class="branchCov" title="Branch 1 was taken 38478 times"> + </span>]:<span class="lineCov">      66865 :         if ( htable-&gt;tuples[i].in_use == ACTIVE )</span>
-<span class="lineNum">     784 </span>                :<span class="lineCov">      28387 :             return i;</span>
+<span class="lineNum">     783 </span>        [<span class="branchCov" title="Branch 0 was taken 29972 times"> + </span><span class="branchCov" title="Branch 1 was taken 40768 times"> + </span>]:<span class="lineCov">      70740 :         if ( htable-&gt;tuples[i].in_use == ACTIVE )</span>
+<span class="lineNum">     784 </span>                :<span class="lineCov">      29972 :             return i;</span>
 <span class="lineNum">     785 </span>                :            :     }
 <span class="lineNum">     786 </span>                :            : 
-<span class="lineNum">     787 </span>                :<span class="lineCov">      28514 :     return ht_itr_end_t;</span>
-<span class="lineNum">     788 </span>                :            : }
-<a name="789"><span class="lineNum">     789 </span>                :            : </a>
-<span class="lineNum">     790 </span>                :            : void* ht_itr_get(ht_t const * const htable, ht_itr_t const itr, void** key)
-<span class="lineNum">     791 </span>                :<span class="lineCov">     379130 : {</span>
-<span class="lineNum">     792 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 379130 times"> + </span>]:<span class="lineCov">     379130 :     CHECK_PTR_RET( htable, NULL );</span>
-<span class="lineNum">     793 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 379130 times"> + </span>]:<span class="lineCov">     379130 :     CHECK_RET( itr != ht_itr_end_t, NULL );</span>
-<span class="lineNum">     794 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 379130 times"> + </span>]:<span class="lineCov">     379130 :     CHECK_RET( itr &lt; (int_t)hashtable_primes[htable-&gt;prime_index], NULL );</span>
-<span class="lineNum">     795 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 379130 times"> + </span>]:<span class="lineCov">     379130 :     CHECK_RET( htable-&gt;tuples != NULL, NULL );</span>
+<span class="lineNum">     787 </span>                :<span class="lineCov">      30100 :     return ht_itr_end_t;</span>
+<a name="788"><span class="lineNum">     788 </span>                :            : }</a>
+<span class="lineNum">     789 </span>                :            : 
+<span class="lineNum">     790 </span>                :<span class="lineCov">     372306 : void* ht_itr_get(ht_t const * const htable, ht_itr_t const itr, void** key)</span>
+<span class="lineNum">     791 </span>                :            : {
+<span class="lineNum">     792 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 372306 times"> + </span>]:<span class="lineCov">     372306 :     CHECK_PTR_RET( htable, NULL );</span>
+<span class="lineNum">     793 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 372306 times"> + </span>]:<span class="lineCov">     372306 :     CHECK_RET( itr != ht_itr_end_t, NULL );</span>
+<span class="lineNum">     794 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 372306 times"> + </span>]:<span class="lineCov">     372306 :     CHECK_RET( itr &lt; (int_t)hashtable_primes[htable-&gt;prime_index], NULL );</span>
+<span class="lineNum">     795 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 372306 times"> + </span>]:<span class="lineCov">     372306 :     CHECK_RET( htable-&gt;tuples != NULL, NULL );</span>
 <span class="lineNum">     796 </span>                :            : 
-<span class="lineNum">     797 </span>        [<span class="branchCov" title="Branch 0 was taken 117904 times"> + </span><span class="branchCov" title="Branch 1 was taken 261226 times"> + </span>]:<span class="lineCov">     379130 :     if ( key != NULL )</span>
+<span class="lineNum">     797 </span>        [<span class="branchCov" title="Branch 0 was taken 112104 times"> + </span><span class="branchCov" title="Branch 1 was taken 260202 times"> + </span>]:<span class="lineCov">     372306 :     if ( key != NULL )</span>
 <span class="lineNum">     798 </span>                :            :     {
-<span class="lineNum">     799 </span>                :<span class="lineCov">     117904 :         (*key) = htable-&gt;tuples[itr].key;</span>
+<span class="lineNum">     799 </span>                :<span class="lineCov">     112104 :         (*key) = htable-&gt;tuples[itr].key;</span>
 <span class="lineNum">     800 </span>                :            :     }
 <span class="lineNum">     801 </span>                :            : 
 <span class="lineNum">     802 </span>                :            :     /* return the value at the iterator location in the tuple list */
-<span class="lineNum">     803 </span>                :<span class="lineCov">     379130 :     return htable-&gt;tuples[itr].value;</span>
+<span class="lineNum">     803 </span>                :<span class="lineCov">     372306 :     return htable-&gt;tuples[itr].value;</span>
 <span class="lineNum">     804 </span>                :            : }
 <span class="lineNum">     805 </span>                :            : 
 <span class="lineNum">     806 </span>                :            : 
-<span class="lineNum">     807 </span>                :            : #ifdef UNIT_TESTING
-<a name="808"><span class="lineNum">     808 </span>                :            : </a>
-<span class="lineNum">     809 </span>                :            : void ht_force_grow( ht_t * const ht )
-<span class="lineNum">     810 </span>                :<span class="lineCov">        128 : {</span>
+<a name="807"><span class="lineNum">     807 </span>                :            : #ifdef UNIT_TESTING</a>
+<span class="lineNum">     808 </span>                :            : 
+<span class="lineNum">     809 </span>                :<span class="lineCov">        128 : void ht_force_grow( ht_t * const ht )</span>
+<span class="lineNum">     810 </span>                :            : {
 <span class="lineNum">     811 </span>                :<span class="lineCov">        128 :     int new_index = 0;</span>
 <span class="lineNum">     812 </span>                :<span class="lineCov">        128 :     uint_t i = 0;</span>
-<span class="lineNum">     813 </span>        [<span class="branchCov" title="Branch 0 was taken 128 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        128 :     CHECK_PTR( ht );</span>
+<span class="lineNum">     813 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        256 :     CHECK_PTR( ht );</span>
 <span class="lineNum">     814 </span>                :            : 
 <span class="lineNum">     815 </span>                :<span class="lineCov">        128 :     ht_grow( ht, ht-&gt;prime_index + 1 );</span>
-<span class="lineNum">     816 </span>                :            : }
-<a name="817"><span class="lineNum">     817 </span>                :            : </a>
-<span class="lineNum">     818 </span>                :            : void ht_set_fail_grow( int fail )
-<span class="lineNum">     819 </span>                :<span class="lineCov">        772 : {</span>
+<a name="816"><span class="lineNum">     816 </span>                :            : }</a>
+<span class="lineNum">     817 </span>                :            : 
+<span class="lineNum">     818 </span>                :<span class="lineCov">        772 : void ht_set_fail_grow( int fail )</span>
+<span class="lineNum">     819 </span>                :            : {
 <span class="lineNum">     820 </span>                :<span class="lineCov">        772 :     fail_grow = fail;</span>
 <span class="lineNum">     821 </span>                :<span class="lineCov">        772 : }</span>
 <span class="lineNum">     822 </span>                :            : 

@@ -73,6 +73,129 @@ static void test_child_newdel( void )
 	}
 }
 
+static void test_child_newdel_fail_first_pipe( void )
+{
+	int i;
+	uint32_t size;
+	int8_t const * const args[] = { "./child.sh", NULL };
+	int8_t const * const env[] = { NULL };
+	child_process_t * child;
+	child_ops_t ops = { &exit_fn, &read_fn, &write_fn };
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		child_process_set_num_good_pipes( 0 );
+		child = NULL;
+		child = child_process_new( "./child.sh", args, env, &ops, el, NULL );
+		child_process_set_num_good_pipes( -1 );
+		
+		CU_ASSERT_PTR_NULL( child );
+	}
+}
+
+static void test_child_newdel_fail_second_pipe( void )
+{
+	int i;
+	uint32_t size;
+	int8_t const * const args[] = { "./child.sh", NULL };
+	int8_t const * const env[] = { NULL };
+	child_process_t * child;
+	child_ops_t ops = { &exit_fn, &read_fn, &write_fn };
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		child_process_set_num_good_pipes( 1 );
+		child = NULL;
+		child = child_process_new( "./child.sh", args, env, &ops, el, NULL );
+		child_process_set_num_good_pipes( -1 );
+		
+		CU_ASSERT_PTR_NULL( child );
+	}
+}
+
+static void test_child_newdel_fail_fork( void )
+{
+	int i;
+	uint32_t size;
+	int8_t const * const args[] = { "./child.sh", NULL };
+	int8_t const * const env[] = { NULL };
+	child_process_t * child;
+	child_ops_t ops = { &exit_fn, &read_fn, &write_fn };
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		child_process_set_fail_fork( TRUE );
+		child = NULL;
+		child = child_process_new( "./child.sh", args, env, &ops, el, NULL );
+		child_process_set_fail_fork( FALSE );
+
+		CU_ASSERT_PTR_NULL( child );
+	}
+}
+
+static void test_child_wait( void )
+{
+	int i;
+	uint32_t size;
+	int8_t const * const args[] = { "./child_sleep.sh", NULL };
+	int8_t const * const env[] = { NULL };
+	child_process_t * child;
+	child_ops_t ops = { &exit_fn, &read_fn, &write_fn };
+
+	child = NULL;
+	child = child_process_new( "./child_sleep.sh", args, env, &ops, el, NULL );
+
+	/* run the event loop */
+	evt_run( el );
+
+	CU_ASSERT_PTR_NOT_NULL( child );
+
+	child_process_delete( child, TRUE );
+}
+
+static pid_t child_pid = -1;
+
+static int32_t read_pid_fn( child_process_t * const cp, size_t nread, void * user_data )
+{
+	NOTICE("read_fn callback\n");
+	child_process_read( cp, (uint8_t const * const)&child_pid, sizeof(pid_t) );
+	return 0;
+}
+
+static int32_t write_pid_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )
+{
+	return 0;
+}
+
+static void test_child_read( void )
+{
+	int i;
+	uint32_t size;
+	pid_t cpid;
+	int8_t const * const args[] = { "./child_pid.sh", NULL };
+	int8_t const * const env[] = { NULL };
+	child_process_t * child;
+	child_ops_t ops = { &exit_fn, &read_pid_fn, &write_pid_fn };
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		child_pid = -1;
+		cpid = -1;
+		child = NULL;
+		child = child_process_new( "./child_pid.sh", args, env, &ops, el, NULL );
+
+		cpid = child_process_get_pid( child );
+
+		/* run the event loop */
+		evt_run( el );
+
+		CU_ASSERT_PTR_NOT_NULL( child );
+		CU_ASSERT_EQUAL( child_pid, cpid );
+
+		child_process_delete( child, TRUE );
+	}
+}
+
 
 static int init_child_suite( void )
 {
@@ -96,6 +219,11 @@ static int deinit_child_suite( void )
 static CU_pSuite add_child_tests( CU_pSuite pSuite )
 {
 	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of child process", test_child_newdel), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of child process fail first pipe", test_child_newdel_fail_first_pipe), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of child process fail second pipe", test_child_newdel_fail_second_pipe), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of child process fail fork", test_child_newdel_fail_fork), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "wait on child process", test_child_wait), NULL );
+	/*CHECK_PTR_RET( CU_add_test( pSuite, "test read from child process", test_child_read), NULL );*/
 	return pSuite;
 }
 

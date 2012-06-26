@@ -63,5 +63,10 @@ int child_process_writev( child_process_t * const cp,
 /* flush the child process output */
 int child_process_flush( child_process_t * const cp );
 
+#if defined(UNIT_TESTING)
+void child_process_set_fail_fork( int fail );
+void child_process_set_num_good_pipes( int ngood );
+#endif
+
 #endif/*__CHILD_H__*/
 

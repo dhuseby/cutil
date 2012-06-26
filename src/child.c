@@ -39,6 +39,11 @@
 #include "aiofd.h"
 #include "child.h"
 
+#if defined(UNIT_TESTING)
+static int fail_fork = FALSE;
+static int good_pipes = -1;
+#endif
+
 struct child_process_s
 {
 	pid_t			pid;			/* the pid of the child process */
@@ -157,7 +162,14 @@ static pid_t safe_fork( void )
 {
 	pid_t childpid;
 
+#if defined(UNIT_TESTING)
+	if ( fail_fork == TRUE )
+		childpid = -1;
+	else
+		childpid = fork();
+#else
 	childpid = fork();
+#endif
 
 	/* this is a workaround to a bug in Mac OS X < 10.7 */
 #if defined (__APPLE__) && defined (UNIT_TESTING)
@@ -179,6 +191,18 @@ static pid_t safe_fork( void )
 	return childpid;
 }
 
+static int safe_pipe( int pipefd[2] )
+{
+#if defined(UNIT_TESTING)
+	if ( good_pipes != -1)
+	{
+		if ( good_pipes == 0 )
+			return -1;
+		good_pipes--;
+	}
+#endif
+	return pipe(pipefd);
+}
 
 static int child_process_initialize( child_process_t * const child,
 									 int8_t const * const path,
@@ -213,11 +237,11 @@ static int child_process_initialize( child_process_t * const child,
 	MEMCPY( (void*)&(child->ops), ops, sizeof(child_ops_t) );
 
 	/* set up the pipes */
-	if ( pipe(stdin_pipe) == -1 )
+	if ( safe_pipe(stdin_pipe) == -1 )
 	{
 		return FALSE;
 	}
-	if ( pipe(stdout_pipe) == -1 )
+	if ( safe_pipe(stdout_pipe) == -1 )
 	{
 		close( stdin_pipe[1] );
 		close( stdin_pipe[0] );
@@ -306,8 +330,12 @@ child_process_t * child_process_new( int8_t const * const path,
 	child = (child_process_t*)CALLOC( 1, sizeof(child_process_t) );
 	CHECK_PTR_RET_MSG( child, NULL, "failed to allocate child_process_t\n" );
 
-	child_process_initialize( child, path, argv, environ, ops, el, user_data );
-
+	if ( child_process_initialize( child, path, argv, environ, ops, el, user_data ) == FALSE )
+	{
+		FREE( child );
+		return NULL;
+	}
+	
 	return child;
 }
 
@@ -382,5 +410,16 @@ int child_process_flush( child_process_t * const cp )
 	CHECK_PTR_RET( cp, FALSE );
 	return aiofd_flush( &(cp->aiofd) );
 }
+
+#if defined(UNIT_TESTING)
+void child_process_set_fail_fork( int fail )
+{
+	fail_fork = fail;
+}
+void child_process_set_num_good_pipes( int ngood )
+{
+	good_pipes = ngood;
+}
+#endif
 
 
