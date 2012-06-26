@@ -227,7 +227,7 @@ static void test_hashtable_dynamic_grow( void )
 
 static void test_hashtable_compact( void )
 {
-	int i, j, k;
+	int_t i, j, k;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
@@ -247,7 +247,7 @@ static void test_hashtable_compact( void )
 			itr = ht_find( &ht, (void*)j );
 			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
 
-			k = (int)ht_itr_get( &ht, itr, NULL );
+			k = (int_t)ht_itr_get( &ht, itr, NULL );
 			CU_ASSERT_EQUAL( k, j );
 		}
 
@@ -261,7 +261,7 @@ static void test_hashtable_compact( void )
 
 static void test_hashtable_compact_fail( void )
 {
-	int i, j, k;
+	int_t i, j, k;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
@@ -281,7 +281,7 @@ static void test_hashtable_compact_fail( void )
 			itr = ht_find( &ht, (void*)j );
 			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
 
-			k = (int)ht_itr_get( &ht, itr, NULL );
+			k = (int_t)ht_itr_get( &ht, itr, NULL );
 			CU_ASSERT_EQUAL( k, j );
 		}
 
@@ -297,7 +297,7 @@ static void test_hashtable_compact_fail( void )
 
 static void test_hashtable_add_to_empty( void )
 {
-	int i, j, k;
+	int_t i, j, k;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
@@ -317,7 +317,7 @@ static void test_hashtable_add_to_empty( void )
 			itr = ht_find( &ht, (void*)j );
 			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
 
-			k = (int)ht_itr_get( &ht, itr, NULL );
+			k = (int_t)ht_itr_get( &ht, itr, NULL );
 			CU_ASSERT_EQUAL( k, j );
 		}
 
@@ -329,7 +329,7 @@ static void test_hashtable_add_to_empty( void )
 
 static void test_hashtable_add_fail( void )
 {
-	int i, j, k;
+	int_t i, j, k;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
@@ -360,7 +360,7 @@ static void test_hashtable_add_fail( void )
 
 static void test_hashtable_change_load_factor( void )
 {
-	int i, j, k;
+	int_t i, j, k;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
@@ -380,7 +380,7 @@ static void test_hashtable_change_load_factor( void )
 			itr = ht_find( &ht, (void*)j );
 			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
 
-			k = (int)ht_itr_get( &ht, itr, NULL );
+			k = (int_t)ht_itr_get( &ht, itr, NULL );
 			CU_ASSERT_EQUAL( k, j );
 		}
 
@@ -394,7 +394,7 @@ static void test_hashtable_change_load_factor( void )
 
 static void test_hashtable_change_load_factor_fail( void )
 {
-	int i, j, k;
+	int_t i, j, k;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
@@ -414,7 +414,7 @@ static void test_hashtable_change_load_factor_fail( void )
 			itr = ht_find( &ht, (void*)j );
 			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
 
-			k = (int)ht_itr_get( &ht, itr, NULL );
+			k = (int_t)ht_itr_get( &ht, itr, NULL );
 			CU_ASSERT_EQUAL( k, j );
 		}
 
@@ -430,7 +430,7 @@ static void test_hashtable_change_load_factor_fail( void )
 
 static void test_hashtable_clear( void )
 {
-	int i, j, k;
+	int_t i, j, k;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
@@ -450,7 +450,7 @@ static void test_hashtable_clear( void )
 			itr = ht_find( &ht, (void*)j );
 			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
 
-			k = (int)ht_itr_get( &ht, itr, NULL );
+			k = (int_t)ht_itr_get( &ht, itr, NULL );
 			CU_ASSERT_EQUAL( k, j );
 		}
 
@@ -464,7 +464,7 @@ static void test_hashtable_clear( void )
 
 static void test_hashtable_forward_itr( void )
 {
-	int i, j, k, v;
+	int_t i, j, k, v;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
@@ -485,7 +485,7 @@ static void test_hashtable_forward_itr( void )
 		itr = ht_itr_begin( &ht );
 		for ( ; itr != ht_itr_end( &ht ); itr = ht_itr_next( &ht, itr ) )
 		{
-			k = (int)ht_itr_get( &ht, itr, (void**)&v );
+			k = (int_t)ht_itr_get( &ht, itr, (void**)&v );
 			CU_ASSERT_EQUAL( k, v );
 		}
 
@@ -497,7 +497,7 @@ static void test_hashtable_forward_itr( void )
 
 static void test_hashtable_reverse_itr( void )
 {
-	int i, j, k, v;
+	int_t i, j, k, v;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
@@ -518,7 +518,7 @@ static void test_hashtable_reverse_itr( void )
 		itr = ht_itr_rbegin( &ht );
 		for ( ; itr != ht_itr_rend( &ht ); itr = ht_itr_rnext( &ht, itr ) )
 		{
-			k = (int)ht_itr_get( &ht, itr, (void**)&v );
+			k = (int_t)ht_itr_get( &ht, itr, (void**)&v );
 			CU_ASSERT_EQUAL( k, v );
 		}
 
@@ -560,7 +560,7 @@ static void test_hashtable_clear_empty( void )
 
 static void test_hashtable_remove( void )
 {
-	int i, j, k;
+	int_t i, j, k;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
@@ -580,7 +580,7 @@ static void test_hashtable_remove( void )
 			itr = ht_find( &ht, (void*)j );
 			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
 
-			k = (int)ht_itr_get( &ht, itr, NULL );
+			k = (int_t)ht_itr_get( &ht, itr, NULL );
 			CU_ASSERT_EQUAL( k, j );
 		}
 
@@ -668,7 +668,7 @@ static void test_hashtable_remove_dynamic( void )
 
 static void test_hashtable_add_static( void )
 {
-	int i, j, k;
+	int_t i, j, k;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
@@ -688,7 +688,7 @@ static void test_hashtable_add_static( void )
 			itr = ht_find( &ht, (void*)j );
 			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
 
-			k = (int)ht_itr_get( &ht, itr, NULL );
+			k = (int_t)ht_itr_get( &ht, itr, NULL );
 			CU_ASSERT_EQUAL( k, j );
 		}
 
@@ -700,7 +700,7 @@ static void test_hashtable_add_static( void )
 
 static void test_hashtable_find_static( void )
 {
-	int i, j, k;
+	int_t i, j, k;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;
@@ -725,7 +725,7 @@ static void test_hashtable_find_static( void )
 			itr = ht_find( &ht, (void*)j );
 			CU_ASSERT_NOT_EQUAL( itr, ht_itr_end( &ht ) );
 
-			k = (int)ht_itr_get( &ht, itr, NULL );
+			k = (int_t)ht_itr_get( &ht, itr, NULL );
 			CU_ASSERT_EQUAL( k, j );
 		}
 

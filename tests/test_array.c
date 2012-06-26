@@ -212,7 +212,8 @@ static void test_array_push_head_1( void )
 
 static void test_array_push_head( void )
 {
-	int i, j;
+	int i;
+	int_t j;
 	uint32_t size;
 	uint32_t multiple;
 	array_t arr;
@@ -255,7 +256,8 @@ static void test_array_push_tail_1( void )
 
 static void test_array_push_tail( void )
 {
-	int i, j;
+	int i;
+	int_t j;
 	uint32_t size;
 	uint32_t multiple;
 	array_t arr;
@@ -279,7 +281,7 @@ static void test_array_push_tail( void )
 		j = 0;
 		for ( ; itr != array_itr_end( &arr ); itr = array_itr_next( &arr, itr ) )
 		{
-			CU_ASSERT_EQUAL( (int)array_itr_get( &arr, itr ), j );
+			CU_ASSERT_EQUAL( (int_t)array_itr_get( &arr, itr ), j );
 			j++;
 		}
 
@@ -334,7 +336,7 @@ static void test_array_push_zero_initial_size( void )
 
 static void test_array_pop_head_static( void )
 {
-	int i, j;
+	int_t i, j;
 	uint32_t size;
 	uint32_t multiple;
 	array_t arr;
@@ -356,7 +358,7 @@ static void test_array_pop_head_static( void )
 	i = 0;
 	for ( ; itr != array_itr_end( &arr ); itr = array_itr_next( &arr, itr ) )
 	{
-		CU_ASSERT_EQUAL( (int)array_itr_get( &arr, itr ), i );
+		CU_ASSERT_EQUAL( (int_t)array_itr_get( &arr, itr ), i );
 		i++;
 	}
 
@@ -364,13 +366,13 @@ static void test_array_pop_head_static( void )
 	i = ((size * multiple) - 1);
 	for ( ; itr != array_itr_rend( &arr ); itr = array_itr_rnext( &arr, itr ) )
 	{
-		CU_ASSERT_EQUAL( (int)array_itr_get( &arr, itr ), i );
+		CU_ASSERT_EQUAL( (int_t)array_itr_get( &arr, itr ), i );
 		i--;
 	}
 
 	for ( i = 0; i < (size * multiple); i++ )
 	{
-		j = (int)array_get_head( &arr );
+		j = (int_t)array_get_head( &arr );
 		array_pop_head( &arr );
 		CU_ASSERT_EQUAL( j, i );
 	}
@@ -381,7 +383,7 @@ static void test_array_pop_head_static( void )
 
 static void test_array_pop_tail_static( void )
 {
-	int i, j;
+	int_t i, j;
 	uint32_t size;
 	uint32_t multiple;
 	array_t arr;
@@ -394,10 +396,10 @@ static void test_array_pop_tail_static( void )
 	{
 		array_push_head( &arr, (void*)i );
 		CU_ASSERT_EQUAL( array_size( &arr ), (i + 1) );
-		CU_ASSERT_EQUAL( (int)array_get_head(&arr), i );
-		if ( (int)array_get_head(&arr) != i )
+		CU_ASSERT_EQUAL( (int_t)array_get_head(&arr), i );
+		if ( (int_t)array_get_head(&arr) != i )
 		{
-			printf( "%d == %d (size: %u, bufsize: %u\n", (int)array_get_head(&arr), i, size, arr.buffer_size );
+			printf( "%d == %d (size: %u, bufsize: %u\n", (int_t)array_get_head(&arr), i, size, arr.buffer_size );
 		}
 
 		if ( i > 0 )
@@ -406,11 +408,11 @@ static void test_array_pop_tail_static( void )
 			itr = array_itr_begin( &arr );
 			itr = array_itr_next( &arr, itr );
 			/*CU_ASSERT_EQUAL( (int)array_itr_get(&arr, itr), (i - 1) );*/
-			if ( (i - 1) != (int)array_itr_get(&arr, itr) )
+			if ( (i - 1) != (int_t)array_itr_get(&arr, itr) )
 			{
 				itr = array_itr_begin( &arr );
 				itr = array_itr_next( &arr, itr );
-				j = (int)array_itr_get( &arr, itr );
+				j = (int_t)array_itr_get( &arr, itr );
 			}
 		}
 	}
@@ -418,25 +420,24 @@ static void test_array_pop_tail_static( void )
 	CU_ASSERT_EQUAL( array_size( &arr ), (size * multiple) );
 	/* walk the array to make sure the values are what we expect */
 	itr = array_itr_begin( &arr );
-	i = 0;
+	i = ((size * multiple) - 1);
 	for ( ; itr != array_itr_end( &arr ); itr = array_itr_next( &arr, itr ) )
 	{
-		printf("%d\n", (int)array_itr_get( &arr, itr ) );
-		CU_ASSERT_EQUAL( (int)array_itr_get( &arr, itr ), i );
-		i++;
-	}
-
-	itr = array_itr_rbegin( &arr );
-	i = ((size * multiple) - 1);
-	for ( ; itr != array_itr_rend( &arr ); itr = array_itr_rnext( &arr, itr ) )
-	{
-		CU_ASSERT_EQUAL( (int)array_itr_get( &arr, itr ), i );
+		CU_ASSERT_EQUAL( (int_t)array_itr_get( &arr, itr ), i );
 		i--;
 	}
 
-	for ( i = ((size * multiple) - 1); i >= 0; i-- )
+	itr = array_itr_rbegin( &arr );
+	i = 0;
+	for ( ; itr != array_itr_rend( &arr ); itr = array_itr_rnext( &arr, itr ) )
 	{
-		j = (int)array_get_tail( &arr );
+		CU_ASSERT_EQUAL( (int_t)array_itr_get( &arr, itr ), i );
+		i++;
+	}
+
+	for ( i = 0; i < (size * multiple); i++ )
+	{
+		j = (int_t)array_get_tail( &arr );
 		array_pop_tail( &arr );
 		CU_ASSERT_EQUAL( j, i );
 	}
@@ -447,7 +448,7 @@ static void test_array_pop_tail_static( void )
 
 static void test_array_clear( void )
 {
-	int i;
+	int_t i;
 	uint32_t size;
 	uint32_t multiple;
 	array_t arr;
@@ -548,7 +549,7 @@ static void test_array_push_fail( void )
 
 static void test_array_push_middle( void )
 {
-	int i, j;
+	int_t i, j;
 	uint32_t size;
 	uint32_t multiple;
 	array_t arr;
@@ -585,7 +586,7 @@ static void test_array_push_middle( void )
 
 static void test_array_pop_middle( void )
 {
-	int i, j;
+	int_t i, j;
 	uint32_t size;
 	uint32_t multiple;
 	array_t arr;
@@ -632,7 +633,7 @@ static void test_array_pop_middle( void )
 
 static void test_array_get_middle( void )
 {
-	int i, j, k;
+	int_t i, j, k;
 	uint32_t size;
 	uint32_t multiple;
 	array_t arr;
@@ -655,7 +656,7 @@ static void test_array_get_middle( void )
 		{
 			if ( j & 0x1 )
 			{
-				k = (int)array_itr_get( &arr, itr );
+				k = (int_t)array_itr_get( &arr, itr );
 				CU_ASSERT_EQUAL( j, k );
 			}
 			itr = array_itr_next( &arr, itr );
