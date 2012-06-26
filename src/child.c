@@ -26,6 +26,10 @@
 #include <sys/types.h>
 #include <sys/uio.h>
 
+#if defined (__APPLE__) && defined (UNIT_TESTING)
+#include <vproc.h>					/* to get vproc_transaction_begin() workaround */
+#endif
+
 #include "debug.h"
 #include "macros.h"
 #include "array.h"
@@ -153,7 +157,15 @@ static pid_t safe_fork( void )
 {
 	pid_t childpid;
 
-	if ( (childpid = fork()) == -1 )
+	childpid = fork();
+
+	/* this is a workaround to a bug in Mac OS X < 10.7 */
+#if defined (__APPLE__) && defined (UNIT_TESTING)
+	vproc_transaction_begin(0);
+#endif
+
+	/* test for error */
+	if ( childpid == -1 )
 		return -1;
 
 	/* test for parent process */

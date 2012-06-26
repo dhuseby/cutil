@@ -262,6 +262,7 @@ static void test_hashtable_compact( void )
 static void test_hashtable_compact_fail( void )
 {
 	int_t i, j, k;
+	int_t s = 0;
 	ht_itr_t itr;
 	uint32_t size, multiple;
 	ht_t ht;

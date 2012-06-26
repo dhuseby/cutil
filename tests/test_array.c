@@ -397,11 +397,6 @@ static void test_array_pop_tail_static( void )
 		array_push_head( &arr, (void*)i );
 		CU_ASSERT_EQUAL( array_size( &arr ), (i + 1) );
 		CU_ASSERT_EQUAL( (int_t)array_get_head(&arr), i );
-		if ( (int_t)array_get_head(&arr) != i )
-		{
-			printf( "%d == %d (size: %u, bufsize: %u\n", (int_t)array_get_head(&arr), i, size, arr.buffer_size );
-		}
-
 		if ( i > 0 )
 		{
 			/* make sure the previous item in the array is what we expect */

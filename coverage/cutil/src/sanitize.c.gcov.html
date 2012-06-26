@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
   <title>LCOV - cutil test coverage - cutil/src/sanitize.c</title>
   <link rel="stylesheet" type="text/css" href="../../gcov.css">
 </head>
@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-06-14</td>
+            <td class="headerValue">2012-06-25</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -50,8 +50,8 @@
             <td></td>
             <td class="headerItem">Branches:</td>
             <td class="headerCovTableEntry">6</td>
-            <td class="headerCovTableEntry">72</td>
-            <td class="headerCovTableEntryLo">8.3 %</td>
+            <td class="headerCovTableEntry">84</td>
+            <td class="headerCovTableEntryLo">7.1 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -106,10 +106,10 @@
 <span class="lineNum">      35 </span>                :            : 
 <span class="lineNum">      36 </span>                :            : #ifndef OPEN_MAX
 <span class="lineNum">      37 </span>                :            : #define OPEN_MAX (256)
-<a name="38"><span class="lineNum">      38 </span>                :            : #endif</a>
-<span class="lineNum">      39 </span>                :            : 
-<span class="lineNum">      40 </span>                :<span class="lineNoCov">          0 : static int open_devnull( int fd )</span>
-<span class="lineNum">      41 </span>                :            : {
+<span class="lineNum">      38 </span>                :            : #endif
+<a name="39"><span class="lineNum">      39 </span>                :            : </a>
+<span class="lineNum">      40 </span>                :            : static int open_devnull( int fd )
+<span class="lineNum">      41 </span>                :<span class="lineNoCov">          0 : {</span>
 <span class="lineNum">      42 </span>                :<span class="lineNoCov">          0 :     FILE *f = 0;</span>
 <span class="lineNum">      43 </span>                :            : 
 <span class="lineNum">      44 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( fd == STDIN_FILENO )</span>
@@ -126,10 +126,10 @@
 <span class="lineNum">      55 </span>                :            :     }
 <span class="lineNum">      56 </span>                :            : 
 <span class="lineNum">      57 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :     return ( f &amp;&amp; (fileno(f) == fd) );</span>
-<a name="58"><span class="lineNum">      58 </span>                :            : }</a>
-<span class="lineNum">      59 </span>                :            : 
-<span class="lineNum">      60 </span>                :<span class="lineCov">        128 : void sanitize_files( void )</span>
-<span class="lineNum">      61 </span>                :            : {
+<span class="lineNum">      58 </span>                :            : }
+<a name="59"><span class="lineNum">      59 </span>                :            : </a>
+<span class="lineNum">      60 </span>                :            : void sanitize_files( void )
+<span class="lineNum">      61 </span>                :<span class="lineCov">        128 : {</span>
 <span class="lineNum">      62 </span>                :            :     int fd, fds;
 <span class="lineNum">      63 </span>                :            :     struct stat st;
 <span class="lineNum">      64 </span>                :            : 
@@ -140,9 +140,9 @@
 <span class="lineNum">      69 </span>                :            :     }
 <span class="lineNum">      70 </span>                :            :     
 <span class="lineNum">      71 </span>                :            :     /* make sure all open descriptors other than the standard ones are closed */
-<span class="lineNum">      72 </span>        [<span class="branchCov" title="Branch 0 was taken 130688 times"> + </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">     130816 :     for ( fd = (STDERR_FILENO + 1); fd &lt; fds; fd++ )</span>
+<span class="lineNum">      72 </span>        [<span class="branchCov" title="Branch 0 was taken 32384 times"> + </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">      32512 :     for ( fd = (STDERR_FILENO + 1); fd &lt; fds; fd++ )</span>
 <span class="lineNum">      73 </span>                :            :     {
-<span class="lineNum">      74 </span>                :<span class="lineCov">     130688 :         close( fd );</span>
+<span class="lineNum">      74 </span>                :<span class="lineCov">      32384 :         close( fd );</span>
 <span class="lineNum">      75 </span>                :            :     }
 <span class="lineNum">      76 </span>                :            : 
 <span class="lineNum">      77 </span>                :            :     /* verify that the standard descriptors are open.  if they're not, attempt to
@@ -168,10 +168,10 @@
 <span class="lineNum">      96 </span>                :            : {
 <span class="lineNum">      97 </span>                :            :     &quot;TZ&quot;,
 <span class="lineNum">      98 </span>                :            :     NULL
-<a name="99"><span class="lineNum">      99 </span>                :            : };</a>
-<span class="lineNum">     100 </span>                :            : 
-<span class="lineNum">     101 </span>                :<span class="lineNoCov">          0 : int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int8_t ** addv )</span>
-<span class="lineNum">     102 </span>                :            : {
+<span class="lineNum">      99 </span>                :            : };
+<a name="100"><span class="lineNum">     100 </span>                :            : </a>
+<span class="lineNum">     101 </span>                :            : int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int8_t ** addv )
+<span class="lineNum">     102 </span>                :<span class="lineNoCov">          0 : {</span>
 <span class="lineNum">     103 </span>                :            :     int i;
 <span class="lineNum">     104 </span>                :            :     int8_t ** new_environ;
 <span class="lineNum">     105 </span>                :            :     int8_t *ptr, *value, *var;
@@ -232,7 +232,7 @@
 <span class="lineNum">     160 </span>                :            :     {
 <span class="lineNum">     161 </span>                :<span class="lineNoCov">          0 :         new_environ[arr_ptr++] = ptr;</span>
 <span class="lineNum">     162 </span>                :<span class="lineNoCov">          0 :         len = strlen( var );</span>
-<span class="lineNum">     163 </span>                :<span class="lineNoCov">          0 :         MEMCPY( ptr, var, len + 1 );</span>
+<span class="lineNum">     163 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :         MEMCPY( ptr, var, len + 1 );</span>
 <span class="lineNum">     164 </span>                :<span class="lineNoCov">          0 :         ptr += len + 1;</span>
 <span class="lineNum">     165 </span>                :            :     }
 <span class="lineNum">     166 </span>                :            : 
@@ -245,9 +245,9 @@
 <span class="lineNum">     173 </span>                :            : 
 <span class="lineNum">     174 </span>                :<span class="lineNoCov">          0 :         new_environ[arr_ptr++] = ptr;</span>
 <span class="lineNum">     175 </span>                :<span class="lineNoCov">          0 :         len = strlen(var);</span>
-<span class="lineNum">     176 </span>                :<span class="lineNoCov">          0 :         MEMCPY( ptr, var, len );</span>
+<span class="lineNum">     176 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :         MEMCPY( ptr, var, len );</span>
 <span class="lineNum">     177 </span>                :<span class="lineNoCov">          0 :         *(ptr + len + 1) = '=';</span>
-<span class="lineNum">     178 </span>                :<span class="lineNoCov">          0 :         MEMCPY( ptr + len + 2, value, strlen(value) + 1 );</span>
+<span class="lineNum">     178 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :         MEMCPY( ptr + len + 2, value, strlen(value) + 1 );</span>
 <span class="lineNum">     179 </span>                :<span class="lineNoCov">          0 :         ptr += len + strlen( value ) + 2; /* include the '=' */</span>
 <span class="lineNum">     180 </span>                :            :     }
 <span class="lineNum">     181 </span>                :            : 
@@ -261,9 +261,9 @@
 <span class="lineNum">     189 </span>                :            : 
 <span class="lineNum">     190 </span>                :<span class="lineNoCov">          0 :             new_environ[arr_ptr++] = ptr;</span>
 <span class="lineNum">     191 </span>                :<span class="lineNoCov">          0 :             len = strlen(var);</span>
-<span class="lineNum">     192 </span>                :<span class="lineNoCov">          0 :             MEMCPY( ptr, var, len );</span>
+<span class="lineNum">     192 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :             MEMCPY( ptr, var, len );</span>
 <span class="lineNum">     193 </span>                :<span class="lineNoCov">          0 :             *(ptr + len + 1) = '=';</span>
-<span class="lineNum">     194 </span>                :<span class="lineNoCov">          0 :             MEMCPY( ptr + len + 2, value, strlen(value) + 1 );</span>
+<span class="lineNum">     194 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :             MEMCPY( ptr + len + 2, value, strlen(value) + 1 );</span>
 <span class="lineNum">     195 </span>                :<span class="lineNoCov">          0 :             ptr += len + strlen( value ) + 2; /* include the '=' */</span>
 <span class="lineNum">     196 </span>                :            :         }
 <span class="lineNum">     197 </span>                :            :     }
@@ -275,7 +275,7 @@
 <span class="lineNum">     203 </span>                :            :         {
 <span class="lineNum">     204 </span>                :<span class="lineNoCov">          0 :             new_environ[arr_ptr++] = ptr;</span>
 <span class="lineNum">     205 </span>                :<span class="lineNoCov">          0 :             len = strlen(var);</span>
-<span class="lineNum">     206 </span>                :<span class="lineNoCov">          0 :             MEMCPY( ptr, var, len + 1 );</span>
+<span class="lineNum">     206 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :             MEMCPY( ptr, var, len + 1 );</span>
 <span class="lineNum">     207 </span>                :<span class="lineNoCov">          0 :             ptr += len + 1;</span>
 <span class="lineNum">     208 </span>                :            :         }
 <span class="lineNum">     209 </span>                :            :     }
