@@ -1,7 +1,7 @@
 # build cutil test executable
 #
 SHELL=/bin/sh
-SRC=test_all.c test_aiofd.c test_array.c test_bitset.c test_btree.c test_buffer.c test_child.c test_hashtable.c test_pair.c
+SRC=test_all.c test_aiofd.c test_array.c test_bitset.c test_btree.c test_buffer.c test_child.c test_hashtable.c test_pair.c test_socket.c
 OBJ=$(SRC:.c=.o)
 GCDA=$(SRC:.c=.gcda)
 GCNO=$(SRC:.c=.gcno)

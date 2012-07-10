@@ -35,7 +35,8 @@ typedef enum socket_ret_e
     SOCKET_INVALIDPORT  = -4,
     SOCKET_TIMEOUT      = -5,
     SOCKET_POLLERR      = -6,
-	SOCKET_CONNECTED    = -7
+	SOCKET_CONNECTED    = -7,
+	SOCKET_BOUND		= -8
 
 } socket_ret_t;
 
@@ -43,7 +44,9 @@ typedef enum socket_type_e
 {
     SOCKET_TCP,
     SOCKET_UDP,
-    SOCKET_SCTP
+	SOCKET_UNIX,
+    SOCKET_SCTP,
+	SOCKET_UNKNOWN = -1
 
 } socket_type_t;
 
@@ -76,8 +79,29 @@ socket_ret_t socket_connect( socket_t * const s,
 							 int8_t const * const host, 
 							 uint16_t const port );
 
+/* check to see if bound */
+int socket_is_bound( socket_t * const s );
+
+/* bind a socket to a specified IP/port or inode */
+socket_ret_t socket_bind( socket_t * const s,
+						  int8_t const * const host,
+						  uint16_t const port );
+
+/* listen for incoming connections */
+socket_ret_t socket_listen( socket_t * const s,
+							int const backlog );
+
+/* accept an incoming connection */
+socket_t* socket_accept( socket_t * const s,
+						 socket_ops_t * const ops,
+						 evt_loop_t * const el,
+						 void * user_data );
+
 /* disconnect all sockets */
 socket_ret_t socket_disconnect( socket_t * const s );
+
+/* get the socket type */
+socket_type_t socket_get_type( socket_t * const s );
 
 /* read data from the socket */
 int32_t socket_read( socket_t * const s, 

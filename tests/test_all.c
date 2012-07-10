@@ -39,6 +39,7 @@ SUITE( buffer );
 SUITE( child );
 SUITE( hashtable );
 SUITE( pair );
+SUITE( socket );
 
 int main()
 {
@@ -50,6 +51,7 @@ int main()
 	SUITE_VAR( child );
 	SUITE_VAR( hashtable );
 	SUITE_VAR( pair );
+	SUITE_VAR( socket );
 
 	/* initialize the CUnit test registry */
 	if ( CUE_SUCCESS != CU_initialize_registry() )
@@ -64,6 +66,7 @@ int main()
 	ADD_SUITE( child );
 	ADD_SUITE( hashtable );
 	ADD_SUITE( pair );
+	ADD_SUITE( socket );
 
 	/* run all tests using the CUnit Basic interface */
 	CU_basic_set_mode( CU_BRM_VERBOSE );

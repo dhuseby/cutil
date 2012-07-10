@@ -30,6 +30,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/uio.h>
+#include <sys/un.h>
 #include <netinet/tcp.h>
 
 #include "debug.h"
@@ -42,6 +43,7 @@ struct socket_s
 {
 	socket_type_t	type;			/* type of socket */
 	int32_t			connected;		/* is the socket connected? */
+	int32_t			bound;			/* is the socket bound? */
 	int8_t*			host;			/* host name */
 	uint16_t		port;			/* port number */
 	IPv4			addr;			/* IPv4 struct from host string */
@@ -67,16 +69,19 @@ static socket_ret_t socket_lookup_host( socket_t * const s,
 		/* copy the hostname into the server struct */
 		s->host = T(strdup((char const * const)hostname));
 	}
-	
-	/* try to look up the host name */
-	if( (host = gethostbyname((char const * const)hostname)) == NULL )
+
+	if ( s->type != SOCKET_UNIX )
 	{
-		WARN("look up of %s failed\n", hostname);
-		return SOCKET_BADHOSTNAME;
+		/* try to look up the host name */
+		if( (host = gethostbyname((char const * const)hostname)) == NULL )
+		{
+			WARN("look up of %s failed\n", hostname);
+			return SOCKET_BADHOSTNAME;
+		}
+		
+		/* store the IP address */
+		s->addr.s_addr = *((uint32_t*)host->h_addr_list[0]);
 	}
-	
-	/* store the IP address */
-	s->addr.s_addr = *((uint32_t*)host->h_addr_list[0]);
 	
 	return SOCKET_OK;
 }
@@ -205,6 +210,7 @@ static int socket_aiofd_read_fn( aiofd_t * const aiofd,
 								 void * user_data )
 {
 	socket_t * s = (socket_t*)user_data;
+	WARN( "read callback\n" );
 	CHECK_PTR_RET( aiofd, FALSE );
 	CHECK_PTR_RET( s, FALSE );
 
@@ -217,10 +223,23 @@ static int socket_aiofd_read_fn( aiofd_t * const aiofd,
 		return FALSE;
 	}
 
-	if ( s->ops.read_fn != NULL )
+	if ( socket_is_bound( s ) )
 	{
-		DEBUG( "calling socket read callback\n");
-		(*(s->ops.read_fn))( s, nread, s->user_data );
+		/* this is a socket accepting incoming connections */
+		if ( s->ops.connect_fn != NULL )
+		{
+			DEBUG( "calling socket connect callback for incoming connection\n" );
+			(*(s->ops.connect_fn))( s, s->user_data );
+		}
+	}
+	else
+	{
+		/* this is a normal connection socket, so pass the read event along */
+		if ( s->ops.read_fn != NULL )
+		{
+			DEBUG( "calling socket read callback\n");
+			(*(s->ops.read_fn))( s, nread, s->user_data );
+		}
 	}
 
 	return TRUE;
@@ -280,26 +299,41 @@ static void socket_initialize( socket_t * const s,
 				DEBUG("turned on TCP no delay\n");
 			}
 
-			/* set the socket to non blocking mode */
-			flags = fcntl( fd, F_GETFL );
-			if( fcntl( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
-			{
-				WARN("failed to set socket to non-blocking\n");
-			}
-			else
-			{
-				DEBUG("socket is now non-blocking\n");
-			}
-
 			break;
 	
 		case SOCKET_UDP:
 			WARN("UDP sockets not implemented\n");
 			break;
+
+		case SOCKET_UNIX:
+
+			/* try to open a socket */
+			if ( (fd = socket( AF_UNIX, SOCK_STREAM, 0 )) < 0 )
+			{
+				WARN("failed to open socket\n");
+				socket_delete( (void*)s );
+			}
+			else
+			{
+				DEBUG("created socket\n");
+			}
+
+			break;
 		
 		case SOCKET_SCTP:
 			WARN("SCTP sockets not implemented\n");
 			break;
+	}
+
+	/* set the socket to non blocking mode */
+	flags = fcntl( fd, F_GETFL );
+	if( fcntl( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
+	{
+		WARN("failed to set socket to non-blocking\n");
+	}
+	else
+	{
+		DEBUG("socket is now non-blocking\n");
 	}
 
 	/* initialize the aiofd to manage the socket */
@@ -351,8 +385,8 @@ void socket_delete( void * s )
 /* check to see if connected */
 int socket_is_connected( socket_t* const s )
 {
-	CHECK_PTR_RET(s, 0);
-	CHECK_RET( s->aiofd.rfd >= 0, 0 );
+	CHECK_PTR_RET( s, FALSE );
+	CHECK_RET( s->aiofd.rfd >= 0, FALSE );
 	return s->connected;
 }
 
@@ -361,12 +395,14 @@ socket_ret_t socket_connect( socket_t* const s,
 							 uint16_t const port )
 {
 	int err = 0;
+	int len = 0;
 	socket_ret_t ret = SOCKET_OK;
-	struct sockaddr_in addr;
+	struct sockaddr_in in_addr;
+	struct sockaddr_un un_addr;
 	
 	CHECK_PTR_RET(s, SOCKET_BADPARAM);
 	CHECK_RET((hostname != NULL) || (s->host != NULL), SOCKET_BADHOSTNAME);
-	CHECK_RET((port > 0) || (s->port > 0), SOCKET_INVALIDPORT);
+	CHECK_RET(((s->type != SOCKET_UNIX) && ((port > 0) || (s->port > 0))) || (s->type == SOCKET_UNIX), SOCKET_INVALIDPORT);
 	CHECK_RET( !socket_is_connected( s ), SOCKET_CONNECTED );
 	
 	/* store port number if provided */
@@ -389,13 +425,13 @@ socket_ret_t socket_connect( socket_t* const s,
 			aiofd_enable_write_evt( &(s->aiofd), TRUE );
 
 			/* initialize the socket address struct */
-			MEMSET( &addr, 0, sizeof(struct sockaddr_in) );
-			addr.sin_family = AF_INET;
-			addr.sin_addr.s_addr = s->addr.s_addr;
-			addr.sin_port = htons(s->port);
+			MEMSET( &in_addr, 0, sizeof(struct sockaddr_in) );
+			in_addr.sin_family = AF_INET;
+			in_addr.sin_addr.s_addr = s->addr.s_addr;
+			in_addr.sin_port = htons(s->port);
 
 			/* try to make the connection */
-			if ( (err = connect(s->aiofd.rfd, (struct sockaddr*)&addr, sizeof(struct sockaddr))) < 0 )
+			if ( (err = connect(s->aiofd.rfd, (struct sockaddr*)&in_addr, sizeof(struct sockaddr))) < 0 )
 			{
 				if ( errno == EINPROGRESS )
 				{
@@ -413,6 +449,35 @@ socket_ret_t socket_connect( socket_t* const s,
 		case SOCKET_UDP:
 			WARN("UDP sockets not implemented\n");
 			break;
+
+		case SOCKET_UNIX:
+			
+			/* start the socket write event processing so we can catch connection */
+			aiofd_enable_write_evt( &(s->aiofd), TRUE );
+
+			/* initialize the socket address struct */
+			MEMSET( &un_addr, 0, sizeof(struct sockaddr_un) );
+			un_addr.sun_family = AF_UNIX;
+			strncpy( un_addr.sun_path, s->host, 100 );
+
+			/* calculate the length of the address struct */
+			len = strlen( un_addr.sun_path ) + sizeof( un_addr.sun_family );
+
+			/* try to make the connection */
+			if ( (err = connect(s->aiofd.rfd, (struct sockaddr*)&un_addr, len)) < 0 )
+			{
+				if ( errno == EINPROGRESS )
+				{
+					DEBUG( "connection in progress\n" );
+				}
+				else
+				{
+					DEBUG("failed to initiate connect to the server\n");
+					return SOCKET_ERROR;
+				}
+			}
+		
+			break;
 		
 		case SOCKET_SCTP:
 			WARN("SCTP sockets not implemented\n");
@@ -420,6 +485,256 @@ socket_ret_t socket_connect( socket_t* const s,
 	}
 
 	return SOCKET_OK;
+}
+
+
+/* check to see if bound */
+int socket_is_bound( socket_t* const s )
+{
+	CHECK_PTR_RET(s, FALSE);
+	CHECK_RET( s->aiofd.rfd >= 0, FALSE );
+	return s->bound;
+}
+
+socket_ret_t socket_bind( socket_t * const s,
+						  int8_t const * const host,
+						  uint16_t const port )
+{
+	int len;
+	socket_ret_t ret;
+	struct sockaddr_in in_addr;
+	struct sockaddr_un un_addr;
+
+	CHECK_PTR_RET( s, SOCKET_BADPARAM );
+	CHECK_RET( !socket_is_bound( s ), SOCKET_BOUND );
+
+	/* store port number if provided */
+	if( port > 0 )
+		s->port = port;
+	
+	/* look up and store the hostname if provided */
+	if( host != NULL )
+	{
+		if ( (ret = socket_lookup_host(s, host)) != SOCKET_OK )
+			return ret;
+	}
+
+	switch ( s->type )
+	{
+		case SOCKET_TCP:
+
+			/* initialize the socket address struct */
+			MEMSET( &in_addr, 0, sizeof(struct sockaddr_in) );
+			in_addr.sin_family = AF_INET;
+			in_addr.sin_addr.s_addr = s->addr.s_addr;
+			in_addr.sin_port = htons(s->port);
+
+			len = sizeof( in_addr );
+
+			if ( bind( s->aiofd.rfd, (struct sockaddr*)&in_addr, len) < 0 )
+			{
+				DEBUG( "failed to bind (errno: %d)\n", errno );
+				return SOCKET_ERROR;
+			}
+
+			/* flag the socket as bound */
+			s->bound = TRUE;
+
+			break;
+
+		case SOCKET_UDP:
+			break;
+
+		case SOCKET_UNIX:
+			
+			/* initialize the socket address struct */
+			MEMSET( &un_addr, 0, sizeof(struct sockaddr_un) );
+			un_addr.sun_family = AF_UNIX;
+			strncpy( un_addr.sun_path, s->host, 100 );
+
+			/* try to delete the socket inode */
+			unlink( un_addr.sun_path );
+
+			/* calculate the length of the address struct */
+			len = strlen( un_addr.sun_path ) + sizeof( un_addr.sun_family );
+
+			if ( bind( s->aiofd.rfd, (struct sockaddr*)&un_addr, len) < 0 )
+			{
+				DEBUG( "failed to bind (errno: %d)\n", errno );
+				return SOCKET_ERROR;
+			}
+
+			/* flag the socket as bound */
+			s->bound = TRUE;
+
+			break;
+
+		case SOCKET_SCTP:
+			break;
+	}
+
+	return SOCKET_OK;
+}
+
+socket_ret_t socket_listen( socket_t * const s, int const backlog )
+{
+	CHECK_PTR_RET( s, SOCKET_BADPARAM );
+	CHECK_RET( socket_is_bound( s ), SOCKET_BOUND );
+	CHECK_RET( !socket_is_connected( s ), SOCKET_CONNECTED );
+
+	WARN( "calling listen()\n" );
+
+	/* now begin listening for incoming connections */
+	if ( listen( s->aiofd.rfd, backlog ) < 0 )
+	{
+		DEBUG( "failed to listen (errno: %d)\n", errno );
+		return SOCKET_ERROR;
+	}
+
+	WARN( "enabling read even on listening socket\n" );
+
+	/* start the socket read even processing to catch incoming connections */
+	aiofd_enable_read_evt( &(s->aiofd), TRUE );
+
+	WARN( "ready for incoming connections\n" );
+
+	return SOCKET_OK;
+}
+
+socket_t * socket_accept( socket_t * const s,
+						  socket_ops_t * const ops,
+						  evt_loop_t * const el,
+						  void * user_data )
+{
+	int fd;
+	int len;
+	int32_t flags;
+	socket_t * client;
+	struct sockaddr_in in_addr;
+	struct sockaddr_un un_addr;
+	static aiofd_ops_t aiofd_ops =
+	{
+		&socket_aiofd_read_fn,
+		&socket_aiofd_write_fn,
+		&socket_aiofd_error_fn
+	};
+
+	CHECK_PTR_RET( s, NULL );
+	CHECK_RET( socket_is_bound( s ), NULL );
+
+	client = CALLOC( 1, sizeof( socket_t ) );
+
+	CHECK_PTR_RET_MSG( client, NULL, "failed to allocate new socket struct\n" );
+
+	/* store the type */
+	client->type = s->type;
+
+	/* store the user_data pointer */
+	client->user_data = user_data;
+
+	/* copy the ops into place */
+	MEMCPY( (void*)&(client->ops), ops, sizeof(socket_ops_t) );
+
+	/* do the connect based on the type */
+	switch(s->type)
+	{
+		case SOCKET_TCP:
+
+			MEMSET( (void*)&in_addr, 0, sizeof( struct sockaddr_in ) );
+
+			len = sizeof(in_addr);
+
+			/* try to open a socket */
+			if ( (fd = accept( s->aiofd.rfd, (struct sockaddr *)&in_addr, &len )) < 0 )
+			{
+				WARN("failed to accept incoming connection\n");
+				socket_delete( (void*)client );
+				return NULL;
+			}
+			else
+			{
+				DEBUG("created socket\n");
+			}
+
+			/* store the connection information */
+			client->addr.s_addr = in_addr.sin_addr.s_addr;
+			client->port = ntohs( in_addr.sin_port );
+
+			/* turn off TCP naggle algorithm */
+			flags = 1;
+			if ( setsockopt( fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags) ) )
+			{
+				WARN( "failed to turn on TCP no delay\n" );
+				socket_delete( (void*)client );
+				return NULL;
+			}
+			else
+			{
+				DEBUG("turned on TCP no delay\n");
+			}
+
+			break;
+	
+		case SOCKET_UDP:
+			WARN("UDP sockets not implemented\n");
+			break;
+
+		case SOCKET_UNIX:
+
+			MEMSET( (void*)&un_addr, 0, sizeof( struct sockaddr_un ) );
+
+			len = sizeof(un_addr);
+
+			/* try to open a socket */
+			if ( (fd = accept( s->aiofd.rfd, (struct sockaddr *)&un_addr, &len )) < 0 )
+			{
+				WARN("failed to open socket\n");
+				socket_delete( (void*)client );
+				return NULL;
+			}
+			else
+			{
+				DEBUG("created socket\n");
+			}
+
+			/* store the connection information */
+			client->host = T(strdup((char const * const)un_addr.sun_path));
+
+			break;
+		
+		case SOCKET_SCTP:
+			WARN("SCTP sockets not implemented\n");
+			break;
+	}
+
+	/* set the socket to non blocking mode */
+	flags = fcntl( fd, F_GETFL );
+	if( fcntl( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
+	{
+		WARN("failed to set socket to non-blocking\n");
+	}
+	else
+	{
+		DEBUG("socket is now non-blocking\n");
+	}
+
+	/* initialize the aiofd to manage the socket */
+	aiofd_initialize( &(client->aiofd), fd, fd, &aiofd_ops, el, (void*)client );
+	
+	DEBUG( "socket connected\n" );
+	client->connected = TRUE;
+
+	if ( client->ops.connect_fn != NULL )
+	{
+		DEBUG( "calling socket connect callback\n" );
+		/* call the connect callback */
+		(*(client->ops.connect_fn))( client, client->user_data );
+	}
+
+	/* we're connected to start read event */
+	aiofd_enable_read_evt( &(client->aiofd), TRUE );
+
+	return client;
 }
 
 socket_ret_t socket_disconnect( socket_t* const s )
@@ -448,6 +763,12 @@ socket_ret_t socket_disconnect( socket_t* const s )
 	}
 
 	return SOCKET_OK;
+}
+
+socket_type_t socket_get_type( socket_t * const s )
+{
+	CHECK_PTR_RET( s, SOCKET_UNKNOWN );
+	return s->type;
 }
 
 int32_t socket_read( socket_t* const s, 

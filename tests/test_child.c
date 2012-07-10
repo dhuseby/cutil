@@ -158,7 +158,7 @@ static pid_t child_pid = -1;
 static int32_t read_pid_fn( child_process_t * const cp, size_t nread, void * user_data )
 {
 	NOTICE("read_fn callback\n");
-	child_process_read( cp, (uint8_t const * const)&child_pid, sizeof(pid_t) );
+	child_process_read( cp, (uint8_t * const)&child_pid, sizeof(pid_t) );
 	return 0;
 }
 
