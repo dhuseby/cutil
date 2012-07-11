@@ -43,9 +43,7 @@ typedef enum socket_ret_e
 typedef enum socket_type_e
 {
     SOCKET_TCP,
-    SOCKET_UDP,
 	SOCKET_UNIX,
-    SOCKET_SCTP,
 	SOCKET_UNKNOWN = -1
 
 } socket_type_t;

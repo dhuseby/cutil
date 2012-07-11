@@ -174,8 +174,8 @@ int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int
 		new_environ[arr_ptr++] = ptr;
 		len = strlen(var);
 		MEMCPY( ptr, var, len );
-		*(ptr + len + 1) = '=';
-		MEMCPY( ptr + len + 2, value, strlen(value) + 1 );
+		*(ptr + len) = '=';
+		MEMCPY( ptr + len + 1, value, strlen(value) + 1 );
 		ptr += len + strlen( value ) + 2; /* include the '=' */
 	}
 
@@ -190,8 +190,8 @@ int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int
 			new_environ[arr_ptr++] = ptr;
 			len = strlen(var);
 			MEMCPY( ptr, var, len );
-			*(ptr + len + 1) = '=';
-			MEMCPY( ptr + len + 2, value, strlen(value) + 1 );
+			*(ptr + len) = '=';
+			MEMCPY( ptr + len + 1, value, strlen(value) + 1 );
 			ptr += len + strlen( value ) + 2; /* include the '=' */
 		}
 	}

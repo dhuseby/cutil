@@ -13,81 +13,141 @@
  * License along with main.c; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
-#if 0
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include <string.h>
-#include <time.h>
-#include <sys/time.h>
+#include <stdlib.h>
+#include <paths.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include <CUnit/Basic.h>
 
 #include <cutil/debug.h>
 #include <cutil/macros.h>
-#include <cutil/hashtable.h>
+#include <cutil/sanitize.h>
 
-#include "test_hashtable.h"
-
-#define REPEAT (128)
-#define SIZEMAX (128)
-#define MULTIPLE (8)
-
-static void test_hashtable_newdel( void )
+static void test_sanitize_environment( void )
 {
-	int i;
-	uint32_t size;
-	ht_t * ht;
+	int i = 0;
+	int8_t ** new_env = NULL;
 
-	for ( i = 0; i < REPEAT; i++ )
-	{
-		ht = NULL;
-		size = (rand() % SIZEMAX);
-		ht = ht_new( size, NULL, NULL, NULL, NULL );
+	new_env = build_clean_environ( 0, (int8_t**)NULL, 0, (int8_t**)NULL );
 
-		CU_ASSERT_PTR_NOT_NULL( ht );
-		CU_ASSERT_EQUAL( ht_size( ht ), 0 );
-		CU_ASSERT_EQUAL( ht->initial_capacity, size );
-		CU_ASSERT_NOT_EQUAL( ht->khfn, NULL );
-		CU_ASSERT_NOT_EQUAL( ht->kefn, NULL );
-		CU_ASSERT_EQUAL( ht->kdfn, NULL );
-		CU_ASSERT_EQUAL( ht->vdfn, NULL );
+	CU_ASSERT_EQUAL( strcmp( new_env[0], "IFS= \t\n" ), 0 );
+	CU_ASSERT_EQUAL( strcmp( new_env[1], "PATH=" _PATH_STDPATH ), 0 );
+}
 
-		ht_delete( ht );
-	}
+static int8_t * preserve_environ[] =
+{
+	"USER",
+	NULL
+};
+
+static void test_sanitize_environment_preserve( void )
+{
+	int i = 0;
+	int8_t ** new_env = NULL;
+
+	new_env = build_clean_environ( 1, preserve_environ, 0, (int8_t**)NULL );
+
+	CU_ASSERT_EQUAL( strcmp( new_env[0], "IFS= \t\n" ), 0 );
+	CU_ASSERT_EQUAL( strcmp( new_env[1], "PATH=" _PATH_STDPATH ), 0 );
+	CU_ASSERT_EQUAL( strncmp( new_env[2], "USER=", 5 ), 0 );
+}
+
+static int8_t * add_environ[] =
+{
+	"FOO=BAR",
+	NULL
+};
+
+static void test_sanitize_environment_add( void )
+{
+	int i = 0;
+	int8_t ** new_env = NULL;
+
+	new_env = build_clean_environ( 0, (int8_t**)NULL, 1, add_environ );
+
+	CU_ASSERT_EQUAL( strcmp( new_env[0], "IFS= \t\n" ), 0 );
+	CU_ASSERT_EQUAL( strcmp( new_env[1], "PATH=" _PATH_STDPATH ), 0 );
+	CU_ASSERT_EQUAL( strcmp( new_env[2], "FOO=BAR" ), 0 );
+}
+
+static void test_sanitize_open_files( void )
+{
+	struct stat st;
+	int8_t tname[32];
+	int fd = -1;
+
+	MEMSET( tname, 0, 32 );
+	strcpy( tname, "blahXXXXXX" );
+	
+	fd = mkstemp( tname );
+
+	/* make sure the temp file is open */
+	CU_ASSERT_NOT_EQUAL( fd, -1 );
+	CU_ASSERT_NOT_EQUAL( fstat( fd, &st ), -1 );
+
+	sanitize_files();
+
+	/* make sure the temp file is closed */
+	CU_ASSERT_EQUAL( fstat( fd, &st ), -1 );
+	CU_ASSERT_EQUAL( errno, EBADF );
+
+	/* clean up after ourselves */
+	unlink( tname );
+}
+
+static void test_sanitize_closed_std_descriptors( void )
+{
+	struct stat st;
+
+	/* close stdin */
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
+
+	sanitize_files();
+
+	/* make sure stdin, stdout, stderr were re-opened */
+	CU_ASSERT_NOT_EQUAL( fstat( STDIN_FILENO, &st ), -1 );
+	CU_ASSERT_NOT_EQUAL( fstat( STDOUT_FILENO, &st ), -1 );
+	CU_ASSERT_NOT_EQUAL( fstat( STDERR_FILENO, &st ), -1 );
 }
 
 
-static int init_hashtable_suite( void )
+static int init_sanitize_suite( void )
 {
 	srand(0xDEADBEEF);
 	return 0;
 }
 
-static int deinit_hashtable_suite( void )
+static int deinit_sanitize_suite( void )
 {
 	return 0;
 }
 
-static CU_pSuite add_hashtable_tests( CU_pSuite pSuite )
+static CU_pSuite add_sanitize_tests( CU_pSuite pSuite )
 {
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of hashtable", test_hashtable_newdel), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "sanitize environment to empty test", test_sanitize_environment), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "sanitize environment w/preserve test", test_sanitize_environment_preserve), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "sanitize environment w/add test", test_sanitize_environment_add), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "close open files sanitize files test", test_sanitize_open_files), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "open closed std file descriptors sanitize files test", test_sanitize_closed_std_descriptors), NULL );
 	return pSuite;
 }
 
-CU_pSuite add_hashtable_test_suite()
+CU_pSuite add_sanitize_test_suite()
 {
 	CU_pSuite pSuite = NULL;
 
 	/* add the suite to the registry */
-	pSuite = CU_add_suite("Hashtable Tests", init_hashtable_suite, deinit_hashtable_suite);
+	pSuite = CU_add_suite("Sanitize Tests", init_sanitize_suite, deinit_sanitize_suite);
 	CHECK_PTR_RET( pSuite, NULL );
 
-	/* add in hashtable specific tests */
-	CHECK_PTR_RET( add_hashtable_tests( pSuite ), NULL );
+	/* add in sanitize specific tests */
+	CHECK_PTR_RET( add_sanitize_tests( pSuite ), NULL );
 
 	return pSuite;
 }
-#endif
 

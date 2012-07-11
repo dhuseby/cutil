@@ -27,8 +27,7 @@
 #include <cutil/debug.h>
 #include <cutil/macros.h>
 
-#define SUITE(x) extern CU_pSuite add_##x##_test_suite();
-#define SUITE_VAR(x) CU_pSuite x##_test_suite;
+#define SUITE(x) extern CU_pSuite add_##x##_test_suite(); CU_pSuite x##_test_suite;
 #define ADD_SUITE(x) x##_test_suite = add_##x##_test_suite();
 
 SUITE( aiofd );
@@ -40,19 +39,10 @@ SUITE( child );
 SUITE( hashtable );
 SUITE( pair );
 SUITE( socket );
+SUITE( sanitize );
 
 int main()
 {
-	SUITE_VAR( aiofd );
-	SUITE_VAR( array );
-	SUITE_VAR( bitset );
-	SUITE_VAR( btree );
-	SUITE_VAR( buffer );
-	SUITE_VAR( child );
-	SUITE_VAR( hashtable );
-	SUITE_VAR( pair );
-	SUITE_VAR( socket );
-
 	/* initialize the CUnit test registry */
 	if ( CUE_SUCCESS != CU_initialize_registry() )
 		return CU_get_error();
@@ -67,6 +57,7 @@ int main()
 	ADD_SUITE( hashtable );
 	ADD_SUITE( pair );
 	ADD_SUITE( socket );
+	ADD_SUITE( sanitize );
 
 	/* run all tests using the CUnit Basic interface */
 	CU_basic_set_mode( CU_BRM_VERBOSE );

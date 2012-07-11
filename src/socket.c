@@ -75,7 +75,7 @@ static socket_ret_t socket_lookup_host( socket_t * const s,
 		/* try to look up the host name */
 		if( (host = gethostbyname((char const * const)hostname)) == NULL )
 		{
-			WARN("look up of %s failed\n", hostname);
+			DEBUG("look up of %s failed\n", hostname);
 			return SOCKET_BADHOSTNAME;
 		}
 		
@@ -210,11 +210,10 @@ static int socket_aiofd_read_fn( aiofd_t * const aiofd,
 								 void * user_data )
 {
 	socket_t * s = (socket_t*)user_data;
-	WARN( "read callback\n" );
 	CHECK_PTR_RET( aiofd, FALSE );
 	CHECK_PTR_RET( s, FALSE );
 
-	if ( socket_is_bound( s ) && (s->type != SOCKET_UDP) )
+	if ( socket_is_bound( s ) )
 	{
 		/* this is a socket accepting incoming connections */
 		if ( s->ops.connect_fn != NULL )
@@ -304,19 +303,6 @@ static int socket_initialize( socket_t * const s,
 
 			break;
 	
-		case SOCKET_UDP:
-			/* try to open a socket */
-			if ( (fd = socket( PF_INET, SOCK_DGRAM, 0 )) < 0 )
-			{
-				WARN("failed to open socket\n");
-				return FALSE;
-			}
-			else
-			{
-				DEBUG("created socket\n");
-			}
-			break;
-
 		case SOCKET_UNIX:
 
 			/* try to open a socket */
@@ -330,10 +316,6 @@ static int socket_initialize( socket_t * const s,
 				DEBUG("created socket\n");
 			}
 
-			break;
-		
-		case SOCKET_SCTP:
-			WARN("SCTP sockets not implemented\n");
 			break;
 	}
 
@@ -442,7 +424,6 @@ socket_ret_t socket_connect( socket_t* const s,
 	switch(s->type)
 	{
 		case SOCKET_TCP:
-		case SOCKET_UDP:
 
 			/* start the socket write event processing so we can catch connection */
 			aiofd_enable_write_evt( &(s->aiofd), TRUE );
@@ -497,10 +478,6 @@ socket_ret_t socket_connect( socket_t* const s,
 			}
 		
 			break;
-		
-		case SOCKET_SCTP:
-			WARN("SCTP sockets not implemented\n");
-			break;
 	}
 
 	return SOCKET_OK;
@@ -546,9 +523,6 @@ socket_ret_t socket_bind( socket_t * const s,
 			{
 				WARN( "failed to set the socket to reuse addr\n" );
 			}
-			/* fall through */
-
-		case SOCKET_UDP:
 
 			/* initialize the socket address struct */
 			MEMSET( &in_addr, 0, sizeof(struct sockaddr_in) );
@@ -592,12 +566,8 @@ socket_ret_t socket_bind( socket_t * const s,
 			s->bound = TRUE;
 
 			break;
-
-		case SOCKET_SCTP:
-			break;
 	}
 
-	WARN( "enabling read even on listening socket\n" );
 	/* start the socket read even processing to catch incoming connections */
 	aiofd_enable_read_evt( &(s->aiofd), TRUE );
 
@@ -610,8 +580,6 @@ socket_ret_t socket_listen( socket_t * const s, int const backlog )
 	CHECK_RET( socket_is_bound( s ), SOCKET_BOUND );
 	CHECK_RET( !socket_is_connected( s ), SOCKET_CONNECTED );
 
-	WARN( "calling listen()\n" );
-
 	/* now begin listening for incoming connections */
 	if ( listen( s->aiofd.rfd, backlog ) < 0 )
 	{
@@ -621,8 +589,6 @@ socket_ret_t socket_listen( socket_t * const s, int const backlog )
 
 	/* set the listen flag so that it doesn't error on 0 size read callbacks */
 	aiofd_set_listen( &(s->aiofd), TRUE );
-
-	WARN( "ready for incoming connections\n" );
 
 	return SOCKET_OK;
 }
@@ -646,7 +612,6 @@ socket_t * socket_accept( socket_t * const s,
 	};
 
 	CHECK_PTR_RET( s, NULL );
-	CHECK_RET( s->type != SOCKET_UDP, NULL );
 	CHECK_RET( socket_is_bound( s ), NULL );
 
 	client = CALLOC( 1, sizeof( socket_t ) );
@@ -702,10 +667,6 @@ socket_t * socket_accept( socket_t * const s,
 
 			break;
 	
-		case SOCKET_UDP:
-			// do nothing...no accept on UDP sockets
-			break;
-
 		case SOCKET_UNIX:
 
 			MEMSET( (void*)&un_addr, 0, sizeof( struct sockaddr_un ) );
@@ -727,10 +688,6 @@ socket_t * socket_accept( socket_t * const s,
 			/* store the connection information */
 			client->host = T(strdup((char const * const)un_addr.sun_path));
 
-			break;
-		
-		case SOCKET_SCTP:
-			WARN("SCTP sockets not implemented\n");
 			break;
 	}
 
