@@ -214,26 +214,29 @@ static int socket_aiofd_read_fn( aiofd_t * const aiofd,
 	CHECK_PTR_RET( aiofd, FALSE );
 	CHECK_PTR_RET( s, FALSE );
 
-	if ( nread == 0 )
-	{
-		/* the other side disconnected, so follow suit */
-		socket_disconnect( s );
-
-		/* return FALSE to turn off the read event processing */
-		return FALSE;
-	}
-
-	if ( socket_is_bound( s ) )
+	if ( socket_is_bound( s ) && (s->type != SOCKET_UDP) )
 	{
 		/* this is a socket accepting incoming connections */
 		if ( s->ops.connect_fn != NULL )
 		{
 			DEBUG( "calling socket connect callback for incoming connection\n" );
-			(*(s->ops.connect_fn))( s, s->user_data );
+			if ( (*(s->ops.connect_fn))( s, s->user_data ) != SOCKET_OK )
+			{
+				WARN( "failed to accept incoming connection!\n" );
+			}
 		}
 	}
 	else
 	{
+		if ( nread == 0 )
+		{
+			/* the other side disconnected, so follow suit */
+			socket_disconnect( s );
+
+			/* return FALSE to turn off the read event processing */
+			return FALSE;
+		}
+
 		/* this is a normal connection socket, so pass the read event along */
 		if ( s->ops.read_fn != NULL )
 		{
@@ -245,7 +248,7 @@ static int socket_aiofd_read_fn( aiofd_t * const aiofd,
 	return TRUE;
 }
 
-static void socket_initialize( socket_t * const s,
+static int socket_initialize( socket_t * const s,
 						socket_type_t const type, 
 					    socket_ops_t * const ops,
 					    evt_loop_t * const el,
@@ -280,7 +283,7 @@ static void socket_initialize( socket_t * const s,
 			if ( (fd = socket( PF_INET, SOCK_STREAM, IPPROTO_TCP )) < 0 )
 			{
 				WARN("failed to open socket\n");
-				socket_delete( (void*)s );
+				return FALSE;
 			}
 			else
 			{
@@ -292,7 +295,7 @@ static void socket_initialize( socket_t * const s,
 			if ( setsockopt( fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags) ) )
 			{
 				WARN( "failed to turn on TCP no delay\n" );
-				socket_delete( (void*)s );
+				return FALSE;
 			}
 			else
 			{
@@ -302,16 +305,25 @@ static void socket_initialize( socket_t * const s,
 			break;
 	
 		case SOCKET_UDP:
-			WARN("UDP sockets not implemented\n");
+			/* try to open a socket */
+			if ( (fd = socket( PF_INET, SOCK_DGRAM, 0 )) < 0 )
+			{
+				WARN("failed to open socket\n");
+				return FALSE;
+			}
+			else
+			{
+				DEBUG("created socket\n");
+			}
 			break;
 
 		case SOCKET_UNIX:
 
 			/* try to open a socket */
-			if ( (fd = socket( AF_UNIX, SOCK_STREAM, 0 )) < 0 )
+			if ( (fd = socket( PF_UNIX, SOCK_STREAM, 0 )) < 0 )
 			{
 				WARN("failed to open socket\n");
-				socket_delete( (void*)s );
+				return FALSE;
 			}
 			else
 			{
@@ -337,7 +349,13 @@ static void socket_initialize( socket_t * const s,
 	}
 
 	/* initialize the aiofd to manage the socket */
-	aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s );
+	if ( aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s ) == FALSE )
+	{
+		WARN( "failed to initialzie the aiofd\n" );
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 socket_t* socket_new( socket_type_t const type, 
@@ -353,7 +371,11 @@ socket_t* socket_new( socket_type_t const type,
 	CHECK_PTR_RET(s, NULL);
 
 	/* initlialize the socket */
-	socket_initialize( s, type, ops, el, user_data );
+	if ( socket_initialize( s, type, ops, el, user_data ) == FALSE )
+	{
+		socket_delete( s );
+		return NULL;
+	}
 
 	return s;
 }
@@ -420,6 +442,7 @@ socket_ret_t socket_connect( socket_t* const s,
 	switch(s->type)
 	{
 		case SOCKET_TCP:
+		case SOCKET_UDP:
 
 			/* start the socket write event processing so we can catch connection */
 			aiofd_enable_write_evt( &(s->aiofd), TRUE );
@@ -446,10 +469,6 @@ socket_ret_t socket_connect( socket_t* const s,
 		
 			break;
 		
-		case SOCKET_UDP:
-			WARN("UDP sockets not implemented\n");
-			break;
-
 		case SOCKET_UNIX:
 			
 			/* start the socket write event processing so we can catch connection */
@@ -501,6 +520,7 @@ socket_ret_t socket_bind( socket_t * const s,
 						  uint16_t const port )
 {
 	int len;
+	int on = 1;
 	socket_ret_t ret;
 	struct sockaddr_in in_addr;
 	struct sockaddr_un un_addr;
@@ -522,6 +542,13 @@ socket_ret_t socket_bind( socket_t * const s,
 	switch ( s->type )
 	{
 		case SOCKET_TCP:
+			if ( setsockopt( s->aiofd.rfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0 )
+			{
+				WARN( "failed to set the socket to reuse addr\n" );
+			}
+			/* fall through */
+
+		case SOCKET_UDP:
 
 			/* initialize the socket address struct */
 			MEMSET( &in_addr, 0, sizeof(struct sockaddr_in) );
@@ -540,9 +567,6 @@ socket_ret_t socket_bind( socket_t * const s,
 			/* flag the socket as bound */
 			s->bound = TRUE;
 
-			break;
-
-		case SOCKET_UDP:
 			break;
 
 		case SOCKET_UNIX:
@@ -573,6 +597,10 @@ socket_ret_t socket_bind( socket_t * const s,
 			break;
 	}
 
+	WARN( "enabling read even on listening socket\n" );
+	/* start the socket read even processing to catch incoming connections */
+	aiofd_enable_read_evt( &(s->aiofd), TRUE );
+
 	return SOCKET_OK;
 }
 
@@ -591,10 +619,8 @@ socket_ret_t socket_listen( socket_t * const s, int const backlog )
 		return SOCKET_ERROR;
 	}
 
-	WARN( "enabling read even on listening socket\n" );
-
-	/* start the socket read even processing to catch incoming connections */
-	aiofd_enable_read_evt( &(s->aiofd), TRUE );
+	/* set the listen flag so that it doesn't error on 0 size read callbacks */
+	aiofd_set_listen( &(s->aiofd), TRUE );
 
 	WARN( "ready for incoming connections\n" );
 
@@ -620,6 +646,7 @@ socket_t * socket_accept( socket_t * const s,
 	};
 
 	CHECK_PTR_RET( s, NULL );
+	CHECK_RET( s->type != SOCKET_UDP, NULL );
 	CHECK_RET( socket_is_bound( s ), NULL );
 
 	client = CALLOC( 1, sizeof( socket_t ) );
@@ -653,7 +680,7 @@ socket_t * socket_accept( socket_t * const s,
 			}
 			else
 			{
-				DEBUG("created socket\n");
+				DEBUG("accepted socket\n");
 			}
 
 			/* store the connection information */
@@ -676,7 +703,7 @@ socket_t * socket_accept( socket_t * const s,
 			break;
 	
 		case SOCKET_UDP:
-			WARN("UDP sockets not implemented\n");
+			// do nothing...no accept on UDP sockets
 			break;
 
 		case SOCKET_UNIX:
@@ -694,7 +721,7 @@ socket_t * socket_accept( socket_t * const s,
 			}
 			else
 			{
-				DEBUG("created socket\n");
+				DEBUG("accepted socket\n");
 			}
 
 			/* store the connection information */

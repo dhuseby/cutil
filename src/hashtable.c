@@ -567,7 +567,7 @@ int ht_add_prehash( ht_t * const htable,
 		/* it does, so try to grow it to the new size */
 		if ( !ht_grow(htable, new_index) )
 		{
-			DEBUG( "failed to grow hashtable!" );
+			DEBUG( "failed to grow hashtable!\n" );
 			return FALSE;
 		}
 	}

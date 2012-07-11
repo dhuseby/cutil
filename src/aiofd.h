@@ -28,6 +28,7 @@ struct aiofd_s
 {
 	int			wfd;			/* read/write fd, if only one given, write-only otherwise */
 	int			rfd;			/* read fd if two are given */
+	int			listen;			/* is this a bound and listening socket fd? */
 	array_t		wbuf;			/* array of buffers waiting to be written */
 	evt_t		wevt;			/* write event */
 	evt_t		revt;			/* read event */
@@ -79,6 +80,10 @@ int aiofd_writev( aiofd_t * const aiofd,
 
 /* flush the fd output */
 int aiofd_flush( aiofd_t * const aiofd );
+
+/* get/set the listening fd flag, used for bound and listening socket fd's */
+int aiofd_set_listen( aiofd_t * const aiofd, int listen );
+int aiofd_get_listen( aiofd_t * const aiofd );
 
 
 #endif/*__AIOFD_H__*/

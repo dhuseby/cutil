@@ -135,7 +135,7 @@ static evt_ret_t aiofd_read_fn( evt_loop_t * const el,
 	DEBUG( "read event\n" );
 
 	/* get how much data is available to read */
-	if ( ioctl( aiofd->rfd, FIONREAD, &nread ) < 0 )
+	if ( (ioctl( aiofd->rfd, FIONREAD, &nread ) < 0) && (aiofd->listen == FALSE) )
 	{
 		if ( aiofd->ops.error_fn != NULL )
 		{
@@ -404,5 +404,20 @@ int aiofd_flush( aiofd_t * const aiofd )
 	fsync( aiofd->rfd );
 	
 	return TRUE;
+}
+
+int aiofd_set_listen( aiofd_t * const aiofd, int listen )
+{
+	CHECK_PTR_RET( aiofd, FALSE );
+
+	aiofd->listen = listen;
+
+	return TRUE;
+}
+
+int aiofd_get_listen( aiofd_t * const aiofd )
+{
+	CHECK_PTR_RET( aiofd, FALSE );
+	return aiofd->listen;
 }
 
