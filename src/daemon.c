@@ -106,7 +106,7 @@ int create_start_file( int8_t const * const fpath )
 	CHECK_PTR_RET( fstart, FALSE );
 
 	/* write the process ID to the file */
-	t = time();
+	t = time( NULL );
 	fprintf( fstart, "%s", C(asctime( localtime( &t ) )) );
 
 	/* close the file and return */
