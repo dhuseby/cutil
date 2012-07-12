@@ -107,7 +107,7 @@ int create_start_file( int8_t const * const fpath )
 
 	/* write the process ID to the file */
 	t = time();
-	fprintf( fstart, "%s", asctime( localtime( &t ) ) );
+	fprintf( fstart, "%s", C(asctime( localtime( &t ) )) );
 
 	/* close the file and return */
 	fclose( fstart );
