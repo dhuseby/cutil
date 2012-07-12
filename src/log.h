@@ -17,7 +17,7 @@
 #ifndef __LOG_H__
 #define __LOG_H__
 
-void start_logging(void);
+void start_logging( int8_t const * const ident );
 void stop_logging(void);
 
 #endif/*__LOG_H__*/

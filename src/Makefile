@@ -4,6 +4,7 @@
 # definable variables
 PREFIX?=/usr/local
 COVERAGE?=../coverage
+EXTRA_LIBS_ROOT?=/usr/local
 
 # other variables
 SHELL=/bin/sh
@@ -16,9 +17,9 @@ GCDA=$(SRC:.c=.gcda)
 GCNO=$(SRC:.c=.gcno)
 GCOV=$(SRC:.c=.c.gcov)
 # set CFLAGS to something gcov can use
-CFLAGS=-O3
-coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -DUNIT_TESTING
-test: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING
+CFLAGS=-O3 -I$(EXTRA_LIBS_ROOT)/include
+coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)/include
+test: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)/include
 
 # install utility
 INSTALL=/usr/bin/install

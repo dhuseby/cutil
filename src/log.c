@@ -79,13 +79,13 @@ static cookie_io_functions_t log_fns =
 typedef int (*writefn)(void *, const char *, int);
 #endif
 
-void start_logging( void )
+void start_logging( int8_t const * const ident )
 {
 	/* allow everything except LOG_DEBUG messages to get to syslog */
 	setlogmask( LOG_UPTO( LOG_INFO ) );
 
 	/* most systems route the LOG_DAEMON facility to /var/log/daemon.log */
-	openlog( "cbot", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_DAEMON );
+	openlog( ident, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_DAEMON );
 
 #if defined __GNU__
 	/* redirect stderr writes to our custom writer function that outputs to syslog */
