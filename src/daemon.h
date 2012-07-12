@@ -21,5 +21,7 @@
  * this handles forking to the background and making everything nice.
  */
 void daemonize( int8_t const * const root_dir );
+int create_pid_file( int8_t const * const fpath );
+int create_start_file( int8_t const * const fpath );
 
 #endif /* __DAEMON_H__ */

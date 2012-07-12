@@ -14,12 +14,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <stdlib.h>
 
 #include "debug.h"
+#include "macros.h"
 #include "daemon.h"
 #include "log.h"
 
@@ -74,5 +76,41 @@ void daemonize( int8_t const * const root_dir )
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
+}
+
+int create_pid_file( int8_t const * const fpath )
+{
+	FILE * fpid = NULL;
+	CHECK_PTR_RET( fpath, FALSE );
+
+	fpid = fopen( fpath, "w+" );
+
+	CHECK_PTR_RET( fpid, FALSE );
+
+	/* write the process ID to the file */
+	fprintf( fpid, "%d", getpid() );
+
+	/* close the file and return */
+	fclose( fpid );
+	return TRUE;
+}
+
+int create_start_file( int8_t const * const fpath )
+{
+	time_t t;
+	FILE * fstart = NULL;
+	CHECK_PTR_RET( fpath, FALSE );
+
+	fstart = fopen( fpath, "w+" );
+
+	CHECK_PTR_RET( fstart, FALSE );
+
+	/* write the process ID to the file */
+	t = time();
+	fprintf( fstart, "%s", asctime( localtime( &t ) ) );
+
+	/* close the file and return */
+	fclose( fstart );
+	return TRUE;
 }
 
