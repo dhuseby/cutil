@@ -17,8 +17,22 @@
 #ifndef __LOG_H__
 #define __LOG_H__
 
-void start_logging( int8_t const * const ident );
-void stop_logging(void);
+typedef enum log_type_s
+{
+	LOG_TYPE_SYSLOG,
+	LOG_TYPE_FILE
+
+} log_type_t;
+
+typedef struct log_s
+{
+	log_type_t type;
+	void * cookie;
+
+} log_t;
+
+log_t * start_logging( log_type_t type, int8_t const * const param, int append );
+void stop_logging( log_t * log );
 
 #endif/*__LOG_H__*/
 

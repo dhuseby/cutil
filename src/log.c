@@ -22,6 +22,10 @@
 #include "macros.h"
 #include "log.h"
 
+#if defined(__APPLE__)
+typedef int (*writefn)(void *, const char *, int);
+#endif
+
 static int8_t * const priov[] =
 {
 	T("EMERG:"),
@@ -36,7 +40,7 @@ static int8_t * const priov[] =
 
 /* handles determining the proper log level from the string prefix and writing the
  * message out to syslog */
-static ssize_t writer( void * cookie, char const * data, size_t leng )
+static ssize_t syslog_writer( void * cookie, char const * data, size_t leng )
 {
 	(void)cookie;
 	int p = LOG_DEBUG;
@@ -65,39 +69,99 @@ static ssize_t writer( void * cookie, char const * data, size_t leng )
 	return leng;
 }
 
+/* write log messages out to the file log */
+static ssize_t filelog_writer( void * cookie, char const * data, size_t leng )
+{
+	FILE* flog = (FILE*)cookie;
+	return fprintf( flog, "%.*s", (int)leng, data );
+}
+
 static int noop( void ) { return 0; }
 
 #ifdef __GNU__
-static cookie_io_functions_t log_fns =
+static cookie_io_functions_t syslog_fns =
 {
 	(void*) noop,
-	(void*) writer,
+	(void*) syslog_writer,
 	(void*) noop,
 	(void*) noop
 };
-#elif defined __APPLE__
-typedef int (*writefn)(void *, const char *, int);
+static cookie_io_functions_t filelog_fns =
+{
+	(void*) noop,
+	(void*) filelog_writer,
+	(void*) noop,
+	(void*) noop
+};
 #endif
 
-void start_logging( int8_t const * const ident )
+log_t * start_logging( log_type_t type, int8_t const * const param, int append )
 {
-	/* allow everything except LOG_DEBUG messages to get to syslog */
-	setlogmask( LOG_UPTO( LOG_INFO ) );
+	char const * const mode[2] = { "w+", "a+" };
+	log_t * log = (log_t*)CALLOC( 1, sizeof(log_t) );
+	CHECK_PTR_RET( log, NULL );
 
-	/* most systems route the LOG_DAEMON facility to /var/log/daemon.log */
-	openlog( ident, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_DAEMON );
+	switch ( type )
+	{
+		case LOG_TYPE_SYSLOG:
+
+			/* allow everything except LOG_DEBUG messages to get to syslog */
+			setlogmask( LOG_UPTO( LOG_INFO ) );
+
+			/* most systems route the LOG_DAEMON facility to /var/log/daemon.log */
+			openlog( param, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_DAEMON );
 
 #if defined __GNU__
-	/* redirect stderr writes to our custom writer function that outputs to syslog */
-	setvbuf(stderr = fopencookie(NULL, "w", log_fns), NULL, _IOLBF, 0);
+			/* redirect stderr writes to our custom writer function that outputs to syslog */
+			setvbuf(stderr = fopencookie(NULL, "w", syslog_fns), NULL, _IOLBF, 0);
 #elif defined __APPLE__
-	/* redirect stderr writes to our custom writer function that outputs to syslog */
-	setvbuf(stderr = fwopen( NULL, (writefn)writer ), NULL, _IOLBF, 0);
+			/* redirect stderr writes to our custom writer function that outputs to syslog */
+			setvbuf(stderr = fwopen( NULL, (writefn)syslog_writer ), NULL, _IOLBF, 0);
 #endif
+			break;
+
+		case LOG_TYPE_FILE:
+
+			/* open the file */
+			log->cookie = (void*)fopen( param, mode[append] );
+
+			if ( log->cookie == NULL )
+			{
+				WARN( "failed to open log file\n" );
+				FREE(log);
+				return NULL;
+			}
+
+#if defined __GNU__
+			/* redirect stderr writes to our custom writer function that outputs to syslog */
+			setvbuf(stderr = fopencookie( log->cookie, "w", filelog_fns), NULL, _IOLBF, 0);
+#elif defined __APPLE__
+			/* redirect stderr writes to our custom writer function that outputs to syslog */
+			setvbuf(stderr = fwopen( log->cookie, (writefn)filelog_writer ), NULL, _IOLBF, 0);
+#endif
+			break;
+
+		/* case ZEROMQ_LOG: */
+		/* case UDP_LOG: */
+	}
+
+	return log;
 }
 
-void stop_logging( void )
+void stop_logging( log_t * log )
 {
-	closelog();
+	CHECK_PTR( log );
+
+	switch( log->type )
+	{
+		case LOG_TYPE_SYSLOG:
+			closelog();
+			break;
+
+		case LOG_TYPE_FILE:
+			fclose( (FILE*)log->cookie );
+			break;
+	}
+	FREE( log );
 }
 
