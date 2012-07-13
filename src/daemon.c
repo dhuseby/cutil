@@ -75,7 +75,11 @@ void daemonize( int8_t const * const root_dir )
     /* close standard file descriptors */
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
-    close(STDERR_FILENO);
+
+	/* NOTE: don't close STDERR because we hook that up to the logging
+	 * facility to make logging brain-dead simple.
+     * close(STDERR_FILENO);
+	 */
 }
 
 int create_pid_file( int8_t const * const fpath )
