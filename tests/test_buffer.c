@@ -27,14 +27,17 @@ size_t const size = 5;
 
 void test_buffer_newdel( void )
 {
-	int i;
+	int i, size;
 	buffer_t * b;
 
 	for ( i = 0; i < 1024; i++ )
 	{
-		b = buffer_new( (void*)CALLOC( rand(), sizeof(uint8_t) ), size, FALSE );
+		size = rand();
+		b = buffer_new( NULL, (size_t)size );
 
 		CU_ASSERT_PTR_NOT_NULL( b );
+		CU_ASSERT_PTR_NOT_NULL( b->p );
+		CU_ASSERT_EQUALS( b->len, (size_t)size );
 
 		buffer_delete( (void*)b );
 	}

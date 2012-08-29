@@ -18,12 +18,18 @@
 #define __BUFFER_H__
 
 #include <stdint.h>
+#include <sys/uio.h>
 
 /* opaque handle for the buffer */
 typedef struct buffer_s buffer_t;
 
-buffer_t * buffer_new( void * p, size_t size, int weak );
+buffer_t * buffer_new( void * p, size_t len );
 void buffer_delete( void * p );
+void * buffer_dref( buffer_t * const b );
+int buffer_append( buffer_t * const b, void * p, size_t len );
+
+/* zero copy support */
+int buffer_iovec( buffer_t * const b, int nbufs, struct iovec ** iovs );
 
 #endif/*__BUFFER_H__*/
 
