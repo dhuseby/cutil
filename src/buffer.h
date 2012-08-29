@@ -21,15 +21,15 @@
 #include <sys/uio.h>
 
 /* opaque handle for the buffer */
-typedef struct buffer_s buffer_t;
+typedef struct iovec buffer_t;
 
 buffer_t * buffer_new( void * p, size_t len );
 void buffer_delete( void * p );
-void * buffer_dref( buffer_t * const b );
-int buffer_append( buffer_t * const b, void * p, size_t len );
+int buffer_initialize( buffer_t * const b, void * p, size_t len );
+void buffer_deinitialize( buffer_t * const b );
 
-/* zero copy support */
-int buffer_iovec( buffer_t * const b, int nbufs, struct iovec ** iovs );
+/* grow a buffer */
+int buffer_append( buffer_t * const b, void * p, size_t len );
 
 #endif/*__BUFFER_H__*/
 

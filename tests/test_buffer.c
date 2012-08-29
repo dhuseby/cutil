@@ -32,27 +32,118 @@ void test_buffer_newdel( void )
 
 	for ( i = 0; i < 1024; i++ )
 	{
-		size = rand();
+		size = rand() % 1024;
 		b = buffer_new( NULL, (size_t)size );
 
 		CU_ASSERT_PTR_NOT_NULL( b );
-		CU_ASSERT_PTR_NOT_NULL( b->p );
-		CU_ASSERT_EQUALS( b->len, (size_t)size );
+		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
+		CU_ASSERT_EQUAL( b->iov_len, (size_t)size );
 
 		buffer_delete( (void*)b );
 	}
 }
 
-void test_buffer_newdel_weak( void )
+void test_buffer_newdel_pwned( void )
 {
-	int i;
+	int i, size;
+	void * p;
 	buffer_t * b;
 
 	for ( i = 0; i < 1024; i++ )
 	{
-		b = buffer_new( (void*)buf, size, TRUE );
+		size = rand() % 1024;
+		p = CALLOC( size, sizeof(uint8_t) );
+		b = buffer_new( p, (size_t)size );
 
 		CU_ASSERT_PTR_NOT_NULL( b );
+		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
+		CU_ASSERT_EQUAL( b->iov_base, p );
+		CU_ASSERT_EQUAL( b->iov_len, (size_t)size );
+
+		buffer_delete( (void*)b );
+	}
+}
+
+void test_buffer_initdeinit( void )
+{
+	int i, size;
+	buffer_t b;
+
+	for ( i = 0; i < 1024; i++ )
+	{
+		size = rand() % 1024;
+		buffer_initialize( &b, NULL, (size_t)size );
+
+		CU_ASSERT_PTR_NOT_NULL( b.iov_base );
+		CU_ASSERT_EQUAL( b.iov_len, (size_t)size );
+
+		buffer_deinitialize( &b );
+	}
+}
+
+void test_buffer_initdeinit_pwned( void )
+{
+	int i, size;
+	void * p;
+	buffer_t b;
+
+	for ( i = 0; i < 1024; i++ )
+	{
+		size = rand() % 1024;
+		p = CALLOC( size, sizeof(uint8_t) );
+		buffer_initialize( &b, p, (size_t)size );
+
+		CU_ASSERT_PTR_NOT_NULL( b.iov_base );
+		CU_ASSERT_EQUAL( b.iov_base, p );
+		CU_ASSERT_EQUAL( b.iov_len, (size_t)size );
+
+		buffer_deinitialize( &b );
+	}
+}
+
+void test_buffer_append( void )
+{
+	int i, size1, size2;
+	buffer_t * b;
+
+	for ( i = 0; i < 1024; i++ )
+	{
+		size1 = rand() % 1024;
+		size2 = rand() % 1024;
+		b = buffer_new( NULL, (size_t)size1 );
+
+		CU_ASSERT_PTR_NOT_NULL( b );
+		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
+		CU_ASSERT_EQUAL( b->iov_len, (size_t)size1 );
+
+		buffer_append( b, NULL, size2 );
+		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
+		CU_ASSERT_EQUAL( b->iov_len, (size_t)(size1 + size2) );
+
+		buffer_delete( (void*)b );
+	}
+}
+
+void test_buffer_append_pwned( void )
+{
+	int i, size1, size2;
+	void * p;
+	buffer_t * b;
+
+	for ( i = 0; i < 1024; i++ )
+	{
+		size1 = 1 + rand() % 1023;
+		size2 = 1 + rand() % 1023;
+		p = CALLOC( size2, sizeof(uint8_t) );
+		b = buffer_new( NULL, (size_t)size1 );
+
+		CU_ASSERT_PTR_NOT_NULL( b );
+		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
+		CU_ASSERT_EQUAL( b->iov_len, (size_t)size1 );
+
+		buffer_append( b, p, size2 );
+		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
+		CU_ASSERT_EQUAL( b->iov_len, (size_t)(size1 + size2) );
 
 		buffer_delete( (void*)b );
 	}
@@ -71,8 +162,12 @@ static int deinit_buffer_suite( void )
 
 static CU_pSuite add_buffer_tests( CU_pSuite pSuite )
 {
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of buffer", test_buffer_newdel), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of buffer weak", test_buffer_newdel_weak), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of buffer", test_buffer_newdel ), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of buffer with prev allocation", test_buffer_newdel_pwned ), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "init/deinit of buffer", test_buffer_initdeinit ), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "init/deinit of buffer with prev allocation", test_buffer_initdeinit_pwned ), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "buffer append", test_buffer_append ), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "buffer append with prev allocation", test_buffer_append_pwned ), NULL );
 	
 	return pSuite;
 }

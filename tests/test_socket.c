@@ -127,7 +127,7 @@ static socket_ret_t connect_tests_connect_fn( socket_t * const s, void * user_da
 	CU_ASSERT_EQUAL( state->error, FALSE );
 	state->connected = TRUE;
 
-	evt_stop( el );
+	evt_stop( el, FALSE );
 	
 	return SOCKET_OK;
 }
@@ -139,7 +139,7 @@ static socket_ret_t connect_tests_error_fn( socket_t * const s, int err, void * 
 	CU_ASSERT_EQUAL( state->connected, FALSE );
 	state->error = TRUE;
 
-	evt_stop( el );
+	evt_stop( el, FALSE );
 
 	return SOCKET_OK;
 }
@@ -194,7 +194,7 @@ static socket_ret_t t_server_disconnect_fn( socket_t * const s, void * user_data
 
 	if ( t_sdone && t_cdone )
 	{
-		evt_stop( el );
+		evt_stop( el, FALSE );
 	}
 
 	return SOCKET_OK;
@@ -273,7 +273,7 @@ static socket_ret_t t_client_disconnect_fn( socket_t * const s, void * user_data
 
 	if ( t_sdone && t_cdone )
 	{
-		evt_stop( el );
+		evt_stop( el, FALSE );
 	}
 
 	return SOCKET_OK;
@@ -354,7 +354,7 @@ static socket_ret_t x_server_disconnect_fn( socket_t * const s, void * user_data
 
 	if ( x_sdone && x_cdone )
 	{
-		evt_stop( el );
+		evt_stop( el, FALSE );
 	}
 
 	return SOCKET_OK;
@@ -430,7 +430,7 @@ static socket_ret_t x_client_disconnect_fn( socket_t * const s, void * user_data
 
 	if ( x_sdone && x_cdone )
 	{
-		evt_stop( el );
+		evt_stop( el, FALSE );
 	}
 
 	return SOCKET_OK;

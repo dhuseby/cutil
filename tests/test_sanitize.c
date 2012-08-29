@@ -26,6 +26,8 @@
 #include <cutil/macros.h>
 #include <cutil/sanitize.h>
 
+static int added_tz = FALSE;
+
 static void test_sanitize_environment( void )
 {
 	int i = 0;
@@ -52,7 +54,8 @@ static void test_sanitize_environment_preserve( void )
 
 	CU_ASSERT_EQUAL( strcmp( new_env[0], "IFS= \t\n" ), 0 );
 	CU_ASSERT_EQUAL( strcmp( new_env[1], "PATH=" _PATH_STDPATH ), 0 );
-	CU_ASSERT_EQUAL( strncmp( new_env[2], "USER=", 5 ), 0 );
+	CU_ASSERT_EQUAL( strncmp( new_env[2], "TZ=", 3 ), 0 );
+	CU_ASSERT_EQUAL( strncmp( new_env[3], "USER=", 5 ), 0 );
 }
 
 static int8_t * add_environ[] =
@@ -70,7 +73,8 @@ static void test_sanitize_environment_add( void )
 
 	CU_ASSERT_EQUAL( strcmp( new_env[0], "IFS= \t\n" ), 0 );
 	CU_ASSERT_EQUAL( strcmp( new_env[1], "PATH=" _PATH_STDPATH ), 0 );
-	CU_ASSERT_EQUAL( strcmp( new_env[2], "FOO=BAR" ), 0 );
+	CU_ASSERT_EQUAL( strncmp( new_env[2], "TZ=", 3 ), 0 );
+	CU_ASSERT_EQUAL( strcmp( new_env[3], "FOO=BAR" ), 0 );
 }
 
 static void test_sanitize_open_files( void )
@@ -88,7 +92,7 @@ static void test_sanitize_open_files( void )
 	CU_ASSERT_NOT_EQUAL( fd, -1 );
 	CU_ASSERT_NOT_EQUAL( fstat( fd, &st ), -1 );
 
-	sanitize_files();
+	sanitize_files( NULL, 0 );
 
 	/* make sure the temp file is closed */
 	CU_ASSERT_EQUAL( fstat( fd, &st ), -1 );
@@ -107,7 +111,7 @@ static void test_sanitize_closed_std_descriptors( void )
 	close(STDOUT_FILENO);
 	close(STDERR_FILENO);
 
-	sanitize_files();
+	sanitize_files( NULL, 0 );
 
 	/* make sure stdin, stdout, stderr were re-opened */
 	CU_ASSERT_NOT_EQUAL( fstat( STDIN_FILENO, &st ), -1 );
@@ -119,11 +123,23 @@ static void test_sanitize_closed_std_descriptors( void )
 static int init_sanitize_suite( void )
 {
 	srand(0xDEADBEEF);
+
+	/* set the TZ variable if it doesn't exist */
+	if ( getenv( "TZ" ) == NULL )
+	{
+		putenv( "TZ=GST+8" );
+		added_tz = TRUE;
+	}
+
 	return 0;
 }
 
 static int deinit_sanitize_suite( void )
 {
+	if ( added_tz )
+	{
+		unsetenv( "TZ" );
+	}
 	return 0;
 }
 

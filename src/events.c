@@ -330,12 +330,15 @@ evt_ret_t evt_run( evt_loop_t * const el )
 	return EVT_OK;
 }
 
-evt_ret_t evt_stop( evt_loop_t * const el )
+evt_ret_t evt_stop( evt_loop_t * const el, int once )
 {
 	CHECK_PTR_RET( el, EVT_BAD_PTR );
 
 	/* stop the libev event loop */
-	ev_break( (struct ev_loop*)el, EVUNLOOP_ALL );
+	if ( once )
+		ev_break( (struct ev_loop*)el, EVBREAK_ONE );
+	else
+		ev_break( (struct ev_loop*)el, EVBREAK_ALL );
 
 	return EVT_OK;
 }

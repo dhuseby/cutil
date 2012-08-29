@@ -18,35 +18,27 @@
 #include "macros.h"
 #include "buffer.h"
 
-struct buffer_s
-{
-	int single_alloc;
-	size_t len;
-	void * p;
-};
+/*
+ * struct iovec {
+ *     void *iov_base;
+ *     size_t iov_len;
+ * }
+ */
+
 
 buffer_t * buffer_new( void * p, size_t len )
 {
-	buffer_t * b = CALLOC( 1, sizeof(buffer_t) );
+	buffer_t * b = NULL;
+
+	/* allcoate the buffer struct */
+	b = CALLOC( 1, sizeof(buffer_t) );
 	CHECK_PTR_RET( b, NULL );
 
-	if ( p == NULL )
+	if ( !buffer_initialize( b, p, len ) )
 	{
-		/* allocating a new buffer, so allocate the buffer struct and
-		 * the data area just after it */
-		b = CALLOC( 1, sizeof(buffer_t) + (len * sizeof(uint8_t)) );
-		CHECK_PTR_RET( b, NULL );
-		b->p = (void*)b + sizeof(buffer_t);
-		b->single_alloc = TRUE;
+		FREE( b );
+		return NULL;
 	}
-	else
-	{
-		b = CALLOC( 1, sizeof(buffer_t) );
-		CHECK_PTR_RET( b, NULL );
-		b->p = p;
-	}
-
-	b->len = len;
 
 	return b;
 }
@@ -55,69 +47,63 @@ void buffer_delete( void * b )
 {
 	buffer_t * buf = (buffer_t*)b;
 	CHECK_PTR( buf );
-
-	if ( !buf->single_alloc )
-	{
-		FREE( buf->p );
-	}
-
+	buffer_deinitialize( buf );
 	FREE( buf );
 }
 
-void * buffer_dref( buffer_t * const b )
+int buffer_initialize( buffer_t * const b, void * p, size_t len )
 {
-	CHECK_PTR_RET( b, NULL );
-	CHECK_RET( b->len > 0, NULL );
-	return b->p;
+	CHECK_PTR_RET( b, FALSE );
+
+	if ( p == NULL )
+	{
+		/* allocating a new buffer, so allocate the buffer struct and
+		 * the data area just after it */
+		b->iov_base = CALLOC( len, sizeof(uint8_t) );
+		CHECK_PTR_RET( b->iov_base, FALSE );
+	}
+	else
+	{
+		/* take ownership */
+		b->iov_base = p;
+	}
+
+	b->iov_len = len;
+
+	return TRUE;
+}
+
+void buffer_deinitialize( buffer_t * const b )
+{
+	CHECK_PTR( b );
+	FREE( b->iov_base );
+	b->iov_base = NULL;
+	b->iov_len = 0;
 }
 
 int buffer_append( buffer_t * const b, void * p, size_t len )
 {
 	CHECK_PTR_RET( b, FALSE );
-	CHECK_PTR_RET( p, FALSE );
-	CHECK_RET( len > 0, FALSE );
 
 	/* make the buffer bigger */
-	b->p = REALLOC( b->p, b->len + len );
-	CHECK_PTR_RET( b->p, FALSE );
+	b->iov_base = REALLOC( b->iov_base, b->iov_len + len );
+	CHECK_PTR_RET( b->iov_base, FALSE );
 
-	/* copy the data over */
-	MEMCPY( (b->p + b->len), p, len );
+	if ( p != NULL )
+	{
+		/* copy the additional data into the buffer */
+		MEMCPY( (b->iov_base + b->iov_len), p, len );
+	}
+	else
+	{
+		/* zero out the new part of the buffer */
+		MEMSET( (b->iov_base + b->iov_len), 0, len );
+	}
+
+	/* update the buffer length */
+	b->iov_len += len;
 
 	return TRUE;
-}
-
-/* initialize a zero copy array of iovec structs from an array of buffers */
-int buffer_iovec( buffer_t * const b, int nbufs, struct iovec ** iovs )
-{
-	int i, j;
-	int niovs = 0;
-	CHECK_PTR_RET( b, 0 );
-	CHECK_PTR_RET( iovs, 0 );
-
-	/* count the number of valid buffers */
-	for ( i = 0; i < nbufs; i++ )
-	{
-		if ( (b[i].p != NULL) && (b[i].len > 0) )
-			niovs++;
-	}
-
-	(*iovs) = CALLOC( niovs, sizeof(struct iovec) );
-	CHECK_PTR_RET( (*iovs), 0 );
-
-	for ( i = 0, j = 0; i < nbufs; i++ )
-	{
-		if ( (b[i].p != NULL) && (b[i].len > 0) )
-		{
-			(*iovs)[j].iov_base = b[i].p;
-			(*iovs)[j].iov_len = b[i].len;
-			j++;
-		}
-	}
-
-	ASSERT( j == niovs );
-
-	return niovs;
 }
 
 

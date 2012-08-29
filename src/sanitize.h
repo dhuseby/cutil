@@ -17,7 +17,7 @@
 #ifndef __SANITIZE_H__
 #define __SANITIZE_H__
 
-void sanitize_files( void );
+void sanitize_files( int keep[], int nfds );
 int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int8_t ** addv );
 
 

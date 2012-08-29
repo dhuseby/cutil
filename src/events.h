@@ -126,6 +126,6 @@ evt_ret_t evt_stop_event_handler( evt_loop_t * const el,
 evt_ret_t evt_run( evt_loop_t * const el );
 
 /* stops the event loop */
-evt_ret_t evt_stop( evt_loop_t * const el );
+evt_ret_t evt_stop( evt_loop_t * const el, int once );
 
 #endif/*__EVENTS_H__*/

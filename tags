@@ -15,9 +15,10 @@
 1	coverage/cutil/src/pair.c.gcov.html	/^<a name="1"><span class="lineNum">       1 <\/span>                :            : \/*<\/a>$/;"	a
 1	coverage/cutil/src/privileges.c.gcov.html	/^<a name="1"><span class="lineNum">       1 <\/span>                :            : \/*<\/a>$/;"	a
 1	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="1"><span class="lineNum">       1 <\/span>                :            : \/*<\/a>$/;"	a
+1	coverage/cutil/src/socket.c.gcov.html	/^<a name="1"><span class="lineNum">       1 <\/span>                :            : \/*<\/a>$/;"	a
 104	coverage/cutil/src/array.c.gcov.html	/^<a name="104"><span class="lineNum">     104 <\/span>                :            :  * data structure is deleted.<\/a>$/;"	a
 105	coverage/cutil/src/bitset.c.gcov.html	/^<a name="105"><span class="lineNum">     105 <\/span>                :            : }<\/a>$/;"	a
-105	coverage/cutil/src/events.c.gcov.html	/^<a name="105"><span class="lineNum">     105 <\/span>                :<span class="lineNoCov">          0 : }<\/span><\/a>$/;"	a
+105	coverage/cutil/src/events.c.gcov.html	/^<a name="105"><span class="lineNum">     105 <\/span>                :<span class="lineCov">         13 : }<\/span><\/a>$/;"	a
 1054	coverage/cutil/src/btree.c.gcov.html	/^<a name="1054"><span class="lineNum">    1054 <\/span>                :            : }<\/a>$/;"	a
 1070	coverage/cutil/src/btree.c.gcov.html	/^<a name="1070"><span class="lineNum">    1070 <\/span>                :            : }<\/a>$/;"	a
 1081	coverage/cutil/src/btree.c.gcov.html	/^<a name="1081"><span class="lineNum">    1081 <\/span>                :            : static const bt_itr_t itr_end = NULL;<\/a>$/;"	a
@@ -28,80 +29,93 @@
 1125	coverage/cutil/src/btree.c.gcov.html	/^<a name="1125"><span class="lineNum">    1125 <\/span>                :            : <\/a>$/;"	a
 1131	coverage/cutil/src/btree.c.gcov.html	/^<a name="1131"><span class="lineNum">    1131 <\/span>                :            : <\/a>$/;"	a
 1140	coverage/cutil/src/btree.c.gcov.html	/^<a name="1140"><span class="lineNum">    1140 <\/span>                :            : }<\/a>$/;"	a
-116	coverage/cutil/src/child.c.gcov.html	/^<a name="116"><span class="lineNum">     116 <\/span>                :            : <\/a>$/;"	a
 118	coverage/cutil/src/btree.c.gcov.html	/^<a name="118"><span class="lineNum">     118 <\/span>                :            : #endif<\/a>$/;"	a
+121	coverage/cutil/src/child.c.gcov.html	/^<a name="121"><span class="lineNum">     121 <\/span>                :            : <\/a>$/;"	a
 122	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="122"><span class="lineNum">     122 <\/span>                :            : <\/a>$/;"	a
 124	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="124"><span class="lineNum">     124 <\/span>                :            : <\/a>$/;"	a
-128	coverage/cutil/src/child.c.gcov.html	/^<a name="128"><span class="lineNum">     128 <\/span>                :            : <\/a>$/;"	a
 128	coverage/cutil/src/events.c.gcov.html	/^<a name="128"><span class="lineNum">     128 <\/span>                :            : }<\/a>$/;"	a
+133	coverage/cutil/src/child.c.gcov.html	/^<a name="133"><span class="lineNum">     133 <\/span>                :            : <\/a>$/;"	a
 146	coverage/cutil/src/events.c.gcov.html	/^<a name="146"><span class="lineNum">     146 <\/span>                :            : }<\/a>$/;"	a
 150	coverage/cutil/src/btree.c.gcov.html	/^<a name="150"><span class="lineNum">     150 <\/span>                :            : }<\/a>$/;"	a
-154	coverage/cutil/src/child.c.gcov.html	/^<a name="154"><span class="lineNum">     154 <\/span>                :            : <\/a>$/;"	a
 155	coverage/cutil/src/array.c.gcov.html	/^<a name="155"><span class="lineNum">     155 <\/span>                :            :  * initializes it.<\/a>$/;"	a
 157	coverage/cutil/src/events.c.gcov.html	/^<a name="157"><span class="lineNum">     157 <\/span>                :            : <\/a>$/;"	a
+159	coverage/cutil/src/child.c.gcov.html	/^<a name="159"><span class="lineNum">     159 <\/span>                :            : <\/a>$/;"	a
 160	coverage/cutil/src/btree.c.gcov.html	/^<a name="160"><span class="lineNum">     160 <\/span>                :            : }<\/a>$/;"	a
 164	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="164"><span class="lineNum">     164 <\/span>                :            : <\/a>$/;"	a
 175	coverage/cutil/src/btree.c.gcov.html	/^<a name="175"><span class="lineNum">     175 <\/span>                :            : <\/a>$/;"	a
 180	coverage/cutil/src/array.c.gcov.html	/^<a name="180"><span class="lineNum">     180 <\/span>                :            :  * then nothing will be done to clean up each node.<\/a>$/;"	a
-181	coverage/cutil/src/child.c.gcov.html	/^<a name="181"><span class="lineNum">     181 <\/span>                :            : <\/a>$/;"	a
 186	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="186"><span class="lineNum">     186 <\/span>                :            : }<\/a>$/;"	a
+188	coverage/cutil/src/socket.c.gcov.html	/^<a name="188"><span class="lineNum">     188 <\/span>                :            : <\/a>$/;"	a
+192	coverage/cutil/src/child.c.gcov.html	/^<a name="192"><span class="lineNum">     192 <\/span>                :            : }<\/a>$/;"	a
 192	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="192"><span class="lineNum">     192 <\/span>                :            : \/* NOTE: If NULL is passed in for the key_eq_fn function, the default<\/a>$/;"	a
 196	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="196"><span class="lineNum">     196 <\/span>                :            : }<\/a>$/;"	a
+205	coverage/cutil/src/child.c.gcov.html	/^<a name="205"><span class="lineNum">     205 <\/span>                :            : }<\/a>$/;"	a
+206	coverage/cutil/src/socket.c.gcov.html	/^<a name="206"><span class="lineNum">     206 <\/span>                :            : <\/a>$/;"	a
 209	coverage/cutil/src/events.c.gcov.html	/^<a name="209"><span class="lineNum">     209 <\/span>                :            : <\/a>$/;"	a
 215	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="215"><span class="lineNum">     215 <\/span>                :            : }<\/a>$/;"	a
 223	coverage/cutil/src/btree.c.gcov.html	/^<a name="223"><span class="lineNum">     223 <\/span>                :            : \/* NOTE: If NULL is passed in for the bt_key_cmp_fn function, the default<\/a>$/;"	a
 229	coverage/cutil/src/events.c.gcov.html	/^<a name="229"><span class="lineNum">     229 <\/span>                :            : }<\/a>$/;"	a
 23	coverage/cutil/src/bitset.c.gcov.html	/^<a name="23"><span class="lineNum">      23 <\/span>                :            : #define BIT(x) ((uint32_t)(1 &lt;&lt; (x &amp; 0x1f)))<\/a>$/;"	a
-238	coverage/cutil/src/events.c.gcov.html	/^<a name="238"><span class="lineNum">     238 <\/span>                :<span class="lineCov">        640 : }<\/span><\/a>$/;"	a
+238	coverage/cutil/src/events.c.gcov.html	/^<a name="238"><span class="lineNum">     238 <\/span>                :<span class="lineCov">       1187 : }<\/span><\/a>$/;"	a
 245	coverage/cutil/src/array.c.gcov.html	/^<a name="245"><span class="lineNum">     245 <\/span>                :            : <\/a>$/;"	a
 246	coverage/cutil/src/btree.c.gcov.html	/^<a name="246"><span class="lineNum">     246 <\/span>                :            : <\/a>$/;"	a
+248	coverage/cutil/src/socket.c.gcov.html	/^<a name="248"><span class="lineNum">     248 <\/span>                :            : }<\/a>$/;"	a
 249	coverage/cutil/src/events.c.gcov.html	/^<a name="249"><span class="lineNum">     249 <\/span>                :            : };<\/a>$/;"	a
 25	coverage/cutil/src/pair.c.gcov.html	/^<a name="25"><span class="lineNum">      25 <\/span>                :            : };<\/a>$/;"	a
 259	coverage/cutil/src/array.c.gcov.html	/^<a name="259"><span class="lineNum">     259 <\/span>                :            : <\/a>$/;"	a
-26	coverage/cutil/src/buffer.c.gcov.html	/^<a name="26"><span class="lineNum">      26 <\/span>                :            : };<\/a>$/;"	a
 262	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="262"><span class="lineNum">     262 <\/span>                :            : }<\/a>$/;"	a
+27	coverage/cutil/src/buffer.c.gcov.html	/^<a name="27"><span class="lineNum">      27 <\/span>                :            : <\/a>$/;"	a
 271	coverage/cutil/src/array.c.gcov.html	/^<a name="271"><span class="lineNum">     271 <\/span>                :            :  * buffer to the new buffer, compacting them at the same time<\/a>$/;"	a
 273	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="273"><span class="lineNum">     273 <\/span>                :            : <\/a>$/;"	a
-274	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="274"><span class="lineNum">     274 <\/span>                :<span class="lineCov">        256 : }<\/span><\/a>$/;"	a
+274	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="274"><span class="lineNum">     274 <\/span>                :<span class="lineCov">        529 : }<\/span><\/a>$/;"	a
 28	coverage/cutil/src/events.c.gcov.html	/^<a name="28"><span class="lineNum">      28 <\/span>                :            : <\/a>$/;"	a
 286	coverage/cutil/src/events.c.gcov.html	/^<a name="286"><span class="lineNum">     286 <\/span>                :            : }<\/a>$/;"	a
 288	coverage/cutil/src/btree.c.gcov.html	/^<a name="288"><span class="lineNum">     288 <\/span>                :            : <\/a>$/;"	a
-289	coverage/cutil/src/child.c.gcov.html	/^<a name="289"><span class="lineNum">     289 <\/span>                :            : }<\/a>$/;"	a
 289	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="289"><span class="lineNum">     289 <\/span>                :            : <\/a>$/;"	a
 290	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="290"><span class="lineNum">     290 <\/span>                :            : }<\/a>$/;"	a
 302	coverage/cutil/src/btree.c.gcov.html	/^<a name="302"><span class="lineNum">     302 <\/span>                :            : <\/a>$/;"	a
 303	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="303"><span class="lineNum">     303 <\/span>                :            : <\/a>$/;"	a
 306	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="306"><span class="lineNum">     306 <\/span>                :            : }<\/a>$/;"	a
 309	coverage/cutil/src/btree.c.gcov.html	/^<a name="309"><span class="lineNum">     309 <\/span>                :            : }<\/a>$/;"	a
-312	coverage/cutil/src/child.c.gcov.html	/^<a name="312"><span class="lineNum">     312 <\/span>                :            : }<\/a>$/;"	a
+313	coverage/cutil/src/child.c.gcov.html	/^<a name="313"><span class="lineNum">     313 <\/span>                :            : }<\/a>$/;"	a
 313	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="313"><span class="lineNum">     313 <\/span>                :            : \/* returns the current fraction of how full the hash table is.<\/a>$/;"	a
 320	coverage/cutil/src/btree.c.gcov.html	/^<a name="320"><span class="lineNum">     320 <\/span>                :            : }<\/a>$/;"	a
 321	coverage/cutil/src/events.c.gcov.html	/^<a name="321"><span class="lineNum">     321 <\/span>                :            : <\/a>$/;"	a
 329	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="329"><span class="lineNum">     329 <\/span>                :            : \/* returns the load limit that will trigger a resize when the <\/a>$/;"	a
 33	coverage/cutil/src/privileges.c.gcov.html	/^<a name="33"><span class="lineNum">      33 <\/span>                :            : static gid_t orig_groups[NGROUPS_MAX];<\/a>$/;"	a
 331	coverage/cutil/src/events.c.gcov.html	/^<a name="331"><span class="lineNum">     331 <\/span>                :            : }<\/a>$/;"	a
-335	coverage/cutil/src/child.c.gcov.html	/^<a name="335"><span class="lineNum">     335 <\/span>                :            : }<\/a>$/;"	a
 337	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="337"><span class="lineNum">     337 <\/span>                :            : <\/a>$/;"	a
 339	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="339"><span class="lineNum">     339 <\/span>                :            :  * NOTE: it only supports keeping the table the same size (compacting)<\/a>$/;"	a
-346	coverage/cutil/src/child.c.gcov.html	/^<a name="346"><span class="lineNum">     346 <\/span>                :            : }<\/a>$/;"	a
+340	coverage/cutil/src/child.c.gcov.html	/^<a name="340"><span class="lineNum">     340 <\/span>                :            : }<\/a>$/;"	a
+341	coverage/cutil/src/socket.c.gcov.html	/^<a name="341"><span class="lineNum">     341 <\/span>                :            : }<\/a>$/;"	a
 35	coverage/cutil/src/pair.c.gcov.html	/^<a name="35"><span class="lineNum">      35 <\/span>                :            : }<\/a>$/;"	a
-352	coverage/cutil/src/child.c.gcov.html	/^<a name="352"><span class="lineNum">     352 <\/span>                :            : }<\/a>$/;"	a
 356	coverage/cutil/src/array.c.gcov.html	/^<a name="356"><span class="lineNum">     356 <\/span>                :            : <\/a>$/;"	a
 36	coverage/cutil/src/bitset.c.gcov.html	/^<a name="36"><span class="lineNum">      36 <\/span>                :            : }<\/a>$/;"	a
-362	coverage/cutil/src/child.c.gcov.html	/^<a name="362"><span class="lineNum">     362 <\/span>                :            : }<\/a>$/;"	a
+363	coverage/cutil/src/child.c.gcov.html	/^<a name="363"><span class="lineNum">     363 <\/span>                :            : }<\/a>$/;"	a
+363	coverage/cutil/src/socket.c.gcov.html	/^<a name="363"><span class="lineNum">     363 <\/span>                :            : }<\/a>$/;"	a
 37	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="37"><span class="lineNum">      37 <\/span>                :            : <\/a>$/;"	a
-370	coverage/cutil/src/child.c.gcov.html	/^<a name="370"><span class="lineNum">     370 <\/span>                :            : }<\/a>$/;"	a
 374	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="374"><span class="lineNum">     374 <\/span>                :            : }<\/a>$/;"	a
-378	coverage/cutil/src/child.c.gcov.html	/^<a name="378"><span class="lineNum">     378 <\/span>                :            : }<\/a>$/;"	a
-38	coverage/cutil/src/buffer.c.gcov.html	/^<a name="38"><span class="lineNum">      38 <\/span>                :            : }<\/a>$/;"	a
+374	coverage/cutil/src/child.c.gcov.html	/^<a name="374"><span class="lineNum">     374 <\/span>                :            : }<\/a>$/;"	a
+377	coverage/cutil/src/socket.c.gcov.html	/^<a name="377"><span class="lineNum">     377 <\/span>                :<span class="lineCov">        136 : }<\/span><\/a>$/;"	a
 38	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="38"><span class="lineNum">      38 <\/span>                :            : #endif<\/a>$/;"	a
+380	coverage/cutil/src/child.c.gcov.html	/^<a name="380"><span class="lineNum">     380 <\/span>                :            : }<\/a>$/;"	a
 381	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="381"><span class="lineNum">     381 <\/span>                :            : }<\/a>$/;"	a
 388	coverage/cutil/src/btree.c.gcov.html	/^<a name="388"><span class="lineNum">     388 <\/span>                :            : }<\/a>$/;"	a
+388	coverage/cutil/src/socket.c.gcov.html	/^<a name="388"><span class="lineNum">     388 <\/span>                :            : <\/a>$/;"	a
+390	coverage/cutil/src/child.c.gcov.html	/^<a name="390"><span class="lineNum">     390 <\/span>                :            : }<\/a>$/;"	a
+395	coverage/cutil/src/socket.c.gcov.html	/^<a name="395"><span class="lineNum">     395 <\/span>                :            : }<\/a>$/;"	a
 397	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="397"><span class="lineNum">     397 <\/span>                :            : }<\/a>$/;"	a
+398	coverage/cutil/src/child.c.gcov.html	/^<a name="398"><span class="lineNum">     398 <\/span>                :            : }<\/a>$/;"	a
 404	coverage/cutil/src/array.c.gcov.html	/^<a name="404"><span class="lineNum">     404 <\/span>                :            : <\/a>$/;"	a
+406	coverage/cutil/src/child.c.gcov.html	/^<a name="406"><span class="lineNum">     406 <\/span>                :            : }<\/a>$/;"	a
+407	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="407"><span class="lineNum">     407 <\/span>                :            : }<\/a>$/;"	a
+413	coverage/cutil/src/child.c.gcov.html	/^<a name="413"><span class="lineNum">     413 <\/span>                :            : <\/a>$/;"	a
+416	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="416"><span class="lineNum">     416 <\/span>                :            : }<\/a>$/;"	a
+417	coverage/cutil/src/child.c.gcov.html	/^<a name="417"><span class="lineNum">     417 <\/span>                :<span class="lineCov">        256 :     fail_fork = fail;<\/span><\/a>$/;"	a
 427	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="427"><span class="lineNum">     427 <\/span>                :            :  * factor less than the limit.  if the table does not need to grow<\/a>$/;"	a
 43	coverage/cutil/src/pair.c.gcov.html	/^<a name="43"><span class="lineNum">      43 <\/span>                :            : }<\/a>$/;"	a
 434	coverage/cutil/src/array.c.gcov.html	/^<a name="434"><span class="lineNum">     434 <\/span>                :            : <\/a>$/;"	a
+44	coverage/cutil/src/buffer.c.gcov.html	/^<a name="44"><span class="lineNum">      44 <\/span>                :            : }<\/a>$/;"	a
 446	coverage/cutil/src/array.c.gcov.html	/^<a name="446"><span class="lineNum">     446 <\/span>                :            : <\/a>$/;"	a
 452	coverage/cutil/src/array.c.gcov.html	/^<a name="452"><span class="lineNum">     452 <\/span>                :            : <\/a>$/;"	a
 457	coverage/cutil/src/btree.c.gcov.html	/^<a name="457"><span class="lineNum">     457 <\/span>                :            : }<\/a>$/;"	a
@@ -109,17 +123,23 @@
 465	coverage/cutil/src/array.c.gcov.html	/^<a name="465"><span class="lineNum">     465 <\/span>                :            : <\/a>$/;"	a
 473	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="473"><span class="lineNum">     473 <\/span>                :            : \/* set the load limit that will trigger a resize.  this defaults<\/a>$/;"	a
 479	coverage/cutil/src/array.c.gcov.html	/^<a name="479"><span class="lineNum">     479 <\/span>                :            : }<\/a>$/;"	a
+486	coverage/cutil/src/socket.c.gcov.html	/^<a name="486"><span class="lineNum">     486 <\/span>                :            : <\/a>$/;"	a
 49	coverage/cutil/src/pair.c.gcov.html	/^<a name="49"><span class="lineNum">      49 <\/span>                :            : }<\/a>$/;"	a
+493	coverage/cutil/src/socket.c.gcov.html	/^<a name="493"><span class="lineNum">     493 <\/span>                :            : }<\/a>$/;"	a
 498	coverage/cutil/src/array.c.gcov.html	/^<a name="498"><span class="lineNum">     498 <\/span>                :            :  * array_itr_end() function.<\/a>$/;"	a
-50	coverage/cutil/src/child.c.gcov.html	/^<a name="50"><span class="lineNum">      50 <\/span>                :            : };<\/a>$/;"	a
 512	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="512"><span class="lineNum">     512 <\/span>                :            :  * the filler nodes and &quot;compacts&quot; the table.  use this to keep your<\/a>$/;"	a
+52	coverage/cutil/src/buffer.c.gcov.html	/^<a name="52"><span class="lineNum">      52 <\/span>                :            : }<\/a>$/;"	a
 53	coverage/cutil/src/events.c.gcov.html	/^<a name="53"><span class="lineNum">      53 <\/span>                :            : <\/a>$/;"	a
+53	coverage/cutil/src/socket.c.gcov.html	/^<a name="53"><span class="lineNum">      53 <\/span>                :            : };<\/a>$/;"	a
 539	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="539"><span class="lineNum">     539 <\/span>                :            : \/* NOTE: if the number of values stored in the table will exceed a load <\/a>$/;"	a
+55	coverage/cutil/src/child.c.gcov.html	/^<a name="55"><span class="lineNum">      55 <\/span>                :            : };<\/a>$/;"	a
 552	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="552"><span class="lineNum">     552 <\/span>                :            : }<\/a>$/;"	a
 554	coverage/cutil/src/array.c.gcov.html	/^<a name="554"><span class="lineNum">     554 <\/span>                :            : <\/a>$/;"	a
 571	coverage/cutil/src/btree.c.gcov.html	/^<a name="571"><span class="lineNum">     571 <\/span>                :            : }<\/a>$/;"	a
+575	coverage/cutil/src/socket.c.gcov.html	/^<a name="575"><span class="lineNum">     575 <\/span>                :            : }<\/a>$/;"	a
 58	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="58"><span class="lineNum">      58 <\/span>                :            : }<\/a>$/;"	a
 59	coverage/cutil/src/bitset.c.gcov.html	/^<a name="59"><span class="lineNum">      59 <\/span>                :            : }<\/a>$/;"	a
+594	coverage/cutil/src/socket.c.gcov.html	/^<a name="594"><span class="lineNum">     594 <\/span>                :            : }<\/a>$/;"	a
 609	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="609"><span class="lineNum">     609 <\/span>                :            : <\/a>$/;"	a
 622	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="622"><span class="lineNum">     622 <\/span>                :            : <\/a>$/;"	a
 632	coverage/cutil/src/array.c.gcov.html	/^<a name="632"><span class="lineNum">     632 <\/span>                :            : <\/a>$/;"	a
@@ -132,25 +152,34 @@
 70	coverage/cutil/src/bitset.c.gcov.html	/^<a name="70"><span class="lineNum">      70 <\/span>                :            : }<\/a>$/;"	a
 71	coverage/cutil/src/btree.c.gcov.html	/^<a name="71"><span class="lineNum">      71 <\/span>                :            : <\/a>$/;"	a
 71	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="71"><span class="lineNum">      71 <\/span>                :            : <\/a>$/;"	a
+722	coverage/cutil/src/socket.c.gcov.html	/^<a name="722"><span class="lineNum">     722 <\/span>                :            : }<\/a>$/;"	a
 725	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="725"><span class="lineNum">     725 <\/span>                :            : <\/a>$/;"	a
 733	coverage/cutil/src/array.c.gcov.html	/^<a name="733"><span class="lineNum">     733 <\/span>                :            : }<\/a>$/;"	a
 734	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="734"><span class="lineNum">     734 <\/span>                :            : }<\/a>$/;"	a
+74	coverage/cutil/src/buffer.c.gcov.html	/^<a name="74"><span class="lineNum">      74 <\/span>                :            : }<\/a>$/;"	a
 740	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="740"><span class="lineNum">     740 <\/span>                :            : }<\/a>$/;"	a
 745	coverage/cutil/src/array.c.gcov.html	/^<a name="745"><span class="lineNum">     745 <\/span>                :            : }<\/a>$/;"	a
 750	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="750"><span class="lineNum">     750 <\/span>                :            : }<\/a>$/;"	a
+750	coverage/cutil/src/socket.c.gcov.html	/^<a name="750"><span class="lineNum">     750 <\/span>                :            : }<\/a>$/;"	a
+756	coverage/cutil/src/socket.c.gcov.html	/^<a name="756"><span class="lineNum">     756 <\/span>                :            : }<\/a>$/;"	a
+767	coverage/cutil/src/socket.c.gcov.html	/^<a name="767"><span class="lineNum">     767 <\/span>                :            : }<\/a>$/;"	a
 768	coverage/cutil/src/btree.c.gcov.html	/^<a name="768"><span class="lineNum">     768 <\/span>                :            : <\/a>$/;"	a
 769	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="769"><span class="lineNum">     769 <\/span>                :            : }<\/a>$/;"	a
+774	coverage/cutil/src/socket.c.gcov.html	/^<a name="774"><span class="lineNum">     774 <\/span>                :            : }<\/a>$/;"	a
 78	coverage/cutil/src/bitset.c.gcov.html	/^<a name="78"><span class="lineNum">      78 <\/span>                :            : }<\/a>$/;"	a
-78	coverage/cutil/src/child.c.gcov.html	/^<a name="78"><span class="lineNum">      78 <\/span>                :            : <\/a>$/;"	a
 78	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="78"><span class="lineNum">      78 <\/span>                :            : \/* the default key compare function just casts the pointers to uint_t<\/a>$/;"	a
+782	coverage/cutil/src/socket.c.gcov.html	/^<a name="782"><span class="lineNum">     782 <\/span>                :            : <\/a>$/;"	a
 788	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="788"><span class="lineNum">     788 <\/span>                :            : }<\/a>$/;"	a
 80	coverage/cutil/src/events.c.gcov.html	/^<a name="80"><span class="lineNum">      80 <\/span>                :            : <\/a>$/;"	a
 807	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="807"><span class="lineNum">     807 <\/span>                :            : #ifdef UNIT_TESTING<\/a>$/;"	a
 816	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="816"><span class="lineNum">     816 <\/span>                :            : }<\/a>$/;"	a
+82	coverage/cutil/src/buffer.c.gcov.html	/^<a name="82"><span class="lineNum">      82 <\/span>                :            : }<\/a>$/;"	a
+83	coverage/cutil/src/child.c.gcov.html	/^<a name="83"><span class="lineNum">      83 <\/span>                :            : <\/a>$/;"	a
 845	coverage/cutil/src/btree.c.gcov.html	/^<a name="845"><span class="lineNum">     845 <\/span>                :            : \/* NOTE: if the number of values stored in the table will exceed a load <\/a>$/;"	a
 86	coverage/cutil/src/bitset.c.gcov.html	/^<a name="86"><span class="lineNum">      86 <\/span>                :            : }<\/a>$/;"	a
 866	coverage/cutil/src/btree.c.gcov.html	/^<a name="866"><span class="lineNum">     866 <\/span>                :            : <\/a>$/;"	a
-89	coverage/cutil/src/privileges.c.gcov.html	/^<a name="89"><span class="lineNum">      89 <\/span>                :<span class="lineCov">        128 : }<\/span><\/a>$/;"	a
+88	coverage/cutil/src/socket.c.gcov.html	/^<a name="88"><span class="lineNum">      88 <\/span>                :            : <\/a>$/;"	a
+89	coverage/cutil/src/privileges.c.gcov.html	/^<a name="89"><span class="lineNum">      89 <\/span>                :<span class="lineCov">        129 : }<\/span><\/a>$/;"	a
 892	coverage/cutil/src/btree.c.gcov.html	/^<a name="892"><span class="lineNum">     892 <\/span>                :            : }<\/a>$/;"	a
 904	coverage/cutil/src/btree.c.gcov.html	/^<a name="904"><span class="lineNum">     904 <\/span>                :            : }<\/a>$/;"	a
 917	coverage/cutil/src/btree.c.gcov.html	/^<a name="917"><span class="lineNum">     917 <\/span>                :            : <\/a>$/;"	a
@@ -159,25 +188,25 @@
 99	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="99"><span class="lineNum">      99 <\/span>                :            : };<\/a>$/;"	a
 991	coverage/cutil/src/btree.c.gcov.html	/^<a name="991"><span class="lineNum">     991 <\/span>                :            : <\/a>$/;"	a
 ACTIVE	src/hashtable.c	69;"	d	file:
-ADD_SUITE	tests/test_all.c	32;"	d	file:
-ARRAY_SIZE	src/macros.h	35;"	d
-ASSERT	src/macros.h	38;"	d
+ADD_SUITE	tests/test_all.c	31;"	d	file:
+ARRAY_SIZE	src/macros.h	37;"	d
+ASSERT	src/macros.h	40;"	d
 BIT	src/bitset.c	23;"	d	file:
 BUILDDIRS	Makefile	/^BUILDDIRS = $(DIRS:%=build-%)$/;"	m
-C	src/macros.h	67;"	d
-CALLOC	src/macros.h	56;"	d
-CFLAGS	src/Makefile	/^CFLAGS=-O3$/;"	m
-CFLAGS	src/Makefile	/^coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -DUNIT_TESTING$/;"	m
-CFLAGS	src/Makefile	/^test: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING$/;"	m
+C	src/macros.h	69;"	d
+CALLOC	src/macros.h	58;"	d
+CFLAGS	src/Makefile	/^CFLAGS=-O3 -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
+CFLAGS	src/Makefile	/^coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
+CFLAGS	src/Makefile	/^test: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
 CFLAGS	tests/Makefile	/^CFLAGS=-O0 -gstabs+ -I$(CUTIL_ROOT)\/include -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
-CHECK	src/macros.h	45;"	d
-CHECK_MSG	src/macros.h	46;"	d
-CHECK_PTR	src/macros.h	49;"	d
-CHECK_PTR_MSG	src/macros.h	50;"	d
-CHECK_PTR_RET	src/macros.h	51;"	d
-CHECK_PTR_RET_MSG	src/macros.h	52;"	d
-CHECK_RET	src/macros.h	47;"	d
-CHECK_RET_MSG	src/macros.h	48;"	d
+CHECK	src/macros.h	47;"	d
+CHECK_MSG	src/macros.h	48;"	d
+CHECK_PTR	src/macros.h	51;"	d
+CHECK_PTR_MSG	src/macros.h	52;"	d
+CHECK_PTR_RET	src/macros.h	53;"	d
+CHECK_PTR_RET_MSG	src/macros.h	54;"	d
+CHECK_RET	src/macros.h	49;"	d
+CHECK_RET_MSG	src/macros.h	50;"	d
 CLEANDIRS	Makefile	/^CLEANDIRS = $(DIRS:%=clean-%)$/;"	m
 COVERAGE	Makefile	/^COVERAGE?=.\/coverage$/;"	m
 COVERAGE	src/Makefile	/^COVERAGE?=..\/coverage$/;"	m
@@ -204,10 +233,11 @@ EVT_OK	src/events.h	/^	EVT_OK = 1,$/;"	e	enum:evt_ret_e
 EVT_SIGNAL	src/events.h	/^	EVT_SIGNAL,$/;"	e	enum:evt_type_e
 EV_MULTIPLICITY	src/events.c	18;"	d	file:
 EV_STANDALONE	src/events.c	17;"	d	file:
-EXTRA_LIBS_ROOT	tests/Makefile	/^EXTRA_LIBS_ROOT=\/usr\/local$/;"	m
-FAIL	src/macros.h	42;"	d
-FALSE	src/macros.h	31;"	d
-FREE	src/macros.h	58;"	d
+EXTRA_LIBS_ROOT	src/Makefile	/^EXTRA_LIBS_ROOT?=\/usr\/local$/;"	m
+EXTRA_LIBS_ROOT	tests/Makefile	/^EXTRA_LIBS_ROOT?=\/usr\/local$/;"	m
+FAIL	src/macros.h	44;"	d
+FALSE	src/macros.h	33;"	d
+FREE	src/macros.h	60;"	d
 GCDA	src/Makefile	/^GCDA=$(SRC:.c=.gcda)$/;"	m
 GCDA	tests/Makefile	/^GCDA=$(SRC:.c=.gcda)$/;"	m
 GCNO	src/Makefile	/^GCNO=$(SRC:.c=.gcno)$/;"	m
@@ -227,34 +257,38 @@ IPv4	src/socket.h	/^typedef struct in_addr IPv4;$/;"	t	typeref:struct:in_addr
 LDFLAGS	tests/Makefile	/^LDFLAGS=-O0 -gstabs+ -L$(CUTIL_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
 LDFLAGS	tests/Makefile	/^coverage: LDFLAGS=-fprofile-arcs -O0 -gstabs+ -L$(CUTIL_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
 LIBS	tests/Makefile	/^LIBS=-lcutil -lcunit -lev$/;"	m
-LOG	src/macros.h	41;"	d
-MALLOC	src/macros.h	55;"	d
-MEMCMP	src/macros.h	60;"	d
-MEMCPY	src/macros.h	59;"	d
-MEMSET	src/macros.h	61;"	d
-MISSING_64BIT_ENDIAN	src/macros.h	83;"	d
-MISSING_STRNLEN	src/macros.h	82;"	d
+LOG	src/macros.h	43;"	d
+LOG_TYPE_FILE	src/log.h	/^	LOG_TYPE_FILE$/;"	e	enum:log_type_s
+LOG_TYPE_SYSLOG	src/log.h	/^	LOG_TYPE_SYSLOG,$/;"	e	enum:log_type_s
+MALLOC	src/macros.h	57;"	d
+MEMCMP	src/macros.h	62;"	d
+MEMCPY	src/macros.h	61;"	d
+MEMSET	src/macros.h	63;"	d
+MISSING_64BIT_ENDIAN	src/macros.h	85;"	d
+MISSING_STRNLEN	src/macros.h	84;"	d
 MULTIPLE	tests/test_aiofd.c	33;"	d	file:
 MULTIPLE	tests/test_array.c	33;"	d	file:
 MULTIPLE	tests/test_child.c	33;"	d	file:
 MULTIPLE	tests/test_hashtable.c	33;"	d	file:
+MULTIPLE	tests/test_socket.c	33;"	d	file:
 NAME	src/Makefile	/^NAME=cutil$/;"	m
 NODE_AT	src/array.c	42;"	d	file:
-NOTICE	src/macros.h	40;"	d
+NOTICE	src/macros.h	42;"	d
 NO_ARGS	src/child.h	23;"	d
 OBJ	src/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
 OBJ	tests/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
 OPEN_MAX	src/sanitize.c	37;"	d	file:
 OUT	src/Makefile	/^OUT=lib$(NAME).a$/;"	m
 OUT	tests/Makefile	/^OUT=test_all$/;"	m
-PORTABLE_32_BIT	src/macros.h	75;"	d
-PORTABLE_64_BIT	src/macros.h	71;"	d
+PORTABLE_32_BIT	src/macros.h	77;"	d
+PORTABLE_64_BIT	src/macros.h	73;"	d
 PREFIX	src/Makefile	/^PREFIX?=\/usr\/local$/;"	m
-REALLOC	src/macros.h	57;"	d
+REALLOC	src/macros.h	59;"	d
 REPEAT	tests/test_aiofd.c	31;"	d	file:
 REPEAT	tests/test_array.c	31;"	d	file:
 REPEAT	tests/test_child.c	31;"	d	file:
 REPEAT	tests/test_hashtable.c	31;"	d	file:
+REPEAT	tests/test_socket.c	31;"	d	file:
 REPORTDIRS	Makefile	/^REPORTDIRS = $(DIRS:%=report-%)$/;"	m
 SHELL	Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL=\/bin\/sh$/;"	m
@@ -263,30 +297,31 @@ SIZEMAX	tests/test_aiofd.c	32;"	d	file:
 SIZEMAX	tests/test_array.c	32;"	d	file:
 SIZEMAX	tests/test_child.c	32;"	d	file:
 SIZEMAX	tests/test_hashtable.c	32;"	d	file:
+SIZEMAX	tests/test_socket.c	32;"	d	file:
 SOCKET_BADHOSTNAME	src/socket.h	/^    SOCKET_BADHOSTNAME  = -3,$/;"	e	enum:socket_ret_e
 SOCKET_BADPARAM	src/socket.h	/^    SOCKET_BADPARAM     = -2,$/;"	e	enum:socket_ret_e
-SOCKET_CONNECTED	src/socket.h	/^	SOCKET_CONNECTED    = -7$/;"	e	enum:socket_ret_e
+SOCKET_BOUND	src/socket.h	/^	SOCKET_BOUND		= -8$/;"	e	enum:socket_ret_e
+SOCKET_CONNECTED	src/socket.h	/^	SOCKET_CONNECTED    = -7,$/;"	e	enum:socket_ret_e
 SOCKET_ERROR	src/socket.h	/^    SOCKET_ERROR        = -1,$/;"	e	enum:socket_ret_e
 SOCKET_INPUT	src/socket.h	/^    SOCKET_INPUT        = 2,$/;"	e	enum:socket_ret_e
 SOCKET_INVALIDPORT	src/socket.h	/^    SOCKET_INVALIDPORT  = -4,$/;"	e	enum:socket_ret_e
 SOCKET_OK	src/socket.h	/^    SOCKET_OK           = 1,$/;"	e	enum:socket_ret_e
 SOCKET_OUTPUT	src/socket.h	/^    SOCKET_OUTPUT       = 3,$/;"	e	enum:socket_ret_e
 SOCKET_POLLERR	src/socket.h	/^    SOCKET_POLLERR      = -6,$/;"	e	enum:socket_ret_e
-SOCKET_SCTP	src/socket.h	/^    SOCKET_SCTP$/;"	e	enum:socket_type_e
 SOCKET_TCP	src/socket.h	/^    SOCKET_TCP,$/;"	e	enum:socket_type_e
 SOCKET_TIMEOUT	src/socket.h	/^    SOCKET_TIMEOUT      = -5,$/;"	e	enum:socket_ret_e
-SOCKET_UDP	src/socket.h	/^    SOCKET_UDP,$/;"	e	enum:socket_type_e
+SOCKET_UNIX	src/socket.h	/^	SOCKET_UNIX,$/;"	e	enum:socket_type_e
+SOCKET_UNKNOWN	src/socket.h	/^	SOCKET_UNKNOWN = -1$/;"	e	enum:socket_type_e
 SRC	src/Makefile	/^SRC=aiofd.c array.c  bitset.c btree.c buffer.c child.c daemon.c events.c hashtable.c log.c pair.c privileges.c sanitize.c socket.c$/;"	m
-SRC	tests/Makefile	/^SRC=test_all.c test_aiofd.c test_array.c test_bitset.c test_btree.c test_buffer.c test_child.c test_hashtable.c test_pair.c$/;"	m
-STRDUP	src/macros.h	62;"	d
+SRC	tests/Makefile	/^SRC=test_all.c test_aiofd.c test_array.c test_bitset.c test_btree.c test_buffer.c test_child.c test_hashtable.c test_pair.c test_sanitize.c test_socket.c$/;"	m
+STRDUP	src/macros.h	64;"	d
 SUITE	tests/test_all.c	30;"	d	file:
-SUITE_VAR	tests/test_all.c	31;"	d	file:
-T	src/macros.h	65;"	d
+T	src/macros.h	67;"	d
 TESTDIRS	Makefile	/^TESTDIRS = $(DIRS:%=test-%)$/;"	m
-TRUE	src/macros.h	32;"	d
+TRUE	src/macros.h	34;"	d
 UNINSTALLDIRS	Makefile	/^UNINSTALLDIRS = $(DIRS:%=uninstall-%)$/;"	m
-UT	src/macros.h	66;"	d
-WARN	src/macros.h	39;"	d
+UT	src/macros.h	68;"	d
+WARN	src/macros.h	41;"	d
 _GNU_SOURCE	src/log.c	17;"	d	file:
 __AIOFD_H__	src/aiofd.h	18;"	d
 __ARRAY_H__	src/array.h	18;"	d
@@ -315,10 +350,16 @@ add_buffer_test_suite	tests/test_buffer.c	/^CU_pSuite add_buffer_test_suite()$/;
 add_buffer_tests	tests/test_buffer.c	/^static CU_pSuite add_buffer_tests( CU_pSuite pSuite )$/;"	f	file:
 add_child_test_suite	tests/test_child.c	/^CU_pSuite add_child_test_suite()$/;"	f
 add_child_tests	tests/test_child.c	/^static CU_pSuite add_child_tests( CU_pSuite pSuite )$/;"	f	file:
+add_environ	tests/test_sanitize.c	/^static int8_t * add_environ[] =$/;"	v	file:
 add_hashtable_test_suite	tests/test_hashtable.c	/^CU_pSuite add_hashtable_test_suite()$/;"	f
 add_hashtable_tests	tests/test_hashtable.c	/^static CU_pSuite add_hashtable_tests( CU_pSuite pSuite )$/;"	f	file:
 add_pair_test_suite	tests/test_pair.c	/^CU_pSuite add_pair_test_suite()$/;"	f
 add_pair_tests	tests/test_pair.c	/^static CU_pSuite add_pair_tests( CU_pSuite pSuite )$/;"	f	file:
+add_sanitize_test_suite	tests/test_sanitize.c	/^CU_pSuite add_sanitize_test_suite()$/;"	f
+add_sanitize_tests	tests/test_sanitize.c	/^static CU_pSuite add_sanitize_tests( CU_pSuite pSuite )$/;"	f	file:
+add_socket_test_suite	tests/test_socket.c	/^CU_pSuite add_socket_test_suite()$/;"	f
+add_socket_tests	tests/test_socket.c	/^static CU_pSuite add_socket_tests( CU_pSuite pSuite )$/;"	f	file:
+added_tz	tests/test_sanitize.c	/^static int added_tz = FALSE;$/;"	v	file:
 addr	src/socket.c	/^	IPv4			addr;			\/* IPv4 struct from host string *\/$/;"	m	struct:socket_s	file:
 aiofd	src/child.c	/^	aiofd_t			aiofd;			\/* the fd management state *\/$/;"	m	struct:child_process_s	file:
 aiofd	src/socket.c	/^	aiofd_t			aiofd;			\/* the fd management state *\/$/;"	m	struct:socket_s	file:
@@ -328,6 +369,7 @@ aiofd_delete	src/aiofd.c	/^void aiofd_delete( void * aio )$/;"	f
 aiofd_enable_read_evt	src/aiofd.c	/^int aiofd_enable_read_evt( aiofd_t * const aiofd,$/;"	f
 aiofd_enable_write_evt	src/aiofd.c	/^int aiofd_enable_write_evt( aiofd_t * const aiofd,$/;"	f
 aiofd_flush	src/aiofd.c	/^int aiofd_flush( aiofd_t * const aiofd )$/;"	f
+aiofd_get_listen	src/aiofd.c	/^int aiofd_get_listen( aiofd_t * const aiofd )$/;"	f
 aiofd_initialize	src/aiofd.c	/^int aiofd_initialize( aiofd_t * const aiofd, $/;"	f
 aiofd_new	src/aiofd.c	/^aiofd_t * aiofd_new( int const write_fd,$/;"	f
 aiofd_ops_s	src/aiofd.h	/^	struct aiofd_ops_s$/;"	s	struct:aiofd_s
@@ -335,6 +377,7 @@ aiofd_ops_t	src/aiofd.h	/^typedef struct aiofd_ops_s aiofd_ops_t;$/;"	t	typeref:
 aiofd_read	src/aiofd.c	/^int32_t aiofd_read( aiofd_t * const aiofd,$/;"	f
 aiofd_read_fn	src/aiofd.c	/^static evt_ret_t aiofd_read_fn( evt_loop_t * const el,$/;"	f	file:
 aiofd_s	src/aiofd.h	/^struct aiofd_s$/;"	s
+aiofd_set_listen	src/aiofd.c	/^int aiofd_set_listen( aiofd_t * const aiofd, int listen )$/;"	f
 aiofd_t	src/aiofd.h	/^typedef struct aiofd_s aiofd_t;$/;"	t	typeref:struct:aiofd_s
 aiofd_write	src/aiofd.c	/^int aiofd_write( aiofd_t * const aiofd, $/;"	f
 aiofd_write_common	src/aiofd.c	/^static int aiofd_write_common( aiofd_t* const aiofd, $/;"	f	file:
@@ -389,6 +432,7 @@ bits	src/bitset.h	/^	uint32_t * bits;$/;"	m	struct:bitset_s
 bitset	tests/test_all.c	/^SUITE( bitset );$/;"	v
 bitset_s	src/bitset.h	/^typedef struct bitset_s$/;"	s
 bitset_t	src/bitset.h	/^} bitset_t;$/;"	t	typeref:struct:bitset_s
+bound	src/socket.c	/^	int32_t			bound;			\/* is the socket bound? *\/$/;"	m	struct:socket_s	file:
 bset_clear	src/bitset.c	/^int bset_clear( bitset_t * const bset, size_t const bit )$/;"	f
 bset_clear_all	src/bitset.c	/^void bset_clear_all( bitset_t * const bset )$/;"	f
 bset_deinitialize	src/bitset.c	/^void bset_deinitialize( bitset_t * const bset )$/;"	f
@@ -442,11 +486,13 @@ bt_unlock	src/btree.c	/^void bt_unlock(bt_t * const btree)$/;"	f
 btree	tests/test_all.c	/^SUITE( btree );$/;"	v
 buf	tests/test_buffer.c	/^int8_t const * const buf = "blah";$/;"	v
 buffer	tests/test_all.c	/^SUITE( buffer );$/;"	v
+buffer_append	src/buffer.c	/^int buffer_append( buffer_t * const b, void * p, size_t len )$/;"	f
+buffer_deinitialize	src/buffer.c	/^void buffer_deinitialize( buffer_t * const b )$/;"	f
 buffer_delete	src/buffer.c	/^void buffer_delete( void * b )$/;"	f
-buffer_new	src/buffer.c	/^buffer_t * buffer_new( void * p, size_t size, int weak )$/;"	f
-buffer_s	src/buffer.c	/^struct buffer_s$/;"	s	file:
+buffer_initialize	src/buffer.c	/^int buffer_initialize( buffer_t * const b, void * p, size_t len )$/;"	f
+buffer_new	src/buffer.c	/^buffer_t * buffer_new( void * p, size_t len )$/;"	f
 buffer_size	src/array.h	/^	int_t			buffer_size;			\/* number of slots in the node array *\/$/;"	m	struct:array_s
-buffer_t	src/buffer.h	/^typedef struct buffer_s buffer_t;$/;"	t	typeref:struct:buffer_s
+buffer_t	src/buffer.h	/^typedef struct iovec buffer_t;$/;"	t	typeref:struct:iovec
 build_clean_environ	src/sanitize.c	/^int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int8_t ** addv )$/;"	f
 callback	src/events.h	/^	evt_fn			callback;$/;"	m	struct:evt_s
 child	src/events.h	/^	struct ev_child		child;$/;"	m	union:ev_data_u	typeref:struct:ev_data_u::ev_child
@@ -457,6 +503,7 @@ child_aiofd_write_fn	src/child.c	/^static int child_aiofd_write_fn( aiofd_t * co
 child_ops_s	src/child.h	/^typedef struct child_ops_s $/;"	s
 child_ops_t	src/child.h	/^} child_ops_t;$/;"	t	typeref:struct:child_ops_s
 child_params	src/events.h	/^	} child_params;$/;"	m	union:evt_params_u	typeref:struct:evt_params_u::__anon2
+child_pid	tests/test_child.c	/^static pid_t child_pid = -1;$/;"	v	file:
 child_process_deinitialize	src/child.c	/^static void child_process_deinitialize( child_process_t * const child, int wait )$/;"	f	file:
 child_process_delete	src/child.c	/^void child_process_delete( void * cp, int wait )$/;"	f
 child_process_flush	src/child.c	/^int child_process_flush( child_process_t * const cp )$/;"	f
@@ -465,12 +512,21 @@ child_process_initialize	src/child.c	/^static int child_process_initialize( chil
 child_process_new	src/child.c	/^child_process_t * child_process_new( int8_t const * const path,$/;"	f
 child_process_read	src/child.c	/^int32_t child_process_read( child_process_t * const cp, $/;"	f
 child_process_s	src/child.c	/^struct child_process_s$/;"	s	file:
+child_process_set_fail_fork	src/child.c	/^void child_process_set_fail_fork( int fail )$/;"	f
+child_process_set_num_good_pipes	src/child.c	/^void child_process_set_num_good_pipes( int ngood )$/;"	f
 child_process_t	src/child.h	/^typedef struct child_process_s child_process_t;$/;"	t	typeref:struct:child_process_s
 child_process_write	src/child.c	/^int child_process_write( child_process_t * const cp, $/;"	f
 child_process_writev	src/child.c	/^int child_process_writev( child_process_t * const cp,$/;"	f
 clean_environ	src/sanitize.c	/^static int8_t * clean_environ[] =$/;"	v	file:
 connect_fn	src/socket.h	/^	socket_ret_t (*connect_fn)( socket_t * const s, void * user_data );$/;"	m	struct:socket_ops_s
+connect_fn	tests/test_socket.c	/^static socket_ret_t connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
+connect_tests_connect_fn	tests/test_socket.c	/^static socket_ret_t connect_tests_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
+connect_tests_error_fn	tests/test_socket.c	/^static socket_ret_t connect_tests_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
 connected	src/socket.c	/^	int32_t			connected;		\/* is the socket connected? *\/$/;"	m	struct:socket_s	file:
+connected	tests/test_socket.c	/^	int connected;$/;"	m	struct:sock_state_s	file:
+cookie	src/log.h	/^	void * cookie;$/;"	m	struct:log_s
+create_pid_file	src/daemon.c	/^int create_pid_file( int8_t const * const fpath )$/;"	f
+create_start_file	src/daemon.c	/^int create_start_file( int8_t const * const fpath )$/;"	f
 daemonize	src/daemon.c	/^void daemonize( int8_t const * const root_dir )$/;"	f
 data	src/aiofd.c	/^	void * data;$/;"	m	struct:aiofd_write_s	file:
 data	src/array.c	/^	void *	data;	\/* pointer to the data *\/$/;"	m	struct:array_node_s	file:
@@ -487,8 +543,11 @@ deinit_buffer_suite	tests/test_buffer.c	/^static int deinit_buffer_suite( void )
 deinit_child_suite	tests/test_child.c	/^static int deinit_child_suite( void )$/;"	f	file:
 deinit_hashtable_suite	tests/test_hashtable.c	/^static int deinit_hashtable_suite( void )$/;"	f	file:
 deinit_pair_suite	tests/test_pair.c	/^static int deinit_pair_suite( void )$/;"	f	file:
+deinit_sanitize_suite	tests/test_sanitize.c	/^static int deinit_sanitize_suite( void )$/;"	f	file:
+deinit_socket_suite	tests/test_socket.c	/^static int deinit_socket_suite( void )$/;"	f	file:
 delete_fn	src/array.h	/^typedef void (*delete_fn)(void*);$/;"	t
 disconnect_fn	src/socket.h	/^	socket_ret_t (*disconnect_fn)( socket_t * const s, void * user_data );$/;"	m	struct:socket_ops_s
+disconnect_fn	tests/test_socket.c	/^static socket_ret_t disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 drop_privileges	src/privileges.c	/^void drop_privileges( int permanent )$/;"	f
 dummy	src/array.c	/^	uint_t	dummy;$/;"	m	struct:array_node_s	file:
 dynamic_key_eq	tests/test_hashtable.c	/^static int dynamic_key_eq(void const * const l, void const * const r)$/;"	f	file:
@@ -497,9 +556,12 @@ el	src/aiofd.h	/^	evt_loop_t*	el;				\/* event loop we registered out evt with *
 el	src/events.h	/^	evt_loop_t *	el;			\/* the event loop associated wtih *\/$/;"	m	struct:evt_s
 el	tests/test_aiofd.c	/^static evt_loop_t * el = NULL;$/;"	v	file:
 el	tests/test_child.c	/^static evt_loop_t * el = NULL;$/;"	v	file:
+el	tests/test_socket.c	/^static evt_loop_t * el = NULL;$/;"	v	file:
+error	tests/test_socket.c	/^	int error;$/;"	m	struct:sock_state_s	file:
 error_fn	src/aiofd.h	/^		int (*error_fn)( aiofd_t * const aiofd, int err, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
 error_fn	src/socket.h	/^	socket_ret_t (*error_fn)( socket_t * const s, int err, void * user_data );$/;"	m	struct:socket_ops_s
 error_fn	tests/test_aiofd.c	/^static int error_fn( aiofd_t * const aiofd, int err, void * user_data )$/;"	f	file:
+error_fn	tests/test_socket.c	/^static socket_ret_t error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
 ev	src/events.h	/^	ev_data_t		ev;			\/* MUST BE FIRST *\/$/;"	m	struct:evt_s
 ev_data_t	src/events.h	/^} ev_data_t;$/;"	t	typeref:union:ev_data_u
 ev_data_u	src/events.h	/^typedef union ev_data_u$/;"	u
@@ -534,13 +596,17 @@ evt_type_t	src/events.h	/^} evt_type_t;$/;"	t	typeref:enum:evt_type_e
 exit_fn	src/child.h	/^	int (*exit_fn)( child_process_t * const cp, int rpid, int rstatus, void * user_data );$/;"	m	struct:child_ops_s
 exit_fn	tests/test_child.c	/^static int exit_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )$/;"	f	file:
 exited	src/child.c	/^	int				exited;			\/* have we received the SIGCHLD signal? *\/$/;"	m	struct:child_process_s	file:
+fail_fork	src/child.c	/^static int fail_fork = FALSE;$/;"	v	file:
 fail_grow	src/array.c	/^static int fail_grow = FALSE;$/;"	v	file:
 fail_grow	src/hashtable.c	/^static int fail_grow = FALSE;$/;"	v	file:
 fd	src/events.h	/^		int fd;$/;"	m	struct:evt_params_u::__anon3
+filelog_fns	src/log.c	/^static cookie_io_functions_t filelog_fns =$/;"	v	file:
+filelog_writer	src/log.c	/^static ssize_t filelog_writer( void * cookie, char const * data, size_t leng )$/;"	f	file:
 first	src/pair.c	/^	void * first;$/;"	m	struct:pair_s	file:
 first	tests/test_pair.c	/^int8_t const * const first = "first";$/;"	v
 free_head	src/array.h	/^	int_t			free_head;				\/* head node of the free circular list *\/$/;"	m	struct:array_s
 free_list	src/btree.c	/^	node_t*				free_list;	\/* list of free nodes *\/$/;"	m	struct:bt_s	file:
+good_pipes	src/child.c	/^static int good_pipes = -1;$/;"	v	file:
 hash	src/hashtable.c	/^	uint_t				hash;				\/* cache the hash value *\/$/;"	m	struct:tuple_s	file:
 hashtable	tests/test_all.c	/^SUITE( hashtable );$/;"	v
 hashtable_primes	src/hashtable.c	/^uint_t const hashtable_primes[] =$/;"	v
@@ -591,6 +657,8 @@ init_buffer_suite	tests/test_buffer.c	/^static int init_buffer_suite( void )$/;"
 init_child_suite	tests/test_child.c	/^static int init_child_suite( void )$/;"	f	file:
 init_hashtable_suite	tests/test_hashtable.c	/^static int init_hashtable_suite( void )$/;"	f	file:
 init_pair_suite	tests/test_pair.c	/^static int init_pair_suite( void )$/;"	f	file:
+init_sanitize_suite	tests/test_sanitize.c	/^static int init_sanitize_suite( void )$/;"	f	file:
+init_socket_suite	tests/test_socket.c	/^static int init_socket_suite( void )$/;"	f	file:
 initial_capacity	src/array.h	/^	int_t			initial_capacity;		\/* the initial capacity value *\/$/;"	m	struct:array_s
 initial_capacity	src/hashtable.h	/^	uint_t				initial_capacity;	\/* the initial capacity value *\/$/;"	m	struct:ht_s
 int_less	tests/test_btree.c	/^static int int_less( void * l, void * r )$/;"	f	file:
@@ -613,11 +681,15 @@ key_hash_fn	src/hashtable.h	/^typedef uint_t (*key_hash_fn)(void const * const k
 khfn	src/hashtable.h	/^	key_hash_fn			khfn;				\/* key hash function *\/$/;"	m	struct:ht_s
 left	src/btree.c	/^	struct node_s * left;		\/* left child *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
 list_size	src/btree.c	/^	uint_t				list_size;	\/* equal to initial capacity, size blocks in node_list *\/$/;"	m	struct:bt_s	file:
+listen	src/aiofd.h	/^	int			listen;			\/* is this a bound and listening socket fd? *\/$/;"	m	struct:aiofd_s
 load_factor	src/hashtable.h	/^	float				load_factor;		\/* load level that triggers resize *\/$/;"	m	struct:ht_s
 lock	src/array.h	/^	pthread_mutex_t lock;					\/* list lock *\/$/;"	m	struct:array_s
 lock	src/btree.c	/^	pthread_mutex_t		lock;		\/* btree lock *\/$/;"	m	struct:bt_s	file:
 lock	src/hashtable.h	/^	pthread_mutex_t		lock;				\/* hashtable lock *\/$/;"	m	struct:ht_s
-log_fns	src/log.c	/^static cookie_io_functions_t log_fns =$/;"	v	file:
+log_s	src/log.h	/^typedef struct log_s$/;"	s
+log_t	src/log.h	/^} log_t;$/;"	t	typeref:struct:log_s
+log_type_s	src/log.h	/^typedef enum log_type_s$/;"	g
+log_type_t	src/log.h	/^} log_type_t;$/;"	t	typeref:enum:log_type_s
 main	tests/test_all.c	/^int main()$/;"	f
 max	src/btree.c	33;"	d	file:
 min	src/btree.c	32;"	d	file:
@@ -642,7 +714,6 @@ orig_gid	src/privileges.c	/^static gid_t orig_gid = -1;$/;"	v	file:
 orig_groups	src/privileges.c	/^static gid_t orig_groups[NGROUPS_MAX];$/;"	v	file:
 orig_ngroups	src/privileges.c	/^static int orig_ngroups = -1;$/;"	v	file:
 orig_uid	src/privileges.c	/^static uid_t orig_uid = -1;$/;"	v	file:
-p	src/buffer.c	/^	void * p;$/;"	m	struct:buffer_s	file:
 pair	tests/test_all.c	/^SUITE( pair );$/;"	v
 pair_delete	src/pair.c	/^void pair_delete( void * p )$/;"	f
 pair_first	src/pair.c	/^void * pair_first( pair_t const * const pair )$/;"	f
@@ -658,6 +729,7 @@ pid	src/events.h	/^		int pid;	\/* pid to watch *\/$/;"	m	struct:evt_params_u::__
 pint_less	tests/test_btree.c	/^static int pint_less( void * l, void * r )$/;"	f	file:
 port	src/socket.c	/^	uint16_t		port;			\/* port number *\/$/;"	m	struct:socket_s	file:
 preserve_environ	src/sanitize.c	/^static int8_t * preserve_environ[] =$/;"	v	file:
+preserve_environ	tests/test_sanitize.c	/^static int8_t * preserve_environ[] =$/;"	v	file:
 prev	src/array.c	/^	int_t	prev;	\/* prev node in the list *\/$/;"	m	struct:array_node_s	file:
 prev	src/btree.c	/^	struct node_s * prev;		\/* traversal threading pointer *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
 prime_index	src/hashtable.h	/^	uint_t				prime_index;		\/* the index of the table size *\/$/;"	m	struct:ht_s
@@ -667,6 +739,8 @@ read_fn	src/child.h	/^	int32_t (*read_fn)( child_process_t * const cp, size_t nr
 read_fn	src/socket.h	/^	int32_t (*read_fn)( socket_t * const s, size_t nread, void * user_data );$/;"	m	struct:socket_ops_s
 read_fn	tests/test_aiofd.c	/^static int read_fn( aiofd_t * const aiofd, size_t nread, void * user_data )$/;"	f	file:
 read_fn	tests/test_child.c	/^static int32_t read_fn( child_process_t * const cp, size_t nread, void * user_data )$/;"	f	file:
+read_fn	tests/test_socket.c	/^static int32_t read_fn( socket_t * const s, size_t nread, void * user_data )$/;"	f	file:
+read_pid_fn	tests/test_child.c	/^static int32_t read_pid_fn( child_process_t * const cp, size_t nread, void * user_data )$/;"	f	file:
 restore_privileges	src/privileges.c	/^void restore_privileges( void )$/;"	f
 revt	src/aiofd.h	/^	evt_t		revt;			\/* read event *\/$/;"	m	struct:aiofd_s
 rfd	src/aiofd.h	/^	int			rfd;			\/* read fd if two are given *\/$/;"	m	struct:aiofd_s
@@ -674,6 +748,8 @@ right	src/btree.c	/^	struct node_s * right;		\/* right child *\/$/;"	m	struct:no
 rpid	src/events.h	/^		int rpid;	\/* pid of process causing change *\/$/;"	m	struct:evt_params_u::__anon2
 rstatus	src/events.h	/^		int rstatus;\/* status word of process, use macros from sys\/wait.h, waitpid *\/$/;"	m	struct:evt_params_u::__anon2
 safe_fork	src/child.c	/^static pid_t safe_fork( void )$/;"	f	file:
+safe_pipe	src/child.c	/^static int safe_pipe( int pipefd[2] )$/;"	f	file:
+sanitize	tests/test_all.c	/^SUITE( sanitize );$/;"	v
 sanitize_files	src/sanitize.c	/^void sanitize_files( void )$/;"	f
 second	src/pair.c	/^	void * second;$/;"	m	struct:pair_s	file:
 second	tests/test_pair.c	/^int8_t const * const second = "second";$/;"	v
@@ -685,18 +761,25 @@ signal_params	src/events.h	/^	} signal_params;$/;"	m	union:evt_params_u	typeref:
 signum	src/events.h	/^		int signum;$/;"	m	struct:evt_params_u::__anon1
 size	src/aiofd.c	/^	size_t size;$/;"	m	struct:aiofd_write_s	file:
 size	src/btree.c	/^	uint_t				size;		\/* number of nodes in the tree *\/$/;"	m	struct:bt_s	file:
-size	src/buffer.c	/^	size_t size;$/;"	m	struct:buffer_s	file:
 size	tests/test_buffer.c	/^size_t const size = 5;$/;"	v
+sock_state_s	tests/test_socket.c	/^typedef struct sock_state_s$/;"	s	file:
+sock_state_t	tests/test_socket.c	/^} sock_state_t;$/;"	t	typeref:struct:sock_state_s	file:
+socket	tests/test_all.c	/^SUITE( socket );$/;"	v
+socket_accept	src/socket.c	/^socket_t * socket_accept( socket_t * const s,$/;"	f
 socket_aiofd_error_fn	src/socket.c	/^static int socket_aiofd_error_fn( aiofd_t * const aiofd,$/;"	f	file:
 socket_aiofd_read_fn	src/socket.c	/^static int socket_aiofd_read_fn( aiofd_t * const aiofd,$/;"	f	file:
 socket_aiofd_write_fn	src/socket.c	/^static int socket_aiofd_write_fn( aiofd_t * const aiofd,$/;"	f	file:
+socket_bind	src/socket.c	/^socket_ret_t socket_bind( socket_t * const s,$/;"	f
 socket_connect	src/socket.c	/^socket_ret_t socket_connect( socket_t* const s, $/;"	f
 socket_deinitialize	src/socket.c	/^static void socket_deinitialize( socket_t * const s )$/;"	f	file:
 socket_delete	src/socket.c	/^void socket_delete( void * s )$/;"	f
 socket_disconnect	src/socket.c	/^socket_ret_t socket_disconnect( socket_t* const s )$/;"	f
 socket_flush	src/socket.c	/^socket_ret_t socket_flush( socket_t* const s )$/;"	f
-socket_initialize	src/socket.c	/^static void socket_initialize( socket_t * const s,$/;"	f	file:
+socket_get_type	src/socket.c	/^socket_type_t socket_get_type( socket_t * const s )$/;"	f
+socket_initialize	src/socket.c	/^static int socket_initialize( socket_t * const s,$/;"	f	file:
+socket_is_bound	src/socket.c	/^int socket_is_bound( socket_t* const s )$/;"	f
 socket_is_connected	src/socket.c	/^int socket_is_connected( socket_t* const s )$/;"	f
+socket_listen	src/socket.c	/^socket_ret_t socket_listen( socket_t * const s, int const backlog )$/;"	f
 socket_lookup_host	src/socket.c	/^static socket_ret_t socket_lookup_host( socket_t * const s, $/;"	f	file:
 socket_new	src/socket.c	/^socket_t* socket_new( socket_type_t const type, $/;"	f
 socket_ops_s	src/socket.h	/^typedef struct socket_ops_s $/;"	s
@@ -710,8 +793,24 @@ socket_type_e	src/socket.h	/^typedef enum socket_type_e$/;"	g
 socket_type_t	src/socket.h	/^} socket_type_t;$/;"	t	typeref:enum:socket_type_e
 socket_write	src/socket.c	/^socket_ret_t socket_write( socket_t * const s,$/;"	f
 socket_writev	src/socket.c	/^socket_ret_t socket_writev( socket_t * const s,$/;"	f
-start_logging	src/log.c	/^void start_logging( void )$/;"	f
-stop_logging	src/log.c	/^void stop_logging( void )$/;"	f
+start_logging	src/log.c	/^log_t * start_logging( log_type_t type, int8_t const * const param, int append )$/;"	f
+stop_logging	src/log.c	/^void stop_logging( log_t * log )$/;"	f
+syslog_fns	src/log.c	/^static cookie_io_functions_t syslog_fns =$/;"	v	file:
+syslog_writer	src/log.c	/^static ssize_t syslog_writer( void * cookie, char const * data, size_t leng )$/;"	f	file:
+t_cdone	tests/test_socket.c	/^static int t_cdone = FALSE;$/;"	v	file:
+t_client_connect_fn	tests/test_socket.c	/^static socket_ret_t t_client_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
+t_client_disconnect_fn	tests/test_socket.c	/^static socket_ret_t t_client_disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
+t_client_error_fn	tests/test_socket.c	/^static socket_ret_t t_client_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
+t_client_read_fn	tests/test_socket.c	/^static int32_t t_client_read_fn( socket_t * const s, size_t nread, void * user_data )$/;"	f	file:
+t_client_write_fn	tests/test_socket.c	/^static int32_t t_client_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+t_incoming_fn	tests/test_socket.c	/^static socket_ret_t t_incoming_fn( socket_t * const s, void * user_data )$/;"	f	file:
+t_sclose	tests/test_socket.c	/^static int t_sclose = FALSE;$/;"	v	file:
+t_sdone	tests/test_socket.c	/^static int t_sdone = FALSE;$/;"	v	file:
+t_server_connect_fn	tests/test_socket.c	/^static socket_ret_t t_server_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
+t_server_disconnect_fn	tests/test_socket.c	/^static socket_ret_t t_server_disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
+t_server_error_fn	tests/test_socket.c	/^static socket_ret_t t_server_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
+t_server_read_fn	tests/test_socket.c	/^static int32_t t_server_read_fn( socket_t * const s, size_t nread, void * user_data )$/;"	f	file:
+t_server_write_fn	tests/test_socket.c	/^static int32_t t_server_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
 test_aiofd_newdel	tests/test_aiofd.c	/^static void test_aiofd_newdel( void )$/;"	f	file:
 test_array_clear	tests/test_array.c	/^static void test_array_clear( void )$/;"	f	file:
 test_array_clear_empty	tests/test_array.c	/^static void test_array_clear_empty( void )$/;"	f	file:
@@ -749,9 +848,18 @@ test_btree_random	tests/test_btree.c	/^void test_btree_random( void )$/;"	f
 test_btree_random_default	tests/test_btree.c	/^void test_btree_random_default( void )$/;"	f
 test_btree_random_duplicate	tests/test_btree.c	/^void test_btree_random_duplicate( void )$/;"	f
 test_btree_random_dynamic	tests/test_btree.c	/^void test_btree_random_dynamic( void )$/;"	f
+test_buffer_append	tests/test_buffer.c	/^void test_buffer_append( void )$/;"	f
+test_buffer_append_pwned	tests/test_buffer.c	/^void test_buffer_append_pwned( void )$/;"	f
+test_buffer_initdeinit	tests/test_buffer.c	/^void test_buffer_initdeinit( void )$/;"	f
+test_buffer_initdeinit_pwned	tests/test_buffer.c	/^void test_buffer_initdeinit_pwned( void )$/;"	f
 test_buffer_newdel	tests/test_buffer.c	/^void test_buffer_newdel( void )$/;"	f
-test_buffer_newdel_weak	tests/test_buffer.c	/^void test_buffer_newdel_weak( void )$/;"	f
+test_buffer_newdel_pwned	tests/test_buffer.c	/^void test_buffer_newdel_pwned( void )$/;"	f
 test_child_newdel	tests/test_child.c	/^static void test_child_newdel( void )$/;"	f	file:
+test_child_newdel_fail_first_pipe	tests/test_child.c	/^static void test_child_newdel_fail_first_pipe( void )$/;"	f	file:
+test_child_newdel_fail_fork	tests/test_child.c	/^static void test_child_newdel_fail_fork( void )$/;"	f	file:
+test_child_newdel_fail_second_pipe	tests/test_child.c	/^static void test_child_newdel_fail_second_pipe( void )$/;"	f	file:
+test_child_read	tests/test_child.c	/^static void test_child_read( void )$/;"	f	file:
+test_child_wait	tests/test_child.c	/^static void test_child_wait( void )$/;"	f	file:
 test_hashtable_add_dynamic	tests/test_hashtable.c	/^static void test_hashtable_add_dynamic( void )$/;"	f	file:
 test_hashtable_add_fail	tests/test_hashtable.c	/^static void test_hashtable_add_fail( void )$/;"	f	file:
 test_hashtable_add_static	tests/test_hashtable.c	/^static void test_hashtable_add_static( void )$/;"	f	file:
@@ -776,11 +884,22 @@ test_hashtable_reverse_itr	tests/test_hashtable.c	/^static void test_hashtable_r
 test_hashtable_static_grow	tests/test_hashtable.c	/^static void test_hashtable_static_grow( void )$/;"	f	file:
 test_pair_newdel	tests/test_pair.c	/^void test_pair_newdel( void )$/;"	f
 test_pair_nulls	tests/test_pair.c	/^void test_pair_nulls( void )$/;"	f
+test_sanitize_closed_std_descriptors	tests/test_sanitize.c	/^static void test_sanitize_closed_std_descriptors( void )$/;"	f	file:
+test_sanitize_environment	tests/test_sanitize.c	/^static void test_sanitize_environment( void )$/;"	f	file:
+test_sanitize_environment_add	tests/test_sanitize.c	/^static void test_sanitize_environment_add( void )$/;"	f	file:
+test_sanitize_environment_preserve	tests/test_sanitize.c	/^static void test_sanitize_environment_preserve( void )$/;"	f	file:
+test_sanitize_open_files	tests/test_sanitize.c	/^static void test_sanitize_open_files( void )$/;"	f	file:
+test_socket_bad_hostname	tests/test_socket.c	/^static void test_socket_bad_hostname( void )$/;"	f	file:
+test_socket_newdel	tests/test_socket.c	/^static void test_socket_newdel( void )$/;"	f	file:
+test_tcp_socket	tests/test_socket.c	/^static void test_tcp_socket( void )$/;"	f	file:
+test_tcp_socket_failed_connection	tests/test_socket.c	/^static void test_tcp_socket_failed_connection( void )$/;"	f	file:
+test_unix_socket	tests/test_socket.c	/^static void test_unix_socket( void )$/;"	f	file:
 trace	src/events.h	/^		int trace;	\/* 0 == only signal upon termination, 1 == also signal when stopped\/continued *\/$/;"	m	struct:evt_params_u::__anon2
 tree	src/btree.c	/^	node_t*				tree;		\/* pointer to btree root *\/$/;"	m	struct:bt_s	file:
 tuple_s	src/hashtable.c	/^struct tuple_s$/;"	s	file:
 tuple_t	src/hashtable.h	/^typedef struct tuple_s tuple_t;$/;"	t	typeref:struct:tuple_s
 tuples	src/hashtable.h	/^	tuple_t*			tuples;				\/* pointer to tuple table *\/$/;"	m	struct:ht_s
+type	src/log.h	/^	log_type_t type;$/;"	m	struct:log_s
 type	src/socket.c	/^	socket_type_t	type;			\/* type of socket *\/$/;"	m	struct:socket_s	file:
 types	src/events.h	/^		evt_io_type_t types;$/;"	m	struct:evt_params_u::__anon3
 uint_t	src/macros.h	/^typedef uint32_t uint_t;$/;"	t
@@ -794,7 +913,6 @@ value	src/hashtable.c	/^	void *				value;				\/* pointer to the value *\/$/;"	m	
 vdfn	src/btree.c	/^	bt_delete_fn		vdfn;		\/* value delete function *\/$/;"	m	struct:bt_s	file:
 vdfn	src/hashtable.h	/^	ht_delete_fn		vdfn;				\/* value delete function *\/$/;"	m	struct:ht_s
 wbuf	src/aiofd.h	/^	array_t		wbuf;			\/* array of buffers waiting to be written *\/$/;"	m	struct:aiofd_s
-weak	src/buffer.c	/^	int weak;$/;"	m	struct:buffer_s	file:
 wevt	src/aiofd.h	/^	evt_t		wevt;			\/* write event *\/$/;"	m	struct:aiofd_s
 wfd	src/aiofd.h	/^	int			wfd;			\/* read\/write fd, if only one given, write-only otherwise *\/$/;"	m	struct:aiofd_s
 write_fn	src/aiofd.h	/^		int (*write_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
@@ -802,5 +920,20 @@ write_fn	src/child.h	/^	int32_t (*write_fn)( child_process_t * const cp, uint8_t
 write_fn	src/socket.h	/^	int32_t (*write_fn)( socket_t * const s, uint8_t const * const buffer, void * user_data );$/;"	m	struct:socket_ops_s
 write_fn	tests/test_aiofd.c	/^static int write_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )$/;"	f	file:
 write_fn	tests/test_child.c	/^static int32_t write_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+write_fn	tests/test_socket.c	/^static int32_t write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+write_pid_fn	tests/test_child.c	/^static int32_t write_pid_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )$/;"	f	file:
 writefn	src/log.c	/^typedef int (*writefn)(void *, const char *, int);$/;"	t	file:
-writer	src/log.c	/^static ssize_t writer( void * cookie, char const * data, size_t leng )$/;"	f	file:
+x_cdone	tests/test_socket.c	/^static int x_cdone = FALSE;$/;"	v	file:
+x_client_connect_fn	tests/test_socket.c	/^static socket_ret_t x_client_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
+x_client_disconnect_fn	tests/test_socket.c	/^static socket_ret_t x_client_disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
+x_client_error_fn	tests/test_socket.c	/^static socket_ret_t x_client_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
+x_client_read_fn	tests/test_socket.c	/^static int32_t x_client_read_fn( socket_t * const s, size_t nread, void * user_data )$/;"	f	file:
+x_client_write_fn	tests/test_socket.c	/^static int32_t x_client_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+x_incoming_fn	tests/test_socket.c	/^static socket_ret_t x_incoming_fn( socket_t * const s, void * user_data )$/;"	f	file:
+x_sclose	tests/test_socket.c	/^static int x_sclose = FALSE;$/;"	v	file:
+x_sdone	tests/test_socket.c	/^static int x_sdone = FALSE;$/;"	v	file:
+x_server_connect_fn	tests/test_socket.c	/^static socket_ret_t x_server_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
+x_server_disconnect_fn	tests/test_socket.c	/^static socket_ret_t x_server_disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
+x_server_error_fn	tests/test_socket.c	/^static socket_ret_t x_server_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
+x_server_read_fn	tests/test_socket.c	/^static int32_t x_server_read_fn( socket_t * const s, size_t nread, void * user_data )$/;"	f	file:
+x_server_write_fn	tests/test_socket.c	/^static int32_t x_server_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:

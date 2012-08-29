@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-07-12</td>
+            <td class="headerValue">2012-08-29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">13</td>
@@ -194,19 +194,19 @@
 <span class="lineNum">     123 </span>                :            : }
 <a name="124"><span class="lineNum">     124 </span>                :            : </a>
 <span class="lineNum">     125 </span>                :            : 
-<span class="lineNum">     126 </span>                :<span class="lineCov">          6 : static evt_ret_t aiofd_read_fn( evt_loop_t * const el,</span>
+<span class="lineNum">     126 </span>                :<span class="lineCov">        134 : static evt_ret_t aiofd_read_fn( evt_loop_t * const el,</span>
 <span class="lineNum">     127 </span>                :            :                                 evt_t * const evt,
 <span class="lineNum">     128 </span>                :            :                                 evt_params_t * const params,
 <span class="lineNum">     129 </span>                :            :                                 void * user_data )
 <span class="lineNum">     130 </span>                :            : {
-<span class="lineNum">     131 </span>                :<span class="lineCov">          6 :     int keep_going = TRUE;</span>
-<span class="lineNum">     132 </span>                :<span class="lineCov">          6 :     size_t nread = 0;</span>
-<span class="lineNum">     133 </span>                :<span class="lineCov">          6 :     aiofd_t * aiofd = (aiofd_t*)user_data;</span>
+<span class="lineNum">     131 </span>                :<span class="lineCov">        134 :     int keep_going = TRUE;</span>
+<span class="lineNum">     132 </span>                :<span class="lineCov">        134 :     size_t nread = 0;</span>
+<span class="lineNum">     133 </span>                :<span class="lineCov">        134 :     aiofd_t * aiofd = (aiofd_t*)user_data;</span>
 <span class="lineNum">     134 </span>                :            : 
 <span class="lineNum">     135 </span>                :            :     DEBUG( &quot;read event\n&quot; );
 <span class="lineNum">     136 </span>                :            : 
 <span class="lineNum">     137 </span>                :            :     /* get how much data is available to read */
-<span class="lineNum">     138 </span>[<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchCov" title="Branch 2 was taken 4 times"> + </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 2 times"> + </span>]:<span class="lineCov">          6 :     if ( (ioctl( aiofd-&gt;rfd, FIONREAD, &amp;nread ) &lt; 0) &amp;&amp; (aiofd-&gt;listen == FALSE) )</span>
+<span class="lineNum">     138 </span>[<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchCov" title="Branch 2 was taken 132 times"> + </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 2 times"> + </span>]:<span class="lineCov">        134 :     if ( (ioctl( aiofd-&gt;rfd, FIONREAD, &amp;nread ) &lt; 0) &amp;&amp; (aiofd-&gt;listen == FALSE) )</span>
 <span class="lineNum">     139 </span>                :            :     {
 <span class="lineNum">     140 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :         if ( aiofd-&gt;ops.error_fn != NULL )</span>
 <span class="lineNum">     141 </span>                :            :         {
@@ -217,20 +217,20 @@
 <span class="lineNum">     146 </span>                :            :     }
 <span class="lineNum">     147 </span>                :            : 
 <span class="lineNum">     148 </span>                :            :     /* callback to tell client that there is data to read */
-<span class="lineNum">     149 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          6 :     if ( aiofd-&gt;ops.read_fn != NULL )</span>
+<span class="lineNum">     149 </span>        [<span class="branchCov" title="Branch 0 was taken 134 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        134 :     if ( aiofd-&gt;ops.read_fn != NULL )</span>
 <span class="lineNum">     150 </span>                :            :     {
 <span class="lineNum">     151 </span>                :            :         DEBUG( &quot;calling read callback\n&quot; );
-<span class="lineNum">     152 </span>                :<span class="lineCov">          6 :         keep_going  = (*(aiofd-&gt;ops.read_fn))( aiofd, nread, aiofd-&gt;user_data );</span>
+<span class="lineNum">     152 </span>                :<span class="lineCov">        134 :         keep_going  = (*(aiofd-&gt;ops.read_fn))( aiofd, nread, aiofd-&gt;user_data );</span>
 <span class="lineNum">     153 </span>                :            :     }
 <span class="lineNum">     154 </span>                :            : 
 <span class="lineNum">     155 </span>                :            :     /* we were told to stop the read event */
-<span class="lineNum">     156 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">          6 :     if ( keep_going == FALSE )</span>
+<span class="lineNum">     156 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 134 times"> + </span>]:<span class="lineCov">        134 :     if ( keep_going == FALSE )</span>
 <span class="lineNum">     157 </span>                :            :     {
 <span class="lineNum">     158 </span>                :            :         /* stop the read event processing */
 <span class="lineNum">     159 </span>                :<span class="lineNoCov">          0 :         evt_stop_event_handler( aiofd-&gt;el, &amp;(aiofd-&gt;revt) );</span>
 <span class="lineNum">     160 </span>                :            :     }
 <span class="lineNum">     161 </span>                :            : 
-<span class="lineNum">     162 </span>                :<span class="lineCov">          6 :     return EVT_OK;</span>
+<span class="lineNum">     162 </span>                :<span class="lineCov">        134 :     return EVT_OK;</span>
 <span class="lineNum">     163 </span>                :            : }
 <a name="164"><span class="lineNum">     164 </span>                :            : </a>
 <span class="lineNum">     165 </span>                :            : 
@@ -266,7 +266,7 @@
 <span class="lineNum">     195 </span>                :<span class="lineCov">        128 :     FREE( (void*)aiofd );</span>
 <a name="196"><span class="lineNum">     196 </span>                :            : }</a>
 <span class="lineNum">     197 </span>                :            : 
-<span class="lineNum">     198 </span>                :<span class="lineCov">        393 : int aiofd_initialize( aiofd_t * const aiofd, </span>
+<span class="lineNum">     198 </span>                :<span class="lineCov">        521 : int aiofd_initialize( aiofd_t * const aiofd, </span>
 <span class="lineNum">     199 </span>                :            :                       int const write_fd,
 <span class="lineNum">     200 </span>                :            :                       int const read_fd,
 <span class="lineNum">     201 </span>                :            :                       aiofd_ops_t * const ops,
@@ -275,27 +275,27 @@
 <span class="lineNum">     204 </span>                :            : {
 <span class="lineNum">     205 </span>                :            :     evt_params_t params;
 <span class="lineNum">     206 </span>                :            : 
-<span class="lineNum">     207 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 393 times"> + </span>]:<span class="lineCov">        393 :     CHECK_PTR_RET( aiofd, FALSE );</span>
-<span class="lineNum">     208 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 393 times"> + </span>]:<span class="lineCov">        393 :     CHECK_PTR_RET( ops, FALSE );</span>
-<span class="lineNum">     209 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 393 times"> + </span>]:<span class="lineCov">        393 :     CHECK_PTR_RET( el, FALSE );</span>
-<span class="lineNum">     210 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 393 times"> + </span>]:<span class="lineCov">        393 :     CHECK_RET( write_fd &gt;= 0, FALSE );</span>
-<span class="lineNum">     211 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 393 times"> + </span>]:<span class="lineCov">        393 :     CHECK_RET( read_fd &gt;= 0, FALSE );</span>
+<span class="lineNum">     207 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 521 times"> + </span>]:<span class="lineCov">        521 :     CHECK_PTR_RET( aiofd, FALSE );</span>
+<span class="lineNum">     208 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 521 times"> + </span>]:<span class="lineCov">        521 :     CHECK_PTR_RET( ops, FALSE );</span>
+<span class="lineNum">     209 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 521 times"> + </span>]:<span class="lineCov">        521 :     CHECK_PTR_RET( el, FALSE );</span>
+<span class="lineNum">     210 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 521 times"> + </span>]:<span class="lineCov">        521 :     CHECK_RET( write_fd &gt;= 0, FALSE );</span>
+<span class="lineNum">     211 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 521 times"> + </span>]:<span class="lineCov">        521 :     CHECK_RET( read_fd &gt;= 0, FALSE );</span>
 <span class="lineNum">     212 </span>                :            : 
-<span class="lineNum">     213 </span>                :<span class="lineCov">        393 :     MEMSET( (void*)aiofd, 0, sizeof(aiofd_t) );</span>
+<span class="lineNum">     213 </span>                :<span class="lineCov">        521 :     MEMSET( (void*)aiofd, 0, sizeof(aiofd_t) );</span>
 <span class="lineNum">     214 </span>                :            : 
 <span class="lineNum">     215 </span>                :            :     /* store the file descriptors */
-<span class="lineNum">     216 </span>                :<span class="lineCov">        393 :     aiofd-&gt;wfd = write_fd;</span>
-<span class="lineNum">     217 </span>                :<span class="lineCov">        393 :     aiofd-&gt;rfd = read_fd;</span>
+<span class="lineNum">     216 </span>                :<span class="lineCov">        521 :     aiofd-&gt;wfd = write_fd;</span>
+<span class="lineNum">     217 </span>                :<span class="lineCov">        521 :     aiofd-&gt;rfd = read_fd;</span>
 <span class="lineNum">     218 </span>                :            : 
 <span class="lineNum">     219 </span>                :            :     /* initialize the write buffer */
-<span class="lineNum">     220 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 393 times"> + </span>]:<span class="lineCov">        393 :     CHECK_RET( array_initialize( &amp;(aiofd-&gt;wbuf), 8, FREE ), FALSE );</span>
+<span class="lineNum">     220 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 521 times"> + </span>]:<span class="lineCov">        521 :     CHECK_RET( array_initialize( &amp;(aiofd-&gt;wbuf), 8, FREE ), FALSE );</span>
 <span class="lineNum">     221 </span>                :            : 
 <span class="lineNum">     222 </span>                :            :     /* set up params for fd write event */
-<span class="lineNum">     223 </span>                :<span class="lineCov">        393 :     params.io_params.fd = aiofd-&gt;wfd;</span>
-<span class="lineNum">     224 </span>                :<span class="lineCov">        393 :     params.io_params.types = EVT_IO_WRITE;</span>
+<span class="lineNum">     223 </span>                :<span class="lineCov">        521 :     params.io_params.fd = aiofd-&gt;wfd;</span>
+<span class="lineNum">     224 </span>                :<span class="lineCov">        521 :     params.io_params.types = EVT_IO_WRITE;</span>
 <span class="lineNum">     225 </span>                :            : 
 <span class="lineNum">     226 </span>                :            :     /* hook up the fd write event */
-<span class="lineNum">     227 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 393 times"> + </span>]:<span class="lineCov">        393 :     if ( !evt_initialize_event_handler( &amp;(aiofd-&gt;wevt), </span>
+<span class="lineNum">     227 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 521 times"> + </span>]:<span class="lineCov">        521 :     if ( !evt_initialize_event_handler( &amp;(aiofd-&gt;wevt), </span>
 <span class="lineNum">     228 </span>                :            :                                         EVT_IO, 
 <span class="lineNum">     229 </span>                :            :                                         &amp;params, 
 <span class="lineNum">     230 </span>                :            :                                         aiofd_write_fn, 
@@ -306,11 +306,11 @@
 <span class="lineNum">     235 </span>                :            :     }
 <span class="lineNum">     236 </span>                :            : 
 <span class="lineNum">     237 </span>                :            :     /* set up params for socket read event */
-<span class="lineNum">     238 </span>                :<span class="lineCov">        393 :     params.io_params.fd = aiofd-&gt;rfd;</span>
-<span class="lineNum">     239 </span>                :<span class="lineCov">        393 :     params.io_params.types = EVT_IO_READ;</span>
+<span class="lineNum">     238 </span>                :<span class="lineCov">        521 :     params.io_params.fd = aiofd-&gt;rfd;</span>
+<span class="lineNum">     239 </span>                :<span class="lineCov">        521 :     params.io_params.types = EVT_IO_READ;</span>
 <span class="lineNum">     240 </span>                :            : 
 <span class="lineNum">     241 </span>                :            :     /* hook up the fd read event */
-<span class="lineNum">     242 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 393 times"> + </span>]:<span class="lineCov">        393 :     if ( !evt_initialize_event_handler( &amp;(aiofd-&gt;revt), </span>
+<span class="lineNum">     242 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 521 times"> + </span>]:<span class="lineCov">        521 :     if ( !evt_initialize_event_handler( &amp;(aiofd-&gt;revt), </span>
 <span class="lineNum">     243 </span>                :            :                                         EVT_IO, 
 <span class="lineNum">     244 </span>                :            :                                         &amp;params, 
 <span class="lineNum">     245 </span>                :            :                                         aiofd_read_fn, 
@@ -321,28 +321,28 @@
 <span class="lineNum">     250 </span>                :            :     }
 <span class="lineNum">     251 </span>                :            : 
 <span class="lineNum">     252 </span>                :            :     /* store the event loop pointer */
-<span class="lineNum">     253 </span>                :<span class="lineCov">        393 :     aiofd-&gt;el = el;</span>
+<span class="lineNum">     253 </span>                :<span class="lineCov">        521 :     aiofd-&gt;el = el;</span>
 <span class="lineNum">     254 </span>                :            :     
 <span class="lineNum">     255 </span>                :            :     /* store the user_data pointer */
-<span class="lineNum">     256 </span>                :<span class="lineCov">        393 :     aiofd-&gt;user_data = user_data;</span>
+<span class="lineNum">     256 </span>                :<span class="lineCov">        521 :     aiofd-&gt;user_data = user_data;</span>
 <span class="lineNum">     257 </span>                :            : 
 <span class="lineNum">     258 </span>                :            :     /* copy the ops into place */
-<span class="lineNum">     259 </span>                :<span class="lineCov">        393 :     MEMCPY( (void*)&amp;(aiofd-&gt;ops), ops, sizeof(aiofd_ops_t) );</span>
+<span class="lineNum">     259 </span>                :<span class="lineCov">        521 :     MEMCPY( (void*)&amp;(aiofd-&gt;ops), ops, sizeof(aiofd_ops_t) );</span>
 <span class="lineNum">     260 </span>                :            : 
-<span class="lineNum">     261 </span>                :<span class="lineCov">        393 :     return TRUE;</span>
+<span class="lineNum">     261 </span>                :<span class="lineCov">        521 :     return TRUE;</span>
 <a name="262"><span class="lineNum">     262 </span>                :            : }</a>
 <span class="lineNum">     263 </span>                :            : 
-<span class="lineNum">     264 </span>                :<span class="lineCov">        529 : void aiofd_deinitialize( aiofd_t * const aiofd )</span>
+<span class="lineNum">     264 </span>                :<span class="lineCov">        657 : void aiofd_deinitialize( aiofd_t * const aiofd )</span>
 <span class="lineNum">     265 </span>                :            : {
 <span class="lineNum">     266 </span>                :            :     /* deinitialize the write event */
-<span class="lineNum">     267 </span>                :<span class="lineCov">        529 :     evt_deinitialize_event_handler( &amp;(aiofd-&gt;wevt) );</span>
+<span class="lineNum">     267 </span>                :<span class="lineCov">        657 :     evt_deinitialize_event_handler( &amp;(aiofd-&gt;wevt) );</span>
 <span class="lineNum">     268 </span>                :            : 
 <span class="lineNum">     269 </span>                :            :     /* deinitialize the read event */
-<span class="lineNum">     270 </span>                :<span class="lineCov">        529 :     evt_deinitialize_event_handler( &amp;(aiofd-&gt;revt) );</span>
+<span class="lineNum">     270 </span>                :<span class="lineCov">        657 :     evt_deinitialize_event_handler( &amp;(aiofd-&gt;revt) );</span>
 <span class="lineNum">     271 </span>                :            : 
 <span class="lineNum">     272 </span>                :            :     /* clean up the array of write buffers */
-<span class="lineNum">     273 </span>                :<span class="lineCov">        529 :     array_deinitialize( &amp;(aiofd-&gt;wbuf) );</span>
-<a name="274"><span class="lineNum">     274 </span>                :<span class="lineCov">        529 : }</span></a>
+<span class="lineNum">     273 </span>                :<span class="lineCov">        657 :     array_deinitialize( &amp;(aiofd-&gt;wbuf) );</span>
+<a name="274"><span class="lineNum">     274 </span>                :<span class="lineCov">        657 : }</span></a>
 <span class="lineNum">     275 </span>                :            : 
 <span class="lineNum">     276 </span>                :<span class="lineCov">          3 : int aiofd_enable_write_evt( aiofd_t * const aiofd,</span>
 <span class="lineNum">     277 </span>                :            :                             int enable )
@@ -360,37 +360,37 @@
 <span class="lineNum">     289 </span>                :<span class="lineCov">          3 :     return TRUE;</span>
 <a name="290"><span class="lineNum">     290 </span>                :            : }</a>
 <span class="lineNum">     291 </span>                :            : 
-<span class="lineNum">     292 </span>                :<span class="lineCov">          6 : int aiofd_enable_read_evt( aiofd_t * const aiofd,</span>
+<span class="lineNum">     292 </span>                :<span class="lineCov">        263 : int aiofd_enable_read_evt( aiofd_t * const aiofd,</span>
 <span class="lineNum">     293 </span>                :            :                            int enable )
 <span class="lineNum">     294 </span>                :            : {
-<span class="lineNum">     295 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">          6 :     CHECK_RET( aiofd, FALSE );</span>
+<span class="lineNum">     295 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 263 times"> + </span>]:<span class="lineCov">        263 :     CHECK_RET( aiofd, FALSE );</span>
 <span class="lineNum">     296 </span>                :            : 
-<span class="lineNum">     297 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          6 :     if ( enable )</span>
+<span class="lineNum">     297 </span>        [<span class="branchCov" title="Branch 0 was taken 263 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        263 :     if ( enable )</span>
 <span class="lineNum">     298 </span>                :            :     {
-<span class="lineNum">     299 </span>                :<span class="lineCov">          6 :         evt_start_event_handler( aiofd-&gt;el, &amp;(aiofd-&gt;revt) );</span>
+<span class="lineNum">     299 </span>                :<span class="lineCov">        263 :         evt_start_event_handler( aiofd-&gt;el, &amp;(aiofd-&gt;revt) );</span>
 <span class="lineNum">     300 </span>                :            :     }
 <span class="lineNum">     301 </span>                :            :     else
 <span class="lineNum">     302 </span>                :            :     {
 <span class="lineNum">     303 </span>                :<span class="lineNoCov">          0 :         evt_stop_event_handler( aiofd-&gt;el, &amp;(aiofd-&gt;revt) );</span>
 <span class="lineNum">     304 </span>                :            :     }
-<span class="lineNum">     305 </span>                :<span class="lineCov">          6 :     return TRUE;</span>
+<span class="lineNum">     305 </span>                :<span class="lineCov">        263 :     return TRUE;</span>
 <a name="306"><span class="lineNum">     306 </span>                :            : }</a>
 <span class="lineNum">     307 </span>                :            : 
-<span class="lineNum">     308 </span>                :<span class="lineCov">          4 : int32_t aiofd_read( aiofd_t * const aiofd,</span>
+<span class="lineNum">     308 </span>                :<span class="lineCov">        132 : int32_t aiofd_read( aiofd_t * const aiofd,</span>
 <span class="lineNum">     309 </span>                :            :                     uint8_t * const buffer,
 <span class="lineNum">     310 </span>                :            :                     int32_t const n )
 <span class="lineNum">     311 </span>                :            : {
-<span class="lineNum">     312 </span>                :<span class="lineCov">          4 :     ssize_t res = 0;</span>
+<span class="lineNum">     312 </span>                :<span class="lineCov">        132 :     ssize_t res = 0;</span>
 <span class="lineNum">     313 </span>                :            : 
-<span class="lineNum">     314 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">          4 :     CHECK_PTR_RET(aiofd, 0);</span>
+<span class="lineNum">     314 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 132 times"> + </span>]:<span class="lineCov">        132 :     CHECK_PTR_RET(aiofd, 0);</span>
 <span class="lineNum">     315 </span>                :            :     
 <span class="lineNum">     316 </span>                :            :     /* if they pass a NULL buffer pointer return -1 */
-<span class="lineNum">     317 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">          4 :     CHECK_PTR_RET(buffer, 0);</span>
+<span class="lineNum">     317 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 132 times"> + </span>]:<span class="lineCov">        132 :     CHECK_PTR_RET(buffer, 0);</span>
 <span class="lineNum">     318 </span>                :            : 
-<span class="lineNum">     319 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">          4 :     CHECK_RET(n &gt; 0, 0);</span>
+<span class="lineNum">     319 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 132 times"> + </span>]:<span class="lineCov">        132 :     CHECK_RET(n &gt; 0, 0);</span>
 <span class="lineNum">     320 </span>                :            : 
-<span class="lineNum">     321 </span>                :<span class="lineCov">          4 :     res = read( aiofd-&gt;rfd, buffer, n );</span>
-<span class="lineNum">     322 </span>     [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 4 times"> + </span>]:<span class="lineCov">          4 :     switch ( (int)res )</span>
+<span class="lineNum">     321 </span>                :<span class="lineCov">        132 :     res = read( aiofd-&gt;rfd, buffer, n );</span>
+<span class="lineNum">     322 </span>     [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 132 times"> + </span>]:<span class="lineCov">        132 :     switch ( (int)res )</span>
 <span class="lineNum">     323 </span>                :            :     {
 <span class="lineNum">     324 </span>                :            :         case 0:
 <span class="lineNum">     325 </span>                :<span class="lineNoCov">          0 :             errno = EPIPE;</span>
@@ -401,7 +401,7 @@
 <span class="lineNum">     330 </span>                :            :             }
 <span class="lineNum">     331 </span>                :<span class="lineNoCov">          0 :             return 0;</span>
 <span class="lineNum">     332 </span>                :            :         default:
-<span class="lineNum">     333 </span>                :<span class="lineCov">          4 :             return (int32_t)res;</span>
+<span class="lineNum">     333 </span>                :<span class="lineCov">        132 :             return (int32_t)res;</span>
 <span class="lineNum">     334 </span>                :            :     }
 <span class="lineNum">     335 </span>                :            : }
 <span class="lineNum">     336 </span>                :            : 

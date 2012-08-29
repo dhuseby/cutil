@@ -57,9 +57,10 @@ static int open_devnull( int fd )
 	return ( f && (fileno(f) == fd) );
 }
 
-void sanitize_files( void )
+void sanitize_files( int keep[], int nfds )
 {
-	int fd, fds;
+	int skip;
+	int i, fd, fds;
 	struct stat st;
 
 	/* figure out the maximum file descriptor value */
@@ -68,10 +69,19 @@ void sanitize_files( void )
 		fds = OPEN_MAX;
 	}
 	
-	/* make sure all open descriptors other than the standard ones are closed */
+	/* make sure all open descriptors other than the standard ones, and
+	 * the file descriptors we want to keep, are closed */
 	for ( fd = (STDERR_FILENO + 1); fd < fds; fd++ )
 	{
-		close( fd );
+		skip = FALSE;
+		for ( i = 0; i < nfds; i++ )
+		{
+			if ( keep[i] == fd )
+				skip = TRUE;
+		}
+
+		if ( !skip )
+			close( fd );
 	}
 
 	/* verify that the standard descriptors are open.  if they're not, attempt to

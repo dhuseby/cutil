@@ -36,7 +36,7 @@ static evt_loop_t * el = NULL;
 
 static int exit_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )
 {
-	evt_stop( el );
+	evt_stop( el, TRUE );
 	return TRUE;
 }
 
@@ -153,12 +153,21 @@ static void test_child_wait( void )
 	child_process_delete( child, TRUE );
 }
 
+static buf[16];
 static pid_t child_pid = -1;
 
+static int exit_pid_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )
+{
+	evt_stop( el, FALSE );
+	return TRUE;
+}
+
+/* this will get called whenever there is data to be read */
 static int32_t read_pid_fn( child_process_t * const cp, size_t nread, void * user_data )
 {
-	NOTICE("read_fn callback\n");
-	child_process_read( cp, (uint8_t * const)&child_pid, sizeof(pid_t) );
+	MEMSET( buf, 0, 16 );
+	child_process_read( cp, (uint8_t * const)buf, (nread < 16) ? nread : 16 );
+	child_pid = (pid_t)atoi(buf);
 	return 0;
 }
 
@@ -175,7 +184,7 @@ static void test_child_read( void )
 	int8_t const * const args[] = { "./child_pid.sh", NULL };
 	int8_t const * const env[] = { NULL };
 	child_process_t * child;
-	child_ops_t ops = { &exit_fn, &read_pid_fn, &write_pid_fn };
+	child_ops_t ops = { &exit_pid_fn, &read_pid_fn, &write_pid_fn };
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
@@ -184,12 +193,15 @@ static void test_child_read( void )
 		child = NULL;
 		child = child_process_new( "./child_pid.sh", args, env, &ops, el, NULL );
 
+		CU_ASSERT_PTR_NOT_NULL( child );
+
 		cpid = child_process_get_pid( child );
+
+		CU_ASSERT_NOT_EQUAL( cpid, 0 );
 
 		/* run the event loop */
 		evt_run( el );
 
-		CU_ASSERT_PTR_NOT_NULL( child );
 		CU_ASSERT_EQUAL( child_pid, cpid );
 
 		child_process_delete( child, TRUE );
@@ -223,7 +235,7 @@ static CU_pSuite add_child_tests( CU_pSuite pSuite )
 	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of child process fail second pipe", test_child_newdel_fail_second_pipe), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of child process fail fork", test_child_newdel_fail_fork), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "wait on child process", test_child_wait), NULL );
-	/*CHECK_PTR_RET( CU_add_test( pSuite, "test read from child process", test_child_read), NULL );*/
+	CHECK_PTR_RET( CU_add_test( pSuite, "test read from child process", test_child_read), NULL );
 	return pSuite;
 }
 
