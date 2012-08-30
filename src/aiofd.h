@@ -18,8 +18,8 @@
 #define __AIOFD_H__
 
 #include <sys/uio.h>
-#include "array.h"
 #include "events.h"
+#include "list.h"
 
 typedef struct aiofd_s aiofd_t;
 typedef struct aiofd_ops_s aiofd_ops_t;
@@ -29,7 +29,7 @@ struct aiofd_s
 	int			wfd;			/* read/write fd, if only one given, write-only otherwise */
 	int			rfd;			/* read fd if two are given */
 	int			listen;			/* is this a bound and listening socket fd? */
-	array_t		wbuf;			/* array of buffers waiting to be written */
+	list_t		wbuf;			/* array of buffers waiting to be written */
 	evt_t		wevt;			/* write event */
 	evt_t		revt;			/* read event */
 	evt_loop_t*	el;				/* event loop we registered out evt with */

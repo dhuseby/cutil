@@ -31,15 +31,17 @@
 #define ADD_SUITE(x) x##_test_suite = add_##x##_test_suite();
 
 SUITE( aiofd );
-SUITE( array );
 SUITE( bitset );
 SUITE( btree );
 SUITE( buffer );
 SUITE( child );
-SUITE( hashtable );
+/*SUITE( hashtable );*/
+SUITE( list );
 SUITE( pair );
 SUITE( socket );
 SUITE( sanitize );
+
+int fail_alloc = FALSE;
 
 int main()
 {
@@ -49,12 +51,12 @@ int main()
 
 	/* add each suite of tests */
 	ADD_SUITE( aiofd );
-	ADD_SUITE( array );
 	ADD_SUITE( bitset );
 	ADD_SUITE( btree );
 	ADD_SUITE( buffer );
 	ADD_SUITE( child );
-	ADD_SUITE( hashtable );
+	/*ADD_SUITE( hashtable );*/
+	ADD_SUITE( list );
 	ADD_SUITE( pair );
 	ADD_SUITE( socket );
 	ADD_SUITE( sanitize );

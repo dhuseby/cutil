@@ -17,9 +17,9 @@
 #ifndef __SOCKET_H__
 #define __SOCKET_H__
 
-#include "events.h"
-#include "array.h"
 #include "aiofd.h"
+#include "events.h"
+#include "list.h"
 
 typedef enum socket_ret_e
 {

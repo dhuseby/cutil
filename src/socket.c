@@ -35,9 +35,11 @@
 
 #include "debug.h"
 #include "macros.h"
-#include "array.h"
 #include "events.h"
+#include "list.h"
 #include "socket.h"
+
+#define DEBUG_ON
 
 struct socket_s
 {
@@ -103,7 +105,7 @@ static int socket_aiofd_write_fn( aiofd_t * const aiofd,
 
 		if ( buffer == NULL )
 		{
-			if ( array_size( &(s->aiofd.wbuf) ) == 0 )
+			if ( list_count( &(s->aiofd.wbuf) ) == 0 )
 			{
 				/* stop the write event processing until we have data to write */
 				return FALSE;
@@ -160,7 +162,7 @@ static int socket_aiofd_write_fn( aiofd_t * const aiofd,
 			/* we're connected to start read event */
 			aiofd_enable_read_evt( &(s->aiofd), TRUE );
 
-			if ( array_size( &(s->aiofd.wbuf) ) == 0 )
+			if ( list_count( &(s->aiofd.wbuf) ) == 0 )
 			{
 				/* stop the write event processing until we have data to write */
 				return FALSE;
@@ -364,9 +366,6 @@ socket_t* socket_new( socket_type_t const type,
 
 static void socket_deinitialize( socket_t * const s )
 {
-	/* shut down the aiofd */
-	aiofd_deinitialize( &(s->aiofd) );
-
 	/* close the socket */
 	if ( s->aiofd.rfd >= 0 )
 		socket_disconnect( s );

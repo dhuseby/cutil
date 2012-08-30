@@ -207,14 +207,16 @@ static socket_ret_t t_server_error_fn( socket_t * const s, int err, void * user_
 
 static int32_t t_server_read_fn( socket_t * const s, size_t nread, void * user_data )
 {
-	uint8_t * ping[6];
+	uint8_t ping[6];
 	uint8_t const * const pong = UT("PONG!");
 
 	CU_ASSERT_EQUAL( nread, 6 );
 
+	NOTICE("server receiving data\n");
 	socket_read( s, UT(ping), 6 );
 
 	CU_ASSERT_EQUAL( strcmp( C(ping), "PING!" ), 0 );
+	NOTICE("server received %s\n", ping );
 
 	socket_write( s, pong, 6 );
 
@@ -251,7 +253,10 @@ static socket_ret_t t_incoming_fn( socket_t * const s, void * user_data )
 	CHECK_RET( socket_get_type( s ) == SOCKET_TCP, SOCKET_ERROR );
 	CHECK_RET( socket_is_bound( s ), SOCKET_ERROR );
 
+	NOTICE("accepting incoming connection\n");
+
 	(*server) = socket_accept( s, &sops, el, NULL );
+	NOTICE("accepted!\n");
 	CU_ASSERT_PTR_NOT_NULL( (*server) );
 	CHECK_PTR_RET( (*server), SOCKET_ERROR );
 
@@ -262,6 +267,7 @@ static socket_ret_t t_client_connect_fn( socket_t * const s, void * user_data )
 {
 	uint8_t const * const ping = UT("PING!");
 
+	NOTICE("sending PING! from client\n");
 	socket_write( s, ping, 6 );
 
 	return SOCKET_OK;
@@ -286,13 +292,15 @@ static socket_ret_t t_client_error_fn( socket_t * const s, int err, void * user_
 
 static int32_t t_client_read_fn( socket_t * const s, size_t nread, void * user_data )
 {
-	uint8_t * pong[6];
+	uint8_t pong[6];
 
 	CU_ASSERT_EQUAL( nread, 6 );
 
+	NOTICE("client receiving data\n");
 	socket_read( s, UT(pong), 6 );
 
 	CU_ASSERT_EQUAL( strcmp( C(pong), "PONG!" ), 0 );
+	NOTICE("client received %s\n", pong);
 
 	socket_disconnect( s );
 

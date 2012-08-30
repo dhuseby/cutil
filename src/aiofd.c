@@ -22,7 +22,7 @@
 
 #include "debug.h"
 #include "macros.h"
-#include "array.h"
+#include "list.h"
 #include "events.h"
 #include "aiofd.h"
 
@@ -48,10 +48,10 @@ static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
 
 	DEBUG( "write event\n" );
 
-	while ( array_size( &(aiofd->wbuf) ) > 0 )
+	while ( list_count( &(aiofd->wbuf) ) > 0 )
 	{
 		/* we must have data to write */
-		aiofd_write_t * wb = array_get_head( &(aiofd->wbuf) );
+		aiofd_write_t * wb = list_get_head( &(aiofd->wbuf) );
 
 		if ( wb->iov )
 		{
@@ -90,7 +90,7 @@ static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
 			if ( wb->nleft <= 0 )
 			{
 				/* remove the write buffer from the queue */
-				array_pop_head( &(aiofd->wbuf) );
+				list_pop_head( &(aiofd->wbuf) );
 
 				/* call the write complete callback to let client know that a particular
 				 * buffer has been written to the fd. */
@@ -217,7 +217,7 @@ int aiofd_initialize( aiofd_t * const aiofd,
 	aiofd->rfd = read_fd;
 
 	/* initialize the write buffer */
-	CHECK_RET( array_initialize( &(aiofd->wbuf), 8, FREE ), FALSE );
+	CHECK_RET( list_initialize( &(aiofd->wbuf), 8, FREE ), FALSE );
 
 	/* set up params for fd write event */
 	params.io_params.fd = aiofd->wfd;
@@ -230,7 +230,7 @@ int aiofd_initialize( aiofd_t * const aiofd,
 										aiofd_write_fn, 
 										(void *)aiofd ) )
 	{
-		array_deinitialize( &(aiofd->wbuf) );
+		list_deinitialize( &(aiofd->wbuf) );
 		return FALSE;
 	}
 
@@ -245,7 +245,7 @@ int aiofd_initialize( aiofd_t * const aiofd,
 										aiofd_read_fn, 
 										(void *)aiofd ) )
 	{
-		array_deinitialize( &(aiofd->wbuf) );
+		list_deinitialize( &(aiofd->wbuf) );
 		return FALSE;
 	}
 
@@ -269,8 +269,8 @@ void aiofd_deinitialize( aiofd_t * const aiofd )
 	/* deinitialize the read event */
 	evt_deinitialize_event_handler( &(aiofd->revt) );
 
-	/* clean up the array of write buffers */
-	array_deinitialize( &(aiofd->wbuf) );
+	/* clean up the list of write buffers */
+	list_deinitialize( &(aiofd->wbuf) );
 }
 
 int aiofd_enable_write_evt( aiofd_t * const aiofd,
@@ -364,7 +364,7 @@ static int aiofd_write_common( aiofd_t* const aiofd,
 	wb->nleft = total;
 
 	/* queue the write */
-	array_push_tail( &(aiofd->wbuf), wb );
+	list_push_tail( &(aiofd->wbuf), wb );
 
 	/* just in case it isn't started, start the write event processing so
 	 * the queued data will get written */

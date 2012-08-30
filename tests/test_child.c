@@ -167,7 +167,7 @@ static int32_t read_pid_fn( child_process_t * const cp, size_t nread, void * use
 {
 	MEMSET( buf, 0, 16 );
 	child_process_read( cp, (uint8_t * const)buf, (nread < 16) ? nread : 16 );
-	child_pid = (pid_t)atoi(buf);
+	child_pid = (pid_t)atoi(C(buf));
 	return 0;
 }
 

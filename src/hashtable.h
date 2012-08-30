@@ -54,6 +54,7 @@ typedef struct ht_s
 	uint_t				num_tuples;			/* number of tuples in the table */
 	uint_t				initial_capacity;	/* the initial capacity value */
 	float				load_factor;		/* load level that triggers resize */
+	int_t				free_head;			/* first node in free list */
 	tuple_t*			tuples;				/* pointer to tuple table */
 #ifdef USE_THREADING
 	pthread_mutex_t		lock;				/* hashtable lock */
@@ -144,7 +145,7 @@ ht_itr_t ht_find_prehash( ht_t const * const htable,
 /* remove the key/value at the specified iterator position */
 int ht_remove( ht_t * const htable, ht_itr_t const itr );
 
-/* Iterator based access to the hashtable */
+/* iterator based access to the hashtable */
 ht_itr_t ht_itr_begin( ht_t const * const htable );
 ht_itr_t ht_itr_end( ht_t const * const htable );
 ht_itr_t ht_itr_rbegin( ht_t const * const hatable );

@@ -32,8 +32,8 @@
 
 #include "debug.h"
 #include "macros.h"
-#include "array.h"
 #include "events.h"
+#include "list.h"
 #include "privileges.h"
 #include "sanitize.h"
 #include "aiofd.h"
@@ -94,7 +94,7 @@ static int child_aiofd_write_fn( aiofd_t * const aiofd,
 
 	if ( buffer == NULL )
 	{
-		if ( array_size( &(child->aiofd.wbuf) ) == 0 )
+		if ( list_count( &(child->aiofd.wbuf) ) == 0 )
 		{
 			/* stop the write event processing until we have data to write */
 			return FALSE;

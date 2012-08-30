@@ -9,8 +9,8 @@ EXTRA_LIBS_ROOT?=/usr/local
 # other variables
 SHELL=/bin/sh
 NAME=cutil
-SRC=aiofd.c array.c  bitset.c btree.c buffer.c child.c daemon.c events.c hashtable.c log.c pair.c privileges.c sanitize.c socket.c
-HDR=aiofd.h array.h  bitset.h btree.h buffer.h child.h daemon.h debug.h events.h hashtable.h log.h macros.h pair.h privileges.h sanitize.h socket.h
+SRC=aiofd.c bitset.c btree.c buffer.c child.c daemon.c events.c list.c log.c pair.c privileges.c sanitize.c socket.c
+HDR=aiofd.h bitset.h btree.h buffer.h child.h daemon.h debug.h events.h list.h log.h macros.h pair.h privileges.h sanitize.h socket.h
 OBJ=$(SRC:.c=.o)
 OUT=lib$(NAME).a
 GCDA=$(SRC:.c=.gcda)
