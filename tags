@@ -214,8 +214,9 @@ CUTIL_ROOT	tests/Makefile	/^CUTIL_ROOT=..\/src$/;"	m
 DEBUG	src/debug.h	17;"	d
 DEBUG	src/debug.h	20;"	d
 DEBUG	src/debug.h	22;"	d
+DEBUG_ON	src/aiofd.c	23;"	d	file:
 DEBUG_ON	src/debug.h	25;"	d
-DEBUG_ON	src/socket.c	42;"	d	file:
+DEBUG_ON	src/socket.c	36;"	d	file:
 DEFAULT_INITIAL_CAPACITY	src/btree.c	31;"	d	file:
 DIRS	Makefile	/^DIRS = src tests$/;"	m
 DWORDS_NEEDED	src/bitset.c	21;"	d	file:

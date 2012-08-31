@@ -50,7 +50,13 @@ int list_initialize( list_t * const list, uint_t const initial_capacity, delete_
 void list_deinitialize( list_t * const list );
 
 /* gets the number of items in the list */
-uint_t list_count(list_t const * const list);
+uint_t list_count( list_t const * const list );
+
+/* grow the list to be at least this size */
+int list_reserve( list_t * const list, uint const amount );
+
+/* clear the entire list */
+void list_clear( list_t * const list );
 
 /* functions for getting iterators */
 list_itr_t list_itr_begin( list_t const * const list );
@@ -67,29 +73,19 @@ list_itr_t list_itr_rnext( list_t const * const list, list_itr_t const itr );
 #define list_itr_rprev(a,i) list_itr_next(a,i)
 
 /* O(1) functions for adding items to the list */
-int list_push(
-	list_t * const list, 
-	void * const data, 
-	list_itr_t const itr);
+int list_push( list_t * const list, void * const data, list_itr_t const itr );
 #define list_push_head(list, data) list_push(list, data, list_itr_head(list));
 #define list_push_tail(list, data) list_push(list, data, list_itr_end(list));
 
 /* O(1) functions for removing items from the list */
-list_itr_t list_pop(
-	list_t * const list, 
-	list_itr_t const itr);
+list_itr_t list_pop( list_t * const list, list_itr_t const itr );
 #define list_pop_head(list) list_pop(list, list_itr_head(list))
 #define list_pop_tail(list) list_pop(list, list_itr_end(list))
 
-/* functions for getting a reference to an item in the list */
-void* list_itr_get(
-	list_t const * const list, 
-	list_itr_t const itr);
+/* functions for getting the data pointer from the list */
+void* list_itr_get( list_t const * const list, list_itr_t const itr );
 #define list_get_head(list) list_itr_get(list, list_itr_head(list))
 #define list_get_tail(list) list_itr_get(list, list_itr_tail(list))
-
-/* clear the entire list */
-void list_clear(list_t * const list);
 
 #endif/*__LIST_H__*/
  

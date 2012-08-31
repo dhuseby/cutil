@@ -32,7 +32,10 @@
 #define SIZEMAX (128)
 #define MULTIPLE (8)
 
-int fail_list_grow = FALSE;
+/* the fail switches */
+extern int fail_alloc;
+extern int fail_list_grow;
+
 
 static void test_list_newdel( void )
 {
@@ -75,29 +78,29 @@ static void test_list_initdeinit( void )
 	}
 }
 
-#if 0
 static void test_list_static_grow( void )
 {
 	int i, j;
 	uint32_t size, multiple;
-	list_t arr;
+	list_t list;
 
 	for ( i = 0; i < 8; i++ )
 	{
-		MEMSET( &arr, 0, sizeof(list_t) );
+		MEMSET( &list, 0, sizeof(list_t) );
 		size = (rand() % SIZEMAX);
-		list_initialize( &arr, size, NULL );
+		list_initialize( &list, size, NULL );
 
-		CU_ASSERT_EQUAL( list_count( &arr ), 0 );
-		CU_ASSERT_EQUAL( arr.buffer_size, size );
-		CU_ASSERT_EQUAL( arr.pfn, NULL );
+		CU_ASSERT_EQUAL( list_count( &list ), 0 );
+		CU_ASSERT_EQUAL( list.size, size );
+		CU_ASSERT_EQUAL( list.dfn, NULL );
 
 		for ( j = 0; j < 8; j++ )
 		{
-			list_force_grow( &arr );
+			list_reserve( &list, (j * size) );
+			CU_ASSERT_TRUE( list.size >= ((j * size > size) ? (j * size) : size) );
 		}
 
-		list_deinitialize( &arr );
+		list_deinitialize( &list );
 	}
 }
 
@@ -105,25 +108,26 @@ static void test_list_dynamic_grow( void )
 {
 	int i, j;
 	uint32_t size, multiple;
-	list_t *arr;
+	list_t *list;
 
 	for ( i = 0; i < 8; i++ )
 	{
 		size = (rand() % SIZEMAX);
-		arr = list_new( size, NULL );
+		list = list_new( size, NULL );
 
-		CU_ASSERT_PTR_NOT_NULL( arr );
-		CU_ASSERT_EQUAL( list_count( arr ), 0 );
-		CU_ASSERT_EQUAL( arr->buffer_size, size );
-		CU_ASSERT_EQUAL( arr->pfn, NULL );
+		CU_ASSERT_PTR_NOT_NULL( list );
+		CU_ASSERT_EQUAL( list_count( list ), 0 );
+		CU_ASSERT_EQUAL( list->size, size );
+		CU_ASSERT_EQUAL( list->dfn, NULL );
 
 		for ( j = 0; j < 8; j++ )
 		{
-			list_force_grow( arr );
+			list_reserve( list, j * size );
+			CU_ASSERT_TRUE( list->size >= ((j * size > size) ? (j * size) : size) );
 		}
 
-		list_delete( arr );
-		arr = NULL;
+		list_delete( list );
+		list = NULL;
 	}
 }
 
@@ -131,86 +135,86 @@ static void test_list_empty_iterator( void )
 {
 	int i;
 	uint32_t size;
-	list_t arr;
+	list_t list;
 	list_itr_t itr;
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
-		MEMSET( &arr, 0, sizeof(list_t) );
+		MEMSET( &list, 0, sizeof(list_t) );
 		size = (rand() % SIZEMAX);
-		list_initialize( &arr, size, NULL );
+		list_initialize( &list, size, NULL );
 
-		itr = list_itr_begin( &arr );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
-		itr = list_itr_end( &arr );
-		CU_ASSERT_EQUAL( itr, list_itr_begin( &arr ) );
+		itr = list_itr_begin( &list );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
+		itr = list_itr_end( &list );
+		CU_ASSERT_EQUAL( itr, list_itr_begin( &list ) );
 
-		itr = list_itr_head( &arr );
-		CU_ASSERT_EQUAL( itr, list_itr_tail( &arr ) );
-		itr = list_itr_tail( &arr );
-		CU_ASSERT_EQUAL( itr, list_itr_head( &arr ) );
+		itr = list_itr_head( &list );
+		CU_ASSERT_EQUAL( itr, list_itr_tail( &list ) );
+		itr = list_itr_tail( &list );
+		CU_ASSERT_EQUAL( itr, list_itr_head( &list ) );
 
-		itr = list_itr_rbegin( &arr );
-		CU_ASSERT_EQUAL( itr, list_itr_rend( &arr ) );
-		itr = list_itr_rend( &arr );
-		CU_ASSERT_EQUAL( itr, list_itr_rbegin( &arr ) );
+		itr = list_itr_rbegin( &list );
+		CU_ASSERT_EQUAL( itr, list_itr_rend( &list ) );
+		itr = list_itr_rend( &list );
+		CU_ASSERT_EQUAL( itr, list_itr_rbegin( &list ) );
 
-		itr = list_itr_begin( &arr );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
-		itr = list_itr_next( &arr, itr );
-		CU_ASSERT_EQUAL( itr, list_itr_begin( &arr ) );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
-		itr = list_itr_prev( &arr, itr );
-		CU_ASSERT_EQUAL( itr, list_itr_begin( &arr ) );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
+		itr = list_itr_begin( &list );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
+		itr = list_itr_next( &list, itr );
+		CU_ASSERT_EQUAL( itr, list_itr_begin( &list ) );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
+		itr = list_itr_prev( &list, itr );
+		CU_ASSERT_EQUAL( itr, list_itr_begin( &list ) );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
 
-		itr = list_itr_end( &arr );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
-		itr = list_itr_prev( &arr, itr );
-		CU_ASSERT_EQUAL( itr, list_itr_begin( &arr ) );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
-		itr = list_itr_next( &arr, itr );
-		CU_ASSERT_EQUAL( itr, list_itr_begin( &arr ) );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
+		itr = list_itr_end( &list );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
+		itr = list_itr_prev( &list, itr );
+		CU_ASSERT_EQUAL( itr, list_itr_begin( &list ) );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
+		itr = list_itr_next( &list, itr );
+		CU_ASSERT_EQUAL( itr, list_itr_begin( &list ) );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
 
-		itr = list_itr_rbegin( &arr );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
-		itr = list_itr_rprev( &arr, itr );
-		CU_ASSERT_EQUAL( itr, list_itr_begin( &arr ) );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
-		itr = list_itr_rnext( &arr, itr );
-		CU_ASSERT_EQUAL( itr, list_itr_begin( &arr ) );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
+		itr = list_itr_rbegin( &list );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
+		itr = list_itr_rprev( &list, itr );
+		CU_ASSERT_EQUAL( itr, list_itr_begin( &list ) );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
+		itr = list_itr_rnext( &list, itr );
+		CU_ASSERT_EQUAL( itr, list_itr_begin( &list ) );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
 
-		itr = list_itr_rend( &arr );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
-		itr = list_itr_rnext( &arr, itr );
-		CU_ASSERT_EQUAL( itr, list_itr_begin( &arr ) );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
-		itr = list_itr_rprev( &arr, itr );
-		CU_ASSERT_EQUAL( itr, list_itr_begin( &arr ) );
-		CU_ASSERT_EQUAL( itr, list_itr_end( &arr ) );
+		itr = list_itr_rend( &list );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
+		itr = list_itr_rnext( &list, itr );
+		CU_ASSERT_EQUAL( itr, list_itr_begin( &list ) );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
+		itr = list_itr_rprev( &list, itr );
+		CU_ASSERT_EQUAL( itr, list_itr_begin( &list ) );
+		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
 
-		list_deinitialize( &arr );
+		list_deinitialize( &list );
 	}
 }
 
 static void test_list_push_head_1( void )
 {
-	list_t arr;
-	MEMSET(&arr, 0, sizeof(list_t));
-	list_initialize( &arr, 1, NULL );
-	list_push_head( &arr, (void*)1 );
-	CU_ASSERT_EQUAL( list_count( &arr ), 1 );
-	list_push_head( &arr, (void*)2 );
-	CU_ASSERT_EQUAL( list_count( &arr ), 2 );
-	list_push_head( &arr, (void*)3 );
-	CU_ASSERT_EQUAL( list_count( &arr ), 3 );
-	list_push_head( &arr, (void*)4 );
-	CU_ASSERT_EQUAL( list_count( &arr ), 4 );
-	list_push_head( &arr, (void*)5 );
-	CU_ASSERT_EQUAL( list_count( &arr ), 5 );
-	list_deinitialize( &arr );
+	list_t list;
+	MEMSET(&list, 0, sizeof(list_t));
+	list_initialize( &list, 1, NULL );
+	list_push_head( &list, (void*)1 );
+	CU_ASSERT_EQUAL( list_count( &list ), 1 );
+	list_push_head( &list, (void*)2 );
+	CU_ASSERT_EQUAL( list_count( &list ), 2 );
+	list_push_head( &list, (void*)3 );
+	CU_ASSERT_EQUAL( list_count( &list ), 3 );
+	list_push_head( &list, (void*)4 );
+	CU_ASSERT_EQUAL( list_count( &list ), 4 );
+	list_push_head( &list, (void*)5 );
+	CU_ASSERT_EQUAL( list_count( &list ), 5 );
+	list_deinitialize( &list );
 }
 
 static void test_list_push_head( void )
@@ -219,42 +223,77 @@ static void test_list_push_head( void )
 	int_t j;
 	uint32_t size;
 	uint32_t multiple;
-	list_t arr;
+	list_t list;
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
-		MEMSET( &arr, 0, sizeof(list_t) );
+		MEMSET( &list, 0, sizeof(list_t) );
 		size = (rand() % SIZEMAX);
 		multiple = (rand() % MULTIPLE);
-		list_initialize( &arr, size, NULL );
+		list_initialize( &list, size, NULL );
 
 		for ( j = 0; j < (size * multiple); j++ )
 		{
-			list_push_head( &arr, (void*)j );
+			list_push_head( &list, (void*)j );
 		}
 
-		CU_ASSERT_EQUAL( list_count( &arr ), (size * multiple) );
-		CU_ASSERT_EQUAL( arr.pfn, NULL );
+		CU_ASSERT_EQUAL( list_count( &list ), (size * multiple) );
+		CU_ASSERT_EQUAL( list.dfn, NULL );
 
-		list_deinitialize( &arr );
+		list_deinitialize( &list );
 	}
 }
 
 static void test_list_push_tail_1( void )
 {
-	list_t arr;
-	list_initialize( &arr, 1, NULL );
-	list_push_tail( &arr, (void*)1 );
-	CU_ASSERT_EQUAL( list_count( &arr ), 1 );
-	list_push_tail( &arr, (void*)2 );
-	CU_ASSERT_EQUAL( list_count( &arr ), 2 );
-	list_push_tail( &arr, (void*)3 );
-	CU_ASSERT_EQUAL( list_count( &arr ), 3 );
-	list_push_tail( &arr, (void*)4 );
-	CU_ASSERT_EQUAL( list_count( &arr ), 4 );
-	list_push_tail( &arr, (void*)5 );
-	CU_ASSERT_EQUAL( list_count( &arr ), 5 );
-	list_deinitialize( &arr );
+	list_t list;
+	list_initialize( &list, 1, NULL );
+	list_push_tail( &list, (void*)1 );
+	CU_ASSERT_EQUAL( list_count( &list ), 1 );
+	list_push_tail( &list, (void*)2 );
+	CU_ASSERT_EQUAL( list_count( &list ), 2 );
+	list_push_tail( &list, (void*)3 );
+	CU_ASSERT_EQUAL( list_count( &list ), 3 );
+	list_push_tail( &list, (void*)4 );
+	CU_ASSERT_EQUAL( list_count( &list ), 4 );
+	list_push_tail( &list, (void*)5 );
+	CU_ASSERT_EQUAL( list_count( &list ), 5 );
+	list_deinitialize( &list );
+}
+
+static void test_list_push_tail_small( void )
+{
+	int_t j;
+	list_t list;
+	list_itr_t end;
+	list_itr_t itr;
+
+	MEMSET( &list, 0, sizeof(list_t) );
+	list_initialize( &list, 4, NULL );
+
+	/* push integers to the tail */
+	for ( j = 0; j < 8; j++ )
+	{
+		list_push_tail( &list, (void*)j );
+	}
+
+	/* walk the list to make sure the values are what we expect */
+	end = list_itr_end( &list );
+	j = 0;
+	for ( itr = list_itr_begin( &list ); itr != end; itr = list_itr_next( &list, itr ) )
+	{
+		if ( (int_t)list_itr_get( &list, itr ) != j )
+		{
+			NOTICE("[%d] %d != %d\n", (int_t)itr, (int_t)list_itr_get( &list, itr ), j );
+		}
+		CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), j );
+		j++;
+	}
+
+	CU_ASSERT_EQUAL( list_count( &list ), 8 );
+	CU_ASSERT_EQUAL( list.dfn, NULL );
+
+	list_deinitialize( &list );
 }
 
 static void test_list_push_tail( void )
@@ -263,35 +302,40 @@ static void test_list_push_tail( void )
 	int_t j;
 	uint32_t size;
 	uint32_t multiple;
-	list_t arr;
+	list_t list;
+	list_itr_t end;
 	list_itr_t itr;
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
-		MEMSET( &arr, 0, sizeof(list_t) );
+		MEMSET( &list, 0, sizeof(list_t) );
 		size = (rand() % SIZEMAX);
 		multiple = (rand() % MULTIPLE);
-		list_initialize( &arr, size, NULL );
+		list_initialize( &list, size, NULL );
 
 		/* push integers to the tail */
 		for ( j = 0; j < (size * multiple); j++ )
 		{
-			list_push_tail( &arr, (void*)j );
+			list_push_tail( &list, (void*)j );
 		}
 
 		/* walk the list to make sure the values are what we expect */
-		itr = list_itr_begin( &arr );
+		end = list_itr_end( &list );
 		j = 0;
-		for ( ; itr != list_itr_end( &arr ); itr = list_itr_next( &arr, itr ) )
+		for ( itr = list_itr_begin( &list ); itr != end; itr = list_itr_next( &list, itr ) )
 		{
-			CU_ASSERT_EQUAL( (int_t)list_itr_get( &arr, itr ), j );
+			if ( (int_t)list_itr_get( &list, itr ) != j )
+			{
+				NOTICE("[%d] %d != %d\n", (int_t)itr, (int_t)list_itr_get( &list, itr ), j );
+			}
+			CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), j );
 			j++;
 		}
 
-		CU_ASSERT_EQUAL( list_count( &arr ), (size * multiple) );
-		CU_ASSERT_EQUAL( arr.pfn, NULL );
+		CU_ASSERT_EQUAL( list_count( &list ), (size * multiple) );
+		CU_ASSERT_EQUAL( list.dfn, NULL );
 
-		list_deinitialize( &arr );
+		list_deinitialize( &list );
 	}
 }
 
@@ -302,39 +346,39 @@ static void test_list_push_dynamic( void )
 	void ** t;
 	uint32_t size;
 	uint32_t multiple;
-	list_t arr;
+	list_t list;
 	list_itr_t itr;
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
-		MEMSET( &arr, 0, sizeof(list_t) );
+		MEMSET( &list, 0, sizeof(list_t) );
 		size = (rand() % SIZEMAX);
 		multiple = (rand() % MULTIPLE);
-		list_initialize( &arr, size, FREE );
+		list_initialize( &list, size, FREE );
 
 		for ( j = 0; j < (size * multiple); j++ )
 		{
 			p = CALLOC( (rand() % SIZEMAX) + 1, sizeof(uint8_t) );
-			list_push_tail( &arr, p );
-			CU_ASSERT_EQUAL( list_count( &arr ), (j + 1) );
+			list_push_tail( &list, p );
+			CU_ASSERT_EQUAL( list_count( &list ), (j + 1) );
 		}
 
-		CU_ASSERT_EQUAL( list_count( &arr ), (size * multiple) );
-		CU_ASSERT_EQUAL( arr.pfn, FREE );
+		CU_ASSERT_EQUAL( list_count( &list ), (size * multiple) );
+		CU_ASSERT_EQUAL( list.dfn, FREE );
 
-		list_deinitialize( &arr );
+		list_deinitialize( &list );
 	}
 }
 
 static void test_list_push_zero_initial_size( void )
 {
-	list_t arr;
-	list_initialize( &arr, 0, NULL );
-	CU_ASSERT_EQUAL( list_count( &arr ), 0 );
-	CU_ASSERT_EQUAL( arr.pfn, NULL );
-	list_push_tail( &arr, (void*)0 );
-	CU_ASSERT_EQUAL( list_count( &arr ), 1 );
-	list_deinitialize( &arr );
+	list_t list;
+	list_initialize( &list, 0, NULL );
+	CU_ASSERT_EQUAL( list_count( &list ), 0 );
+	CU_ASSERT_EQUAL( list.dfn, NULL );
+	list_push_tail( &list, (void*)0 );
+	CU_ASSERT_EQUAL( list_count( &list ), 1 );
+	list_deinitialize( &list );
 }
 
 static void test_list_pop_head_static( void )
@@ -342,46 +386,46 @@ static void test_list_pop_head_static( void )
 	int_t i, j;
 	uint32_t size;
 	uint32_t multiple;
-	list_t arr;
+	list_t list;
 	list_itr_t itr;
 
 	size = (rand() % SIZEMAX);
-	list_initialize( &arr, size, NULL );
+	list_initialize( &list, size, NULL );
 	multiple = (rand() % MULTIPLE);
 	for( i = 0; i < (size * multiple); i++ )
 	{
-		list_push_tail( &arr, (void*)i );
-		CU_ASSERT_EQUAL( list_count( &arr ), (i + 1) );
+		list_push_tail( &list, (void*)i );
+		CU_ASSERT_EQUAL( list_count( &list ), (i + 1) );
 	}
 
-	CU_ASSERT_EQUAL( list_count( &arr ), (size * multiple) );
+	CU_ASSERT_EQUAL( list_count( &list ), (size * multiple) );
 
 	/* walk the list to make sure the values are what we expect */
-	itr = list_itr_begin( &arr );
+	itr = list_itr_begin( &list );
 	i = 0;
-	for ( ; itr != list_itr_end( &arr ); itr = list_itr_next( &arr, itr ) )
+	for ( ; itr != list_itr_end( &list ); itr = list_itr_next( &list, itr ) )
 	{
-		CU_ASSERT_EQUAL( (int_t)list_itr_get( &arr, itr ), i );
+		CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), i );
 		i++;
 	}
 
-	itr = list_itr_rbegin( &arr );
+	itr = list_itr_rbegin( &list );
 	i = ((size * multiple) - 1);
-	for ( ; itr != list_itr_rend( &arr ); itr = list_itr_rnext( &arr, itr ) )
+	for ( ; itr != list_itr_rend( &list ); itr = list_itr_rnext( &list, itr ) )
 	{
-		CU_ASSERT_EQUAL( (int_t)list_itr_get( &arr, itr ), i );
+		CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), i );
 		i--;
 	}
 
 	for ( i = 0; i < (size * multiple); i++ )
 	{
-		j = (int_t)list_get_head( &arr );
-		list_pop_head( &arr );
+		j = (int_t)list_get_head( &list );
+		list_pop_head( &list );
 		CU_ASSERT_EQUAL( j, i );
 	}
 
-	CU_ASSERT_EQUAL( list_count( &arr ), 0 );
-	list_deinitialize( &arr );
+	CU_ASSERT_EQUAL( list_count( &list ), 0 );
+	list_deinitialize( &list );
 }
 
 static void test_list_pop_tail_static( void )
@@ -389,59 +433,59 @@ static void test_list_pop_tail_static( void )
 	int_t i, j;
 	uint32_t size;
 	uint32_t multiple;
-	list_t arr;
+	list_t list;
 	list_itr_t itr;
 
 	size = (rand() % SIZEMAX);
-	list_initialize( &arr, size, NULL );
+	list_initialize( &list, size, NULL );
 	multiple = (rand() % MULTIPLE);
 	for( i = 0; i < (size * multiple); i++ )
 	{
-		list_push_head( &arr, (void*)i );
-		CU_ASSERT_EQUAL( list_count( &arr ), (i + 1) );
-		CU_ASSERT_EQUAL( (int_t)list_get_head(&arr), i );
+		list_push_head( &list, (void*)i );
+		CU_ASSERT_EQUAL( list_count( &list ), (i + 1) );
+		CU_ASSERT_EQUAL( (int_t)list_get_head(&list), i );
 		if ( i > 0 )
 		{
 			/* make sure the previous item in the list is what we expect */
-			itr = list_itr_begin( &arr );
-			itr = list_itr_next( &arr, itr );
-			/*CU_ASSERT_EQUAL( (int)list_itr_get(&arr, itr), (i - 1) );*/
-			if ( (i - 1) != (int_t)list_itr_get(&arr, itr) )
+			itr = list_itr_begin( &list );
+			itr = list_itr_next( &list, itr );
+			/*CU_ASSERT_EQUAL( (int)list_itr_get(&list, itr), (i - 1) );*/
+			if ( (i - 1) != (int_t)list_itr_get(&list, itr) )
 			{
-				itr = list_itr_begin( &arr );
-				itr = list_itr_next( &arr, itr );
-				j = (int_t)list_itr_get( &arr, itr );
+				itr = list_itr_begin( &list );
+				itr = list_itr_next( &list, itr );
+				j = (int_t)list_itr_get( &list, itr );
 			}
 		}
 	}
 	
-	CU_ASSERT_EQUAL( list_count( &arr ), (size * multiple) );
+	CU_ASSERT_EQUAL( list_count( &list ), (size * multiple) );
 	/* walk the list to make sure the values are what we expect */
-	itr = list_itr_begin( &arr );
+	itr = list_itr_begin( &list );
 	i = ((size * multiple) - 1);
-	for ( ; itr != list_itr_end( &arr ); itr = list_itr_next( &arr, itr ) )
+	for ( ; itr != list_itr_end( &list ); itr = list_itr_next( &list, itr ) )
 	{
-		CU_ASSERT_EQUAL( (int_t)list_itr_get( &arr, itr ), i );
+		CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), i );
 		i--;
 	}
 
-	itr = list_itr_rbegin( &arr );
+	itr = list_itr_rbegin( &list );
 	i = 0;
-	for ( ; itr != list_itr_rend( &arr ); itr = list_itr_rnext( &arr, itr ) )
+	for ( ; itr != list_itr_rend( &list ); itr = list_itr_rnext( &list, itr ) )
 	{
-		CU_ASSERT_EQUAL( (int_t)list_itr_get( &arr, itr ), i );
+		CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), i );
 		i++;
 	}
 
 	for ( i = 0; i < (size * multiple); i++ )
 	{
-		j = (int_t)list_get_tail( &arr );
-		list_pop_tail( &arr );
+		j = (int_t)list_get_tail( &list );
+		list_pop_tail( &list );
 		CU_ASSERT_EQUAL( j, i );
 	}
 
-	CU_ASSERT_EQUAL( list_count( &arr ), 0 );
-	list_deinitialize( &arr );
+	CU_ASSERT_EQUAL( list_count( &list ), 0 );
+	list_deinitialize( &list );
 }
 
 static void test_list_clear( void )
@@ -449,44 +493,44 @@ static void test_list_clear( void )
 	int_t i;
 	uint32_t size;
 	uint32_t multiple;
-	list_t arr;
+	list_t list;
 
 	size = (rand() % SIZEMAX);
-	list_initialize( &arr, size, NULL );
+	list_initialize( &list, size, NULL );
 	multiple = (rand() % MULTIPLE);
 	for( i = 0; i < (size * multiple); i++ )
 	{
-		list_push_head( &arr, (void*)i );
-		CU_ASSERT_EQUAL( list_count( &arr ), (i + 1) );
+		list_push_head( &list, (void*)i );
+		CU_ASSERT_EQUAL( list_count( &list ), (i + 1) );
 	}
 
-	CU_ASSERT_EQUAL( list_count( &arr ), (size * multiple) );
+	CU_ASSERT_EQUAL( list_count( &list ), (size * multiple) );
 
-	list_clear( &arr );
+	list_clear( &list );
 
-	CU_ASSERT_EQUAL( list_count( &arr ), 0 );
-	list_deinitialize( &arr );
+	CU_ASSERT_EQUAL( list_count( &list ), 0 );
+	list_deinitialize( &list );
 }
 
 static void test_list_clear_empty( void )
 {
 	int i;
 	uint32_t size;
-	list_t arr;
+	list_t list;
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
-		MEMSET( &arr, 0, sizeof(list_t) );
+		MEMSET( &list, 0, sizeof(list_t) );
 		size = (rand() % SIZEMAX);
-		list_initialize( &arr, size, NULL );
+		list_initialize( &list, size, NULL );
 
-		CU_ASSERT_EQUAL( list_count( &arr ), 0 );
-		CU_ASSERT_EQUAL( arr.buffer_size, size );
-		CU_ASSERT_EQUAL( arr.pfn, NULL );
+		CU_ASSERT_EQUAL( list_count( &list ), 0 );
+		CU_ASSERT_EQUAL( list.size, size );
+		CU_ASSERT_EQUAL( list.dfn, NULL );
 
-		list_clear( &arr );
+		list_clear( &list );
 
-		list_deinitialize( &arr );
+		list_deinitialize( &list );
 	}
 }
 
@@ -494,55 +538,55 @@ static void test_list_new_fail( void )
 {
 	int i;
 	uint32_t size;
-	list_t * arr = NULL;
+	list_t * list = NULL;
 
 	/* turn on the flag that forces grows to fail */
-	list_set_fail_grow( TRUE );
+	fail_list_grow = TRUE;
 
 	size = (rand() % SIZEMAX);
-	arr = list_new( size, NULL );
+	list = list_new( size, NULL );
 
-	CU_ASSERT_PTR_NULL( arr );
-	CU_ASSERT_EQUAL( list_count( arr ), 0 );
+	CU_ASSERT_PTR_NULL( list );
+	CU_ASSERT_EQUAL( list_count( list ), 0 );
 	
-	list_set_fail_grow( FALSE );
+	fail_list_grow = FALSE;
 }
 
 static void test_list_init_fail( void )
 {
 	int i;
 	uint32_t size;
-	list_t arr;
+	list_t list;
 
 	/* turn on the flag that forces grows to fail */
-	list_set_fail_grow( TRUE );
+	fail_list_grow = TRUE;
 
-	MEMSET( &arr, 0, sizeof(list_t) );
+	MEMSET( &list, 0, sizeof(list_t) );
 	size = (rand() % SIZEMAX);
-	list_initialize( &arr, size, NULL );
+	list_initialize( &list, size, NULL );
 
-	CU_ASSERT_EQUAL( list_count( &arr ), 0 );
+	CU_ASSERT_EQUAL( list_count( &list ), 0 );
 
-	list_set_fail_grow( FALSE );
+	fail_list_grow = FALSE;
 }
 
 static void test_list_push_fail( void )
 {
 	int ret;
-	list_t arr;
-	MEMSET(&arr, 0, sizeof(list_t));
-	list_initialize( &arr, 0, NULL );
+	list_t list;
+	MEMSET(&list, 0, sizeof(list_t));
+	list_initialize( &list, 0, NULL );
 
 	/* turn on the flag that forces grows to fail */
-	list_set_fail_grow( TRUE );
+	fail_list_grow = TRUE;
 
-	ret = list_push_head( &arr, (void*)1 )
+	ret = list_push_head( &list, (void*)1 )
 	CU_ASSERT_EQUAL( ret, FALSE );
-	CU_ASSERT_EQUAL( list_count( &arr ), 0 );
+	CU_ASSERT_EQUAL( list_count( &list ), 0 );
 	
-	list_deinitialize( &arr );
+	list_deinitialize( &list );
 	
-	list_set_fail_grow( FALSE );
+	fail_list_grow = FALSE;
 }
 
 static void test_list_push_middle( void )
@@ -550,35 +594,35 @@ static void test_list_push_middle( void )
 	int_t i, j;
 	uint32_t size;
 	uint32_t multiple;
-	list_t arr;
+	list_t list;
 	list_itr_t itr;
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
-		MEMSET( &arr, 0, sizeof(list_t) );
+		MEMSET( &list, 0, sizeof(list_t) );
 		size = (rand() % SIZEMAX);
 		multiple = (rand() % MULTIPLE);
-		list_initialize( &arr, size, NULL );
+		list_initialize( &list, size, NULL );
 
 		for ( j = 0; j < (size * multiple); j++ )
 		{
-			list_push_head( &arr, (void*)j );
+			list_push_head( &list, (void*)j );
 		}
 
-		itr = list_itr_begin( &arr );
+		itr = list_itr_begin( &list );
 		for ( j = 0; j < (size * multiple); j++ )
 		{
 			if ( j & 0x1 )
 			{
-				list_push( &arr, (void*)j, itr );
+				list_push( &list, (void*)j, itr );
 			}
-			itr = list_itr_next( &arr, itr );
+			itr = list_itr_next( &list, itr );
 		}
 
-		CU_ASSERT_EQUAL( list_count( &arr ), (((size*multiple) & ~0x1) / 2) + (size * multiple) );
-		CU_ASSERT_EQUAL( arr.pfn, NULL );
+		CU_ASSERT_EQUAL( list_count( &list ), (((size*multiple) & ~0x1) / 2) + (size * multiple) );
+		CU_ASSERT_EQUAL( list.dfn, NULL );
 
-		list_deinitialize( &arr );
+		list_deinitialize( &list );
 	}
 }
 
@@ -587,45 +631,45 @@ static void test_list_pop_middle( void )
 	int_t i, j;
 	uint32_t size;
 	uint32_t multiple;
-	list_t arr;
+	list_t list;
 	list_itr_t itr;
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
-		MEMSET( &arr, 0, sizeof(list_t) );
+		MEMSET( &list, 0, sizeof(list_t) );
 		size = (rand() % SIZEMAX);
 		multiple = (rand() % MULTIPLE);
-		list_initialize( &arr, size, NULL );
+		list_initialize( &list, size, NULL );
 
 		for ( j = 0; j < (size * multiple); j++ )
 		{
-			list_push_head( &arr, (void*)j );
+			list_push_head( &list, (void*)j );
 		}
 
-		itr = list_itr_begin( &arr );
-		for ( j = 0; j < (size * multiple); j++ )
-		{
-			if ( j & 0x1 )
-			{
-				list_push( &arr, (void*)j, itr );
-			}
-			itr = list_itr_next( &arr, itr );
-		}
-
-		itr = list_itr_begin( &arr );
+		itr = list_itr_begin( &list );
 		for ( j = 0; j < (size * multiple); j++ )
 		{
 			if ( j & 0x1 )
 			{
-				itr = list_pop( &arr, itr );
+				list_push( &list, (void*)j, itr );
 			}
-			itr = list_itr_next( &arr, itr );
+			itr = list_itr_next( &list, itr );
 		}
 
-		CU_ASSERT_EQUAL( list_count( &arr ), (size * multiple) );
-		CU_ASSERT_EQUAL( arr.pfn, NULL );
+		itr = list_itr_begin( &list );
+		for ( j = 0; j < (size * multiple); j++ )
+		{
+			if ( j & 0x1 )
+			{
+				itr = list_pop( &list, itr );
+			}
+			itr = list_itr_next( &list, itr );
+		}
 
-		list_deinitialize( &arr );
+		CU_ASSERT_EQUAL( list_count( &list ), (size * multiple) );
+		CU_ASSERT_EQUAL( list.dfn, NULL );
+
+		list_deinitialize( &list );
 	}
 }
 
@@ -634,39 +678,38 @@ static void test_list_get_middle( void )
 	int_t i, j, k;
 	uint32_t size;
 	uint32_t multiple;
-	list_t arr;
+	list_t list;
 	list_itr_t itr;
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
-		MEMSET( &arr, 0, sizeof(list_t) );
+		MEMSET( &list, 0, sizeof(list_t) );
 		size = (rand() % SIZEMAX);
 		multiple = (rand() % MULTIPLE);
-		list_initialize( &arr, size, NULL );
+		list_initialize( &list, size, NULL );
 
 		for ( j = 0; j < (size * multiple); j++ )
 		{
-			list_push_tail( &arr, (void*)j );
+			list_push_tail( &list, (void*)j );
 		}
 
-		itr = list_itr_begin( &arr );
+		itr = list_itr_begin( &list );
 		for ( j = 0; j < (size * multiple); j++ )
 		{
 			if ( j & 0x1 )
 			{
-				k = (int_t)list_itr_get( &arr, itr );
+				k = (int_t)list_itr_get( &list, itr );
 				CU_ASSERT_EQUAL( j, k );
 			}
-			itr = list_itr_next( &arr, itr );
+			itr = list_itr_next( &list, itr );
 		}
 
-		CU_ASSERT_EQUAL( list_count( &arr ), (size * multiple) );
-		CU_ASSERT_EQUAL( arr.pfn, NULL );
+		CU_ASSERT_EQUAL( list_count( &list ), (size * multiple) );
+		CU_ASSERT_EQUAL( list.dfn, NULL );
 
-		list_deinitialize( &arr );
+		list_deinitialize( &list );
 	}
 }
-#endif
 
 /*TODO:
  *	- threading tests
@@ -687,13 +730,13 @@ static CU_pSuite add_list_tests( CU_pSuite pSuite )
 {
 	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of list", test_list_newdel), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "init/deinit of list", test_list_initdeinit), NULL );
-#if 0
 	CHECK_PTR_RET( CU_add_test( pSuite, "grow of static list", test_list_static_grow), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "grow of dynamic list", test_list_dynamic_grow), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "empty list itr tests", test_list_empty_iterator), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "push one head tests", test_list_push_head_1), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "push head tests", test_list_push_head), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "push one tail tests", test_list_push_tail_1), NULL );
+	CHECK_PTR_RET( CU_add_test( pSuite, "push tail small", test_list_push_tail_small), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "push tail tests", test_list_push_tail), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "push dynamic memory", test_list_push_dynamic), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "push to zero initial size", test_list_push_zero_initial_size), NULL );
@@ -707,7 +750,7 @@ static CU_pSuite add_list_tests( CU_pSuite pSuite )
 	CHECK_PTR_RET( CU_add_test( pSuite, "list push middle", test_list_push_middle), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "list pop middle", test_list_pop_middle), NULL );
 	CHECK_PTR_RET( CU_add_test( pSuite, "list get middle", test_list_get_middle), NULL );
-#endif
+	
 	return pSuite;
 }
 

@@ -112,6 +112,31 @@ uint_t list_count( list_t const * const list )
 	return list->count;
 }
 
+int list_reserve( list_t * const list, uint const amount )
+{
+	CHECK_PTR_RET( list, FALSE );
+
+	if ( amount > list->size )
+	{
+		return list_grow( list, (amount - list->size) );
+	}
+
+	return TRUE;
+}
+
+void list_clear( list_t * const list )
+{
+	delete_fn dfn = NULL;
+	CHECK_PTR(list);
+
+	/* remember the delete function pointer */
+	dfn = list->dfn;
+
+	/* deinit, then init the list */
+	list_deinitialize( list );
+	list_initialize( list, 0, dfn );
+}
+
 list_itr_t list_itr_begin( list_t const * const list )
 {
 	CHECK_PTR_RET( list, list_itr_end_t );
@@ -228,19 +253,6 @@ void * list_itr_get( list_t const * const list, list_itr_t const itr )
 	return ITEM_AT( list->items, itr )->data;
 }
 
-void list_clear( list_t * const list )
-{
-	delete_fn dfn = NULL;
-	CHECK_PTR(list);
-
-	/* remember the delete function pointer */
-	dfn = list->dfn;
-
-	/* deinit, then init the list */
-	list_deinitialize( list );
-	list_initialize( list, 0, dfn );
-}
-
 
 /********** PRIVATE **********/
 
@@ -273,6 +285,9 @@ static list_itr_t insert_item( list_item_t * const items,
 							   list_itr_t const itr, 
 							   list_itr_t const item )
 {
+	list_item_t *cur_item;
+	list_item_t *ins_item;
+	list_item_t *prev_item;
 	list_itr_t cur = itr;
 	CHECK_PTR_RET( items, list_itr_end_t );
 	CHECK_RET( item != list_itr_end_t, list_itr_end_t );
@@ -281,10 +296,21 @@ static list_itr_t insert_item( list_item_t * const items,
 	if ( cur == list_itr_end_t )
 		cur = item;
 
+	cur_item = ITEM_AT( items, cur );
+	ins_item = ITEM_AT( items, item );
+	prev_item = ITEM_AT( items, cur_item->prev );
+
+	ins_item->next = cur;
+	prev_item->next = item;
+	ins_item->prev = cur_item->prev;
+	cur_item->prev = item;
+
+	/*
 	ITEM_AT( items, item )->next = cur;
 	ITEM_AT( items, ITEM_AT( items, cur )->prev )->next = item;
 	ITEM_AT( items, item )->prev = ITEM_AT( items, cur )->prev;
 	ITEM_AT( items, cur )->prev = item;
+	*/
 
 	return cur;
 }

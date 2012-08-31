@@ -31,27 +31,27 @@
             <td class="headerValue">cutil test coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">121</td>
+            <td class="headerCovTableEntry">0</td>
             <td class="headerCovTableEntry">149</td>
-            <td class="headerCovTableEntryMed">81.2 %</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-08-29</td>
+            <td class="headerValue">2012-08-31</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntry">0</td>
             <td class="headerCovTableEntry">17</td>
-            <td class="headerCovTableEntryLo">70.6 %</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
           </tr>
           <tr>
             <td></td>
             <td></td>
             <td></td>
             <td class="headerItem">Branches:</td>
-            <td class="headerCovTableEntry">48</td>
-            <td class="headerCovTableEntry">98</td>
-            <td class="headerCovTableEntryLo">49.0 %</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">100</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -103,8 +103,8 @@
 <span class="lineNum">      32 </span>                :            : 
 <span class="lineNum">      33 </span>                :            : #include &quot;debug.h&quot;
 <span class="lineNum">      34 </span>                :            : #include &quot;macros.h&quot;
-<span class="lineNum">      35 </span>                :            : #include &quot;array.h&quot;
-<span class="lineNum">      36 </span>                :            : #include &quot;events.h&quot;
+<span class="lineNum">      35 </span>                :            : #include &quot;events.h&quot;
+<span class="lineNum">      36 </span>                :            : #include &quot;list.h&quot;
 <span class="lineNum">      37 </span>                :            : #include &quot;privileges.h&quot;
 <span class="lineNum">      38 </span>                :            : #include &quot;sanitize.h&quot;
 <span class="lineNum">      39 </span>                :            : #include &quot;aiofd.h&quot;
@@ -125,31 +125,31 @@
 <span class="lineNum">      54 </span>                :            :     void *          user_data;      /* passed to ops callbacks */
 <a name="55"><span class="lineNum">      55 </span>                :            : };</a>
 <span class="lineNum">      56 </span>                :            : 
-<span class="lineNum">      57 </span>                :<span class="lineCov">        257 : static evt_ret_t sigchld_cb( evt_loop_t * const el,</span>
+<span class="lineNum">      57 </span>                :<span class="lineNoCov">          0 : static evt_ret_t sigchld_cb( evt_loop_t * const el,</span>
 <span class="lineNum">      58 </span>                :            :                              evt_t * const evt,
 <span class="lineNum">      59 </span>                :            :                              evt_params_t * const params,
 <span class="lineNum">      60 </span>                :            :                              void * user_data )
 <span class="lineNum">      61 </span>                :            : {
-<span class="lineNum">      62 </span>                :<span class="lineCov">        257 :     child_process_t * child = (child_process_t*)user_data;</span>
-<span class="lineNum">      63 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 257 times"> + </span>]:<span class="lineCov">        257 :     CHECK_PTR_RET( child, EVT_BAD_PTR );</span>
-<span class="lineNum">      64 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 257 times"> + </span>]:<span class="lineCov">        257 :     CHECK_RET( (child-&gt;pid == params-&gt;child_params.pid), EVT_ERROR );</span>
+<span class="lineNum">      62 </span>                :<span class="lineNoCov">          0 :     child_process_t * child = (child_process_t*)user_data;</span>
+<span class="lineNum">      63 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( child, EVT_BAD_PTR );</span>
+<span class="lineNum">      64 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( (child-&gt;pid == params-&gt;child_params.pid), EVT_ERROR );</span>
 <span class="lineNum">      65 </span>                :            :     
 <span class="lineNum">      66 </span>                :            :     DEBUG( &quot;received SIGCHLD\n&quot; );
 <span class="lineNum">      67 </span>                :            : 
 <span class="lineNum">      68 </span>                :            :     /* execute the exit_fn callback */
-<span class="lineNum">      69 </span>        [<span class="branchCov" title="Branch 0 was taken 257 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        257 :     if ( child-&gt;ops.exit_fn != NULL )</span>
+<span class="lineNum">      69 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( child-&gt;ops.exit_fn != NULL )</span>
 <span class="lineNum">      70 </span>                :            :     {
 <span class="lineNum">      71 </span>                :            :         DEBUG( &quot;calling child process exit callback\n&quot; );
-<span class="lineNum">      72 </span>                :<span class="lineCov">        257 :         (*(child-&gt;ops.exit_fn))( child, </span>
+<span class="lineNum">      72 </span>                :<span class="lineNoCov">          0 :         (*(child-&gt;ops.exit_fn))( child, </span>
 <span class="lineNum">      73 </span>                :            :                                  params-&gt;child_params.rpid, 
 <span class="lineNum">      74 </span>                :            :                                  params-&gt;child_params.rstatus,
 <span class="lineNum">      75 </span>                :            :                                  child-&gt;user_data );
 <span class="lineNum">      76 </span>                :            :     }
 <span class="lineNum">      77 </span>                :            : 
 <span class="lineNum">      78 </span>                :            :     /* record that the child process has exited */
-<span class="lineNum">      79 </span>                :<span class="lineCov">        257 :     child-&gt;exited = TRUE;</span>
+<span class="lineNum">      79 </span>                :<span class="lineNoCov">          0 :     child-&gt;exited = TRUE;</span>
 <span class="lineNum">      80 </span>                :            : 
-<span class="lineNum">      81 </span>                :<span class="lineCov">        257 :     return EVT_OK;</span>
+<span class="lineNum">      81 </span>                :<span class="lineNoCov">          0 :     return EVT_OK;</span>
 <span class="lineNum">      82 </span>                :            : }
 <a name="83"><span class="lineNum">      83 </span>                :            : </a>
 <span class="lineNum">      84 </span>                :            : 
@@ -165,7 +165,7 @@
 <span class="lineNum">      94 </span>                :            : 
 <span class="lineNum">      95 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( buffer == NULL )</span>
 <span class="lineNum">      96 </span>                :            :     {
-<span class="lineNum">      97 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :         if ( array_size( &amp;(child-&gt;aiofd.wbuf) ) == 0 )</span>
+<span class="lineNum">      97 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :         if ( list_count( &amp;(child-&gt;aiofd.wbuf) ) == 0 )</span>
 <span class="lineNum">      98 </span>                :            :         {
 <span class="lineNum">      99 </span>                :            :             /* stop the write event processing until we have data to write */
 <span class="lineNum">     100 </span>                :<span class="lineNoCov">          0 :             return FALSE;</span>
@@ -203,38 +203,38 @@
 <span class="lineNum">     132 </span>                :            : }
 <a name="133"><span class="lineNum">     133 </span>                :            : </a>
 <span class="lineNum">     134 </span>                :            : 
-<span class="lineNum">     135 </span>                :<span class="lineCov">        128 : static int child_aiofd_read_fn( aiofd_t * const aiofd,</span>
+<span class="lineNum">     135 </span>                :<span class="lineNoCov">          0 : static int child_aiofd_read_fn( aiofd_t * const aiofd,</span>
 <span class="lineNum">     136 </span>                :            :                                 size_t const nread,
 <span class="lineNum">     137 </span>                :            :                                 void * user_data )
 <span class="lineNum">     138 </span>                :            : {
-<span class="lineNum">     139 </span>                :<span class="lineCov">        128 :     child_process_t * child = (child_process_t*)user_data;</span>
-<span class="lineNum">     140 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     CHECK_PTR_RET( aiofd, FALSE );</span>
-<span class="lineNum">     141 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     CHECK_PTR_RET( child, FALSE );</span>
+<span class="lineNum">     139 </span>                :<span class="lineNoCov">          0 :     child_process_t * child = (child_process_t*)user_data;</span>
+<span class="lineNum">     140 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( aiofd, FALSE );</span>
+<span class="lineNum">     141 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( child, FALSE );</span>
 <span class="lineNum">     142 </span>                :            : 
-<span class="lineNum">     143 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     if ( nread == 0 )</span>
+<span class="lineNum">     143 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( nread == 0 )</span>
 <span class="lineNum">     144 </span>                :            :     {
 <span class="lineNum">     145 </span>                :            :         /* return FALSE to turn off the read event processing */
 <span class="lineNum">     146 </span>                :<span class="lineNoCov">          0 :         return FALSE;</span>
 <span class="lineNum">     147 </span>                :            :     }
 <span class="lineNum">     148 </span>                :            : 
-<span class="lineNum">     149 </span>        [<span class="branchCov" title="Branch 0 was taken 128 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        128 :     if ( child-&gt;ops.read_fn != NULL )</span>
+<span class="lineNum">     149 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( child-&gt;ops.read_fn != NULL )</span>
 <span class="lineNum">     150 </span>                :            :     {
-<span class="lineNum">     151 </span>                :<span class="lineCov">        128 :         (*(child-&gt;ops.read_fn))( child, nread, child-&gt;user_data );</span>
+<span class="lineNum">     151 </span>                :<span class="lineNoCov">          0 :         (*(child-&gt;ops.read_fn))( child, nread, child-&gt;user_data );</span>
 <span class="lineNum">     152 </span>                :            :     }
 <span class="lineNum">     153 </span>                :            : 
-<span class="lineNum">     154 </span>                :<span class="lineCov">        128 :     return TRUE;</span>
+<span class="lineNum">     154 </span>                :<span class="lineNoCov">          0 :     return TRUE;</span>
 <span class="lineNum">     155 </span>                :            : }
 <a name="156"><span class="lineNum">     156 </span>                :            : </a>
 <span class="lineNum">     157 </span>                :            : 
-<span class="lineNum">     158 </span>                :<span class="lineCov">        385 : static pid_t safe_fork( int keepfds[], int nfds )</span>
+<span class="lineNum">     158 </span>                :<span class="lineNoCov">          0 : static pid_t safe_fork( int keepfds[], int nfds )</span>
 <span class="lineNum">     159 </span>                :            : {
 <span class="lineNum">     160 </span>                :            :     pid_t childpid;
 <span class="lineNum">     161 </span>                :            : 
 <span class="lineNum">     162 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     163 </span>        [<span class="branchCov" title="Branch 0 was taken 128 times"> + </span><span class="branchCov" title="Branch 1 was taken 257 times"> + </span>]:<span class="lineCov">        385 :     if ( fail_fork == TRUE )</span>
-<span class="lineNum">     164 </span>                :<span class="lineCov">        128 :         childpid = -1;</span>
+<span class="lineNum">     163 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( fail_fork == TRUE )</span>
+<span class="lineNum">     164 </span>                :<span class="lineNoCov">          0 :         childpid = -1;</span>
 <span class="lineNum">     165 </span>                :            :     else
-<span class="lineNum">     166 </span>                :<span class="lineCov">        257 :         childpid = fork();</span>
+<span class="lineNum">     166 </span>                :<span class="lineNoCov">          0 :         childpid = fork();</span>
 <span class="lineNum">     167 </span>                :            : #else
 <span class="lineNum">     168 </span>                :            :     childpid = fork();
 <span class="lineNum">     169 </span>                :            : #endif
@@ -245,44 +245,44 @@
 <span class="lineNum">     174 </span>                :            : #endif
 <span class="lineNum">     175 </span>                :            : 
 <span class="lineNum">     176 </span>                :            :     /* test for error */
-<span class="lineNum">     177 </span>        [<span class="branchCov" title="Branch 0 was taken 128 times"> + </span><span class="branchCov" title="Branch 1 was taken 514 times"> + </span>]:<span class="lineCov">        642 :     if ( childpid == -1 )</span>
-<span class="lineNum">     178 </span>                :<span class="lineCov">        128 :         return -1;</span>
+<span class="lineNum">     177 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( childpid == -1 )</span>
+<span class="lineNum">     178 </span>                :<span class="lineNoCov">          0 :         return -1;</span>
 <span class="lineNum">     179 </span>                :            : 
 <span class="lineNum">     180 </span>                :            :     /* test for parent process */
-<span class="lineNum">     181 </span>        [<span class="branchCov" title="Branch 0 was taken 257 times"> + </span><span class="branchCov" title="Branch 1 was taken 257 times"> + </span>]:<span class="lineCov">        514 :     if ( childpid != 0 )</span>
-<span class="lineNum">     182 </span>                :<span class="lineCov">        257 :         return childpid; /* PARENT PROCESS RETURNS */</span>
+<span class="lineNum">     181 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( childpid != 0 )</span>
+<span class="lineNum">     182 </span>                :<span class="lineNoCov">          0 :         return childpid; /* PARENT PROCESS RETURNS */</span>
 <span class="lineNum">     183 </span>                :            : 
 <span class="lineNum">     184 </span>                :            :     /* CHILD PROCESS  */
 <span class="lineNum">     185 </span>                :            : 
 <span class="lineNum">     186 </span>                :            :     /* clean up open file descriptors */
-<span class="lineNum">     187 </span>                :<span class="lineCov">        257 :     sanitize_files( keepfds, nfds );</span>
+<span class="lineNum">     187 </span>                :<span class="lineNoCov">          0 :     sanitize_files( keepfds, nfds );</span>
 <span class="lineNum">     188 </span>                :            : 
 <span class="lineNum">     189 </span>                :            :     /* remove root privileges and any unnecessary group privileges permanently */
-<span class="lineNum">     190 </span>                :<span class="lineCov">        257 :     drop_privileges( TRUE );</span>
+<span class="lineNum">     190 </span>                :<span class="lineNoCov">          0 :     drop_privileges( TRUE );</span>
 <span class="lineNum">     191 </span>                :            : 
-<span class="lineNum">     192 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 257 times"> + </span>]:<span class="lineCov">        257 :     ASSERT( childpid == 0 );</span>
+<span class="lineNum">     192 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     ASSERT( childpid == 0 );</span>
 <span class="lineNum">     193 </span>                :            : 
 <span class="lineNum">     194 </span>                :            :     /* this returns 0 */
-<span class="lineNum">     195 </span>                :<span class="lineCov">        642 :     return childpid;</span>
+<span class="lineNum">     195 </span>                :<span class="lineNoCov">          0 :     return childpid;</span>
 <a name="196"><span class="lineNum">     196 </span>                :            : }</a>
 <span class="lineNum">     197 </span>                :            : 
-<span class="lineNum">     198 </span>                :<span class="lineCov">       1154 : static int safe_pipe( int pipefd[2] )</span>
+<span class="lineNum">     198 </span>                :<span class="lineNoCov">          0 : static int safe_pipe( int pipefd[2] )</span>
 <span class="lineNum">     199 </span>                :            : {
 <span class="lineNum">     200 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     201 </span>        [<span class="branchCov" title="Branch 0 was taken 384 times"> + </span><span class="branchCov" title="Branch 1 was taken 770 times"> + </span>]:<span class="lineCov">       1154 :     if ( good_pipes != -1)</span>
+<span class="lineNum">     201 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( good_pipes != -1)</span>
 <span class="lineNum">     202 </span>                :            :     {
-<span class="lineNum">     203 </span>        [<span class="branchCov" title="Branch 0 was taken 256 times"> + </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        384 :         if ( good_pipes == 0 )</span>
-<span class="lineNum">     204 </span>                :<span class="lineCov">        256 :             return -1;</span>
-<span class="lineNum">     205 </span>                :<span class="lineCov">        128 :         good_pipes--;</span>
+<span class="lineNum">     203 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :         if ( good_pipes == 0 )</span>
+<span class="lineNum">     204 </span>                :<span class="lineNoCov">          0 :             return -1;</span>
+<span class="lineNum">     205 </span>                :<span class="lineNoCov">          0 :         good_pipes--;</span>
 <span class="lineNum">     206 </span>                :            :     }
 <span class="lineNum">     207 </span>                :            : #endif
-<span class="lineNum">     208 </span>                :<span class="lineCov">       1154 :     return pipe(pipefd);</span>
+<span class="lineNum">     208 </span>                :<span class="lineNoCov">          0 :     return pipe(pipefd);</span>
 <span class="lineNum">     209 </span>                :            : }
 <span class="lineNum">     210 </span>                :            : 
 <span class="lineNum">     211 </span>                :            : #define PIPE_READ_FD 0
 <a name="212"><span class="lineNum">     212 </span>                :            : #define PIPE_WRITE_FD 1</a>
 <span class="lineNum">     213 </span>                :            : 
-<span class="lineNum">     214 </span>                :<span class="lineCov">        641 : static int child_process_initialize( child_process_t * const child,</span>
+<span class="lineNum">     214 </span>                :<span class="lineNoCov">          0 : static int child_process_initialize( child_process_t * const child,</span>
 <span class="lineNum">     215 </span>                :            :                                      int8_t const * const path,
 <span class="lineNum">     216 </span>                :            :                                      int8_t const * const argv[],
 <span class="lineNum">     217 </span>                :            :                                      int8_t const * const environ[],
@@ -306,182 +306,182 @@
 <span class="lineNum">     235 </span>                :            :         &amp;child_aiofd_error_fn
 <span class="lineNum">     236 </span>                :            :     };
 <span class="lineNum">     237 </span>                :            : 
-<span class="lineNum">     238 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 641 times"> + </span>]:<span class="lineCov">        641 :     CHECK_PTR_RET( child, FALSE );</span>
-<span class="lineNum">     239 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 641 times"> + </span>]:<span class="lineCov">        641 :     CHECK_PTR_RET( path, FALSE );</span>
-<span class="lineNum">     240 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 641 times"> + </span>]:<span class="lineCov">        641 :     CHECK_PTR_RET( argv, FALSE );</span>
-<span class="lineNum">     241 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 641 times"> + </span>]:<span class="lineCov">        641 :     CHECK_PTR_RET( environ, FALSE );</span>
-<span class="lineNum">     242 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 641 times"> + </span>]:<span class="lineCov">        641 :     CHECK_PTR_RET( ops, FALSE );</span>
+<span class="lineNum">     238 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( child, FALSE );</span>
+<span class="lineNum">     239 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( path, FALSE );</span>
+<span class="lineNum">     240 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( argv, FALSE );</span>
+<span class="lineNum">     241 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( environ, FALSE );</span>
+<span class="lineNum">     242 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( ops, FALSE );</span>
 <span class="lineNum">     243 </span>                :            : 
-<span class="lineNum">     244 </span>                :<span class="lineCov">        641 :     MEMSET( (void*)child, 0, sizeof(child_process_t) );</span>
+<span class="lineNum">     244 </span>                :<span class="lineNoCov">          0 :     MEMSET( (void*)child, 0, sizeof(child_process_t) );</span>
 <span class="lineNum">     245 </span>                :            : 
 <span class="lineNum">     246 </span>                :            :     /* store the user context */
-<span class="lineNum">     247 </span>                :<span class="lineCov">        641 :     child-&gt;user_data = user_data;</span>
+<span class="lineNum">     247 </span>                :<span class="lineNoCov">          0 :     child-&gt;user_data = user_data;</span>
 <span class="lineNum">     248 </span>                :            : 
 <span class="lineNum">     249 </span>                :            :     /* copy the ops into place */
-<span class="lineNum">     250 </span>                :<span class="lineCov">        641 :     MEMCPY( (void*)&amp;(child-&gt;ops), ops, sizeof(child_ops_t) );</span>
+<span class="lineNum">     250 </span>                :<span class="lineNoCov">          0 :     MEMCPY( (void*)&amp;(child-&gt;ops), ops, sizeof(child_ops_t) );</span>
 <span class="lineNum">     251 </span>                :            : 
 <span class="lineNum">     252 </span>                :            :     /* set up the pipes */
-<span class="lineNum">     253 </span>        [<span class="branchCov" title="Branch 1 was taken 128 times"> + </span><span class="branchCov" title="Branch 2 was taken 513 times"> + </span>]:<span class="lineCov">        641 :     if ( safe_pipe(c2p_pipe) == -1 )</span>
+<span class="lineNum">     253 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( safe_pipe(c2p_pipe) == -1 )</span>
 <span class="lineNum">     254 </span>                :            :     {
-<span class="lineNum">     255 </span>                :<span class="lineCov">        128 :         return FALSE;</span>
+<span class="lineNum">     255 </span>                :<span class="lineNoCov">          0 :         return FALSE;</span>
 <span class="lineNum">     256 </span>                :            :     }
-<span class="lineNum">     257 </span>        [<span class="branchCov" title="Branch 1 was taken 128 times"> + </span><span class="branchCov" title="Branch 2 was taken 385 times"> + </span>]:<span class="lineCov">        513 :     if ( safe_pipe(p2c_pipe) == -1 )</span>
+<span class="lineNum">     257 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( safe_pipe(p2c_pipe) == -1 )</span>
 <span class="lineNum">     258 </span>                :            :     {
-<span class="lineNum">     259 </span>                :<span class="lineCov">        128 :         close( c2p_pipe[PIPE_WRITE_FD] );</span>
-<span class="lineNum">     260 </span>                :<span class="lineCov">        128 :         close( c2p_pipe[PIPE_READ_FD] );</span>
-<span class="lineNum">     261 </span>                :<span class="lineCov">        128 :         return FALSE;</span>
+<span class="lineNum">     259 </span>                :<span class="lineNoCov">          0 :         close( c2p_pipe[PIPE_WRITE_FD] );</span>
+<span class="lineNum">     260 </span>                :<span class="lineNoCov">          0 :         close( c2p_pipe[PIPE_READ_FD] );</span>
+<span class="lineNum">     261 </span>                :<span class="lineNoCov">          0 :         return FALSE;</span>
 <span class="lineNum">     262 </span>                :            :     }
 <span class="lineNum">     263 </span>                :            : 
 <span class="lineNum">     264 </span>                :            :     /* fork the child process */
-<span class="lineNum">     265 </span>                :<span class="lineCov">        385 :     keepfds[0] = p2c_pipe[PIPE_READ_FD];</span>
-<span class="lineNum">     266 </span>                :<span class="lineCov">        385 :     keepfds[1] = p2c_pipe[PIPE_WRITE_FD];</span>
-<span class="lineNum">     267 </span>                :<span class="lineCov">        385 :     keepfds[2] = c2p_pipe[PIPE_READ_FD];</span>
-<span class="lineNum">     268 </span>                :<span class="lineCov">        385 :     keepfds[3] = c2p_pipe[PIPE_WRITE_FD];</span>
-<span class="lineNum">     269 </span>                :<span class="lineCov">        385 :     child-&gt;pid = safe_fork( keepfds, 4 );</span>
-<span class="lineNum">     270 </span>        [<span class="branchCov" title="Branch 0 was taken 128 times"> + </span><span class="branchCov" title="Branch 1 was taken 514 times"> + </span>]:<span class="lineCov">        642 :     if ( child-&gt;pid == -1 )</span>
+<span class="lineNum">     265 </span>                :<span class="lineNoCov">          0 :     keepfds[0] = p2c_pipe[PIPE_READ_FD];</span>
+<span class="lineNum">     266 </span>                :<span class="lineNoCov">          0 :     keepfds[1] = p2c_pipe[PIPE_WRITE_FD];</span>
+<span class="lineNum">     267 </span>                :<span class="lineNoCov">          0 :     keepfds[2] = c2p_pipe[PIPE_READ_FD];</span>
+<span class="lineNum">     268 </span>                :<span class="lineNoCov">          0 :     keepfds[3] = c2p_pipe[PIPE_WRITE_FD];</span>
+<span class="lineNum">     269 </span>                :<span class="lineNoCov">          0 :     child-&gt;pid = safe_fork( keepfds, 4 );</span>
+<span class="lineNum">     270 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( child-&gt;pid == -1 )</span>
 <span class="lineNum">     271 </span>                :            :     {
-<span class="lineNum">     272 </span>                :<span class="lineCov">        128 :         close( p2c_pipe[PIPE_WRITE_FD] );</span>
-<span class="lineNum">     273 </span>                :<span class="lineCov">        128 :         close( p2c_pipe[PIPE_READ_FD] );</span>
-<span class="lineNum">     274 </span>                :<span class="lineCov">        128 :         close( c2p_pipe[PIPE_WRITE_FD] );</span>
-<span class="lineNum">     275 </span>                :<span class="lineCov">        128 :         close( c2p_pipe[PIPE_READ_FD] );</span>
-<span class="lineNum">     276 </span>                :<span class="lineCov">        128 :         return FALSE;</span>
+<span class="lineNum">     272 </span>                :<span class="lineNoCov">          0 :         close( p2c_pipe[PIPE_WRITE_FD] );</span>
+<span class="lineNum">     273 </span>                :<span class="lineNoCov">          0 :         close( p2c_pipe[PIPE_READ_FD] );</span>
+<span class="lineNum">     274 </span>                :<span class="lineNoCov">          0 :         close( c2p_pipe[PIPE_WRITE_FD] );</span>
+<span class="lineNum">     275 </span>                :<span class="lineNoCov">          0 :         close( c2p_pipe[PIPE_READ_FD] );</span>
+<span class="lineNum">     276 </span>                :<span class="lineNoCov">          0 :         return FALSE;</span>
 <span class="lineNum">     277 </span>                :            :     }
 <span class="lineNum">     278 </span>                :            : 
-<span class="lineNum">     279 </span>        [<span class="branchCov" title="Branch 0 was taken 257 times"> + </span><span class="branchCov" title="Branch 1 was taken 257 times"> + </span>]:<span class="lineCov">        514 :     if ( child-&gt;pid == 0 )</span>
+<span class="lineNum">     279 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( child-&gt;pid == 0 )</span>
 <span class="lineNum">     280 </span>                :            :     {
 <span class="lineNum">     281 </span>                :            :         /* CHILD PROCESS */
 <span class="lineNum">     282 </span>                :            : 
 <span class="lineNum">     283 </span>                :            :         /* close the child's STDIN and STDOUT file descriptors */
-<span class="lineNum">     284 </span>                :<span class="lineCov">        257 :         close( STDIN_FILENO );</span>
-<span class="lineNum">     285 </span>                :<span class="lineCov">        257 :         close( STDOUT_FILENO );</span>
+<span class="lineNum">     284 </span>                :<span class="lineNoCov">          0 :         close( STDIN_FILENO );</span>
+<span class="lineNum">     285 </span>                :<span class="lineNoCov">          0 :         close( STDOUT_FILENO );</span>
 <span class="lineNum">     286 </span>                :            : 
 <span class="lineNum">     287 </span>                :            :         /* close the read side of the child-to-parent pipe */
-<span class="lineNum">     288 </span>                :<span class="lineCov">        257 :         close( c2p_pipe[PIPE_READ_FD] );</span>
+<span class="lineNum">     288 </span>                :<span class="lineNoCov">          0 :         close( c2p_pipe[PIPE_READ_FD] );</span>
 <span class="lineNum">     289 </span>                :            : 
 <span class="lineNum">     290 </span>                :            :         /* close the write side of the parent-to-child pipe */
-<span class="lineNum">     291 </span>                :<span class="lineCov">        257 :         close( p2c_pipe[PIPE_WRITE_FD] );</span>
+<span class="lineNum">     291 </span>                :<span class="lineNoCov">          0 :         close( p2c_pipe[PIPE_WRITE_FD] );</span>
 <span class="lineNum">     292 </span>                :            : 
 <span class="lineNum">     293 </span>                :            :         /* make our STDIN be the read side of the parent-to-child pipe */
-<span class="lineNum">     294 </span>                :<span class="lineCov">        257 :         dup2( p2c_pipe[PIPE_READ_FD], STDIN_FILENO );</span>
+<span class="lineNum">     294 </span>                :<span class="lineNoCov">          0 :         dup2( p2c_pipe[PIPE_READ_FD], STDIN_FILENO );</span>
 <span class="lineNum">     295 </span>                :            : 
 <span class="lineNum">     296 </span>                :            :         /* close the pipe fd which doesn't close the pipe, it just leaves the
 <span class="lineNum">     297 </span>                :            :          * only copy of the fd bound to STDIN */
-<span class="lineNum">     298 </span>                :<span class="lineCov">        257 :         close( p2c_pipe[PIPE_READ_FD] );</span>
+<span class="lineNum">     298 </span>                :<span class="lineNoCov">          0 :         close( p2c_pipe[PIPE_READ_FD] );</span>
 <span class="lineNum">     299 </span>                :            : 
 <span class="lineNum">     300 </span>                :            :         /* make our STDOUT be the write side of the child-to-parent pipe */
-<span class="lineNum">     301 </span>                :<span class="lineCov">        257 :         dup2( c2p_pipe[PIPE_WRITE_FD], STDOUT_FILENO );</span>
+<span class="lineNum">     301 </span>                :<span class="lineNoCov">          0 :         dup2( c2p_pipe[PIPE_WRITE_FD], STDOUT_FILENO );</span>
 <span class="lineNum">     302 </span>                :            : 
 <span class="lineNum">     303 </span>                :            :         /* close the pipe fd which doesn't close the pipe, it just leaves the
 <span class="lineNum">     304 </span>                :            :          * only copy of the fd bound to STDOUT */
-<span class="lineNum">     305 </span>                :<span class="lineCov">        257 :         close( c2p_pipe[PIPE_WRITE_FD] );</span>
+<span class="lineNum">     305 </span>                :<span class="lineNoCov">          0 :         close( c2p_pipe[PIPE_WRITE_FD] );</span>
 <span class="lineNum">     306 </span>                :            : 
 <span class="lineNum">     307 </span>                :            :         /* now replace the process image */
-<span class="lineNum">     308 </span>                :<span class="lineCov">        257 :         execve( path, (char ** const)argv, (char ** const)environ );</span>
-<span class="lineNum">     309 </span>                :<span class="lineCov">        257 :         exit( 127 );</span>
+<span class="lineNum">     308 </span>                :<span class="lineNoCov">          0 :         execve( path, (char ** const)argv, (char ** const)environ );</span>
+<span class="lineNum">     309 </span>                :<span class="lineNoCov">          0 :         exit( 127 );</span>
 <span class="lineNum">     310 </span>                :            :     }
 <span class="lineNum">     311 </span>                :            : 
 <span class="lineNum">     312 </span>                :            :     /* PARENT PROCESS */
 <span class="lineNum">     313 </span>                :            : 
 <span class="lineNum">     314 </span>                :            :     /* close the read side of the parent-to-child pipe */
-<span class="lineNum">     315 </span>                :<span class="lineCov">        257 :     close( p2c_pipe[PIPE_READ_FD] );</span>
+<span class="lineNum">     315 </span>                :<span class="lineNoCov">          0 :     close( p2c_pipe[PIPE_READ_FD] );</span>
 <span class="lineNum">     316 </span>                :            : 
 <span class="lineNum">     317 </span>                :            :     /* close the write side of the child-to-parent pipe */
-<span class="lineNum">     318 </span>                :<span class="lineCov">        257 :     close( p2c_pipe[PIPE_WRITE_FD] );</span>
+<span class="lineNum">     318 </span>                :<span class="lineNoCov">          0 :     close( p2c_pipe[PIPE_WRITE_FD] );</span>
 <span class="lineNum">     319 </span>                :            : 
 <span class="lineNum">     320 </span>                :            :     /* initialize our SIGCHLD handler */
-<span class="lineNum">     321 </span>                :<span class="lineCov">        257 :     MEMSET( &amp;chld_params, 0, sizeof(evt_params_t) );</span>
-<span class="lineNum">     322 </span>                :<span class="lineCov">        257 :     chld_params.child_params.pid = child-&gt;pid;</span>
-<span class="lineNum">     323 </span>                :<span class="lineCov">        257 :     chld_params.child_params.trace = FALSE;</span>
-<span class="lineNum">     324 </span>                :<span class="lineCov">        257 :     evt_initialize_event_handler( &amp;(child-&gt;sigchld), EVT_CHILD, </span>
+<span class="lineNum">     321 </span>                :<span class="lineNoCov">          0 :     MEMSET( &amp;chld_params, 0, sizeof(evt_params_t) );</span>
+<span class="lineNum">     322 </span>                :<span class="lineNoCov">          0 :     chld_params.child_params.pid = child-&gt;pid;</span>
+<span class="lineNum">     323 </span>                :<span class="lineNoCov">          0 :     chld_params.child_params.trace = FALSE;</span>
+<span class="lineNum">     324 </span>                :<span class="lineNoCov">          0 :     evt_initialize_event_handler( &amp;(child-&gt;sigchld), EVT_CHILD, </span>
 <span class="lineNum">     325 </span>                :            :                                   &amp;chld_params, &amp;sigchld_cb, (void*)child );
 <span class="lineNum">     326 </span>                :            : 
 <span class="lineNum">     327 </span>                :            :     /* start the handler */
-<span class="lineNum">     328 </span>                :<span class="lineCov">        257 :     evt_start_event_handler( el, &amp;(child-&gt;sigchld) );</span>
+<span class="lineNum">     328 </span>                :<span class="lineNoCov">          0 :     evt_start_event_handler( el, &amp;(child-&gt;sigchld) );</span>
 <span class="lineNum">     329 </span>                :            : 
 <span class="lineNum">     330 </span>                :            :     /* initialize the aiofd to monitor the parent side of the pipes */
-<span class="lineNum">     331 </span>                :<span class="lineCov">        257 :     aiofd_initialize( &amp;(child-&gt;aiofd), p2c_pipe[PIPE_WRITE_FD], c2p_pipe[PIPE_READ_FD], &amp;aiofd_ops, el, (void*)child );</span>
+<span class="lineNum">     331 </span>                :<span class="lineNoCov">          0 :     aiofd_initialize( &amp;(child-&gt;aiofd), p2c_pipe[PIPE_WRITE_FD], c2p_pipe[PIPE_READ_FD], &amp;aiofd_ops, el, (void*)child );</span>
 <span class="lineNum">     332 </span>                :            : 
 <span class="lineNum">     333 </span>                :            :     /* start listening for incoming data from the child */
-<span class="lineNum">     334 </span>                :<span class="lineCov">        257 :     aiofd_enable_read_evt( &amp;(child-&gt;aiofd), TRUE );</span>
+<span class="lineNum">     334 </span>                :<span class="lineNoCov">          0 :     aiofd_enable_read_evt( &amp;(child-&gt;aiofd), TRUE );</span>
 <span class="lineNum">     335 </span>                :            : 
-<span class="lineNum">     336 </span>                :<span class="lineCov">        641 :     return TRUE;</span>
+<span class="lineNum">     336 </span>                :<span class="lineNoCov">          0 :     return TRUE;</span>
 <a name="337"><span class="lineNum">     337 </span>                :            : }</a>
 <span class="lineNum">     338 </span>                :            : 
-<span class="lineNum">     339 </span>                :<span class="lineCov">        641 : child_process_t * child_process_new( int8_t const * const path,</span>
+<span class="lineNum">     339 </span>                :<span class="lineNoCov">          0 : child_process_t * child_process_new( int8_t const * const path,</span>
 <span class="lineNum">     340 </span>                :            :                                      int8_t const * const argv[],
 <span class="lineNum">     341 </span>                :            :                                      int8_t const * const environ[],
 <span class="lineNum">     342 </span>                :            :                                      child_ops_t const * const ops,
 <span class="lineNum">     343 </span>                :            :                                      evt_loop_t * const el,
 <span class="lineNum">     344 </span>                :            :                                      void * user_data )
 <span class="lineNum">     345 </span>                :            : {
-<span class="lineNum">     346 </span>                :<span class="lineCov">        641 :     child_process_t * child = NULL;</span>
+<span class="lineNum">     346 </span>                :<span class="lineNoCov">          0 :     child_process_t * child = NULL;</span>
 <span class="lineNum">     347 </span>                :            : 
-<span class="lineNum">     348 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 641 times"> + </span>]:<span class="lineCov">        641 :     CHECK_PTR_RET( path, NULL );</span>
-<span class="lineNum">     349 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 641 times"> + </span>]:<span class="lineCov">        641 :     CHECK_PTR_RET( argv, NULL );</span>
-<span class="lineNum">     350 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 641 times"> + </span>]:<span class="lineCov">        641 :     CHECK_PTR_RET( environ, NULL );</span>
-<span class="lineNum">     351 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 641 times"> + </span>]:<span class="lineCov">        641 :     CHECK_PTR_RET( ops, NULL );</span>
+<span class="lineNum">     348 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( path, NULL );</span>
+<span class="lineNum">     349 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( argv, NULL );</span>
+<span class="lineNum">     350 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( environ, NULL );</span>
+<span class="lineNum">     351 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( ops, NULL );</span>
 <span class="lineNum">     352 </span>                :            : 
 <span class="lineNum">     353 </span>                :            :     /* allocate a child struct */
-<span class="lineNum">     354 </span>                :<span class="lineCov">        641 :     child = (child_process_t*)CALLOC( 1, sizeof(child_process_t) );</span>
-<span class="lineNum">     355 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 641 times"> + </span>]:<span class="lineCov">        641 :     CHECK_PTR_RET_MSG( child, NULL, &quot;failed to allocate child_process_t\n&quot; );</span>
+<span class="lineNum">     354 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     child = (child_process_t*)CALLOC( 1, sizeof(child_process_t) );</span>
+<span class="lineNum">     355 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET_MSG( child, NULL, &quot;failed to allocate child_process_t\n&quot; );</span>
 <span class="lineNum">     356 </span>                :            : 
-<span class="lineNum">     357 </span>        [<span class="branchCov" title="Branch 1 was taken 384 times"> + </span><span class="branchCov" title="Branch 2 was taken 257 times"> + </span>]:<span class="lineCov">        641 :     if ( child_process_initialize( child, path, argv, environ, ops, el, user_data ) == FALSE )</span>
+<span class="lineNum">     357 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( child_process_initialize( child, path, argv, environ, ops, el, user_data ) == FALSE )</span>
 <span class="lineNum">     358 </span>                :            :     {
-<span class="lineNum">     359 </span>                :<span class="lineCov">        384 :         FREE( child );</span>
-<span class="lineNum">     360 </span>                :<span class="lineCov">        384 :         return NULL;</span>
+<span class="lineNum">     359 </span>                :<span class="lineNoCov">          0 :         FREE( child );</span>
+<span class="lineNum">     360 </span>                :<span class="lineNoCov">          0 :         return NULL;</span>
 <span class="lineNum">     361 </span>                :            :     }
 <span class="lineNum">     362 </span>                :            :     
-<span class="lineNum">     363 </span>                :<span class="lineCov">        641 :     return child;</span>
+<span class="lineNum">     363 </span>                :<span class="lineNoCov">          0 :     return child;</span>
 <a name="364"><span class="lineNum">     364 </span>                :            : }</a>
 <span class="lineNum">     365 </span>                :            : 
-<span class="lineNum">     366 </span>                :<span class="lineCov">        257 : static void child_process_deinitialize( child_process_t * const child, int wait )</span>
+<span class="lineNum">     366 </span>                :<span class="lineNoCov">          0 : static void child_process_deinitialize( child_process_t * const child, int wait )</span>
 <span class="lineNum">     367 </span>                :            : {
-<span class="lineNum">     368 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 257 times"> + </span>]:<span class="lineCov">        514 :     CHECK_PTR( child );</span>
+<span class="lineNum">     368 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR( child );</span>
 <span class="lineNum">     369 </span>                :            : 
 <span class="lineNum">     370 </span>                :            :     /* shut down the aiofd */
-<span class="lineNum">     371 </span>                :<span class="lineCov">        257 :     aiofd_deinitialize( &amp;(child-&gt;aiofd) );</span>
+<span class="lineNum">     371 </span>                :<span class="lineNoCov">          0 :     aiofd_deinitialize( &amp;(child-&gt;aiofd) );</span>
 <span class="lineNum">     372 </span>                :            : 
 <span class="lineNum">     373 </span>                :            :     /* wait if the client wants to */
-<span class="lineNum">     374 </span>[<span class="branchCov" title="Branch 0 was taken 257 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 257 times"> + </span>]:<span class="lineCov">        257 :     while ( wait &amp;&amp; (child-&gt;exited == FALSE) )</span>
+<span class="lineNum">     374 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :     while ( wait &amp;&amp; (child-&gt;exited == FALSE) )</span>
 <span class="lineNum">     375 </span>                :            :     {
 <span class="lineNum">     376 </span>                :<span class="lineNoCov">          0 :         sleep( 1 );</span>
 <span class="lineNum">     377 </span>                :            :     }
 <span class="lineNum">     378 </span>                :            : 
 <span class="lineNum">     379 </span>                :            :     /* shut down the child event handler */
-<span class="lineNum">     380 </span>                :<span class="lineCov">        257 :     evt_deinitialize_event_handler( &amp;(child-&gt;sigchld) );</span>
+<span class="lineNum">     380 </span>                :<span class="lineNoCov">          0 :     evt_deinitialize_event_handler( &amp;(child-&gt;sigchld) );</span>
 <span class="lineNum">     381 </span>                :            : 
 <span class="lineNum">     382 </span>                :            :     /* close the file descriptors */
-<span class="lineNum">     383 </span>        [<span class="branchCov" title="Branch 0 was taken 257 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        257 :     if ( child-&gt;aiofd.rfd &gt;= 0 )</span>
-<span class="lineNum">     384 </span>                :<span class="lineCov">        257 :         close( child-&gt;aiofd.rfd );</span>
-<span class="lineNum">     385 </span>        [<span class="branchCov" title="Branch 0 was taken 257 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        257 :     if ( child-&gt;aiofd.wfd &gt;= 0 )</span>
-<span class="lineNum">     386 </span>                :<span class="lineCov">        257 :         close( child-&gt;aiofd.wfd );</span>
+<span class="lineNum">     383 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( child-&gt;aiofd.rfd &gt;= 0 )</span>
+<span class="lineNum">     384 </span>                :<span class="lineNoCov">          0 :         close( child-&gt;aiofd.rfd );</span>
+<span class="lineNum">     385 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( child-&gt;aiofd.wfd &gt;= 0 )</span>
+<span class="lineNum">     386 </span>                :<span class="lineNoCov">          0 :         close( child-&gt;aiofd.wfd );</span>
 <a name="387"><span class="lineNum">     387 </span>                :            : }</a>
 <span class="lineNum">     388 </span>                :            : 
-<span class="lineNum">     389 </span>                :<span class="lineCov">        257 : void child_process_delete( void * cp, int wait )</span>
+<span class="lineNum">     389 </span>                :<span class="lineNoCov">          0 : void child_process_delete( void * cp, int wait )</span>
 <span class="lineNum">     390 </span>                :            : {
-<span class="lineNum">     391 </span>                :<span class="lineCov">        257 :     child_process_t * child = (child_process_t *)cp;</span>
-<span class="lineNum">     392 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 257 times"> + </span>]:<span class="lineCov">        514 :     CHECK_PTR( child );</span>
+<span class="lineNum">     391 </span>                :<span class="lineNoCov">          0 :     child_process_t * child = (child_process_t *)cp;</span>
+<span class="lineNum">     392 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR( child );</span>
 <span class="lineNum">     393 </span>                :            : 
 <span class="lineNum">     394 </span>                :            :     /* clean everything up */
-<span class="lineNum">     395 </span>                :<span class="lineCov">        257 :     child_process_deinitialize( child, wait );</span>
+<span class="lineNum">     395 </span>                :<span class="lineNoCov">          0 :     child_process_deinitialize( child, wait );</span>
 <span class="lineNum">     396 </span>                :            : 
-<span class="lineNum">     397 </span>                :<span class="lineCov">        257 :     FREE( (void*)cp );</span>
+<span class="lineNum">     397 </span>                :<span class="lineNoCov">          0 :     FREE( (void*)cp );</span>
 <a name="398"><span class="lineNum">     398 </span>                :            : }</a>
 <span class="lineNum">     399 </span>                :            : 
-<span class="lineNum">     400 </span>                :<span class="lineCov">        128 : pid_t child_process_get_pid( child_process_t * const cp )</span>
+<span class="lineNum">     400 </span>                :<span class="lineNoCov">          0 : pid_t child_process_get_pid( child_process_t * const cp )</span>
 <span class="lineNum">     401 </span>                :            : {
-<span class="lineNum">     402 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     CHECK_PTR_RET( cp, 0 );</span>
-<span class="lineNum">     403 </span>                :<span class="lineCov">        128 :     return cp-&gt;pid;</span>
+<span class="lineNum">     402 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( cp, 0 );</span>
+<span class="lineNum">     403 </span>                :<span class="lineNoCov">          0 :     return cp-&gt;pid;</span>
 <a name="404"><span class="lineNum">     404 </span>                :            : }</a>
 <span class="lineNum">     405 </span>                :            : 
-<span class="lineNum">     406 </span>                :<span class="lineCov">        128 : int32_t child_process_read( child_process_t * const cp, </span>
+<span class="lineNum">     406 </span>                :<span class="lineNoCov">          0 : int32_t child_process_read( child_process_t * const cp, </span>
 <span class="lineNum">     407 </span>                :            :                             uint8_t * const buffer, 
 <span class="lineNum">     408 </span>                :            :                             int32_t const n )
 <span class="lineNum">     409 </span>                :            : {
-<span class="lineNum">     410 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     CHECK_PTR_RET( cp, FALSE );</span>
-<span class="lineNum">     411 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     CHECK_PTR_RET(buffer, 0);</span>
-<span class="lineNum">     412 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     CHECK_RET(n &gt; 0, 0);</span>
-<span class="lineNum">     413 </span>                :<span class="lineCov">        128 :     return aiofd_read( &amp;(cp-&gt;aiofd), buffer, n );</span>
+<span class="lineNum">     410 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( cp, FALSE );</span>
+<span class="lineNum">     411 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET(buffer, 0);</span>
+<span class="lineNum">     412 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET(n &gt; 0, 0);</span>
+<span class="lineNum">     413 </span>                :<span class="lineNoCov">          0 :     return aiofd_read( &amp;(cp-&gt;aiofd), buffer, n );</span>
 <a name="414"><span class="lineNum">     414 </span>                :            : }</a>
 <span class="lineNum">     415 </span>                :            : 
 <span class="lineNum">     416 </span>                :<span class="lineNoCov">          0 : int child_process_write( child_process_t * const cp, </span>
@@ -507,14 +507,14 @@
 <span class="lineNum">     436 </span>                :            : }
 <a name="437"><span class="lineNum">     437 </span>                :            : </a>
 <span class="lineNum">     438 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     439 </span>                :<span class="lineCov">        256 : void child_process_set_fail_fork( int fail )</span>
+<span class="lineNum">     439 </span>                :<span class="lineNoCov">          0 : void child_process_set_fail_fork( int fail )</span>
 <span class="lineNum">     440 </span>                :            : {
-<a name="441"><span class="lineNum">     441 </span>                :<span class="lineCov">        256 :     fail_fork = fail;</span></a>
-<span class="lineNum">     442 </span>                :<span class="lineCov">        256 : }</span>
-<span class="lineNum">     443 </span>                :<span class="lineCov">        512 : void child_process_set_num_good_pipes( int ngood )</span>
+<a name="441"><span class="lineNum">     441 </span>                :<span class="lineNoCov">          0 :     fail_fork = fail;</span></a>
+<span class="lineNum">     442 </span>                :<span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     443 </span>                :<span class="lineNoCov">          0 : void child_process_set_num_good_pipes( int ngood )</span>
 <span class="lineNum">     444 </span>                :            : {
-<span class="lineNum">     445 </span>                :<span class="lineCov">        512 :     good_pipes = ngood;</span>
-<span class="lineNum">     446 </span>                :<span class="lineCov">        512 : }</span>
+<span class="lineNum">     445 </span>                :<span class="lineNoCov">          0 :     good_pipes = ngood;</span>
+<span class="lineNum">     446 </span>                :<span class="lineNoCov">          0 : }</span>
 <span class="lineNum">     447 </span>                :            : #endif
 <span class="lineNum">     448 </span>                :            : 
 <span class="lineNum">     449 </span>                :            : 

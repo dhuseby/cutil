@@ -30,18 +30,20 @@
 #define SUITE(x) extern CU_pSuite add_##x##_test_suite(); CU_pSuite x##_test_suite;
 #define ADD_SUITE(x) x##_test_suite = add_##x##_test_suite();
 
-SUITE( aiofd );
+/* switches for forcing varicus things to fail */
+int fail_alloc = FALSE;
+int fail_list_grow = FALSE;
+
+/*SUITE( aiofd );
 SUITE( bitset );
 SUITE( btree );
 SUITE( buffer );
 SUITE( child );
-/*SUITE( hashtable );*/
+SUITE( hashtable );*/
 SUITE( list );
-SUITE( pair );
+/*SUITE( pair );
 SUITE( socket );
-SUITE( sanitize );
-
-int fail_alloc = FALSE;
+SUITE( sanitize );*/
 
 int main()
 {
@@ -50,16 +52,16 @@ int main()
 		return CU_get_error();
 
 	/* add each suite of tests */
-	ADD_SUITE( aiofd );
+	/*ADD_SUITE( aiofd );
 	ADD_SUITE( bitset );
 	ADD_SUITE( btree );
 	ADD_SUITE( buffer );
 	ADD_SUITE( child );
-	/*ADD_SUITE( hashtable );*/
+	ADD_SUITE( hashtable );*/
 	ADD_SUITE( list );
-	ADD_SUITE( pair );
+	/*ADD_SUITE( pair );
 	ADD_SUITE( socket );
-	ADD_SUITE( sanitize );
+	ADD_SUITE( sanitize );*/
 
 	/* run all tests using the CUnit Basic interface */
 	CU_basic_set_mode( CU_BRM_VERBOSE );
