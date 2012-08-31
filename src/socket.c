@@ -33,13 +33,13 @@
 #include <sys/un.h>
 #include <netinet/tcp.h>
 
+#define DEBUG_ON
+
 #include "debug.h"
 #include "macros.h"
 #include "events.h"
 #include "list.h"
 #include "socket.h"
-
-#define DEBUG_ON
 
 struct socket_s
 {
@@ -702,7 +702,14 @@ socket_t * socket_accept( socket_t * const s,
 	}
 
 	/* initialize the aiofd to manage the socket */
-	aiofd_initialize( &(client->aiofd), fd, fd, &aiofd_ops, el, (void*)client );
+	if ( !aiofd_initialize( &(client->aiofd), fd, fd, &aiofd_ops, el, (void*)client ) )
+	{
+		WARN("failed to initialize the aiofd for the socket\n");
+	}
+	else
+	{
+		DEBUG("aiofd initialized\n");
+	}
 	
 	DEBUG( "socket connected\n" );
 	client->connected = TRUE;

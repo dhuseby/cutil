@@ -177,6 +177,9 @@ int list_push( list_t * const list, void * const data, list_itr_t const itr )
 	/* insert the item into the used list */
 	list->used_head = insert_item( list->items, list->used_head, item );
 
+	/* update the count */
+	list->count++;
+
 	return TRUE;
 }
 

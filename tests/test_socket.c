@@ -185,15 +185,18 @@ static int t_sclose = FALSE;
 
 static socket_ret_t t_server_connect_fn( socket_t * const s, void * user_data )
 {
+	NOTICE("server connected!\n");
 	return SOCKET_OK;
 }
 
 static socket_ret_t t_server_disconnect_fn( socket_t * const s, void * user_data )
 {
+	NOTICE("server disconnected\n");
 	t_sdone = TRUE;
 
 	if ( t_sdone && t_cdone )
 	{
+		NOTICE("stopping event loop\n");
 		evt_stop( el, FALSE );
 	}
 
@@ -279,6 +282,7 @@ static socket_ret_t t_client_disconnect_fn( socket_t * const s, void * user_data
 
 	if ( t_sdone && t_cdone )
 	{
+		NOTICE("stopping event loop\n");
 		evt_stop( el, FALSE );
 	}
 
@@ -339,7 +343,9 @@ static void test_tcp_socket( void )
 	socket_connect( csock, "127.0.0.1", 12121 );
 
 	/* run the event loop */
+	NOTICE("running event loop\n");
 	evt_run( el );
+	NOTICE("event loop stopped\n");
 
 	socket_delete( lsock );
 	socket_delete( ssock );
@@ -362,6 +368,7 @@ static socket_ret_t x_server_disconnect_fn( socket_t * const s, void * user_data
 
 	if ( x_sdone && x_cdone )
 	{
+		NOTICE("stopping event loop\n");
 		evt_stop( el, FALSE );
 	}
 

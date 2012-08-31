@@ -20,6 +20,8 @@
 #include <errno.h>
 #include <sys/ioctl.h>
 
+#define DEBUG_ON
+
 #include "debug.h"
 #include "macros.h"
 #include "list.h"
@@ -148,13 +150,15 @@ static evt_ret_t aiofd_read_fn( evt_loop_t * const el,
 	/* callback to tell client that there is data to read */
 	if ( aiofd->ops.read_fn != NULL )
 	{
-		DEBUG( "calling read callback\n" );
+		DEBUG( "calling read callback (nread = %d)\n", nread );
 		keep_going  = (*(aiofd->ops.read_fn))( aiofd, nread, aiofd->user_data );
+		DEBUG( "keep_going = %s\n", keep_going ? "TRUE" : "FALSE" );
 	}
 
 	/* we were told to stop the read event */
 	if ( keep_going == FALSE )
 	{
+		DEBUG( "stopping read event\n" );
 		/* stop the read event processing */
 		evt_stop_event_handler( aiofd->el, &(aiofd->revt) );
 	}
@@ -296,10 +300,12 @@ int aiofd_enable_read_evt( aiofd_t * const aiofd,
 
 	if ( enable )
 	{
+		DEBUG("starting read event\n");
 		evt_start_event_handler( aiofd->el, &(aiofd->revt) );
 	}
 	else
 	{
+		DEBUG("stopping read event\n");
 		evt_stop_event_handler( aiofd->el, &(aiofd->revt) );
 	}
 	return TRUE;
