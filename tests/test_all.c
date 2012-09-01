@@ -27,12 +27,13 @@
 #include <cutil/debug.h>
 #include <cutil/macros.h>
 
-#define SUITE(x) extern CU_pSuite add_##x##_test_suite(); CU_pSuite x##_test_suite;
-#define ADD_SUITE(x) x##_test_suite = add_##x##_test_suite();
+#include "test_macros.h"
 
 /* switches for forcing varicus things to fail */
 int fail_alloc = FALSE;
 int fail_list_grow = FALSE;
+int fail_list_init = FALSE;
+int fail_list_deinit = FALSE;
 
 /*SUITE( aiofd );
 SUITE( bitset );

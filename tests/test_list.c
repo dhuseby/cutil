@@ -28,6 +28,8 @@
 #include <cutil/macros.h>
 #include <cutil/list.h>
 
+#include "test_macros.h"
+
 #define REPEAT (128)
 #define SIZEMAX (128)
 #define MULTIPLE (8)
@@ -35,7 +37,8 @@
 /* the fail switches */
 extern int fail_alloc;
 extern int fail_list_grow;
-
+extern int fail_list_init;
+extern int fail_list_deinit;
 
 static void test_list_newdel( void )
 {
@@ -387,7 +390,7 @@ static void test_list_pop_head_static( void )
 	uint32_t size;
 	uint32_t multiple;
 	list_t list;
-	list_itr_t itr;
+	list_itr_t itr, end;
 
 	size = (rand() % SIZEMAX);
 	list_initialize( &list, size, NULL );
@@ -401,27 +404,34 @@ static void test_list_pop_head_static( void )
 	CU_ASSERT_EQUAL( list_count( &list ), (size * multiple) );
 
 	/* walk the list to make sure the values are what we expect */
-	itr = list_itr_begin( &list );
+	end = list_itr_end( &list );
 	i = 0;
-	for ( ; itr != list_itr_end( &list ); itr = list_itr_next( &list, itr ) )
+	for ( itr = list_itr_begin( &list ); itr != end; itr = list_itr_next( &list, itr ) )
 	{
 		CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), i );
 		i++;
 	}
 
-	itr = list_itr_rbegin( &list );
+	/* walk the list backwards to make sure the values are we expect */
+	end = list_itr_rend( &list );
 	i = ((size * multiple) - 1);
-	for ( ; itr != list_itr_rend( &list ); itr = list_itr_rnext( &list, itr ) )
+	for ( itr = list_itr_rbegin( &list ); itr != end; itr = list_itr_rnext( &list, itr ) )
 	{
 		CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), i );
 		i--;
 	}
 
+	/* now pop head enough times to empty the list */
 	for ( i = 0; i < (size * multiple); i++ )
 	{
 		j = (int_t)list_get_head( &list );
 		list_pop_head( &list );
 		CU_ASSERT_EQUAL( j, i );
+	}
+
+	if ( list_count( &list ) != 0 )
+	{
+		NOTICE( "%d\n", list_count( &list ) );
 	}
 
 	CU_ASSERT_EQUAL( list_count( &list ), 0 );
@@ -534,7 +544,7 @@ static void test_list_clear_empty( void )
 	}
 }
 
-static void test_list_new_fail( void )
+static void test_list_new_grow_fail( void )
 {
 	int i;
 	uint32_t size;
@@ -552,7 +562,7 @@ static void test_list_new_fail( void )
 	fail_list_grow = FALSE;
 }
 
-static void test_list_init_fail( void )
+static void test_list_init_grow_fail( void )
 {
 	int i;
 	uint32_t size;
@@ -568,6 +578,42 @@ static void test_list_init_fail( void )
 	CU_ASSERT_EQUAL( list_count( &list ), 0 );
 
 	fail_list_grow = FALSE;
+}
+
+static void test_list_new_alloc_fail( void )
+{
+	int i;
+	uint32_t size;
+	list_t * list = NULL;
+
+	/* turn on the flag that forces heap allocations to fail */
+	fail_alloc = TRUE;
+
+	size = (rand() % SIZEMAX);
+	list = list_new( size, NULL );
+
+	CU_ASSERT_PTR_NULL( list );
+	CU_ASSERT_EQUAL( list_count( list ), 0 );
+	
+	fail_alloc = FALSE;
+}
+
+static void test_list_init_alloc_fail( void )
+{
+	int i;
+	uint32_t size;
+	list_t list;
+
+	/* turn on the flag that forces heap allocations to fail */
+	fail_alloc = TRUE;
+
+	MEMSET( &list, 0, sizeof(list_t) );
+	size = (rand() % SIZEMAX);
+	list_initialize( &list, size, NULL );
+
+	CU_ASSERT_EQUAL( list_count( &list ), 0 );
+
+	fail_alloc = FALSE;
 }
 
 static void test_list_push_fail( void )
@@ -666,6 +712,11 @@ static void test_list_pop_middle( void )
 			itr = list_itr_next( &list, itr );
 		}
 
+		if ( list_count( &list ) != (size * multiple) )
+		{
+			NOTICE( "%d != %d\n", list_count( &list ), (size * multiple) );
+		}
+
 		CU_ASSERT_EQUAL( list_count( &list ), (size * multiple) );
 		CU_ASSERT_EQUAL( list.dfn, NULL );
 
@@ -711,9 +762,74 @@ static void test_list_get_middle( void )
 	}
 }
 
-/*TODO:
- *	- threading tests
- */
+static void test_list_delete_null( void )
+{
+	list_delete( NULL );
+}
+
+static void test_list_init_null( void )
+{
+	CU_ASSERT_FALSE( list_initialize( NULL, rand(), NULL ) );
+}
+
+static void test_list_deinit_null( void )
+{
+	CU_ASSERT_FALSE( list_deinitialize( NULL ) );
+}
+
+static void test_list_reserve_null( void )
+{
+	CU_ASSERT_FALSE( list_reserve( NULL, rand() ) );
+}
+
+static void test_list_clear_null( void )
+{
+	CU_ASSERT_FALSE( list_clear( NULL ) );
+}
+
+static void test_list_clear_dep_fails( void )
+{
+	list_t list;
+	MEMSET( &list, 0, sizeof(list_t) );
+	
+	fail_list_init = TRUE;
+	CU_ASSERT_FALSE( list_clear( &list ) );
+	fail_list_init = FALSE;
+
+	fail_list_deinit = TRUE;
+	CU_ASSERT_FALSE( list_clear( &list ) );
+	fail_list_deinit = FALSE;
+}
+
+static void test_list_begin_null( void )
+{
+	CU_ASSERT_EQUAL( list_itr_begin( NULL ), -1 );
+}
+
+static void test_list_end_null( void )
+{
+	CU_ASSERT_EQUAL( list_itr_end( NULL ), -1 );
+}
+
+static void test_list_tail_null( void )
+{
+	CU_ASSERT_EQUAL( list_itr_tail( NULL ), -1 );
+}
+
+static void test_list_next_null( void )
+{
+	list_t list;
+	CU_ASSERT_EQUAL( list_itr_next( NULL, 0 ), -1 );
+	CU_ASSERT_EQUAL( list_itr_next( &list, -1 ), -1 );
+}
+
+static void test_list_rnext_null( void )
+{
+	list_t list;
+	CU_ASSERT_EQUAL( list_itr_rnext( NULL, 0 ), -1 );
+	CU_ASSERT_EQUAL( list_itr_rnext( &list, -1 ), -1 );
+}
+
 
 static int init_list_suite( void )
 {
@@ -728,28 +844,41 @@ static int deinit_list_suite( void )
 
 static CU_pSuite add_list_tests( CU_pSuite pSuite )
 {
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of list", test_list_newdel), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "init/deinit of list", test_list_initdeinit), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "grow of static list", test_list_static_grow), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "grow of dynamic list", test_list_dynamic_grow), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "empty list itr tests", test_list_empty_iterator), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "push one head tests", test_list_push_head_1), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "push head tests", test_list_push_head), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "push one tail tests", test_list_push_tail_1), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "push tail small", test_list_push_tail_small), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "push tail tests", test_list_push_tail), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "push dynamic memory", test_list_push_dynamic), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "push to zero initial size", test_list_push_zero_initial_size), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "pop head static", test_list_pop_head_static), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "pop tail static", test_list_pop_tail_static), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "list clear", test_list_clear), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "list clear empty", test_list_clear_empty), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "list new fail", test_list_new_fail), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "list init fail", test_list_init_fail), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "list push fail", test_list_push_fail), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "list push middle", test_list_push_middle), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "list pop middle", test_list_pop_middle), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "list get middle", test_list_get_middle), NULL );
+	ADD_TEST("new/delete of list",			test_list_newdel);
+	ADD_TEST("init/deinit of list",			test_list_initdeinit);
+	ADD_TEST("grow of static list",			test_list_static_grow);
+	ADD_TEST("grow of dynamic list",		test_list_dynamic_grow);
+	ADD_TEST("empty list itr tests",		test_list_empty_iterator);
+	ADD_TEST("push one head tests",			test_list_push_head_1);
+	ADD_TEST("push head tests",				test_list_push_head);
+	ADD_TEST("push one tail tests",			test_list_push_tail_1);
+	ADD_TEST("push tail small",				test_list_push_tail_small);
+	ADD_TEST("push tail tests",				test_list_push_tail);
+	ADD_TEST("push dynamic memory",			test_list_push_dynamic);
+	ADD_TEST("push to zero initial size",	test_list_push_zero_initial_size);
+	ADD_TEST("pop head static",				test_list_pop_head_static);
+	ADD_TEST("pop tail static",				test_list_pop_tail_static);
+	ADD_TEST("list clear",					test_list_clear);
+	ADD_TEST("list clear empty",			test_list_clear_empty);
+	ADD_TEST("list new grow fail",			test_list_new_grow_fail);
+	ADD_TEST("list init grow fail",			test_list_init_grow_fail);
+	ADD_TEST("list new alloc fail",			test_list_new_alloc_fail);
+	ADD_TEST("list init alloc fail",		test_list_init_alloc_fail);
+	ADD_TEST("list push fail",				test_list_push_fail);
+	ADD_TEST("list push middle",			test_list_push_middle);
+	ADD_TEST("list pop middle",				test_list_pop_middle);
+	ADD_TEST("list get middle",				test_list_get_middle);
+	ADD_TEST("list delete null",			test_list_delete_null);
+	ADD_TEST("list init null",				test_list_init_null);
+	ADD_TEST("list deinit null",			test_list_deinit_null);
+	ADD_TEST("list reserve null",			test_list_reserve_null);
+	ADD_TEST("list clear null",				test_list_clear_null);
+	ADD_TEST("list clear init/deinit fail", test_list_clear_dep_fails);
+	ADD_TEST("list begin null",				test_list_begin_null);
+	ADD_TEST("list end null",				test_list_end_null);
+	ADD_TEST("list tail null",				test_list_tail_null);
+	ADD_TEST("list next null",				test_list_next_null);
+	ADD_TEST("list rnext null",				test_list_rnext_null);
 	
 	return pSuite;
 }
@@ -759,7 +888,7 @@ CU_pSuite add_list_test_suite()
 	CU_pSuite pSuite = NULL;
 
 	/* add the suite to the registry */
-	pSuite = CU_add_suite("Array Tests", init_list_suite, deinit_list_suite);
+	pSuite = CU_add_suite("List Tests", init_list_suite, deinit_list_suite);
 	CHECK_PTR_RET( pSuite, NULL );
 
 	/* add in list specific tests */

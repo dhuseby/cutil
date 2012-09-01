@@ -47,7 +47,7 @@ void list_delete( void * l );
 
 /* stack allocated list */
 int list_initialize( list_t * const list, uint_t const initial_capacity, delete_fn dfn );
-void list_deinitialize( list_t * const list );
+int list_deinitialize( list_t * const list );
 
 /* gets the number of items in the list */
 uint_t list_count( list_t const * const list );
@@ -56,7 +56,7 @@ uint_t list_count( list_t const * const list );
 int list_reserve( list_t * const list, uint const amount );
 
 /* clear the entire list */
-void list_clear( list_t * const list );
+int list_clear( list_t * const list );
 
 /* functions for getting iterators */
 list_itr_t list_itr_begin( list_t const * const list );

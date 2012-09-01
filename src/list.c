@@ -24,8 +24,10 @@
 #include "macros.h"
 #include "list.h"
 
-#ifdef UNIT_TESTING
+#if defined(UNIT_TESTING)
 extern int fail_list_grow;
+extern int fail_list_init;
+extern int fail_list_deinit;
 #endif
 
 /* node used in queue structure */
@@ -56,7 +58,11 @@ list_t * list_new( uint_t const initial_capacity, delete_fn dfn )
 {
 	list_t * list = CALLOC( 1, sizeof(list_t) );
 	CHECK_PTR_RET( list, NULL );
-	CHECK_RET( list_initialize( list, initial_capacity, dfn ), NULL );
+	if ( !list_initialize( list, initial_capacity, dfn ) )
+	{
+		FREE( list );
+		list = NULL;
+	}
 	return list;
 }
 
@@ -71,6 +77,9 @@ int list_initialize( list_t * const list, uint_t const initial_capacity, delete_
 {
 	uint_t i;
 	CHECK_PTR_RET( list, FALSE );
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fail_list_init, FALSE );
+#endif
 
 	/* intialize the members */
 	list->dfn = (dfn ? dfn : NULL );
@@ -86,11 +95,18 @@ int list_initialize( list_t * const list, uint_t const initial_capacity, delete_
 	return TRUE;
 }
 
-void list_deinitialize( list_t * const list )
+int list_deinitialize( list_t * const list )
 {
 	list_itr_t itr, end;
-	CHECK_PTR( list );
-	CHECK( list->size > 0 );
+	CHECK_PTR_RET( list, FALSE );
+
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fail_list_deinit, FALSE );
+#endif
+
+	/* empty lists need no work */
+	if ( list->size == 0 )
+		return TRUE;
 
 	if ( list->dfn )
 	{
@@ -104,6 +120,8 @@ void list_deinitialize( list_t * const list )
 
 	/* free the items array */
 	FREE( list->items );
+
+	return TRUE;
 }
 
 uint_t list_count( list_t const * const list )
@@ -124,17 +142,19 @@ int list_reserve( list_t * const list, uint const amount )
 	return TRUE;
 }
 
-void list_clear( list_t * const list )
+int list_clear( list_t * const list )
 {
 	delete_fn dfn = NULL;
-	CHECK_PTR(list);
+	CHECK_PTR_RET( list, FALSE );
 
 	/* remember the delete function pointer */
 	dfn = list->dfn;
 
 	/* deinit, then init the list */
-	list_deinitialize( list );
-	list_initialize( list, 0, dfn );
+	CHECK_RET( list_deinitialize( list ), FALSE );
+	CHECK_RET( list_initialize( list, 0, dfn ), FALSE );
+
+	return TRUE;
 }
 
 list_itr_t list_itr_begin( list_t const * const list )
@@ -219,6 +239,7 @@ list_itr_t list_pop( list_t * const list, list_itr_t const itr )
 
 	CHECK_PTR_RET( list, list_itr_end_t );
 	CHECK_RET( ((itr >= 0) && (itr < list->size)), list_itr_end_t );
+	CHECK_RET( list->size, list_itr_end_t );
 
 	/* if they pass in list_itr_end_t, they want to remove the tail item */
 	item = (itr == list_itr_end_t) ? list_itr_tail( list ) : itr;
@@ -237,6 +258,9 @@ list_itr_t list_pop( list_t * const list, list_itr_t const itr )
 	ITEM_AT( list->items, item )->data = NULL;
 	ITEM_AT( list->items, item )->used = FALSE;
 	list->free_head = insert_item( list->items, list->free_head, item );
+
+	/* update the count */
+	list->count--;
 
 	/* if we popped the tail, then we need to return list_itr_end_t, otherwise
 	 * we return the iterator of the next item in the list */
@@ -285,34 +309,24 @@ static list_itr_t insert_item( list_item_t * const items,
 							   list_itr_t const itr, 
 							   list_itr_t const item )
 {
-	list_item_t *cur_item;
-	list_item_t *ins_item;
-	list_item_t *prev_item;
-	list_itr_t cur = itr;
 	CHECK_PTR_RET( items, list_itr_end_t );
 	CHECK_RET( item != list_itr_end_t, list_itr_end_t );
 
-	/* check for an empty list */
-	if ( cur == list_itr_end_t )
-		cur = item;
+	/* if itr is list_itr_end_t, the list is empty, so make the
+	 * item the only node in the list */
+	if ( itr == list_itr_end_t )
+	{
+		ITEM_AT( items, item )->prev = item;
+		ITEM_AT( items, item )->next = item;
+		return item;
+	}
 
-	cur_item = ITEM_AT( items, cur );
-	ins_item = ITEM_AT( items, item );
-	prev_item = ITEM_AT( items, cur_item->prev );
+	ITEM_AT( items, item )->next = itr;
+	ITEM_AT( items, ITEM_AT( items, itr )->prev )->next = item;
+	ITEM_AT( items, item )->prev = ITEM_AT( items, itr )->prev;
+	ITEM_AT( items, itr )->prev = item;
 
-	ins_item->next = cur;
-	prev_item->next = item;
-	ins_item->prev = cur_item->prev;
-	cur_item->prev = item;
-
-	/*
-	ITEM_AT( items, item )->next = cur;
-	ITEM_AT( items, ITEM_AT( items, cur )->prev )->next = item;
-	ITEM_AT( items, item )->prev = ITEM_AT( items, cur )->prev;
-	ITEM_AT( items, cur )->prev = item;
-	*/
-
-	return cur;
+	return itr;
 }
 
 static int list_grow( list_t * const list, uint_t amount )
@@ -331,9 +345,7 @@ static int list_grow( list_t * const list, uint_t amount )
 	CHECK_RET( amount, TRUE ); /* do nothing if grow amount is 0 */
 
 #if defined(UNIT_TESTING)
-	/* fail the grow if FAIL_GROW is true */
-	if ( fail_list_grow == TRUE )
-		return FALSE;
+	CHECK_RET( !fail_list_grow, FALSE );
 #endif
 
 	/* figure out how big the new item array should be */
