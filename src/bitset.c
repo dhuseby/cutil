@@ -18,6 +18,11 @@
 #include "macros.h"
 #include "bitset.h"
 
+#if defined(UNIT_TESTING)
+extern int fail_bitset_init;
+extern int fail_bitset_deinit;
+#endif
+
 #define DWORDS_NEEDED(x) ((x + 0x1f) & ~0x1f)
 #define DWORD_INDEX(x) (x & ~0x1f)
 #define BIT(x) ((uint32_t)(1 << (x & 0x1f)))
@@ -30,7 +35,11 @@ bitset_t * bset_new( size_t const num_bits )
 	bset = (bitset_t*)CALLOC(1, sizeof(bitset_t));
 	CHECK_PTR_RET( bset, NULL );
 
-	bset_initialize( bset, num_bits );
+	if ( !bset_initialize( bset, num_bits ) )
+	{
+		FREE( bset );
+		bset = NULL;
+	}
 
 	return bset;
 }
@@ -39,34 +48,40 @@ void bset_delete( void * bset )
 {
 	bitset_t * bitset = (bitset_t*)bset;
 	CHECK_PTR( bitset );
-
 	bset_deinitialize( bitset );
-
 	FREE( bitset );
 }
 
-void bset_initialize( bitset_t * const bset, size_t const num_bits )
+int bset_initialize( bitset_t * const bset, size_t const num_bits )
 {
-	CHECK_PTR( bset );
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fail_bitset_init, FALSE );
+#endif
+	CHECK_PTR_RET( bset, FALSE );
 
 	bset->bits = NULL;
 	if ( num_bits > 0 )
 	{
 		bset->bits = CALLOC( DWORDS_NEEDED( num_bits ), sizeof(uint32_t) );
-		CHECK_PTR( bset->bits );
+		CHECK_PTR_RET( bset->bits, FALSE );
 	}
 	bset->num_bits = num_bits;
+	return TRUE;
 }
 
-void bset_deinitialize( bitset_t * const bset )
+int bset_deinitialize( bitset_t * const bset )
 {
-	CHECK_PTR( bset );
-	CHECK( bset->num_bits > 0 );
-	CHECK_PTR( bset->bits );
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fail_bitset_deinit, FALSE );
+#endif
+	CHECK_PTR_RET( bset, FALSE );
+	CHECK_RET( bset->num_bits > 0, FALSE );
+	CHECK_PTR_RET( bset->bits, FALSE );
 
 	FREE( bset->bits );
 	bset->bits = NULL;
 	bset->num_bits = 0;
+	return TRUE;
 }
 
 int bset_set( bitset_t * const bset, size_t const bit )
@@ -92,28 +107,30 @@ int bset_test( bitset_t const * const bset, size_t const bit )
 	return (bset->bits[ DWORD_INDEX(bit) ] & BIT(bit) ? TRUE : FALSE);
 }
 
-void bset_clear_all( bitset_t * const bset )
+int bset_clear_all( bitset_t * const bset )
 {
 	size_t i;
-	CHECK_PTR( bset );
-	CHECK( bset->num_bits > 0 );
-	CHECK_PTR( bset->bits );
+	CHECK_PTR_RET( bset, FALSE );
+	CHECK_RET( bset->num_bits > 0, FALSE );
+	CHECK_PTR_RET( bset->bits, FALSE );
 	for ( i = 0; i < DWORDS_NEEDED( bset->num_bits ); i++ )
 	{
 		bset->bits[i] = 0;
 	}
+	return TRUE;
 }
 
-void bset_set_all( bitset_t * const bset )
+int bset_set_all( bitset_t * const bset )
 {
 	size_t i;
-	CHECK_PTR( bset );
-	CHECK( bset->num_bits > 0 );
-	CHECK_PTR( bset->bits );
+	CHECK_PTR_RET( bset, FALSE );
+	CHECK_RET( bset->num_bits > 0, FALSE );
+	CHECK_PTR_RET( bset->bits, FALSE );
 	for ( i = 0; i < DWORDS_NEEDED( bset->num_bits ); i++ )
 	{
 		bset->bits[i] = 0xFFFFFFFF;
 	}
+	return TRUE;
 }
 
 

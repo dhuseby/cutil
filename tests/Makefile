@@ -14,7 +14,7 @@ GCOV=$(SRC:.c=.c.gcov)
 OUT=test_all
 LIBS=-lcutil -lcunit -lev
 CUTIL_ROOT=../src
-CFLAGS=-O0 -gstabs+ -I$(CUTIL_ROOT)/include -I$(EXTRA_LIBS_ROOT)/include
+CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(CUTIL_ROOT)/include -I$(EXTRA_LIBS_ROOT)/include
 LDFLAGS=-O0 -gstabs+ -L$(CUTIL_ROOT)/lib -L$(EXTRA_LIBS_ROOT)/lib
 # set LDFLAGS to something gcov can use
 coverage: LDFLAGS=-fprofile-arcs -O0 -gstabs+ -L$(CUTIL_ROOT)/lib -L$(EXTRA_LIBS_ROOT)/lib

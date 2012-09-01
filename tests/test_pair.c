@@ -22,6 +22,10 @@
 #include <cutil/macros.h>
 #include <cutil/pair.h>
 
+#include "test_macros.h"
+
+extern int fail_alloc;
+
 int8_t const * const first = "first";
 int8_t const * const second = "second";
 
@@ -63,6 +67,24 @@ void test_pair_nulls( void )
 	}
 }
 
+void test_pair_fail_alloc( void )
+{
+	fail_alloc = TRUE;
+	CU_ASSERT_PTR_NULL( pair_new( NULL, NULL ) );
+	fail_alloc = FALSE;
+}
+
+void test_pair_delete_null( void )
+{
+	pair_delete(NULL);
+}
+
+void test_pair_accessor_prereqs( void )
+{
+	CU_ASSERT_PTR_NULL( pair_first( NULL ) );
+	CU_ASSERT_PTR_NULL( pair_second( NULL ) );
+}
+
 static int init_pair_suite( void )
 {
 	srand(0xDEADBEEF);
@@ -76,8 +98,11 @@ static int deinit_pair_suite( void )
 
 static CU_pSuite add_pair_tests( CU_pSuite pSuite )
 {
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of pair", test_pair_newdel), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "pair with nulls test", test_pair_nulls), NULL );
+	ADD_TEST( "new/delete of pair",		test_pair_newdel );
+	ADD_TEST( "pair with nulls test",	test_pair_nulls );
+	ADD_TEST( "pair fail alloc",		test_pair_fail_alloc );
+	ADD_TEST( "pair delete null",		test_pair_delete_null );
+	ADD_TEST( "pair accessor pre-reqs", test_pair_accessor_prereqs );
 	
 	return pSuite;
 }

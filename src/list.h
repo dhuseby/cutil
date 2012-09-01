@@ -87,5 +87,9 @@ void* list_itr_get( list_t const * const list, list_itr_t const itr );
 #define list_get_head(list) list_itr_get(list, list_itr_head(list))
 #define list_get_tail(list) list_itr_get(list, list_itr_tail(list))
 
+#if defined(UNIT_TESTING)
+void test_list_private_functions( void );
+#endif
+
 #endif/*__LIST_H__*/
  

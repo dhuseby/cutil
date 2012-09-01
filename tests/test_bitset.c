@@ -20,6 +20,12 @@
 #include <cutil/macros.h>
 #include <cutil/bitset.h>
 
+#include "test_macros.h"
+
+extern int fail_alloc;
+extern int fail_bitset_init;
+extern int fail_bitset_deinit;
+
 void test_bitset_newdel( void )
 {
 	int i;
@@ -56,7 +62,7 @@ void test_bitset_initdeinit( void )
 	{
 		MEMSET( &bset, 0, sizeof(bitset_t) );
 		size = (rand() % 1024);
-		bset_initialize( &bset, size );
+		CU_ASSERT_TRUE( bset_initialize( &bset, size ) );
 
 		if ( size > 0 )
 		{
@@ -64,7 +70,7 @@ void test_bitset_initdeinit( void )
 		}
 		CU_ASSERT_EQUAL( bset.num_bits, size );
 
-		bset_deinitialize( &bset );
+		CU_ASSERT_TRUE( bset_deinitialize( &bset ) );
 	}
 }
 
@@ -73,7 +79,7 @@ void test_bitset_zerosize( void )
 	bitset_t bset1;
 	bitset_t* bset2;
 
-	bset_initialize( &bset1, 0 );
+	CU_ASSERT_TRUE( bset_initialize( &bset1, 0 ) );
 	CU_ASSERT_PTR_NULL( bset1.bits );
 	CU_ASSERT_EQUAL( bset1.num_bits, 0 );
 
@@ -87,10 +93,10 @@ void test_bitset_maxsize( void )
 	bitset_t* bset2;
 	size_t max_size = (size_t)-1;
 
-	bset_initialize( &bset1, max_size );
+	CU_ASSERT_TRUE( bset_initialize( &bset1, max_size ) );
 	CU_ASSERT_PTR_NOT_NULL( bset1.bits );
 	CU_ASSERT_EQUAL( bset1.num_bits, max_size );
-	bset_deinitialize( &bset1 );
+	CU_ASSERT_TRUE( bset_deinitialize( &bset1 ) );
 	CU_ASSERT_PTR_NULL( bset1.bits );
 	CU_ASSERT_EQUAL( bset1.num_bits, 0 );
 
@@ -108,19 +114,19 @@ void test_bitset_setall( void )
 
 	size = (rand() % 65535);
 	MEMSET( &bset, 0, sizeof(bitset_t) );
-	bset_initialize( &bset, size );
+	CU_ASSERT_TRUE( bset_initialize( &bset, size ) );
 
 	CU_ASSERT_PTR_NOT_NULL( bset.bits );
 	CU_ASSERT_EQUAL( bset.num_bits, size );
 
-	bset_set_all( &bset );
+	CU_ASSERT_TRUE( bset_set_all( &bset ) );
 
 	for ( i = 0; i < size; i++ )
 	{
 		CU_ASSERT_EQUAL( bset_test( &bset, i ), TRUE );
 	}
 
-	bset_deinitialize( &bset );
+	CU_ASSERT_TRUE( bset_deinitialize( &bset ) );
 	CU_ASSERT_PTR_NULL( bset.bits );
 	CU_ASSERT_EQUAL( bset.num_bits, 0 );
 }
@@ -132,7 +138,7 @@ void test_bitset_clearall( void )
 
 	size = (rand() % 65535);
 	MEMSET( &bset, 0, sizeof(bitset_t) );
-	bset_initialize( &bset, size );
+	CU_ASSERT_TRUE( bset_initialize( &bset, size ) );
 
 	CU_ASSERT_PTR_NOT_NULL( bset.bits );
 	CU_ASSERT_EQUAL( bset.num_bits, size );
@@ -147,7 +153,7 @@ void test_bitset_clearall( void )
 	}
 
 	/* clear all of them */
-	bset_clear_all( &bset );
+	CU_ASSERT_TRUE( bset_clear_all( &bset ) );
 
 	/* check */
 	for ( i = 0; i < size; i++ )
@@ -155,7 +161,7 @@ void test_bitset_clearall( void )
 		CU_ASSERT_EQUAL( bset_test( &bset, i ), FALSE );
 	}
 
-	bset_deinitialize( &bset );
+	CU_ASSERT_TRUE( bset_deinitialize( &bset ) );
 	CU_ASSERT_PTR_NULL( bset.bits );
 	CU_ASSERT_EQUAL( bset.num_bits, 0 );
 }
@@ -168,7 +174,7 @@ void test_bitset_patternbitflips( void )
 
 	size = (rand() % 65535);
 	MEMSET( &bset, 0, sizeof(bitset_t) );
-	bset_initialize( &bset, size );
+	CU_ASSERT_TRUE( bset_initialize( &bset, size ) );
 
 	CU_ASSERT_PTR_NOT_NULL( bset.bits );
 	CU_ASSERT_EQUAL( bset.num_bits, size );
@@ -178,7 +184,7 @@ void test_bitset_patternbitflips( void )
 	{
 		if ( i & 1 )
 		{
-			bset_set( &bset, i );
+			CU_ASSERT_TRUE( bset_set( &bset, i ) );
 		}
 	}
 
@@ -196,14 +202,14 @@ void test_bitset_patternbitflips( void )
 	}
 
 	/* clear all bits */
-	bset_clear_all( &bset );
+	CU_ASSERT_TRUE( bset_clear_all( &bset ) );
 
 	/* flip all of the odd bits */
 	for ( i = 0; i < size; i++ )
 	{
 		if ( !(i & 1) )
 		{
-			bset_set( &bset, i );
+			CU_ASSERT_TRUE( bset_set( &bset, i ) );
 		}
 	}
 
@@ -220,7 +226,7 @@ void test_bitset_patternbitflips( void )
 		}
 	}
 
-	bset_deinitialize( &bset );
+	CU_ASSERT_TRUE( bset_deinitialize( &bset ) );
 }
 
 void test_bitset_patternbitclears( void )
@@ -231,20 +237,20 @@ void test_bitset_patternbitclears( void )
 
 	size = (rand() % 65535);
 	MEMSET( &bset, 0, sizeof(bitset_t) );
-	bset_initialize( &bset, size );
+	CU_ASSERT_TRUE( bset_initialize( &bset, size ) );
 
 	CU_ASSERT_PTR_NOT_NULL( bset.bits );
 	CU_ASSERT_EQUAL( bset.num_bits, size );
 
 	/* set all bits */
-	bset_set_all( &bset );
+	CU_ASSERT_TRUE( bset_set_all( &bset ) );
 
 	/* clear all of the odd bits */
 	for ( i = 0; i < size; i++ )
 	{
 		if ( !(i & 1) )
 		{
-			bset_clear( &bset, i );
+			CU_ASSERT_TRUE( bset_clear( &bset, i ) );
 		}
 	}
 
@@ -261,7 +267,7 @@ void test_bitset_patternbitclears( void )
 		}
 	}
 
-	bset_deinitialize( &bset );
+	CU_ASSERT_TRUE( bset_deinitialize( &bset ) );
 }
 
 
@@ -274,7 +280,7 @@ void test_bitset_randombitflips( void )
 
 	size = (rand() % 65535);
 	MEMSET( &bset, 0, sizeof(bitset_t) );
-	bset_initialize( &bset, size );
+	CU_ASSERT_TRUE( bset_initialize( &bset, size ) );
 
 	CU_ASSERT_PTR_NOT_NULL( bset.bits );
 	CU_ASSERT_EQUAL( bset.num_bits, size );
@@ -290,7 +296,7 @@ void test_bitset_randombitflips( void )
 	for ( i = 0; i < nflips; i++ )
 	{
 		idxs[i] = (rand() % size);
-		bset_set( &bset, idxs[i] );
+		CU_ASSERT_TRUE( bset_set( &bset, idxs[i] ) );
 	}
 
 	/* check */
@@ -315,9 +321,131 @@ void test_bitset_randombitflips( void )
 	/* release the memory for the index list */
 	FREE( idxs );
 
-	bset_deinitialize( &bset );
+	CU_ASSERT_TRUE( bset_deinitialize( &bset ) );
 	CU_ASSERT_PTR_NULL( bset.bits );
 	CU_ASSERT_EQUAL( bset.num_bits, 0 );
+}
+
+void test_bitset_fail_alloc( void )
+{
+	fail_alloc = TRUE;
+	CU_ASSERT_PTR_NULL( bset_new( 10 ) );
+	fail_alloc = FALSE;
+}
+
+void test_bitset_delete_null( void )
+{
+	bset_delete( NULL );
+}
+
+void test_bitset_init_null( void )
+{
+	CU_ASSERT_FALSE( bset_initialize( NULL, 10 ) );
+}
+
+void test_bitset_deinit_null( void )
+{
+	CU_ASSERT_FALSE( bset_deinitialize( NULL ) );
+}
+
+void test_bitset_init_fail_alloc( void )
+{
+	bitset_t bset;
+	MEMSET( &bset, 0, sizeof(bitset_t) );
+	fail_alloc = TRUE;
+	CU_ASSERT_FALSE( bset_initialize( &bset, 10 ) );
+	fail_alloc = FALSE;
+}
+
+void test_bitset_new_fail_init( void )
+{
+	fail_bitset_init = TRUE;
+	CU_ASSERT_PTR_NULL( bset_new( 10 ) );
+	fail_bitset_init = FALSE;
+}
+
+void test_bitset_deinit_prereqs( void )
+{
+	bitset_t bset;
+	MEMSET( &bset, 0, sizeof(bitset_t) );
+
+	fail_bitset_deinit = TRUE;
+	CU_ASSERT_FALSE( bset_deinitialize( &bset ) );
+	fail_bitset_deinit = FALSE;
+
+	CU_ASSERT_FALSE( bset_deinitialize( &bset ) );
+	bset.num_bits = 10;
+	CU_ASSERT_FALSE( bset_deinitialize( &bset ) );
+	bset.num_bits = 0;
+#if 0
+	CU_ASSERT_TRUE( bset_initialize( &bset, 10 ) );
+	CU_ASSERT_FALSE( bset_deintialize( &bset ) );
+#endif
+}
+
+void test_bitset_set_prereqs( void )
+{
+	bitset_t bset;
+	CU_ASSERT_TRUE( bset_initialize( &bset, 10 ) );
+
+	CU_ASSERT_FALSE( bset_set( NULL, 0 ) );
+	CU_ASSERT_FALSE( bset_set( &bset, 20 ) );
+	
+	CU_ASSERT_TRUE( bset_deinitialize( &bset ) );
+}
+
+void test_bitset_clear_prereqs( void )
+{
+	bitset_t bset;
+	CU_ASSERT_TRUE( bset_initialize( &bset, 10 ) );
+
+	CU_ASSERT_FALSE( bset_clear( NULL, 0 ) );
+	CU_ASSERT_FALSE( bset_clear( &bset, 20 ) );
+	
+	CU_ASSERT_TRUE( bset_deinitialize( &bset ) );
+}
+
+void test_bitset_test_prereqs( void )
+{
+	bitset_t bset;
+	CU_ASSERT_TRUE( bset_initialize( &bset, 10 ) );
+
+	CU_ASSERT_FALSE( bset_test( NULL, 0 ) );
+	CU_ASSERT_FALSE( bset_test( &bset, 20 ) );
+	
+	CU_ASSERT_TRUE( bset_deinitialize( &bset ) );
+}
+
+void test_bitset_clearall_prereqs( void )
+{
+	bitset_t bset;
+	MEMSET( &bset, 0, sizeof(bitset_t) );
+
+	CU_ASSERT_FALSE( bset_clear_all( NULL ) );
+	CU_ASSERT_FALSE( bset_clear_all( &bset ) );
+	bset.num_bits = 10;
+	CU_ASSERT_FALSE( bset_clear_all( &bset ) );
+	bset.num_bits = 0;
+	CU_ASSERT_TRUE( bset_initialize( &bset, 10 ) );
+	CU_ASSERT_TRUE( bset_clear_all( &bset ) );
+	
+	CU_ASSERT_TRUE( bset_deinitialize( &bset ) );
+}
+
+void test_bitset_setall_prereqs( void )
+{
+	bitset_t bset;
+	MEMSET( &bset, 0, sizeof(bitset_t) );
+
+	CU_ASSERT_FALSE( bset_set_all( NULL ) );
+	CU_ASSERT_FALSE( bset_set_all( &bset ) );
+	bset.num_bits = 10;
+	CU_ASSERT_FALSE( bset_set_all( &bset ) );
+	bset.num_bits = 0;
+	CU_ASSERT_TRUE( bset_initialize( &bset, 10 ) );
+	CU_ASSERT_TRUE( bset_set_all( &bset ) );
+	
+	CU_ASSERT_TRUE( bset_deinitialize( &bset ) );
 }
 
 static int init_bitset_suite( void )
@@ -333,15 +461,27 @@ static int deinit_bitset_suite( void )
 
 static CU_pSuite add_bitset_tests( CU_pSuite pSuite )
 {
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of bitset", test_bitset_newdel), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "init/deinit of bitset", test_bitset_initdeinit), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "zero size bitset", test_bitset_zerosize), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "max size bitset", test_bitset_maxsize), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "bitset setall test", test_bitset_setall), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "bitset clearall test", test_bitset_clearall), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "bitset pattern set test", test_bitset_patternbitflips), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "bitset pattern clear test", test_bitset_patternbitclears), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "bitset random test", test_bitset_randombitflips), NULL );
+	ADD_TEST( "new/delete of bitset",		test_bitset_newdel );
+	ADD_TEST( "init/deinit of bitset",		test_bitset_initdeinit );
+	ADD_TEST( "zero size bitset",			test_bitset_zerosize );
+	ADD_TEST( "max size bitset",			test_bitset_maxsize );
+	ADD_TEST( "bitset setall test",			test_bitset_setall );
+	ADD_TEST( "bitset clearall test",		test_bitset_clearall );
+	ADD_TEST( "bitset pattern set test",	test_bitset_patternbitflips );
+	ADD_TEST( "bitset pattern clear test",	test_bitset_patternbitclears );
+	ADD_TEST( "bitset random test",			test_bitset_randombitflips );
+	ADD_TEST( "bitset fail alloc",			test_bitset_fail_alloc );
+	ADD_TEST( "bitset delete null",			test_bitset_delete_null );
+	ADD_TEST( "bitset init null",			test_bitset_init_null );
+	ADD_TEST( "bitset deinit null",			test_bitset_deinit_null );
+	ADD_TEST( "bitset init fail alloc",		test_bitset_init_fail_alloc );
+	ADD_TEST( "bitset new fail init",		test_bitset_new_fail_init );
+	ADD_TEST( "bitset deinit pre-reqs",		test_bitset_deinit_prereqs );
+	ADD_TEST( "bitset set pre-reqs",		test_bitset_set_prereqs );
+	ADD_TEST( "bitset clear pre-reqs",		test_bitset_clear_prereqs );
+	ADD_TEST( "bitset test pre-reqs",		test_bitset_test_prereqs );
+	ADD_TEST( "bitset clear all pre-reqs",	test_bitset_clearall_prereqs );
+	ADD_TEST( "bitset set all pre-reqs",	test_bitset_setall_prereqs );
 	
 	return pSuite;
 }

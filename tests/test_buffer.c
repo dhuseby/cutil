@@ -22,6 +22,10 @@
 #include <cutil/macros.h>
 #include <cutil/buffer.h>
 
+#include "test_macros.h"
+
+extern int fail_alloc;
+
 int8_t const * const buf = "blah";
 size_t const size = 5;
 
@@ -162,12 +166,12 @@ static int deinit_buffer_suite( void )
 
 static CU_pSuite add_buffer_tests( CU_pSuite pSuite )
 {
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of buffer", test_buffer_newdel ), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of buffer with prev allocation", test_buffer_newdel_pwned ), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "init/deinit of buffer", test_buffer_initdeinit ), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "init/deinit of buffer with prev allocation", test_buffer_initdeinit_pwned ), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "buffer append", test_buffer_append ), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "buffer append with prev allocation", test_buffer_append_pwned ), NULL );
+	ADD_TEST( "new/delete of buffer", test_buffer_newdel );
+	ADD_TEST( "new/delete of buffer with prev allocation", test_buffer_newdel_pwned );
+	ADD_TEST( "init/deinit of buffer", test_buffer_initdeinit );
+	ADD_TEST( "init/deinit of buffer with prev allocation", test_buffer_initdeinit_pwned );
+	ADD_TEST( "buffer append", test_buffer_append );
+	ADD_TEST( "buffer append with prev allocation", test_buffer_append_pwned );
 	
 	return pSuite;
 }

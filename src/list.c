@@ -238,8 +238,8 @@ list_itr_t list_pop( list_t * const list, list_itr_t const itr )
 	list_itr_t next = list_itr_end_t;
 
 	CHECK_PTR_RET( list, list_itr_end_t );
-	CHECK_RET( ((itr >= 0) && (itr < list->size)), list_itr_end_t );
 	CHECK_RET( list->size, list_itr_end_t );
+	CHECK_RET( ((itr == list_itr_end_t) || ((itr >= 0) && (itr < list->size))), list_itr_end_t );
 
 	/* if they pass in list_itr_end_t, they want to remove the tail item */
 	item = (itr == list_itr_end_t) ? list_itr_tail( list ) : itr;
@@ -271,6 +271,7 @@ void * list_itr_get( list_t const * const list, list_itr_t const itr )
 {
 	CHECK_PTR_RET( list, NULL );
 	CHECK_RET( itr != list_itr_end_t, NULL );
+	CHECK_RET( list->size, NULL );							/* empty list? */
 	CHECK_RET( ((itr >= 0) && (itr < list->size)), NULL );	/* valid index? */
 	CHECK_RET( ITEM_AT( list->items, itr )->used, NULL );	/* in used list? */
 
@@ -400,4 +401,57 @@ static int list_grow( list_t * const list, uint_t amount )
 
 	return TRUE;
 }
+
+#if defined(UNIT_TESTING)
+
+#include <CUnit/Basic.h>
+
+void test_list_private_functions( void )
+{
+	int i;
+	list_item_t items[4];
+	list_itr_t head = list_itr_end_t;
+	MEMSET( items, 0, 4 * sizeof(list_item_t) );
+
+	/* REMOVE_ITEM TESTS */
+
+	/* test remove_item pre-reqs */
+	CU_ASSERT_EQUAL( remove_item( NULL, list_itr_end_t ), list_itr_end_t );
+	CU_ASSERT_EQUAL( remove_item( items, list_itr_end_t ), list_itr_end_t );
+
+	/* add some items */
+	for( i = 0; i < 4; i++ )
+	{
+		head = insert_item( items, head, i );
+	}
+
+	/* remove items from the back */
+	CU_ASSERT_EQUAL( remove_item( items, 3 ), 0 );
+	CU_ASSERT_EQUAL( remove_item( items, 2 ), 0 );
+	CU_ASSERT_EQUAL( remove_item( items, 1 ), 0 );
+	CU_ASSERT_EQUAL( remove_item( items, 0 ), list_itr_end_t );
+
+	/* add some items */
+	for( i = 0; i < 4; i++ )
+	{
+		head = insert_item( items, head, i );
+	}
+
+	/* remove items from the front */
+	CU_ASSERT_EQUAL( remove_item( items, 0 ), 1 );
+	CU_ASSERT_EQUAL( remove_item( items, 1 ), 2 );
+	CU_ASSERT_EQUAL( remove_item( items, 2 ), 3 );
+	CU_ASSERT_EQUAL( remove_item( items, 3 ), list_itr_end_t );
+
+	/* INSERT_ITEM TESTS */
+
+	/* test insert_item pre-reqs */
+	CU_ASSERT_EQUAL( insert_item( NULL, list_itr_end_t, list_itr_end_t ), list_itr_end_t );
+	CU_ASSERT_EQUAL( insert_item( items, list_itr_end_t, list_itr_end_t ), list_itr_end_t );
+
+	/* LIST_GROW TESTS */
+	CU_ASSERT_FALSE( list_grow( NULL, 0 ) );
+}
+
+#endif
 

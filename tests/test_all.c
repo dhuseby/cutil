@@ -31,6 +31,8 @@
 
 /* switches for forcing varicus things to fail */
 int fail_alloc = FALSE;
+int fail_bitset_init = FALSE;
+int fail_bitset_deinit = FALSE;
 int fail_list_grow = FALSE;
 int fail_list_init = FALSE;
 int fail_list_deinit = FALSE;

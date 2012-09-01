@@ -71,13 +71,13 @@ static void test_list_initdeinit( void )
 	{
 		MEMSET( &list, 0, sizeof(list_t) );
 		size = (rand() % SIZEMAX);
-		list_initialize( &list, size, NULL );
+		CU_ASSERT_TRUE( list_initialize( &list, size, NULL ) );
 
 		CU_ASSERT_EQUAL( list_count( &list ), 0 );
 		CU_ASSERT_EQUAL( list.size, size );
 		CU_ASSERT_EQUAL( list.dfn, NULL );
 
-		list_deinitialize( &list );
+		CU_ASSERT_TRUE( list_deinitialize( &list ) );
 	}
 }
 
@@ -91,7 +91,7 @@ static void test_list_static_grow( void )
 	{
 		MEMSET( &list, 0, sizeof(list_t) );
 		size = (rand() % SIZEMAX);
-		list_initialize( &list, size, NULL );
+		CU_ASSERT_TRUE( list_initialize( &list, size, NULL ) );
 
 		CU_ASSERT_EQUAL( list_count( &list ), 0 );
 		CU_ASSERT_EQUAL( list.size, size );
@@ -99,11 +99,11 @@ static void test_list_static_grow( void )
 
 		for ( j = 0; j < 8; j++ )
 		{
-			list_reserve( &list, (j * size) );
+			CU_ASSERT_TRUE( list_reserve( &list, (j * size) ) );
 			CU_ASSERT_TRUE( list.size >= ((j * size > size) ? (j * size) : size) );
 		}
 
-		list_deinitialize( &list );
+		CU_ASSERT_TRUE( list_deinitialize( &list ) );
 	}
 }
 
@@ -125,7 +125,7 @@ static void test_list_dynamic_grow( void )
 
 		for ( j = 0; j < 8; j++ )
 		{
-			list_reserve( list, j * size );
+			CU_ASSERT_TRUE( list_reserve( list, j * size ) );
 			CU_ASSERT_TRUE( list->size >= ((j * size > size) ? (j * size) : size) );
 		}
 
@@ -145,7 +145,7 @@ static void test_list_empty_iterator( void )
 	{
 		MEMSET( &list, 0, sizeof(list_t) );
 		size = (rand() % SIZEMAX);
-		list_initialize( &list, size, NULL );
+		CU_ASSERT_TRUE( list_initialize( &list, size, NULL ) );
 
 		itr = list_itr_begin( &list );
 		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
@@ -198,7 +198,7 @@ static void test_list_empty_iterator( void )
 		CU_ASSERT_EQUAL( itr, list_itr_begin( &list ) );
 		CU_ASSERT_EQUAL( itr, list_itr_end( &list ) );
 
-		list_deinitialize( &list );
+		CU_ASSERT_TRUE( list_deinitialize( &list ) );
 	}
 }
 
@@ -206,7 +206,7 @@ static void test_list_push_head_1( void )
 {
 	list_t list;
 	MEMSET(&list, 0, sizeof(list_t));
-	list_initialize( &list, 1, NULL );
+	CU_ASSERT_TRUE( list_initialize( &list, 1, NULL ) );
 	list_push_head( &list, (void*)1 );
 	CU_ASSERT_EQUAL( list_count( &list ), 1 );
 	list_push_head( &list, (void*)2 );
@@ -217,7 +217,7 @@ static void test_list_push_head_1( void )
 	CU_ASSERT_EQUAL( list_count( &list ), 4 );
 	list_push_head( &list, (void*)5 );
 	CU_ASSERT_EQUAL( list_count( &list ), 5 );
-	list_deinitialize( &list );
+	CU_ASSERT_TRUE( list_deinitialize( &list ) );
 }
 
 static void test_list_push_head( void )
@@ -830,6 +830,68 @@ static void test_list_rnext_null( void )
 	CU_ASSERT_EQUAL( list_itr_rnext( &list, -1 ), -1 );
 }
 
+static void test_list_push_null( void )
+{
+	CU_ASSERT_FALSE( list_push( NULL, NULL, 0 ) );
+}
+
+static void test_list_pop_prereqs( void )
+{
+	list_t list;
+	MEMSET( &list, 0, sizeof(list_t) );
+
+	/* pass in NULL for the list */
+	CU_ASSERT_EQUAL( list_pop( NULL, 0 ), -1 );
+
+	/* initialize the list and ask to pop 0. it's an empty
+	 * list so the size check will fail */
+	CU_ASSERT_TRUE( list_initialize( &list, 0, NULL ) );
+	CU_ASSERT_EQUAL( list_pop( &list, 0 ), -1 );
+
+	/* push an item on the list so it isn't empty */
+	CU_ASSERT_TRUE( list_push( &list, (void*)1, -1 ) );
+	CU_ASSERT_EQUAL( list_count( &list ), 1 );
+
+	/* pop at illegal indexes */
+	CU_ASSERT_EQUAL( list_pop( &list, -2 ), -1 );
+	CU_ASSERT_EQUAL( list_pop( &list, 5 ), -1 );
+	CU_ASSERT_EQUAL( list_pop( &list, -1 ), -1 );
+
+	/* make the size at least 10 */
+	CU_ASSERT_TRUE( list_reserve( &list, 10 ) );
+
+	/* try to pop and item from the free list */
+	CU_ASSERT_EQUAL( list_pop( &list, 7 ), -1 );
+}
+
+static void test_list_get_prereqs( void )
+{
+	list_t list;
+	MEMSET( &list, 0, sizeof(list_t) );
+
+	/* pass in NULL for the list */
+	CU_ASSERT_PTR_NULL( list_itr_get( NULL, -1 ) );
+
+	/* pass int -1 */
+	CU_ASSERT_PTR_NULL( list_itr_get( &list, -1 ) );
+
+	/* init the list with zero size */
+	CU_ASSERT_TRUE( list_initialize( &list, 0, NULL ) );
+
+	/* pass in not -1, this will trigger the size check */
+	CU_ASSERT_PTR_NULL( list_itr_get( &list, 0 ) );
+
+	/* make the size at least 4 */
+	CU_ASSERT_TRUE( list_reserve( &list, 4 ) );
+
+	/* pass in bogus iterators */
+	CU_ASSERT_PTR_NULL( list_itr_get( &list, -2 ) );
+	CU_ASSERT_PTR_NULL( list_itr_get( &list, 5 ) );
+
+	/* try to get an item from the free list */
+	CU_ASSERT_PTR_NULL( list_itr_get( &list, 3 ) );
+}
+
 
 static int init_list_suite( void )
 {
@@ -879,7 +941,11 @@ static CU_pSuite add_list_tests( CU_pSuite pSuite )
 	ADD_TEST("list tail null",				test_list_tail_null);
 	ADD_TEST("list next null",				test_list_next_null);
 	ADD_TEST("list rnext null",				test_list_rnext_null);
-	
+	ADD_TEST("list push null",				test_list_push_null);
+	ADD_TEST("list pop pre-reqs",			test_list_pop_prereqs);
+	ADD_TEST("list get pre-reqs",			test_list_get_prereqs);
+	ADD_TEST("list private functions",		test_list_private_functions);
+
 	return pSuite;
 }
 
