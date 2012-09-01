@@ -2,6 +2,10 @@ This library of miscelaneous data structures depends only on the CUnit unit
 test library.  It is not necessary to install CUnit to build the static
 library.  But if you wish to run the unit tests, you must install it first.
 
+If you are compiling with gcc and you have gcov and lcov installed, you can 
+generate the unit test coverage by running "make coverage".  To view the
+coverage report, open coverage/index.html in your browser.
+
 The Makefile is sensitive to the PREFIX environment variable.  If you set it
 and then run "make install" it will build the static library and copy it to
 $(PREFIX)/lib.  If you do not specify a value for PREFIX, then it defaults to
