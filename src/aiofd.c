@@ -20,8 +20,6 @@
 #include <errno.h>
 #include <sys/ioctl.h>
 
-#define DEBUG_ON
-
 #include "debug.h"
 #include "macros.h"
 #include "list.h"

@@ -33,8 +33,6 @@
 #include <sys/un.h>
 #include <netinet/tcp.h>
 
-#define DEBUG_ON
-
 #include "debug.h"
 #include "macros.h"
 #include "events.h"
