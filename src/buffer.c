@@ -18,13 +18,20 @@
 #include "macros.h"
 #include "buffer.h"
 
+#if defined(UNIT_TESTING)
+extern int fail_alloc;
+extern int fail_buffer_init;
+extern int fail_buffer_deinit;
+extern int fail_buffer_init_alloc;
+int fail_alloc_bak = FALSE;
+#endif
+
 /*
  * struct iovec {
  *     void *iov_base;
  *     size_t iov_len;
  * }
  */
-
 
 buffer_t * buffer_new( void * p, size_t len )
 {
@@ -53,13 +60,31 @@ void buffer_delete( void * b )
 
 int buffer_initialize( buffer_t * const b, void * p, size_t len )
 {
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fail_buffer_init, FALSE );
+#endif
 	CHECK_PTR_RET( b, FALSE );
 
 	if ( p == NULL )
 	{
+#if defined(UNIT_TESTING)
+		if ( fail_buffer_init_alloc )
+		{
+			fail_alloc_bak = fail_alloc;
+			fail_alloc = TRUE;
+		}
+#endif
 		/* allocating a new buffer, so allocate the buffer struct and
 		 * the data area just after it */
 		b->iov_base = CALLOC( len, sizeof(uint8_t) );
+
+#if defined(UNIT_TESTING)
+		if ( fail_buffer_init_alloc )
+		{
+			fail_alloc = fail_alloc_bak;
+		}
+#endif
+
 		CHECK_PTR_RET( b->iov_base, FALSE );
 	}
 	else
@@ -73,21 +98,30 @@ int buffer_initialize( buffer_t * const b, void * p, size_t len )
 	return TRUE;
 }
 
-void buffer_deinitialize( buffer_t * const b )
+int buffer_deinitialize( buffer_t * const b )
 {
-	CHECK_PTR( b );
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fail_buffer_deinit, FALSE );
+#endif
+	CHECK_PTR_RET( b, FALSE );
 	FREE( b->iov_base );
 	b->iov_base = NULL;
 	b->iov_len = 0;
+	return TRUE;
 }
 
 int buffer_append( buffer_t * const b, void * p, size_t len )
 {
+	void * new_memory = NULL;
 	CHECK_PTR_RET( b, FALSE );
+	CHECK_RET( len > 0, FALSE );
 
 	/* make the buffer bigger */
-	b->iov_base = REALLOC( b->iov_base, b->iov_len + len );
-	CHECK_PTR_RET( b->iov_base, FALSE );
+	new_memory = REALLOC( b->iov_base, b->iov_len + len );
+	CHECK_PTR_RET( new_memory, FALSE );
+
+	/* realloc succeeded so overwrite the pointer */	
+	b->iov_base = new_memory;
 
 	if ( p != NULL )
 	{

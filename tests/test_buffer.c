@@ -25,11 +25,14 @@
 #include "test_macros.h"
 
 extern int fail_alloc;
+extern int fail_buffer_init;
+extern int fail_buffer_deinit;
+extern int fail_buffer_init_alloc;
 
 int8_t const * const buf = "blah";
 size_t const size = 5;
 
-void test_buffer_newdel( void )
+static void test_buffer_newdel( void )
 {
 	int i, size;
 	buffer_t * b;
@@ -47,7 +50,7 @@ void test_buffer_newdel( void )
 	}
 }
 
-void test_buffer_newdel_pwned( void )
+static void test_buffer_newdel_pwned( void )
 {
 	int i, size;
 	void * p;
@@ -68,7 +71,7 @@ void test_buffer_newdel_pwned( void )
 	}
 }
 
-void test_buffer_initdeinit( void )
+static void test_buffer_initdeinit( void )
 {
 	int i, size;
 	buffer_t b;
@@ -76,16 +79,16 @@ void test_buffer_initdeinit( void )
 	for ( i = 0; i < 1024; i++ )
 	{
 		size = rand() % 1024;
-		buffer_initialize( &b, NULL, (size_t)size );
+		CU_ASSERT_TRUE( buffer_initialize( &b, NULL, (size_t)size ) );
 
 		CU_ASSERT_PTR_NOT_NULL( b.iov_base );
 		CU_ASSERT_EQUAL( b.iov_len, (size_t)size );
 
-		buffer_deinitialize( &b );
+		CU_ASSERT_TRUE( buffer_deinitialize( &b ) );
 	}
 }
 
-void test_buffer_initdeinit_pwned( void )
+static void test_buffer_initdeinit_pwned( void )
 {
 	int i, size;
 	void * p;
@@ -95,17 +98,17 @@ void test_buffer_initdeinit_pwned( void )
 	{
 		size = rand() % 1024;
 		p = CALLOC( size, sizeof(uint8_t) );
-		buffer_initialize( &b, p, (size_t)size );
+		CU_ASSERT_TRUE( buffer_initialize( &b, p, (size_t)size ) );
 
 		CU_ASSERT_PTR_NOT_NULL( b.iov_base );
 		CU_ASSERT_EQUAL( b.iov_base, p );
 		CU_ASSERT_EQUAL( b.iov_len, (size_t)size );
 
-		buffer_deinitialize( &b );
+		CU_ASSERT_TRUE( buffer_deinitialize( &b ) );
 	}
 }
 
-void test_buffer_append( void )
+static void test_buffer_append( void )
 {
 	int i, size1, size2;
 	buffer_t * b;
@@ -128,7 +131,7 @@ void test_buffer_append( void )
 	}
 }
 
-void test_buffer_append_pwned( void )
+static void test_buffer_append_pwned( void )
 {
 	int i, size1, size2;
 	void * p;
@@ -153,6 +156,73 @@ void test_buffer_append_pwned( void )
 	}
 }
 
+static void test_buffer_delete_null( void )
+{
+	buffer_delete( NULL );
+}
+
+static void test_buffer_new_fail_alloc( void )
+{
+	fail_alloc = TRUE;
+	CU_ASSERT_PTR_NULL( buffer_new( NULL, 10 ) );
+	fail_alloc = FALSE;
+}
+
+static void test_buffer_new_fail_init( void )
+{
+	fail_buffer_init = TRUE;
+	CU_ASSERT_PTR_NULL( buffer_new( NULL, 10 ) );
+	fail_buffer_init = FALSE;
+}
+
+static void test_buffer_init_null( void )
+{
+	CU_ASSERT_FALSE( buffer_initialize( NULL, NULL, 0 ) );
+}
+
+static void test_buffer_init_fail_alloc( void )
+{
+	buffer_t b;
+	fail_buffer_init_alloc = TRUE;
+	CU_ASSERT_FALSE( buffer_initialize( &b, NULL, 10 ) );
+	fail_buffer_init_alloc = FALSE;
+}
+
+static void test_buffer_deinit_null( void )
+{
+	CU_ASSERT_FALSE( buffer_deinitialize( NULL ) );
+}
+
+static void test_buffer_deinit_fail( void )
+{
+	buffer_t b;
+	fail_buffer_deinit = TRUE;
+	CU_ASSERT_FALSE( buffer_deinitialize( &b ) );
+	fail_buffer_deinit = FALSE;
+}
+
+static void test_buffer_append_prereqs( void )
+{
+	buffer_t b;
+	uint8_t c;
+	MEMSET( &b, 0, sizeof(buffer_t) );
+
+	CU_ASSERT_FALSE( buffer_append( NULL, NULL, 0 ) );
+	CU_ASSERT_FALSE( buffer_append( &b, NULL, 0 ) );
+	CU_ASSERT_FALSE( buffer_append( &b, (void*)&c, 0 ) );
+
+	fail_alloc = TRUE;
+	CU_ASSERT_FALSE( buffer_append( &b, (void*)&c, 1) );
+	fail_alloc = FALSE;
+	CU_ASSERT_PTR_NULL( ((struct iovec)b).iov_base );
+	CU_ASSERT_EQUAL( ((struct iovec)b).iov_len, 0 );
+
+	/* this is the equivilent of an init with 1 byte */
+	CU_ASSERT_TRUE( buffer_append( &b, (void*)&c, 1 ) );
+	CU_ASSERT_PTR_NOT_NULL( ((struct iovec)b).iov_base );
+	CU_ASSERT_EQUAL( ((struct iovec)b).iov_len, 1 );
+}
+
 static int init_buffer_suite( void )
 {
 	srand(0xDEADBEEF);
@@ -172,6 +242,14 @@ static CU_pSuite add_buffer_tests( CU_pSuite pSuite )
 	ADD_TEST( "init/deinit of buffer with prev allocation", test_buffer_initdeinit_pwned );
 	ADD_TEST( "buffer append", test_buffer_append );
 	ADD_TEST( "buffer append with prev allocation", test_buffer_append_pwned );
+	ADD_TEST( "buffer delete null", test_buffer_delete_null );
+	ADD_TEST( "buffer new failed alloc", test_buffer_new_fail_alloc );
+	ADD_TEST( "buffer new failed init", test_buffer_new_fail_init );
+	ADD_TEST( "buffer init null", test_buffer_init_null );
+	ADD_TEST( "buffer init fail alloc", test_buffer_init_fail_alloc );
+	ADD_TEST( "buffer deinit null", test_buffer_deinit_null );
+	ADD_TEST( "buffer deinit fail", test_buffer_deinit_fail );
+	ADD_TEST( "buffer append pre-reqs", test_buffer_append_prereqs );
 	
 	return pSuite;
 }

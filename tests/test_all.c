@@ -33,6 +33,9 @@
 int fail_alloc = FALSE;
 int fail_bitset_init = FALSE;
 int fail_bitset_deinit = FALSE;
+int fail_buffer_init = FALSE;
+int fail_buffer_deinit = FALSE;
+int fail_buffer_init_alloc = FALSE;
 int fail_list_grow = FALSE;
 int fail_list_init = FALSE;
 int fail_list_deinit = FALSE;
@@ -45,6 +48,7 @@ SUITE( child );
 /*SUITE( hashtable );*/
 SUITE( list );
 SUITE( pair );
+SUITE( privileges );
 SUITE( socket );
 SUITE( sanitize );
 
@@ -63,6 +67,7 @@ int main()
 	/*ADD_SUITE( hashtable );*/
 	ADD_SUITE( list );
 	ADD_SUITE( pair );
+	ADD_SUITE( privileges );
 	ADD_SUITE( socket );
 	ADD_SUITE( sanitize );
 
