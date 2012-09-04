@@ -29,11 +29,11 @@
 
 #include "test_macros.h"
 
-extern int fail_alloc;
-
 #define REPEAT (128)
 #define SIZEMAX (128)
 #define MULTIPLE (8)
+
+extern int fail_alloc;
 
 static void test_privileges_temp_drop( void )
 {

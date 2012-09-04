@@ -36,7 +36,8 @@ typedef enum socket_ret_e
     SOCKET_TIMEOUT      = -5,
     SOCKET_POLLERR      = -6,
 	SOCKET_CONNECTED    = -7,
-	SOCKET_BOUND		= -8
+	SOCKET_BOUND		= -8,
+	SOCKET_CONNECT_FAIL = -9
 
 } socket_ret_t;
 
@@ -44,11 +45,19 @@ typedef enum socket_type_e
 {
     SOCKET_TCP,
 	SOCKET_UNIX,
-	SOCKET_UNKNOWN = -1
 
+	SOCKET_LAST,
+	SOCKET_FIRST = SOCKET_TCP,
+	SOCKET_COUNT = (SOCKET_LAST - SOCKET_FIRST),
+
+	SOCKET_UNKNOWN = -1
+	
 } socket_type_t;
 
+#define VALID_SOCKET_TYPE( t ) ((t >= SOCKET_FIRST) && (t < SOCKET_LAST))
+
 typedef struct in_addr IPv4;
+typedef struct in6_addr IPv6;
 typedef struct socket_s socket_t;
 
 typedef struct socket_ops_s 
@@ -118,5 +127,9 @@ socket_ret_t socket_writev( socket_t * const s,
 
 /* flush the socket output */
 socket_ret_t socket_flush( socket_t* const s );
+
+#if defined(UNIT_TESTING)
+void test_socket_private_functions( void );
+#endif
 
 #endif/*__SOCKET_H__*/

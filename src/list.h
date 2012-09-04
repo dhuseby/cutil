@@ -74,8 +74,8 @@ list_itr_t list_itr_rnext( list_t const * const list, list_itr_t const itr );
 
 /* O(1) functions for adding items to the list */
 int list_push( list_t * const list, void * const data, list_itr_t const itr );
-#define list_push_head(list, data) list_push(list, data, list_itr_head(list));
-#define list_push_tail(list, data) list_push(list, data, list_itr_end(list));
+#define list_push_head(list, data) list_push(list, data, list_itr_head(list))
+#define list_push_tail(list, data) list_push(list, data, list_itr_end(list))
 
 /* O(1) functions for removing items from the list */
 list_itr_t list_pop( list_t * const list, list_itr_t const itr );

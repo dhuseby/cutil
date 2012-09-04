@@ -39,6 +39,50 @@
 #include "list.h"
 #include "socket.h"
 
+#if defined(UNIT_TESTING)
+extern evt_loop_t * el;
+extern int fake_aiofd_initialize;
+extern int fake_aiofd_initialize_ret;
+extern int fake_aiofd_read;
+extern int fake_aiofd_read_ret;
+extern int fake_aiofd_write;
+extern int fake_aiofd_write_ret;
+extern int fake_aiofd_writev;
+extern int fake_aiofd_writev_ret;
+extern int fake_aiofd_enable_read_evt;
+extern int fake_aiofd_enable_read_evt_ret;
+
+extern int fake_accept;
+extern int fake_accept_ret;
+extern int fake_bind;
+extern int fake_bind_ret;
+extern int fake_connect;
+extern int fake_connect_ret;
+extern int fake_connect_errno;
+extern int fake_connect_errno_value;
+extern int fake_listen;
+extern int fake_listen_ret;
+extern int fake_setsockopt;
+extern int fake_setsockopt_ret;
+extern int fake_socket;
+extern int fake_socket_ret;
+
+extern int fake_socket_getsockopt;
+extern int fake_socket_errval;
+extern int fake_socket_get_error_ret;
+extern int fail_socket_initialize;
+extern int fake_socket_connected;
+extern int fake_socket_connected_ret;
+extern int fake_socket_connect;
+extern int fake_socket_connect_ret;
+extern int fake_socket_bound;
+extern int fake_socket_bound_ret;
+extern int fake_socket_lookup_host;
+extern int fake_socket_lookup_host_ret;
+extern int fake_socket_bind;
+extern int fake_socket_bind_ret;
+#endif
+
 struct socket_s
 {
 	socket_type_t	type;			/* type of socket */
@@ -52,10 +96,162 @@ struct socket_s
 	aiofd_t			aiofd;			/* the fd management state */
 };
 
+static int socket_get_error( socket_t * const s, int * errval )
+{
+	socklen_t len = sizeof(int);
+	CHECK_PTR_RET( s, FALSE );
+	CHECK_PTR_RET( errval, FALSE );
+#if defined(UNIT_TESTING)
+	if ( fake_socket_getsockopt ) 
+	{
+		*errval = fake_socket_errval;
+		return fake_socket_get_error_ret;
+	}
+#endif
+
+	CHECK_RET( getsockopt( s->aiofd.wfd, SOL_SOCKET, SO_ERROR, errval, &len ) < 0, TRUE );
+	return FALSE;
+}
+
+static int socket_do_tcp_bind( socket_t * const s )
+{
+	int len = 0;
+	struct sockaddr_in in_addr;
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_socket_bind, fake_socket_bind_ret );
+#endif
+	CHECK_PTR_RET( s, FALSE );
+	CHECK_RET( s->type == SOCKET_TCP, FALSE );
+	CHECK_RET( s->port > 0, FALSE );
+
+	/* initialize the socket address struct */
+	MEMSET( &in_addr, 0, sizeof(struct sockaddr_in) );
+	in_addr.sin_family = AF_INET;
+	in_addr.sin_addr.s_addr = s->addr.s_addr;
+	in_addr.sin_port = htons(s->port);
+
+	len = sizeof( in_addr );
+
+	if ( BIND( s->aiofd.rfd, (struct sockaddr*)&in_addr, len) < 0 )
+	{
+		DEBUG( "failed to bind (errno: %d)\n", errno );
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static int socket_do_unix_bind( socket_t * const s )
+{
+	int len = 0;
+	struct sockaddr_un un_addr;
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_socket_bind, fake_socket_bind_ret );
+#endif
+	CHECK_PTR_RET( s, FALSE );
+	CHECK_RET( s->type == SOCKET_UNIX, FALSE );
+	CHECK_PTR_RET( s->host, FALSE );
+
+	/* initialize the socket address struct */
+	MEMSET( &un_addr, 0, sizeof(struct sockaddr_un) );
+	un_addr.sun_family = AF_UNIX;
+	strncpy( un_addr.sun_path, s->host, 100 );
+
+	/* try to delete the socket inode */
+	unlink( un_addr.sun_path );
+
+	/* calculate the length of the address struct */
+	len = strlen( un_addr.sun_path ) + sizeof( un_addr.sun_family );
+
+	if ( BIND( s->aiofd.rfd, (struct sockaddr*)&un_addr, len) < 0 )
+	{
+		DEBUG( "failed to bind (errno: %d)\n", errno );
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+
+static int socket_do_tcp_connect( socket_t * const s )
+{
+	int len = 0;
+	struct sockaddr_in in_addr;
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_socket_connect, fake_socket_connect_ret );
+#endif
+	CHECK_PTR_RET( s, FALSE );
+	CHECK_RET( s->type == SOCKET_TCP, FALSE );
+	CHECK_RET( s->port > 0, FALSE );
+
+	/* initialize the socket address struct */
+	MEMSET( &in_addr, 0, sizeof(struct sockaddr_in) );
+	in_addr.sin_family = AF_INET;
+	in_addr.sin_addr.s_addr = s->addr.s_addr;
+	in_addr.sin_port = htons(s->port);
+	
+	len = sizeof( in_addr );
+
+	/* try to make the connection */
+	if ( CONNECT(s->aiofd.rfd, (struct sockaddr*)&in_addr, len) < 0 )
+	{
+		if ( ERRNO == EINPROGRESS )
+		{
+			DEBUG( "connection in progress\n" );
+		}
+		else
+		{
+			DEBUG("failed to initiate connect to the server\n");
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+static int socket_do_unix_connect( socket_t * const s )
+{
+	int len = 0;
+	struct sockaddr_un un_addr;
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_socket_connect, fake_socket_connect_ret );
+#endif
+	CHECK_PTR_RET( s, FALSE );
+	CHECK_RET( s->type == SOCKET_UNIX, FALSE );
+	CHECK_PTR_RET( s->host, FALSE );
+
+	/* initialize the socket address struct */
+	MEMSET( &un_addr, 0, sizeof(struct sockaddr_un) );
+	un_addr.sun_family = AF_UNIX;
+	strncpy( un_addr.sun_path, s->host, 100 );
+
+	/* calculate the length of the address struct */
+	len = strlen( un_addr.sun_path ) + sizeof( un_addr.sun_family );
+
+	/* try to make the connection */
+	if ( CONNECT(s->aiofd.rfd, (struct sockaddr*)&un_addr, len) < 0 )
+	{
+		if ( ERRNO == EINPROGRESS )
+		{
+			DEBUG( "connection in progress\n" );
+		}
+		else
+		{
+			DEBUG("failed to initiate connect to the server\n");
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
 static socket_ret_t socket_lookup_host( socket_t * const s, 
 										int8_t const * const hostname)
 {
 	struct hostent *host;
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_socket_lookup_host, fake_socket_lookup_host_ret );
+#endif
 	
 	CHECK_PTR_RET(s, SOCKET_BADPARAM);
 	CHECK_RET((hostname != NULL) || (s->host != NULL), SOCKET_BADHOSTNAME);
@@ -92,15 +288,12 @@ static int socket_aiofd_write_fn( aiofd_t * const aiofd,
 								  void * user_data )
 {
 	int errval = 0;
-	socklen_t len = sizeof(errval);
 	socket_t * s = (socket_t*)user_data;
 	CHECK_PTR_RET( aiofd, FALSE );
 	CHECK_PTR_RET( s, FALSE );
 
 	if ( s->connected )
 	{
-		ASSERT( s->aiofd.rfd != -1 );
-
 		if ( buffer == NULL )
 		{
 			if ( list_count( &(s->aiofd.wbuf) ) == 0 )
@@ -131,9 +324,9 @@ static int socket_aiofd_write_fn( aiofd_t * const aiofd,
 		 * that the connect has completed either successfully or failed */
 		
 		/* check to see if the connect() succeeded */
-		if ( getsockopt( s->aiofd.wfd, SOL_SOCKET, SO_ERROR, &errval, &len ) < 0 )
+		if ( !socket_get_error( s, &errval ) )
 		{
-			WARN( "failed to get socket option while checking connect\n" );
+			DEBUG( "failed to get socket option while checking connect\n" );
 			if ( s->ops.error_fn != NULL )
 			{
 				DEBUG( "calling socket error callback\n" );
@@ -144,7 +337,6 @@ static int socket_aiofd_write_fn( aiofd_t * const aiofd,
 			return FALSE;
 		}
 
-		ASSERT( len == sizeof(errval) );
 		if ( errval == 0 )
 		{
 			DEBUG( "socket connected\n" );
@@ -158,6 +350,7 @@ static int socket_aiofd_write_fn( aiofd_t * const aiofd,
 			}
 
 			/* we're connected to start read event */
+			/* TODO: check for error and handle it properly */
 			aiofd_enable_read_evt( &(s->aiofd), TRUE );
 
 			if ( list_count( &(s->aiofd.wbuf) ) == 0 )
@@ -221,7 +414,7 @@ static int socket_aiofd_read_fn( aiofd_t * const aiofd,
 			DEBUG( "calling socket connect callback for incoming connection\n" );
 			if ( (*(s->ops.connect_fn))( s, s->user_data ) != SOCKET_OK )
 			{
-				WARN( "failed to accept incoming connection!\n" );
+				DEBUG( "failed to accept incoming connection!\n" );
 			}
 		}
 	}
@@ -261,6 +454,13 @@ static int socket_initialize( socket_t * const s,
 		&socket_aiofd_write_fn,
 		&socket_aiofd_error_fn
 	};
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fail_socket_initialize, FALSE );
+#endif
+	CHECK_PTR_RET( s, FALSE );
+	CHECK_RET( VALID_SOCKET_TYPE( type ), FALSE );
+	CHECK_PTR_RET( ops, FALSE );
+	CHECK_PTR_RET( el, FALSE );
 
 	MEMSET( (void*)s, 0, sizeof(socket_t) );
 
@@ -279,9 +479,9 @@ static int socket_initialize( socket_t * const s,
 		case SOCKET_TCP:
 
 			/* try to open a socket */
-			if ( (fd = socket( PF_INET, SOCK_STREAM, IPPROTO_TCP )) < 0 )
+			if ( (fd = SOCKET( PF_INET, SOCK_STREAM, IPPROTO_TCP )) < 0 )
 			{
-				WARN("failed to open socket\n");
+				DEBUG("failed to open socket\n");
 				return FALSE;
 			}
 			else
@@ -291,9 +491,9 @@ static int socket_initialize( socket_t * const s,
 
 			/* turn off TCP naggle algorithm */
 			flags = 1;
-			if ( setsockopt( fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags) ) )
+			if ( SETSOCKOPT( fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags) ) )
 			{
-				WARN( "failed to turn on TCP no delay\n" );
+				DEBUG( "failed to turn on TCP no delay\n" );
 				return FALSE;
 			}
 			else
@@ -306,9 +506,9 @@ static int socket_initialize( socket_t * const s,
 		case SOCKET_UNIX:
 
 			/* try to open a socket */
-			if ( (fd = socket( PF_UNIX, SOCK_STREAM, 0 )) < 0 )
+			if ( (fd = SOCKET( PF_UNIX, SOCK_STREAM, 0 )) < 0 )
 			{
-				WARN("failed to open socket\n");
+				DEBUG("failed to open socket\n");
 				return FALSE;
 			}
 			else
@@ -320,10 +520,10 @@ static int socket_initialize( socket_t * const s,
 	}
 
 	/* set the socket to non blocking mode */
-	flags = fcntl( fd, F_GETFL );
-	if( fcntl( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
+	flags = FCNTL( fd, F_GETFL );
+	if( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
 	{
-		WARN("failed to set socket to non-blocking\n");
+		DEBUG("failed to set socket to non-blocking\n");
 	}
 	else
 	{
@@ -333,7 +533,7 @@ static int socket_initialize( socket_t * const s,
 	/* initialize the aiofd to manage the socket */
 	if ( aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s ) == FALSE )
 	{
-		WARN( "failed to initialzie the aiofd\n" );
+		DEBUG( "failed to initialzie the aiofd\n" );
 		return FALSE;
 	}
 
@@ -386,6 +586,10 @@ void socket_delete( void * s )
 /* check to see if connected */
 int socket_is_connected( socket_t* const s )
 {
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_socket_connected, fake_socket_connected_ret );
+#endif
+
 	CHECK_PTR_RET( s, FALSE );
 	CHECK_RET( s->aiofd.rfd >= 0, FALSE );
 	return s->connected;
@@ -395,7 +599,6 @@ socket_ret_t socket_connect( socket_t* const s,
 							 int8_t const * const hostname, 
 							 uint16_t const port )
 {
-	int err = 0;
 	int len = 0;
 	socket_ret_t ret = SOCKET_OK;
 	struct sockaddr_in in_addr;
@@ -403,6 +606,7 @@ socket_ret_t socket_connect( socket_t* const s,
 	
 	CHECK_PTR_RET(s, SOCKET_BADPARAM);
 	CHECK_RET((hostname != NULL) || (s->host != NULL), SOCKET_BADHOSTNAME);
+	CHECK_RET( VALID_SOCKET_TYPE( s->type ), SOCKET_ERROR );
 	CHECK_RET(((s->type != SOCKET_UNIX) && ((port > 0) || (s->port > 0))) || (s->type == SOCKET_UNIX), SOCKET_INVALIDPORT);
 	CHECK_RET( !socket_is_connected( s ), SOCKET_CONNECTED );
 	
@@ -425,26 +629,9 @@ socket_ret_t socket_connect( socket_t* const s,
 			/* start the socket write event processing so we can catch connection */
 			aiofd_enable_write_evt( &(s->aiofd), TRUE );
 
-			/* initialize the socket address struct */
-			MEMSET( &in_addr, 0, sizeof(struct sockaddr_in) );
-			in_addr.sin_family = AF_INET;
-			in_addr.sin_addr.s_addr = s->addr.s_addr;
-			in_addr.sin_port = htons(s->port);
+			/* try to make the TCP connection */
+			CHECK_RET( socket_do_tcp_connect( s ), SOCKET_CONNECT_FAIL );
 
-			/* try to make the connection */
-			if ( (err = connect(s->aiofd.rfd, (struct sockaddr*)&in_addr, sizeof(struct sockaddr))) < 0 )
-			{
-				if ( errno == EINPROGRESS )
-				{
-					DEBUG( "connection in progress\n" );
-				}
-				else
-				{
-					DEBUG("failed to initiate connect to the server\n");
-					return SOCKET_ERROR;
-				}
-			}
-		
 			break;
 		
 		case SOCKET_UNIX:
@@ -452,27 +639,8 @@ socket_ret_t socket_connect( socket_t* const s,
 			/* start the socket write event processing so we can catch connection */
 			aiofd_enable_write_evt( &(s->aiofd), TRUE );
 
-			/* initialize the socket address struct */
-			MEMSET( &un_addr, 0, sizeof(struct sockaddr_un) );
-			un_addr.sun_family = AF_UNIX;
-			strncpy( un_addr.sun_path, s->host, 100 );
-
-			/* calculate the length of the address struct */
-			len = strlen( un_addr.sun_path ) + sizeof( un_addr.sun_family );
-
-			/* try to make the connection */
-			if ( (err = connect(s->aiofd.rfd, (struct sockaddr*)&un_addr, len)) < 0 )
-			{
-				if ( errno == EINPROGRESS )
-				{
-					DEBUG( "connection in progress\n" );
-				}
-				else
-				{
-					DEBUG("failed to initiate connect to the server\n");
-					return SOCKET_ERROR;
-				}
-			}
+			/* try to make the UNIX connection */
+			CHECK_RET( socket_do_unix_connect( s ), SOCKET_CONNECT_FAIL );
 		
 			break;
 	}
@@ -484,6 +652,9 @@ socket_ret_t socket_connect( socket_t* const s,
 /* check to see if bound */
 int socket_is_bound( socket_t* const s )
 {
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_socket_bound, fake_socket_bound_ret );
+#endif
 	CHECK_PTR_RET(s, FALSE);
 	CHECK_RET( s->aiofd.rfd >= 0, FALSE );
 	return s->bound;
@@ -501,6 +672,7 @@ socket_ret_t socket_bind( socket_t * const s,
 
 	CHECK_PTR_RET( s, SOCKET_BADPARAM );
 	CHECK_RET( !socket_is_bound( s ), SOCKET_BOUND );
+	CHECK_RET( VALID_SOCKET_TYPE( s->type ), SOCKET_ERROR );
 
 	/* store port number if provided */
 	if( port > 0 )
@@ -516,24 +688,13 @@ socket_ret_t socket_bind( socket_t * const s,
 	switch ( s->type )
 	{
 		case SOCKET_TCP:
-			if ( setsockopt( s->aiofd.rfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0 )
+			if ( SETSOCKOPT( s->aiofd.rfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0 )
 			{
-				WARN( "failed to set the socket to reuse addr\n" );
+				DEBUG( "failed to set the socket to reuse addr\n" );
 			}
 
-			/* initialize the socket address struct */
-			MEMSET( &in_addr, 0, sizeof(struct sockaddr_in) );
-			in_addr.sin_family = AF_INET;
-			in_addr.sin_addr.s_addr = s->addr.s_addr;
-			in_addr.sin_port = htons(s->port);
-
-			len = sizeof( in_addr );
-
-			if ( bind( s->aiofd.rfd, (struct sockaddr*)&in_addr, len) < 0 )
-			{
-				DEBUG( "failed to bind (errno: %d)\n", errno );
-				return SOCKET_ERROR;
-			}
+			/* try to bind the tcp socket */
+			CHECK_RET( socket_do_tcp_bind( s ), SOCKET_ERROR );
 
 			/* flag the socket as bound */
 			s->bound = TRUE;
@@ -541,23 +702,9 @@ socket_ret_t socket_bind( socket_t * const s,
 			break;
 
 		case SOCKET_UNIX:
-			
-			/* initialize the socket address struct */
-			MEMSET( &un_addr, 0, sizeof(struct sockaddr_un) );
-			un_addr.sun_family = AF_UNIX;
-			strncpy( un_addr.sun_path, s->host, 100 );
-
-			/* try to delete the socket inode */
-			unlink( un_addr.sun_path );
-
-			/* calculate the length of the address struct */
-			len = strlen( un_addr.sun_path ) + sizeof( un_addr.sun_family );
-
-			if ( bind( s->aiofd.rfd, (struct sockaddr*)&un_addr, len) < 0 )
-			{
-				DEBUG( "failed to bind (errno: %d)\n", errno );
-				return SOCKET_ERROR;
-			}
+		
+			/* try to bind the unix socket */
+			CHECK_RET( socket_do_unix_bind( s ), SOCKET_ERROR );
 
 			/* flag the socket as bound */
 			s->bound = TRUE;
@@ -566,7 +713,7 @@ socket_ret_t socket_bind( socket_t * const s,
 	}
 
 	/* start the socket read even processing to catch incoming connections */
-	aiofd_enable_read_evt( &(s->aiofd), TRUE );
+	CHECK_RET( aiofd_enable_read_evt( &(s->aiofd), TRUE ), SOCKET_ERROR );
 
 	return SOCKET_OK;
 }
@@ -578,13 +725,14 @@ socket_ret_t socket_listen( socket_t * const s, int const backlog )
 	CHECK_RET( !socket_is_connected( s ), SOCKET_CONNECTED );
 
 	/* now begin listening for incoming connections */
-	if ( listen( s->aiofd.rfd, backlog ) < 0 )
+	if ( LISTEN( s->aiofd.rfd, backlog ) < 0 )
 	{
 		DEBUG( "failed to listen (errno: %d)\n", errno );
 		return SOCKET_ERROR;
 	}
 
 	/* set the listen flag so that it doesn't error on 0 size read callbacks */
+	/* TODO: check for errors and handle them properly */
 	aiofd_set_listen( &(s->aiofd), TRUE );
 
 	return SOCKET_OK;
@@ -609,7 +757,10 @@ socket_t * socket_accept( socket_t * const s,
 	};
 
 	CHECK_PTR_RET( s, NULL );
+	CHECK_PTR_RET( ops, NULL );
+	CHECK_PTR_RET( el, NULL );
 	CHECK_RET( socket_is_bound( s ), NULL );
+	CHECK_RET( VALID_SOCKET_TYPE( s->type ), NULL );
 
 	client = CALLOC( 1, sizeof( socket_t ) );
 
@@ -634,9 +785,9 @@ socket_t * socket_accept( socket_t * const s,
 			len = sizeof(in_addr);
 
 			/* try to open a socket */
-			if ( (fd = accept( s->aiofd.rfd, (struct sockaddr *)&in_addr, &len )) < 0 )
+			if ( (fd = ACCEPT( s->aiofd.rfd, (struct sockaddr *)&in_addr, &len )) < 0 )
 			{
-				WARN("failed to accept incoming connection\n");
+				DEBUG("failed to accept incoming connection\n");
 				socket_delete( (void*)client );
 				return NULL;
 			}
@@ -651,11 +802,9 @@ socket_t * socket_accept( socket_t * const s,
 
 			/* turn off TCP naggle algorithm */
 			flags = 1;
-			if ( setsockopt( fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags) ) )
+			if ( SETSOCKOPT( fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags) ) < 0 )
 			{
-				WARN( "failed to turn on TCP no delay\n" );
-				socket_delete( (void*)client );
-				return NULL;
+				DEBUG( "failed to turn on TCP no delay\n" );
 			}
 			else
 			{
@@ -671,9 +820,9 @@ socket_t * socket_accept( socket_t * const s,
 			len = sizeof(un_addr);
 
 			/* try to open a socket */
-			if ( (fd = accept( s->aiofd.rfd, (struct sockaddr *)&un_addr, &len )) < 0 )
+			if ( (fd = ACCEPT( s->aiofd.rfd, (struct sockaddr *)&un_addr, &len )) < 0 )
 			{
-				WARN("failed to open socket\n");
+				DEBUG("failed to open socket\n");
 				socket_delete( (void*)client );
 				return NULL;
 			}
@@ -689,10 +838,10 @@ socket_t * socket_accept( socket_t * const s,
 	}
 
 	/* set the socket to non blocking mode */
-	flags = fcntl( fd, F_GETFL );
-	if( fcntl( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
+	flags = FCNTL( fd, F_GETFL );
+	if( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
 	{
-		WARN("failed to set socket to non-blocking\n");
+		DEBUG("failed to set socket to non-blocking\n");
 	}
 	else
 	{
@@ -702,7 +851,9 @@ socket_t * socket_accept( socket_t * const s,
 	/* initialize the aiofd to manage the socket */
 	if ( !aiofd_initialize( &(client->aiofd), fd, fd, &aiofd_ops, el, (void*)client ) )
 	{
-		WARN("failed to initialize the aiofd for the socket\n");
+		DEBUG("failed to initialize the aiofd for the socket\n");
+		socket_delete( (void*)client );
+		return NULL;
 	}
 	else
 	{
@@ -720,7 +871,12 @@ socket_t * socket_accept( socket_t * const s,
 	}
 
 	/* we're connected to start read event */
-	aiofd_enable_read_evt( &(client->aiofd), TRUE );
+	if ( !aiofd_enable_read_evt( &(client->aiofd), TRUE ) )
+	{
+		DEBUG( "failed to enable read event\n" );
+		socket_delete( (void*)client );
+		return NULL;
+	}
 
 	return client;
 }
@@ -774,14 +930,16 @@ socket_ret_t socket_write( socket_t * const s,
 						   uint8_t const * const buffer,
 						   size_t const n )
 {
-	return aiofd_write( &(s->aiofd), buffer, n );
+	CHECK_PTR_RET( s, SOCKET_BADPARAM );
+	return ( aiofd_write( &(s->aiofd), buffer, n ) ? SOCKET_OK : SOCKET_ERROR );
 }
 
 socket_ret_t socket_writev( socket_t * const s,
 							struct iovec * iov,
 							size_t iovcnt )
 {
-	return aiofd_writev( &(s->aiofd), iov, iovcnt );
+	CHECK_PTR_RET( s, SOCKET_BADPARAM );
+	return ( aiofd_writev( &(s->aiofd), iov, iovcnt ) ? SOCKET_OK : SOCKET_ERROR );
 }
 
 /* flush the socket output */
@@ -790,4 +948,521 @@ socket_ret_t socket_flush( socket_t* const s )
 	CHECK_PTR_RET(s, SOCKET_BADPARAM);
 	return aiofd_flush( &(s->aiofd) );
 }
+
+#if defined(UNIT_TESTING)
+
+#include <CUnit/Basic.h>
+
+socket_ret_t test_error_fn_ret = SOCKET_OK;
+socket_ret_t test_connect_fn_ret = SOCKET_OK;
+
+static socket_ret_t test_error_fn( socket_t * const s, int err, void * user_data )
+{
+	*((int*)user_data) = TRUE;
+	return test_error_fn_ret;
+}
+
+static socket_ret_t test_connect_fn( socket_t * const s, void * user_data )
+{
+	*((int*)user_data) = TRUE;
+	return test_connect_fn_ret;
+}
+
+void test_socket_private_functions( void )
+{
+	int test_flag;
+	int8_t * const host = T( strdup( "foo.com") );
+	uint8_t buf[64];
+	socket_t s, *p;
+	socket_ops_t ops;
+
+	/* reset all switches */
+	fake_socket_getsockopt = FALSE;
+	fake_socket_errval = 0;
+	fake_socket_get_error_ret = FALSE;
+	fail_socket_initialize = FALSE;
+	fake_socket_connected = FALSE;
+	fake_socket_connected_ret = FALSE;
+	fake_socket_connect = FALSE;
+	fake_socket_connect_ret = FALSE;
+	fake_socket_bound = FALSE;
+	fake_socket_bound_ret = FALSE;
+	fake_socket_lookup_host = FALSE;
+	fake_socket_lookup_host_ret = FALSE;
+	fake_socket_bind = FALSE;
+	fake_socket_bind_ret = FALSE;
+
+	MEMSET( &s, 0, sizeof(socket_t) );
+	MEMSET( &ops, 0, sizeof(socket_ops_t) );
+
+	/* test socket_get_errror */
+	CU_ASSERT_FALSE( socket_get_error( NULL, NULL ) );
+	CU_ASSERT_FALSE( socket_get_error( &s, NULL ) );
+	fake_socket_getsockopt = TRUE;
+	fake_socket_errval = TRUE;
+	fake_socket_get_error_ret = TRUE;
+	test_flag = FALSE;
+	CU_ASSERT_TRUE( socket_get_error( &s, &test_flag ) );
+	CU_ASSERT_TRUE( test_flag );
+	fake_socket_getsockopt = FALSE;
+	fake_socket_errval = FALSE;
+	fake_socket_get_error_ret = FALSE;
+
+	/* test socket_do_tcp_connect */
+	fake_connect = TRUE;
+	fake_connect_ret = 0;
+	CU_ASSERT_FALSE( socket_do_tcp_connect( NULL ) );
+	s.type = SOCKET_UNIX;
+	CU_ASSERT_FALSE( socket_do_tcp_connect( &s ) );
+	s.type = SOCKET_TCP;
+	CU_ASSERT_FALSE( socket_do_tcp_connect( &s ) );
+	s.port = 1024;
+	CU_ASSERT_TRUE( socket_do_tcp_connect( &s ) );
+	fake_connect_ret = -1;
+	CU_ASSERT_FALSE( socket_do_tcp_connect( &s ) );
+	fake_connect_errno = TRUE;
+	fake_connect_errno_value = EINPROGRESS;
+	CU_ASSERT_TRUE( socket_do_tcp_connect( &s ) );
+	fake_connect_errno_value = EACCES;
+	CU_ASSERT_FALSE( socket_do_tcp_connect( &s ) );
+	fake_connect_errno = FALSE;
+	fake_connect_errno_value = 0;
+	fake_connect = FALSE;
+	fake_connect_ret = 0;
+
+	/* test socket_do_unix_connect */
+	fake_connect = TRUE;
+	fake_connect_ret = 0;
+	CU_ASSERT_FALSE( socket_do_unix_connect( NULL ) );
+	s.type = SOCKET_TCP;
+	CU_ASSERT_FALSE( socket_do_unix_connect( &s ) );
+	s.type = SOCKET_UNIX;
+	CU_ASSERT_FALSE( socket_do_unix_connect( &s ) );
+	s.host = host;
+	CU_ASSERT_TRUE( socket_do_unix_connect( &s ) );
+	fake_connect_ret = -1;
+	CU_ASSERT_FALSE( socket_do_unix_connect( &s ) );
+	fake_connect_errno = TRUE;
+	fake_connect_errno_value = EINPROGRESS;
+	CU_ASSERT_TRUE( socket_do_unix_connect( &s ) );
+	fake_connect_errno_value = EACCES;
+	CU_ASSERT_FALSE( socket_do_unix_connect( &s ) );
+	fake_connect_errno = FALSE;
+	fake_connect_errno_value = 0;
+	fake_connect = FALSE;
+	fake_connect_ret = 0;
+
+	/* test socket_lookup_host */
+	MEMSET( &s, 0, sizeof( socket_t ) );
+	CU_ASSERT_EQUAL( socket_lookup_host( NULL, NULL ), SOCKET_BADPARAM );
+	CU_ASSERT_EQUAL( socket_lookup_host( &s, NULL ), SOCKET_BADHOSTNAME );
+	CU_ASSERT_EQUAL( socket_lookup_host( &s, "foo.com" ), SOCKET_OK );
+	s.type = SOCKET_UNIX;
+	s.host = host;
+	CU_ASSERT_EQUAL( socket_lookup_host( &s, NULL ), SOCKET_OK );
+
+	/* test socket_aiofd_write_fn */
+	CU_ASSERT_FALSE( socket_aiofd_write_fn( NULL, NULL, NULL ) );
+	CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), NULL, NULL ) );
+
+	s.connected = TRUE;
+	CU_ASSERT_TRUE( list_initialize( &(s.aiofd.wbuf), 2, NULL ) );
+	CU_ASSERT_TRUE( list_push_tail( &(s.aiofd.wbuf), (void*)host ) );
+	CU_ASSERT_TRUE( socket_aiofd_write_fn( &(s.aiofd), NULL, (void*)(&s) ) );
+	CU_ASSERT_TRUE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
+	
+	s.connected = FALSE;
+	s.aiofd.rfd = STDIN_FILENO;
+	CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
+	
+	s.ops.error_fn = &test_error_fn;
+	test_flag = FALSE;
+	s.user_data = &test_flag;
+	CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
+	CU_ASSERT_TRUE( test_flag );
+
+	fake_socket_getsockopt = TRUE;
+	fake_socket_errval = 0;
+	fake_socket_get_error_ret = TRUE;
+	list_clear( &(s.aiofd.wbuf) );
+	CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
+
+	fake_socket_errval = -1;
+	s.ops.error_fn = NULL;
+	s.connected = FALSE;
+	CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
+	fake_socket_errval = 0;
+	fake_socket_getsockopt = FALSE;
+
+	/* test socket_aiofd_error_fn */
+	CU_ASSERT_FALSE( socket_aiofd_error_fn( NULL, 0, NULL ) );
+	CU_ASSERT_FALSE( socket_aiofd_error_fn( &(s.aiofd), 0, NULL ) );
+	CU_ASSERT_TRUE( socket_aiofd_error_fn( &(s.aiofd), 0, (void*)(&s) ) );
+	test_flag = FALSE;
+	s.ops.error_fn = &test_error_fn;
+	CU_ASSERT_TRUE( socket_aiofd_error_fn( &(s.aiofd), 0, (void*)(&s) ) );
+	CU_ASSERT_TRUE( test_flag );
+
+	/* test socket_aiofd_read_fn */
+	CU_ASSERT_FALSE( socket_aiofd_read_fn( NULL, 0, NULL ) );
+	CU_ASSERT_FALSE( socket_aiofd_read_fn( &(s.aiofd), 0, NULL ) );
+	
+	s.aiofd.rfd = 0;
+	CU_ASSERT_FALSE( socket_aiofd_read_fn( &(s.aiofd), 0, (void*)(&s) ) );
+	CU_ASSERT_TRUE( socket_aiofd_read_fn( &(s.aiofd), 1, (void*)(&s) ) );
+
+	s.bound = TRUE;
+	test_flag = FALSE;
+	CU_ASSERT_TRUE( socket_aiofd_read_fn( &(s.aiofd), 0, (void*)(&s) ) );
+	CU_ASSERT_FALSE( test_flag );
+
+	s.ops.connect_fn = &test_connect_fn;
+	test_connect_fn_ret = SOCKET_ERROR;
+	test_flag = FALSE;
+	CU_ASSERT_TRUE( socket_aiofd_read_fn( &(s.aiofd), 0, (void*)(&s) ) );
+	CU_ASSERT_TRUE( test_flag );
+
+	/* test socket_initialize */
+	fake_socket = TRUE;
+	fake_setsockopt = TRUE;
+	fake_fcntl = TRUE;
+	fake_aiofd_initialize = TRUE;
+	MEMSET( &s, 0, sizeof( socket_t ) );
+	MEMSET( &ops, 0, sizeof( socket_ops_t ) );
+	CU_ASSERT_FALSE( socket_initialize( NULL, SOCKET_UNKNOWN, NULL, NULL, NULL ) );
+	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_UNKNOWN, NULL, NULL, NULL ) );
+	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_LAST, NULL, NULL, NULL ) );
+	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, NULL, NULL, NULL ) );
+	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, NULL, NULL ) );
+
+	fake_socket_ret = -1;
+	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
+	fake_socket_ret = 0;
+	fake_setsockopt_ret = -1;
+	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
+	fake_setsockopt_ret = 0;
+	fake_fcntl_ret = -1;
+	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
+	fake_fcntl_ret = 0;
+	fake_aiofd_initialize_ret = FALSE;
+	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
+	fake_aiofd_initialize_ret = TRUE;
+	CU_ASSERT_TRUE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
+
+	MEMSET( &s, 0, sizeof( socket_t ) );
+	MEMSET( &ops, 0, sizeof( socket_ops_t ) );
+	fake_socket_ret = -1;
+	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_UNIX, &ops, el, NULL ) );
+	fake_socket_ret = 0;
+	CU_ASSERT_TRUE( socket_initialize( &s, SOCKET_UNIX, &ops, el, NULL ) );
+	fake_socket = FALSE;
+	fake_setsockopt = FALSE;
+	fake_fcntl = FALSE;
+	fake_aiofd_initialize = FALSE;
+
+	/* test socket_is_connected */
+	MEMSET( &s, 0, sizeof(socket_t) );
+	CU_ASSERT_FALSE( socket_is_connected( NULL ) );
+	s.aiofd.rfd = -1;
+	CU_ASSERT_FALSE( socket_is_connected( &s ) );
+	s.aiofd.rfd = STDIN_FILENO;
+	CU_ASSERT_FALSE( socket_is_connected( &s ) );
+	s.connected = TRUE;
+	CU_ASSERT_TRUE( socket_is_connected( &s ) );
+
+	/* test socket_is_bound */
+	MEMSET( &s, 0, sizeof(socket_t) );
+	CU_ASSERT_FALSE( socket_is_bound( NULL ) );
+	s.aiofd.rfd = -1;
+	CU_ASSERT_FALSE( socket_is_bound( &s ) );
+	s.aiofd.rfd = STDIN_FILENO;
+	CU_ASSERT_FALSE( socket_is_bound( &s ) );
+	s.bound = TRUE;
+	CU_ASSERT_TRUE( socket_is_bound( &s ) );
+
+	/* test socket_connect */
+	MEMSET( &s, 0, sizeof(socket_t) );
+	CU_ASSERT_EQUAL( socket_connect( NULL, NULL, 0 ), SOCKET_BADPARAM );
+	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_BADHOSTNAME );
+	CU_ASSERT_EQUAL( socket_connect( &s, host, 0 ), SOCKET_INVALIDPORT );
+	s.type = SOCKET_LAST;
+	CU_ASSERT_EQUAL( socket_connect( &s, host, 0 ), SOCKET_ERROR );
+	s.type = SOCKET_UNKNOWN;
+	CU_ASSERT_EQUAL( socket_connect( &s, host, 0 ), SOCKET_ERROR );
+	s.type = SOCKET_TCP;
+	s.host = host;
+	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_INVALIDPORT );
+	fake_socket_connected = TRUE;
+	fake_socket_connected_ret = TRUE;
+	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 1024 ), SOCKET_CONNECTED );
+	s.port = 1024;
+	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECTED );
+	s.type = SOCKET_UNIX;
+	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECTED );
+
+	s.type = SOCKET_TCP;
+	fake_socket_connected_ret = FALSE;
+	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECT_FAIL );
+
+	fake_socket_connect = TRUE;
+	fake_socket_connect_ret = TRUE;
+	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_OK );
+	fake_socket_connect_ret = FALSE;
+	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECT_FAIL );
+	
+	s.type = SOCKET_UNIX;
+	fake_socket_connect_ret = TRUE;
+	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_OK );
+	fake_socket_connect_ret = FALSE;
+	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECT_FAIL );
+
+	/* test socket_bind */
+	fake_setsockopt = TRUE;
+	fake_aiofd_enable_read_evt = TRUE;
+	fake_socket_bound = TRUE;
+	fake_socket_lookup_host = TRUE;
+	fake_socket_bind = TRUE;
+
+	MEMSET( &s, 0, sizeof( socket_t ) );
+
+	CU_ASSERT_EQUAL( socket_bind( NULL, NULL, 0 ), SOCKET_BADPARAM );
+	
+	fake_socket_bound_ret = TRUE;
+	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_BOUND );
+
+	fake_socket_bound_ret = FALSE;
+	s.type = SOCKET_LAST;
+	CU_ASSERT_EQUAL( socket_bind( &s, host, 0 ), SOCKET_ERROR );
+	s.type = SOCKET_UNKNOWN;
+	CU_ASSERT_EQUAL( socket_bind( &s, host, 0 ), SOCKET_ERROR );
+	s.type = SOCKET_TCP;
+
+	fake_socket_lookup_host_ret = SOCKET_ERROR;
+	CU_ASSERT_EQUAL( socket_bind( &s, host, 0 ), SOCKET_ERROR );
+	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
+
+	s.type = SOCKET_TCP;
+	
+	fake_socket_bind_ret = FALSE;
+	fake_setsockopt_ret = 0;
+	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
+	fake_setsockopt_ret = 1;
+	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
+	fake_socket_bind_ret = TRUE;
+
+	fake_aiofd_enable_read_evt_ret = FALSE;
+	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
+	fake_aiofd_enable_read_evt_ret = TRUE;
+	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_OK );
+
+	s.type = SOCKET_UNIX;
+	fake_socket_bind_ret = FALSE;
+	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
+	fake_socket_bind_ret = TRUE;
+	
+	fake_aiofd_enable_read_evt_ret = FALSE;
+	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
+	fake_aiofd_enable_read_evt_ret = TRUE;
+	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_OK );
+
+	fake_socket_bind = FALSE;
+	fake_socket_lookup_host = FALSE;
+	fake_socket_bound = FALSE;
+	fake_aiofd_enable_read_evt = FALSE;
+	fake_setsockopt = FALSE;
+
+	/* test socket_do_tcp_bind */
+	MEMSET( &s, 0, sizeof(socket_t) );
+	CU_ASSERT_FALSE( socket_do_tcp_bind( NULL ) );
+	s.type = SOCKET_UNIX;
+	CU_ASSERT_FALSE( socket_do_tcp_bind( &s ) );
+	s.type = SOCKET_TCP;
+	CU_ASSERT_FALSE( socket_do_tcp_bind( &s ) );
+	s.port = 1024;
+	fake_bind = TRUE;
+	fake_bind_ret = 0;
+	CU_ASSERT_TRUE( socket_do_tcp_bind( &s ) );
+	fake_bind_ret = -1;
+	CU_ASSERT_FALSE( socket_do_tcp_bind( &s ) );
+	fake_bind = FALSE;
+	fake_bind_ret = 0;
+
+	/* test socket_do_unix_bind */
+	MEMSET( &s, 0, sizeof(socket_t) );
+	CU_ASSERT_FALSE( socket_do_unix_bind( NULL ) );
+	s.type = SOCKET_TCP;
+	CU_ASSERT_FALSE( socket_do_unix_bind( &s ) );
+	s.type = SOCKET_UNIX;
+	CU_ASSERT_FALSE( socket_do_unix_bind( &s ) );
+	s.host = host;
+	fake_bind = TRUE;
+	fake_bind_ret = 0;
+	CU_ASSERT_TRUE( socket_do_unix_bind( &s ) );
+	fake_bind_ret = -1;
+	CU_ASSERT_FALSE( socket_do_unix_bind( &s ) );
+	fake_bind = FALSE;
+	fake_bind_ret = 0;
+
+	/* test_socket_listen */
+	MEMSET( &s, 0, sizeof( socket_t ) );
+
+	CU_ASSERT_EQUAL( socket_listen( NULL, 0 ), SOCKET_BADPARAM );
+	
+	fake_listen = TRUE;
+	fake_listen_ret = -1;
+	fake_socket_bound = TRUE;
+	fake_socket_bound_ret = FALSE;
+	CU_ASSERT_EQUAL( socket_listen( &s, 0 ), SOCKET_BOUND );
+	fake_socket_bound_ret = TRUE;
+	fake_socket_connected = TRUE;
+	fake_socket_connected_ret = TRUE;
+	CU_ASSERT_EQUAL( socket_listen( &s, 0 ), SOCKET_CONNECTED );
+	fake_socket_bound_ret = FALSE;
+	CU_ASSERT_EQUAL( socket_listen( &s, 0 ), SOCKET_BOUND );
+
+	fake_socket_bound_ret = TRUE;
+	fake_socket_connected_ret = FALSE;
+
+	fake_listen_ret = 0;
+	CU_ASSERT_EQUAL( socket_listen( &s, 0 ), SOCKET_OK );
+	
+	fake_listen_ret = -1;
+	CU_ASSERT_EQUAL( socket_listen( &s, 0 ), SOCKET_ERROR );
+
+	fake_listen = FALSE;
+	fake_listen_ret = 0;
+	fake_socket_bound = FALSE;
+	fake_socket_bound_ret = FALSE;
+	fake_socket_connected = FALSE;
+	fake_socket_connected_ret = FALSE;
+
+	/* test socket_read */
+	fake_aiofd_read = TRUE;
+	MEMSET( &s, 0, sizeof(socket_t) );
+	CU_ASSERT_EQUAL( socket_read( NULL, NULL, 0 ), 0 );
+	CU_ASSERT_EQUAL( socket_read( &s, NULL, 0 ), 0 );
+	CU_ASSERT_EQUAL( socket_read( &s, buf, 0 ), 0 );
+	fake_aiofd_read_ret = 0;
+	CU_ASSERT_EQUAL( socket_read( &s, buf, 64 ), 0 );
+	fake_aiofd_read_ret = 64;
+	CU_ASSERT_EQUAL( socket_read( &s, buf, 64 ), 64 );
+	fake_aiofd_read = FALSE;
+
+	/* test socket_write */
+	fake_aiofd_write = TRUE;
+	MEMSET( &s, 0, sizeof(socket_t) );
+	CU_ASSERT_EQUAL( socket_write( NULL, NULL, 0 ), SOCKET_BADPARAM );
+	fake_aiofd_write_ret = FALSE;
+	CU_ASSERT_EQUAL( socket_write( &s, NULL, 0 ), SOCKET_ERROR );
+	fake_aiofd_write_ret = TRUE;
+	CU_ASSERT_EQUAL( socket_write( &s, NULL, 0 ), SOCKET_OK );
+	fake_aiofd_write = FALSE;
+
+	/* test socket_writev */
+	fake_aiofd_writev = TRUE;
+	MEMSET( &s, 0, sizeof(socket_t) );
+	CU_ASSERT_EQUAL( socket_writev( NULL, NULL, 0 ), SOCKET_BADPARAM );
+	fake_aiofd_writev_ret = FALSE;
+	CU_ASSERT_EQUAL( socket_writev( &s, NULL, 0 ), SOCKET_ERROR );
+	fake_aiofd_writev_ret = TRUE;
+	CU_ASSERT_EQUAL( socket_writev( &s, NULL, 0 ), SOCKET_OK );
+	fake_aiofd_writev = FALSE;
+
+	/* test socket_accept */
+	fake_accept = TRUE;
+	fake_socket_bound = TRUE;
+	fake_setsockopt = TRUE;
+	fake_fcntl = TRUE;
+	fake_aiofd_initialize = TRUE;
+	fake_aiofd_enable_read_evt = TRUE;
+	MEMSET( &s, 0, sizeof(socket_t) );
+	MEMSET( &ops, 0, sizeof(socket_ops_t) );
+	CU_ASSERT_PTR_NULL( socket_accept( NULL, NULL, NULL, NULL ) );
+	CU_ASSERT_PTR_NULL( socket_accept( &s, NULL, NULL, NULL ) );
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, NULL, NULL ) );
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+	fake_socket_bound_ret = FALSE;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+	fake_socket_bound_ret = TRUE;
+	s.type = SOCKET_LAST;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+	s.type = SOCKET_UNKNOWN;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+	s.type = SOCKET_TCP;
+	fail_alloc = TRUE;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+	fail_alloc = FALSE;
+
+	s.type = SOCKET_UNIX;
+	s.host = host;
+	fake_aiofd_initialize_ret = FALSE;
+	fake_fcntl_ret = -1;
+	fake_accept_ret = -1;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+	fake_accept_ret = 0;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+
+	s.type = SOCKET_TCP;
+	fake_accept_ret = -1;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+	fake_accept_ret = 0;
+	fake_setsockopt_ret = -1;
+	fake_fcntl_ret = -1;
+	fake_aiofd_initialize_ret = FALSE;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+	fake_fcntl_ret = 0;
+	fake_aiofd_initialize_ret = FALSE;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+	fake_setsockopt_ret = 0;
+	fake_fcntl_ret = -1;
+	fake_aiofd_initialize_ret = FALSE;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+	fake_fcntl_ret = 0;
+	fake_aiofd_initialize_ret = FALSE;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+	fake_aiofd_initialize_ret = TRUE;
+
+	fake_aiofd_enable_read_evt_ret = FALSE;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
+	
+	test_flag = FALSE;
+	ops.connect_fn = &test_connect_fn;
+	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, &test_flag ) );
+	CU_ASSERT_TRUE( test_flag );
+
+	MEMSET( &ops, 0, sizeof(socket_ops_t) );
+	fake_aiofd_enable_read_evt_ret = FALSE;
+	p = socket_accept( &s, &ops, el, NULL );
+	CU_ASSERT_PTR_NOT_NULL( p );
+	FREE( p );
+
+
+	fake_accept = FALSE;
+	fake_socket_bound = FALSE;
+	fake_setsockopt = FALSE;
+	fake_fcntl = FALSE;
+	fake_aiofd_initialize = FALSE;
+	fake_aiofd_enable_read_evt = FALSE;
+
+	/* reset all switches */
+	fake_listen = FALSE;
+	fake_listen_ret = 0;
+	fake_socket_getsockopt = FALSE;
+	fake_socket_errval = 0;
+	fake_socket_get_error_ret = FALSE;
+	fail_socket_initialize = FALSE;
+	fake_socket_connected = FALSE;
+	fake_socket_connected_ret = FALSE;
+	fake_socket_connect = FALSE;
+	fake_socket_connect_ret = FALSE;
+	fake_socket_bound = FALSE;
+	fake_socket_bound_ret = FALSE;
+	fake_socket_lookup_host = FALSE;
+	fake_socket_lookup_host_ret = FALSE;
+	fake_socket_bind = FALSE;
+	fake_socket_bind_ret = FALSE;
+}
+
+#endif
+
 

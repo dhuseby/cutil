@@ -32,7 +32,7 @@
 #define SIZEMAX (128)
 #define MULTIPLE (8)
 
-static evt_loop_t * el = NULL;
+extern evt_loop_t * el;
 
 static int read_fn( aiofd_t * const aiofd, size_t nread, void * user_data )
 {

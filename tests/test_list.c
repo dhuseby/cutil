@@ -626,7 +626,7 @@ static void test_list_push_fail( void )
 	/* turn on the flag that forces grows to fail */
 	fail_list_grow = TRUE;
 
-	ret = list_push_head( &list, (void*)1 )
+	ret = list_push_head( &list, (void*)1 );
 	CU_ASSERT_EQUAL( ret, FALSE );
 	CU_ASSERT_EQUAL( list_count( &list ), 0 );
 	

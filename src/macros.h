@@ -65,10 +65,53 @@ extern int fail_alloc;
 #define MALLOC(...) (fail_alloc ? NULL : malloc(__VA_ARGS__))
 #define CALLOC(...) (fail_alloc ? NULL : calloc(__VA_ARGS__))
 #define REALLOC(...) (fail_alloc ? NULL : realloc(__VA_ARGS__))
+
+extern int fake_accept;
+extern int fake_accept_ret;
+#define ACCEPT(...) (fake_accept ? fake_accept_ret : accept(__VA_ARGS__))
+
+extern int fake_bind;
+extern int fake_bind_ret;
+#define BIND(...) (fake_bind ? fake_bind_ret : bind(__VA_ARGS__))
+
+extern int fake_connect;
+extern int fake_connect_ret;
+#define CONNECT(...) (fake_connect ? fake_connect_ret : connect(__VA_ARGS__))
+
+extern int fake_connect_errno;
+extern int fake_connect_errno_value;
+#define ERRNO (fake_connect_errno ? fake_connect_errno_value : errno)
+
+extern int fake_fcntl;
+extern int fake_fcntl_ret;
+#define FCNTL(...) (fake_fcntl ? fake_fcntl_ret : fcntl(__VA_ARGS__))
+
+extern int fake_listen;
+extern int fake_listen_ret;
+#define LISTEN(...) (fake_listen ? fake_listen_ret : listen(__VA_ARGS__))
+
+extern int fake_setsockopt;
+extern int fake_setsockopt_ret;
+#define SETSOCKOPT(...) (fake_setsockopt ? fake_setsockopt_ret : setsockopt(__VA_ARGS__))
+
+extern int fake_socket;
+extern int fake_socket_ret;
+#define SOCKET(...) (fake_socket ? fake_socket_ret : socket(__VA_ARGS__))
+
 #else
+
 #define MALLOC malloc
 #define CALLOC calloc
 #define REALLOC realloc
+#define ACCEPT accept
+#define BIND bind
+#define CONNECT connect
+#define FCNTL fcntl
+#define LISTEN listen
+#define SETSOCKOPT setsockopt
+#define SOCKET socket
+#define ERRNO errno
+
 #endif
 
 /* casting macro for string constants */

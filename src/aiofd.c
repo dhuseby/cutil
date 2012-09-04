@@ -26,6 +26,19 @@
 #include "events.h"
 #include "aiofd.h"
 
+#if defined(UNIT_TESTING)
+extern int fake_aiofd_initialize;
+extern int fake_aiofd_initialize_ret;
+extern int fake_aiofd_read;
+extern int fake_aiofd_read_ret;
+extern int fake_aiofd_write;
+extern int fake_aiofd_write_ret;
+extern int fake_aiofd_writev;
+extern int fake_aiofd_writev_ret;
+extern int fake_aiofd_enable_read_evt;
+extern int fake_aiofd_enable_read_evt_ret;
+#endif
+
 typedef struct aiofd_write_s
 {
 	void * data;
@@ -205,7 +218,9 @@ int aiofd_initialize( aiofd_t * const aiofd,
 					  void * user_data )
 {
 	evt_params_t params;
-
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_aiofd_initialize, fake_aiofd_initialize_ret );
+#endif
 	CHECK_PTR_RET( aiofd, FALSE );
 	CHECK_PTR_RET( ops, FALSE );
 	CHECK_PTR_RET( el, FALSE );
@@ -294,6 +309,9 @@ int aiofd_enable_write_evt( aiofd_t * const aiofd,
 int aiofd_enable_read_evt( aiofd_t * const aiofd,
 						   int enable )
 {
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_aiofd_enable_read_evt, fake_aiofd_enable_read_evt_ret );
+#endif
 	CHECK_RET( aiofd, FALSE );
 
 	if ( enable )
@@ -314,7 +332,9 @@ int32_t aiofd_read( aiofd_t * const aiofd,
 					int32_t const n )
 {
 	ssize_t res = 0;
-
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_aiofd_read, fake_aiofd_read_ret );
+#endif
 	CHECK_PTR_RET(aiofd, 0);
 	
 	/* if they pass a NULL buffer pointer return -1 */
@@ -381,6 +401,9 @@ int aiofd_write( aiofd_t * const aiofd,
 				 uint8_t const * const buffer, 
 				 size_t const n )
 {
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_aiofd_write, fake_aiofd_write_ret );
+#endif
 	return aiofd_write_common( aiofd, (void*)buffer, n, n, FALSE );
 }
 
@@ -390,6 +413,10 @@ int aiofd_writev( aiofd_t * const aiofd,
 {
 	int i;
 	size_t total = 0;
+
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_aiofd_writev, fake_aiofd_writev_ret );
+#endif
 
 	/* calculate how many bytes are in the iovec */
 	for ( i = 0; i < iovcnt; i++ )

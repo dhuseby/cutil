@@ -32,7 +32,7 @@
 #define SIZEMAX (128)
 #define MULTIPLE (8)
 
-static evt_loop_t * el = NULL;
+extern evt_loop_t * el;
 
 static int exit_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )
 {

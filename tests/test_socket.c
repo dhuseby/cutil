@@ -28,11 +28,14 @@
 #include <cutil/macros.h>
 #include <cutil/socket.h>
 
+#include "test_macros.h"
+
 #define REPEAT (128)
 #define SIZEMAX (128)
 #define MULTIPLE (8)
 
-static evt_loop_t * el = NULL;
+extern evt_loop_t * el;
+extern int fail_socket_initialize;
 
 static socket_ret_t connect_fn( socket_t * const s, void * user_data )
 {
@@ -497,6 +500,80 @@ static void test_unix_socket( void )
 	unlink( "/tmp/blah" );
 }
 
+static void test_socket_delete_null( void )
+{
+	socket_delete( NULL );
+}
+
+static void test_socket_new_fail_alloc( void )
+{
+	socket_ops_t ops =
+	{
+		&connect_fn,
+		&disconnect_fn,
+		&error_fn,
+		&read_fn,
+		&write_fn
+	};
+
+	fail_alloc = TRUE;
+	CU_ASSERT_PTR_NULL( socket_new( SOCKET_TCP, &ops, el, NULL ) );
+	fail_alloc = FALSE;
+}
+
+static void test_socket_new_fail_init( void )
+{
+	socket_ops_t ops =
+	{
+		&connect_fn,
+		&disconnect_fn,
+		&error_fn,
+		&read_fn,
+		&write_fn
+	};
+
+	fail_socket_initialize = TRUE;
+	CU_ASSERT_PTR_NULL( socket_new( SOCKET_TCP, &ops, el, NULL ) );
+	fail_socket_initialize = FALSE;
+}
+
+static void test_socket_write( void )
+{
+	CU_ASSERT_EQUAL( socket_write( NULL, NULL, 0 ), SOCKET_BADPARAM );
+}
+
+static void test_socket_writev( void )
+{
+	CU_ASSERT_EQUAL( socket_writev( NULL, NULL, 0 ), SOCKET_BADPARAM );
+}
+
+static void test_socket_get_type( void )
+{
+	socket_t * s = NULL;
+	socket_ops_t ops =
+	{
+		&connect_fn,
+		&disconnect_fn,
+		&error_fn,
+		&read_fn,
+		&write_fn
+	};
+	s = socket_new( SOCKET_TCP, &ops, el, NULL );
+	CU_ASSERT_PTR_NOT_NULL( s );
+	CU_ASSERT_EQUAL( socket_get_type( NULL ), SOCKET_UNKNOWN );
+	CU_ASSERT_EQUAL( socket_get_type( s ), SOCKET_TCP );
+	socket_delete( s );
+}
+
+static void test_socket_disconnect( void )
+{
+	CU_ASSERT_EQUAL( socket_disconnect( NULL ), SOCKET_BADPARAM );
+}
+
+static void test_socket_flush( void )
+{
+	CU_ASSERT_EQUAL( socket_flush( NULL ), SOCKET_BADPARAM );
+}
 
 static int init_socket_suite( void )
 {
@@ -519,11 +596,21 @@ static int deinit_socket_suite( void )
 
 static CU_pSuite add_socket_tests( CU_pSuite pSuite )
 {
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of socket", test_socket_newdel), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "tcp socket ping/pong", test_tcp_socket), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "unix socket ping/pong", test_unix_socket), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "socket bad hostname", test_socket_bad_hostname), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "tcp failed connection", test_tcp_socket_failed_connection), NULL );
+	ADD_TEST( "new/delete of socket", test_socket_newdel );
+	ADD_TEST( "tcp socket ping/pong", test_tcp_socket );
+	ADD_TEST( "unix socket ping/pong", test_unix_socket );
+	ADD_TEST( "socket bad hostname", test_socket_bad_hostname );
+	ADD_TEST( "tcp failed connection", test_tcp_socket_failed_connection );
+	ADD_TEST( "socket delete null", test_socket_delete_null );
+	ADD_TEST( "socket new fail alloc", test_socket_new_fail_alloc );
+	ADD_TEST( "socket new fail init", test_socket_new_fail_init );
+	ADD_TEST( "socket write", test_socket_write );
+	ADD_TEST( "socket writev", test_socket_writev );
+	ADD_TEST( "socket get type", test_socket_get_type );
+	ADD_TEST( "socket disconnect", test_socket_disconnect );
+	ADD_TEST( "socket flush", test_socket_flush );
+
+	ADD_TEST( "socket private functions", test_socket_private_functions );
 	return pSuite;
 }
 
