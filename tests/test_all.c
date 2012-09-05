@@ -94,6 +94,70 @@ int fake_socket_lookup_host_ret = FALSE;
 int fake_socket_bind = FALSE;
 int fake_socket_bind_ret = FALSE;
 
+void reset_test_flags( void )
+{
+	/* malloc/calloc/realloc fail switch */
+	fail_alloc = FALSE;
+
+	/* aiofd */
+	fake_aiofd_initialize = FALSE;
+	fake_aiofd_initialize_ret = FALSE;
+	fake_aiofd_read = FALSE;
+	fake_aiofd_read_ret = 0;
+	fake_aiofd_write = FALSE;
+	fake_aiofd_write_ret = FALSE;
+	fake_aiofd_writev = FALSE;
+	fake_aiofd_writev_ret = FALSE;
+	fake_aiofd_enable_read_evt = FALSE;
+	fake_aiofd_enable_read_evt_ret = FALSE;
+
+	/* bitset */
+	fail_bitset_init = FALSE;
+	fail_bitset_deinit = FALSE;
+
+	/* buffer */
+	fail_buffer_init = FALSE;
+	fail_buffer_deinit = FALSE;
+	fail_buffer_init_alloc = FALSE;
+
+	/* list */
+	fail_list_grow = FALSE;
+	fail_list_init = FALSE;
+	fail_list_deinit = FALSE;
+
+	/* socket */
+	fake_accept = FALSE;
+	fake_accept_ret = 0;
+	fake_bind = FALSE;
+	fake_bind_ret = 0;
+	fake_connect = FALSE;
+	fake_connect_ret = 0;
+	fake_connect_errno = FALSE;
+	fake_connect_errno_value = 0;
+	fake_fcntl = FALSE;
+	fake_fcntl_ret = 0;
+	fake_listen = FALSE;
+	fake_listen_ret = 0;
+	fake_setsockopt = FALSE;
+	fake_setsockopt_ret = 0;
+	fake_socket = FALSE;
+	fake_socket_ret = 0;
+	fake_socket_getsockopt = FALSE;
+	fake_socket_errval = 0;
+	fake_socket_get_error_ret = FALSE;
+	fail_socket_initialize = FALSE;
+	fake_socket_connected = FALSE;
+	fake_socket_connected_ret = FALSE;
+	fake_socket_connect = FALSE;
+	fake_socket_connect_ret = FALSE;
+	fake_socket_bound = FALSE;
+	fake_socket_bound_ret = FALSE;
+	fake_socket_lookup_host = FALSE;
+	fake_socket_lookup_host_ret = FALSE;
+	fake_socket_bind = FALSE;
+	fake_socket_bind_ret = FALSE;
+}
+
 SUITE( aiofd );
 SUITE( bitset );
 SUITE( btree );

@@ -976,21 +976,7 @@ void test_socket_private_functions( void )
 	socket_t s, *p;
 	socket_ops_t ops;
 
-	/* reset all switches */
-	fake_socket_getsockopt = FALSE;
-	fake_socket_errval = 0;
-	fake_socket_get_error_ret = FALSE;
-	fail_socket_initialize = FALSE;
-	fake_socket_connected = FALSE;
-	fake_socket_connected_ret = FALSE;
-	fake_socket_connect = FALSE;
-	fake_socket_connect_ret = FALSE;
-	fake_socket_bound = FALSE;
-	fake_socket_bound_ret = FALSE;
-	fake_socket_lookup_host = FALSE;
-	fake_socket_lookup_host_ret = FALSE;
-	fake_socket_bind = FALSE;
-	fake_socket_bind_ret = FALSE;
+	reset_test_flags();
 
 	MEMSET( &s, 0, sizeof(socket_t) );
 	MEMSET( &ops, 0, sizeof(socket_ops_t) );
@@ -1004,9 +990,8 @@ void test_socket_private_functions( void )
 	test_flag = FALSE;
 	CU_ASSERT_TRUE( socket_get_error( &s, &test_flag ) );
 	CU_ASSERT_TRUE( test_flag );
-	fake_socket_getsockopt = FALSE;
-	fake_socket_errval = FALSE;
-	fake_socket_get_error_ret = FALSE;
+	
+	reset_test_flags();
 
 	/* test socket_do_tcp_connect */
 	fake_connect = TRUE;
@@ -1025,10 +1010,8 @@ void test_socket_private_functions( void )
 	CU_ASSERT_TRUE( socket_do_tcp_connect( &s ) );
 	fake_connect_errno_value = EACCES;
 	CU_ASSERT_FALSE( socket_do_tcp_connect( &s ) );
-	fake_connect_errno = FALSE;
-	fake_connect_errno_value = 0;
-	fake_connect = FALSE;
-	fake_connect_ret = 0;
+
+	reset_test_flags();
 
 	/* test socket_do_unix_connect */
 	fake_connect = TRUE;
@@ -1047,10 +1030,8 @@ void test_socket_private_functions( void )
 	CU_ASSERT_TRUE( socket_do_unix_connect( &s ) );
 	fake_connect_errno_value = EACCES;
 	CU_ASSERT_FALSE( socket_do_unix_connect( &s ) );
-	fake_connect_errno = FALSE;
-	fake_connect_errno_value = 0;
-	fake_connect = FALSE;
-	fake_connect_ret = 0;
+	
+	reset_test_flags();
 
 	/* test socket_lookup_host */
 	MEMSET( &s, 0, sizeof( socket_t ) );
@@ -1060,39 +1041,38 @@ void test_socket_private_functions( void )
 	s.type = SOCKET_UNIX;
 	s.host = host;
 	CU_ASSERT_EQUAL( socket_lookup_host( &s, NULL ), SOCKET_OK );
+	
+	reset_test_flags();
 
 	/* test socket_aiofd_write_fn */
 	CU_ASSERT_FALSE( socket_aiofd_write_fn( NULL, NULL, NULL ) );
 	CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), NULL, NULL ) );
-
 	s.connected = TRUE;
 	CU_ASSERT_TRUE( list_initialize( &(s.aiofd.wbuf), 2, NULL ) );
 	CU_ASSERT_TRUE( list_push_tail( &(s.aiofd.wbuf), (void*)host ) );
 	CU_ASSERT_TRUE( socket_aiofd_write_fn( &(s.aiofd), NULL, (void*)(&s) ) );
 	CU_ASSERT_TRUE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
-	
 	s.connected = FALSE;
 	s.aiofd.rfd = STDIN_FILENO;
 	CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
-	
 	s.ops.error_fn = &test_error_fn;
 	test_flag = FALSE;
 	s.user_data = &test_flag;
 	CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
 	CU_ASSERT_TRUE( test_flag );
-
 	fake_socket_getsockopt = TRUE;
 	fake_socket_errval = 0;
 	fake_socket_get_error_ret = TRUE;
 	list_clear( &(s.aiofd.wbuf) );
 	CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
-
 	fake_socket_errval = -1;
 	s.ops.error_fn = NULL;
 	s.connected = FALSE;
 	CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
 	fake_socket_errval = 0;
 	fake_socket_getsockopt = FALSE;
+
+	reset_test_flags();
 
 	/* test socket_aiofd_error_fn */
 	CU_ASSERT_FALSE( socket_aiofd_error_fn( NULL, 0, NULL ) );
@@ -1103,24 +1083,25 @@ void test_socket_private_functions( void )
 	CU_ASSERT_TRUE( socket_aiofd_error_fn( &(s.aiofd), 0, (void*)(&s) ) );
 	CU_ASSERT_TRUE( test_flag );
 
+	reset_test_flags();
+
 	/* test socket_aiofd_read_fn */
 	CU_ASSERT_FALSE( socket_aiofd_read_fn( NULL, 0, NULL ) );
 	CU_ASSERT_FALSE( socket_aiofd_read_fn( &(s.aiofd), 0, NULL ) );
-	
 	s.aiofd.rfd = 0;
 	CU_ASSERT_FALSE( socket_aiofd_read_fn( &(s.aiofd), 0, (void*)(&s) ) );
 	CU_ASSERT_TRUE( socket_aiofd_read_fn( &(s.aiofd), 1, (void*)(&s) ) );
-
 	s.bound = TRUE;
 	test_flag = FALSE;
 	CU_ASSERT_TRUE( socket_aiofd_read_fn( &(s.aiofd), 0, (void*)(&s) ) );
 	CU_ASSERT_FALSE( test_flag );
-
 	s.ops.connect_fn = &test_connect_fn;
 	test_connect_fn_ret = SOCKET_ERROR;
 	test_flag = FALSE;
 	CU_ASSERT_TRUE( socket_aiofd_read_fn( &(s.aiofd), 0, (void*)(&s) ) );
 	CU_ASSERT_TRUE( test_flag );
+
+	reset_test_flags();
 
 	/* test socket_initialize */
 	fake_socket = TRUE;
@@ -1134,7 +1115,6 @@ void test_socket_private_functions( void )
 	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_LAST, NULL, NULL, NULL ) );
 	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, NULL, NULL, NULL ) );
 	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, NULL, NULL ) );
-
 	fake_socket_ret = -1;
 	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
 	fake_socket_ret = 0;
@@ -1148,7 +1128,6 @@ void test_socket_private_functions( void )
 	CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
 	fake_aiofd_initialize_ret = TRUE;
 	CU_ASSERT_TRUE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
-
 	MEMSET( &s, 0, sizeof( socket_t ) );
 	MEMSET( &ops, 0, sizeof( socket_ops_t ) );
 	fake_socket_ret = -1;
@@ -1159,6 +1138,8 @@ void test_socket_private_functions( void )
 	fake_setsockopt = FALSE;
 	fake_fcntl = FALSE;
 	fake_aiofd_initialize = FALSE;
+	
+	reset_test_flags();
 
 	/* test socket_is_connected */
 	MEMSET( &s, 0, sizeof(socket_t) );
@@ -1170,6 +1151,8 @@ void test_socket_private_functions( void )
 	s.connected = TRUE;
 	CU_ASSERT_TRUE( socket_is_connected( &s ) );
 
+	reset_test_flags();
+
 	/* test socket_is_bound */
 	MEMSET( &s, 0, sizeof(socket_t) );
 	CU_ASSERT_FALSE( socket_is_bound( NULL ) );
@@ -1179,6 +1162,8 @@ void test_socket_private_functions( void )
 	CU_ASSERT_FALSE( socket_is_bound( &s ) );
 	s.bound = TRUE;
 	CU_ASSERT_TRUE( socket_is_bound( &s ) );
+
+	reset_test_flags();
 
 	/* test socket_connect */
 	MEMSET( &s, 0, sizeof(socket_t) );
@@ -1199,22 +1184,21 @@ void test_socket_private_functions( void )
 	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECTED );
 	s.type = SOCKET_UNIX;
 	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECTED );
-
 	s.type = SOCKET_TCP;
 	fake_socket_connected_ret = FALSE;
 	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECT_FAIL );
-
 	fake_socket_connect = TRUE;
 	fake_socket_connect_ret = TRUE;
 	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_OK );
 	fake_socket_connect_ret = FALSE;
 	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECT_FAIL );
-	
 	s.type = SOCKET_UNIX;
 	fake_socket_connect_ret = TRUE;
 	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_OK );
 	fake_socket_connect_ret = FALSE;
 	CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECT_FAIL );
+	
+	reset_test_flags();
 
 	/* test socket_bind */
 	fake_setsockopt = TRUE;
@@ -1222,54 +1206,40 @@ void test_socket_private_functions( void )
 	fake_socket_bound = TRUE;
 	fake_socket_lookup_host = TRUE;
 	fake_socket_bind = TRUE;
-
 	MEMSET( &s, 0, sizeof( socket_t ) );
-
 	CU_ASSERT_EQUAL( socket_bind( NULL, NULL, 0 ), SOCKET_BADPARAM );
-	
 	fake_socket_bound_ret = TRUE;
 	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_BOUND );
-
 	fake_socket_bound_ret = FALSE;
 	s.type = SOCKET_LAST;
 	CU_ASSERT_EQUAL( socket_bind( &s, host, 0 ), SOCKET_ERROR );
 	s.type = SOCKET_UNKNOWN;
 	CU_ASSERT_EQUAL( socket_bind( &s, host, 0 ), SOCKET_ERROR );
 	s.type = SOCKET_TCP;
-
 	fake_socket_lookup_host_ret = SOCKET_ERROR;
 	CU_ASSERT_EQUAL( socket_bind( &s, host, 0 ), SOCKET_ERROR );
 	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
-
 	s.type = SOCKET_TCP;
-	
 	fake_socket_bind_ret = FALSE;
 	fake_setsockopt_ret = 0;
 	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
 	fake_setsockopt_ret = 1;
 	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
 	fake_socket_bind_ret = TRUE;
-
 	fake_aiofd_enable_read_evt_ret = FALSE;
 	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
 	fake_aiofd_enable_read_evt_ret = TRUE;
 	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_OK );
-
 	s.type = SOCKET_UNIX;
 	fake_socket_bind_ret = FALSE;
 	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
 	fake_socket_bind_ret = TRUE;
-	
 	fake_aiofd_enable_read_evt_ret = FALSE;
 	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
 	fake_aiofd_enable_read_evt_ret = TRUE;
 	CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_OK );
 
-	fake_socket_bind = FALSE;
-	fake_socket_lookup_host = FALSE;
-	fake_socket_bound = FALSE;
-	fake_aiofd_enable_read_evt = FALSE;
-	fake_setsockopt = FALSE;
+	reset_test_flags();
 
 	/* test socket_do_tcp_bind */
 	MEMSET( &s, 0, sizeof(socket_t) );
@@ -1287,6 +1257,8 @@ void test_socket_private_functions( void )
 	fake_bind = FALSE;
 	fake_bind_ret = 0;
 
+	reset_test_flags();
+
 	/* test socket_do_unix_bind */
 	MEMSET( &s, 0, sizeof(socket_t) );
 	CU_ASSERT_FALSE( socket_do_unix_bind( NULL ) );
@@ -1303,11 +1275,11 @@ void test_socket_private_functions( void )
 	fake_bind = FALSE;
 	fake_bind_ret = 0;
 
+	reset_test_flags();
+
 	/* test_socket_listen */
 	MEMSET( &s, 0, sizeof( socket_t ) );
-
 	CU_ASSERT_EQUAL( socket_listen( NULL, 0 ), SOCKET_BADPARAM );
-	
 	fake_listen = TRUE;
 	fake_listen_ret = -1;
 	fake_socket_bound = TRUE;
@@ -1319,22 +1291,14 @@ void test_socket_private_functions( void )
 	CU_ASSERT_EQUAL( socket_listen( &s, 0 ), SOCKET_CONNECTED );
 	fake_socket_bound_ret = FALSE;
 	CU_ASSERT_EQUAL( socket_listen( &s, 0 ), SOCKET_BOUND );
-
 	fake_socket_bound_ret = TRUE;
 	fake_socket_connected_ret = FALSE;
-
 	fake_listen_ret = 0;
 	CU_ASSERT_EQUAL( socket_listen( &s, 0 ), SOCKET_OK );
-	
 	fake_listen_ret = -1;
 	CU_ASSERT_EQUAL( socket_listen( &s, 0 ), SOCKET_ERROR );
 
-	fake_listen = FALSE;
-	fake_listen_ret = 0;
-	fake_socket_bound = FALSE;
-	fake_socket_bound_ret = FALSE;
-	fake_socket_connected = FALSE;
-	fake_socket_connected_ret = FALSE;
+	reset_test_flags();
 
 	/* test socket_read */
 	fake_aiofd_read = TRUE;
@@ -1348,6 +1312,8 @@ void test_socket_private_functions( void )
 	CU_ASSERT_EQUAL( socket_read( &s, buf, 64 ), 64 );
 	fake_aiofd_read = FALSE;
 
+	reset_test_flags();
+
 	/* test socket_write */
 	fake_aiofd_write = TRUE;
 	MEMSET( &s, 0, sizeof(socket_t) );
@@ -1358,6 +1324,8 @@ void test_socket_private_functions( void )
 	CU_ASSERT_EQUAL( socket_write( &s, NULL, 0 ), SOCKET_OK );
 	fake_aiofd_write = FALSE;
 
+	reset_test_flags();
+
 	/* test socket_writev */
 	fake_aiofd_writev = TRUE;
 	MEMSET( &s, 0, sizeof(socket_t) );
@@ -1367,6 +1335,8 @@ void test_socket_private_functions( void )
 	fake_aiofd_writev_ret = TRUE;
 	CU_ASSERT_EQUAL( socket_writev( &s, NULL, 0 ), SOCKET_OK );
 	fake_aiofd_writev = FALSE;
+
+	reset_test_flags();
 
 	/* test socket_accept */
 	fake_accept = TRUE;
@@ -1392,7 +1362,6 @@ void test_socket_private_functions( void )
 	fail_alloc = TRUE;
 	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
 	fail_alloc = FALSE;
-
 	s.type = SOCKET_UNIX;
 	s.host = host;
 	fake_aiofd_initialize_ret = FALSE;
@@ -1401,7 +1370,6 @@ void test_socket_private_functions( void )
 	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
 	fake_accept_ret = 0;
 	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
-
 	s.type = SOCKET_TCP;
 	fake_accept_ret = -1;
 	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
@@ -1421,46 +1389,19 @@ void test_socket_private_functions( void )
 	fake_aiofd_initialize_ret = FALSE;
 	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
 	fake_aiofd_initialize_ret = TRUE;
-
 	fake_aiofd_enable_read_evt_ret = FALSE;
 	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, NULL ) );
-	
 	test_flag = FALSE;
 	ops.connect_fn = &test_connect_fn;
 	CU_ASSERT_PTR_NULL( socket_accept( &s, &ops, el, &test_flag ) );
 	CU_ASSERT_TRUE( test_flag );
-
 	MEMSET( &ops, 0, sizeof(socket_ops_t) );
-	fake_aiofd_enable_read_evt_ret = FALSE;
+	fake_aiofd_enable_read_evt_ret = TRUE;
 	p = socket_accept( &s, &ops, el, NULL );
 	CU_ASSERT_PTR_NOT_NULL( p );
 	FREE( p );
 
-
-	fake_accept = FALSE;
-	fake_socket_bound = FALSE;
-	fake_setsockopt = FALSE;
-	fake_fcntl = FALSE;
-	fake_aiofd_initialize = FALSE;
-	fake_aiofd_enable_read_evt = FALSE;
-
-	/* reset all switches */
-	fake_listen = FALSE;
-	fake_listen_ret = 0;
-	fake_socket_getsockopt = FALSE;
-	fake_socket_errval = 0;
-	fake_socket_get_error_ret = FALSE;
-	fail_socket_initialize = FALSE;
-	fake_socket_connected = FALSE;
-	fake_socket_connected_ret = FALSE;
-	fake_socket_connect = FALSE;
-	fake_socket_connect_ret = FALSE;
-	fake_socket_bound = FALSE;
-	fake_socket_bound_ret = FALSE;
-	fake_socket_lookup_host = FALSE;
-	fake_socket_lookup_host_ret = FALSE;
-	fake_socket_bind = FALSE;
-	fake_socket_bind_ret = FALSE;
+	reset_test_flags();
 }
 
 #endif

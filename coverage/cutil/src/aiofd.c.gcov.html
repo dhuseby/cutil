@@ -349,17 +349,17 @@
 <span class="lineNum">     278 </span>                :<span class="lineCov">        534 :     return TRUE;</span>
 <a name="279"><span class="lineNum">     279 </span>                :            : }</a>
 <span class="lineNum">     280 </span>                :            : 
-<span class="lineNum">     281 </span>                :<span class="lineCov">        534 : void aiofd_deinitialize( aiofd_t * const aiofd )</span>
+<span class="lineNum">     281 </span>                :<span class="lineCov">        533 : void aiofd_deinitialize( aiofd_t * const aiofd )</span>
 <span class="lineNum">     282 </span>                :            : {
 <span class="lineNum">     283 </span>                :            :     /* deinitialize the write event */
-<span class="lineNum">     284 </span>                :<span class="lineCov">        534 :     evt_deinitialize_event_handler( &amp;(aiofd-&gt;wevt) );</span>
+<span class="lineNum">     284 </span>                :<span class="lineCov">        533 :     evt_deinitialize_event_handler( &amp;(aiofd-&gt;wevt) );</span>
 <span class="lineNum">     285 </span>                :            : 
 <span class="lineNum">     286 </span>                :            :     /* deinitialize the read event */
-<span class="lineNum">     287 </span>                :<span class="lineCov">        534 :     evt_deinitialize_event_handler( &amp;(aiofd-&gt;revt) );</span>
+<span class="lineNum">     287 </span>                :<span class="lineCov">        533 :     evt_deinitialize_event_handler( &amp;(aiofd-&gt;revt) );</span>
 <span class="lineNum">     288 </span>                :            : 
 <span class="lineNum">     289 </span>                :            :     /* clean up the list of write buffers */
-<span class="lineNum">     290 </span>                :<span class="lineCov">        534 :     list_deinitialize( &amp;(aiofd-&gt;wbuf) );</span>
-<a name="291"><span class="lineNum">     291 </span>                :<span class="lineCov">        534 : }</span></a>
+<span class="lineNum">     290 </span>                :<span class="lineCov">        533 :     list_deinitialize( &amp;(aiofd-&gt;wbuf) );</span>
+<a name="291"><span class="lineNum">     291 </span>                :<span class="lineCov">        533 : }</span></a>
 <span class="lineNum">     292 </span>                :            : 
 <span class="lineNum">     293 </span>                :<span class="lineCov">          8 : int aiofd_enable_write_evt( aiofd_t * const aiofd,</span>
 <span class="lineNum">     294 </span>                :            :                             int enable )

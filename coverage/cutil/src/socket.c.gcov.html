@@ -31,8 +31,8 @@
             <td class="headerValue">cutil test coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">717</td>
-            <td class="headerCovTableEntry">717</td>
+            <td class="headerCovTableEntry">679</td>
+            <td class="headerCovTableEntry">679</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
@@ -633,25 +633,25 @@
 <span class="lineNum">     562 </span>                :<span class="lineCov">        137 :     return s;</span>
 <a name="563"><span class="lineNum">     563 </span>                :            : }</a>
 <span class="lineNum">     564 </span>                :            : 
-<span class="lineNum">     565 </span>                :<span class="lineCov">        148 : static void socket_deinitialize( socket_t * const s )</span>
+<span class="lineNum">     565 </span>                :<span class="lineCov">        147 : static void socket_deinitialize( socket_t * const s )</span>
 <span class="lineNum">     566 </span>                :            : {
 <span class="lineNum">     567 </span>                :            :     /* close the socket */
-<span class="lineNum">     568 </span>        [<span class="branchCov" title="Branch 0 was taken 144 times"> + </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">        148 :     if ( s-&gt;aiofd.rfd &gt;= 0 )</span>
-<span class="lineNum">     569 </span>                :<span class="lineCov">        144 :         socket_disconnect( s );</span>
+<span class="lineNum">     568 </span>        [<span class="branchCov" title="Branch 0 was taken 143 times"> + </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">        147 :     if ( s-&gt;aiofd.rfd &gt;= 0 )</span>
+<span class="lineNum">     569 </span>                :<span class="lineCov">        143 :         socket_disconnect( s );</span>
 <span class="lineNum">     570 </span>                :            : 
 <span class="lineNum">     571 </span>                :            :     /* clean up the host name */
-<span class="lineNum">     572 </span>        [<span class="branchCov" title="Branch 0 was taken 8 times"> + </span><span class="branchCov" title="Branch 1 was taken 140 times"> + </span>]:<span class="lineCov">        148 :     if ( s-&gt;host != NULL )</span>
+<span class="lineNum">     572 </span>        [<span class="branchCov" title="Branch 0 was taken 8 times"> + </span><span class="branchCov" title="Branch 1 was taken 139 times"> + </span>]:<span class="lineCov">        147 :     if ( s-&gt;host != NULL )</span>
 <span class="lineNum">     573 </span>                :<span class="lineCov">          8 :         FREE ( s-&gt;host );</span>
-<a name="574"><span class="lineNum">     574 </span>                :<span class="lineCov">        148 : }</span></a>
+<a name="574"><span class="lineNum">     574 </span>                :<span class="lineCov">        147 : }</span></a>
 <span class="lineNum">     575 </span>                :            : 
-<span class="lineNum">     576 </span>                :<span class="lineCov">        149 : void socket_delete( void * s )</span>
+<span class="lineNum">     576 </span>                :<span class="lineCov">        148 : void socket_delete( void * s )</span>
 <span class="lineNum">     577 </span>                :            : {
-<span class="lineNum">     578 </span>                :<span class="lineCov">        149 :     socket_t * sock = (socket_t*)s;</span>
-<span class="lineNum">     579 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 148 times"> + </span>]:<span class="lineCov">        297 :     CHECK_PTR( s );</span>
+<span class="lineNum">     578 </span>                :<span class="lineCov">        148 :     socket_t * sock = (socket_t*)s;</span>
+<span class="lineNum">     579 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 147 times"> + </span>]:<span class="lineCov">        295 :     CHECK_PTR( s );</span>
 <span class="lineNum">     580 </span>                :            : 
-<span class="lineNum">     581 </span>                :<span class="lineCov">        148 :     socket_deinitialize( sock );</span>
+<span class="lineNum">     581 </span>                :<span class="lineCov">        147 :     socket_deinitialize( sock );</span>
 <span class="lineNum">     582 </span>                :            : 
-<span class="lineNum">     583 </span>                :<span class="lineCov">        148 :     FREE( sock );</span>
+<span class="lineNum">     583 </span>                :<span class="lineCov">        147 :     FREE( sock );</span>
 <span class="lineNum">     584 </span>                :            : }
 <a name="585"><span class="lineNum">     585 </span>                :            : </a>
 <span class="lineNum">     586 </span>                :            : /* check to see if connected */
@@ -943,24 +943,24 @@
 <span class="lineNum">     871 </span>                :            :     }
 <span class="lineNum">     872 </span>                :            : 
 <span class="lineNum">     873 </span>                :            :     /* we're connected to start read event */
-<span class="lineNum">     874 </span>        [<span class="branchCov" title="Branch 1 was taken 3 times"> + </span><span class="branchCov" title="Branch 2 was taken 2 times"> + </span>]:<span class="lineCov">          5 :     if ( !aiofd_enable_read_evt( &amp;(client-&gt;aiofd), TRUE ) )</span>
+<span class="lineNum">     874 </span>        [<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchCov" title="Branch 2 was taken 3 times"> + </span>]:<span class="lineCov">          5 :     if ( !aiofd_enable_read_evt( &amp;(client-&gt;aiofd), TRUE ) )</span>
 <span class="lineNum">     875 </span>                :            :     {
 <span class="lineNum">     876 </span>                :            :         DEBUG( &quot;failed to enable read event\n&quot; );
-<span class="lineNum">     877 </span>                :<span class="lineCov">          3 :         socket_delete( (void*)client );</span>
-<span class="lineNum">     878 </span>                :<span class="lineCov">          3 :         return NULL;</span>
+<span class="lineNum">     877 </span>                :<span class="lineCov">          2 :         socket_delete( (void*)client );</span>
+<span class="lineNum">     878 </span>                :<span class="lineCov">          2 :         return NULL;</span>
 <span class="lineNum">     879 </span>                :            :     }
 <span class="lineNum">     880 </span>                :            : 
 <span class="lineNum">     881 </span>                :<span class="lineCov">         20 :     return client;</span>
 <a name="882"><span class="lineNum">     882 </span>                :            : }</a>
 <span class="lineNum">     883 </span>                :            : 
-<span class="lineNum">     884 </span>                :<span class="lineCov">        150 : socket_ret_t socket_disconnect( socket_t* const s )</span>
+<span class="lineNum">     884 </span>                :<span class="lineCov">        149 : socket_ret_t socket_disconnect( socket_t* const s )</span>
 <span class="lineNum">     885 </span>                :            : {
-<span class="lineNum">     886 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 149 times"> + </span>]:<span class="lineCov">        150 :     CHECK_PTR_RET(s, SOCKET_BADPARAM);</span>
+<span class="lineNum">     886 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 148 times"> + </span>]:<span class="lineCov">        149 :     CHECK_PTR_RET(s, SOCKET_BADPARAM);</span>
 <span class="lineNum">     887 </span>                :            : 
 <span class="lineNum">     888 </span>                :            :     /* shutdown the aiofd */
-<span class="lineNum">     889 </span>                :<span class="lineCov">        149 :     aiofd_deinitialize( &amp;(s-&gt;aiofd) );</span>
+<span class="lineNum">     889 </span>                :<span class="lineCov">        148 :     aiofd_deinitialize( &amp;(s-&gt;aiofd) );</span>
 <span class="lineNum">     890 </span>                :            : 
-<span class="lineNum">     891 </span>        [<span class="branchCov" title="Branch 0 was taken 137 times"> + </span><span class="branchCov" title="Branch 1 was taken 12 times"> + </span>]:<span class="lineCov">        149 :     if ( s-&gt;aiofd.rfd &gt; 0 )</span>
+<span class="lineNum">     891 </span>        [<span class="branchCov" title="Branch 0 was taken 137 times"> + </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">        148 :     if ( s-&gt;aiofd.rfd &gt; 0 )</span>
 <span class="lineNum">     892 </span>                :            :     {
 <span class="lineNum">     893 </span>                :            :         /* shutdown the socket */
 <span class="lineNum">     894 </span>                :<span class="lineCov">        137 :         shutdown( s-&gt;aiofd.rfd, SHUT_RDWR );</span>
@@ -970,15 +970,15 @@
 <span class="lineNum">     898 </span>                :            :     }
 <span class="lineNum">     899 </span>                :            : 
 <span class="lineNum">     900 </span>                :            :     /* we're now disconnected */
-<span class="lineNum">     901 </span>                :<span class="lineCov">        149 :     s-&gt;connected = FALSE;</span>
+<span class="lineNum">     901 </span>                :<span class="lineCov">        148 :     s-&gt;connected = FALSE;</span>
 <span class="lineNum">     902 </span>                :            : 
-<span class="lineNum">     903 </span>        [<span class="branchCov" title="Branch 0 was taken 135 times"> + </span><span class="branchCov" title="Branch 1 was taken 14 times"> + </span>]:<span class="lineCov">        149 :     if ( s-&gt;ops.disconnect_fn != NULL )</span>
+<span class="lineNum">     903 </span>        [<span class="branchCov" title="Branch 0 was taken 135 times"> + </span><span class="branchCov" title="Branch 1 was taken 13 times"> + </span>]:<span class="lineCov">        148 :     if ( s-&gt;ops.disconnect_fn != NULL )</span>
 <span class="lineNum">     904 </span>                :            :     {
 <span class="lineNum">     905 </span>                :            :         /* call the disconnect callback */
 <span class="lineNum">     906 </span>                :<span class="lineCov">        135 :         (*(s-&gt;ops.disconnect_fn))( s, s-&gt;user_data );</span>
 <span class="lineNum">     907 </span>                :            :     }
 <span class="lineNum">     908 </span>                :            : 
-<span class="lineNum">     909 </span>                :<span class="lineCov">        150 :     return SOCKET_OK;</span>
+<span class="lineNum">     909 </span>                :<span class="lineCov">        149 :     return SOCKET_OK;</span>
 <a name="910"><span class="lineNum">     910 </span>                :            : }</a>
 <span class="lineNum">     911 </span>                :            : 
 <span class="lineNum">     912 </span>                :<span class="lineCov">        134 : socket_type_t socket_get_type( socket_t * const s )</span>
@@ -1048,496 +1048,437 @@
 <span class="lineNum">     976 </span>                :            :     socket_t s, *p;
 <span class="lineNum">     977 </span>                :            :     socket_ops_t ops;
 <span class="lineNum">     978 </span>                :            : 
-<span class="lineNum">     979 </span>                :            :     /* reset all switches */
-<span class="lineNum">     980 </span>                :<span class="lineCov">          1 :     fake_socket_getsockopt = FALSE;</span>
-<span class="lineNum">     981 </span>                :<span class="lineCov">          1 :     fake_socket_errval = 0;</span>
-<span class="lineNum">     982 </span>                :<span class="lineCov">          1 :     fake_socket_get_error_ret = FALSE;</span>
-<span class="lineNum">     983 </span>                :<span class="lineCov">          1 :     fail_socket_initialize = FALSE;</span>
-<span class="lineNum">     984 </span>                :<span class="lineCov">          1 :     fake_socket_connected = FALSE;</span>
-<span class="lineNum">     985 </span>                :<span class="lineCov">          1 :     fake_socket_connected_ret = FALSE;</span>
-<span class="lineNum">     986 </span>                :<span class="lineCov">          1 :     fake_socket_connect = FALSE;</span>
-<span class="lineNum">     987 </span>                :<span class="lineCov">          1 :     fake_socket_connect_ret = FALSE;</span>
-<span class="lineNum">     988 </span>                :<span class="lineCov">          1 :     fake_socket_bound = FALSE;</span>
-<span class="lineNum">     989 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = FALSE;</span>
-<span class="lineNum">     990 </span>                :<span class="lineCov">          1 :     fake_socket_lookup_host = FALSE;</span>
-<span class="lineNum">     991 </span>                :<span class="lineCov">          1 :     fake_socket_lookup_host_ret = FALSE;</span>
-<span class="lineNum">     992 </span>                :<span class="lineCov">          1 :     fake_socket_bind = FALSE;</span>
-<span class="lineNum">     993 </span>                :<span class="lineCov">          1 :     fake_socket_bind_ret = FALSE;</span>
-<span class="lineNum">     994 </span>                :            : 
-<span class="lineNum">     995 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
-<span class="lineNum">     996 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ops, 0, sizeof(socket_ops_t) );</span>
-<span class="lineNum">     997 </span>                :            : 
-<span class="lineNum">     998 </span>                :            :     /* test socket_get_errror */
-<span class="lineNum">     999 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_get_error( NULL, NULL ) );</span>
-<span class="lineNum">    1000 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_get_error( &amp;s, NULL ) );</span>
-<span class="lineNum">    1001 </span>                :<span class="lineCov">          1 :     fake_socket_getsockopt = TRUE;</span>
-<span class="lineNum">    1002 </span>                :<span class="lineCov">          1 :     fake_socket_errval = TRUE;</span>
-<span class="lineNum">    1003 </span>                :<span class="lineCov">          1 :     fake_socket_get_error_ret = TRUE;</span>
-<span class="lineNum">    1004 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
-<span class="lineNum">    1005 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_get_error( &amp;s, &amp;test_flag ) );</span>
-<span class="lineNum">    1006 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
-<span class="lineNum">    1007 </span>                :<span class="lineCov">          1 :     fake_socket_getsockopt = FALSE;</span>
-<span class="lineNum">    1008 </span>                :<span class="lineCov">          1 :     fake_socket_errval = FALSE;</span>
-<span class="lineNum">    1009 </span>                :<span class="lineCov">          1 :     fake_socket_get_error_ret = FALSE;</span>
-<span class="lineNum">    1010 </span>                :            : 
-<span class="lineNum">    1011 </span>                :            :     /* test socket_do_tcp_connect */
-<span class="lineNum">    1012 </span>                :<span class="lineCov">          1 :     fake_connect = TRUE;</span>
-<span class="lineNum">    1013 </span>                :<span class="lineCov">          1 :     fake_connect_ret = 0;</span>
-<span class="lineNum">    1014 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_connect( NULL ) );</span>
-<span class="lineNum">    1015 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
-<span class="lineNum">    1016 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_connect( &amp;s ) );</span>
-<span class="lineNum">    1017 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
-<span class="lineNum">    1018 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_connect( &amp;s ) );</span>
-<span class="lineNum">    1019 </span>                :<span class="lineCov">          1 :     s.port = 1024;</span>
-<span class="lineNum">    1020 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_tcp_connect( &amp;s ) );</span>
-<span class="lineNum">    1021 </span>                :<span class="lineCov">          1 :     fake_connect_ret = -1;</span>
-<span class="lineNum">    1022 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_connect( &amp;s ) );</span>
-<span class="lineNum">    1023 </span>                :<span class="lineCov">          1 :     fake_connect_errno = TRUE;</span>
-<span class="lineNum">    1024 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = EINPROGRESS;</span>
-<span class="lineNum">    1025 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_tcp_connect( &amp;s ) );</span>
-<span class="lineNum">    1026 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = EACCES;</span>
-<span class="lineNum">    1027 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_connect( &amp;s ) );</span>
-<span class="lineNum">    1028 </span>                :<span class="lineCov">          1 :     fake_connect_errno = FALSE;</span>
-<span class="lineNum">    1029 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = 0;</span>
-<span class="lineNum">    1030 </span>                :<span class="lineCov">          1 :     fake_connect = FALSE;</span>
-<span class="lineNum">    1031 </span>                :<span class="lineCov">          1 :     fake_connect_ret = 0;</span>
-<span class="lineNum">    1032 </span>                :            : 
-<span class="lineNum">    1033 </span>                :            :     /* test socket_do_unix_connect */
-<span class="lineNum">    1034 </span>                :<span class="lineCov">          1 :     fake_connect = TRUE;</span>
-<span class="lineNum">    1035 </span>                :<span class="lineCov">          1 :     fake_connect_ret = 0;</span>
-<span class="lineNum">    1036 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_connect( NULL ) );</span>
-<span class="lineNum">    1037 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
-<span class="lineNum">    1038 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_connect( &amp;s ) );</span>
-<span class="lineNum">    1039 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
-<span class="lineNum">    1040 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_connect( &amp;s ) );</span>
-<span class="lineNum">    1041 </span>                :<span class="lineCov">          1 :     s.host = host;</span>
-<span class="lineNum">    1042 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_unix_connect( &amp;s ) );</span>
-<span class="lineNum">    1043 </span>                :<span class="lineCov">          1 :     fake_connect_ret = -1;</span>
-<span class="lineNum">    1044 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_connect( &amp;s ) );</span>
-<span class="lineNum">    1045 </span>                :<span class="lineCov">          1 :     fake_connect_errno = TRUE;</span>
-<span class="lineNum">    1046 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = EINPROGRESS;</span>
-<span class="lineNum">    1047 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_unix_connect( &amp;s ) );</span>
-<span class="lineNum">    1048 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = EACCES;</span>
-<span class="lineNum">    1049 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_connect( &amp;s ) );</span>
-<span class="lineNum">    1050 </span>                :<span class="lineCov">          1 :     fake_connect_errno = FALSE;</span>
-<span class="lineNum">    1051 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = 0;</span>
-<span class="lineNum">    1052 </span>                :<span class="lineCov">          1 :     fake_connect = FALSE;</span>
-<span class="lineNum">    1053 </span>                :<span class="lineCov">          1 :     fake_connect_ret = 0;</span>
-<span class="lineNum">    1054 </span>                :            : 
-<span class="lineNum">    1055 </span>                :            :     /* test socket_lookup_host */
-<span class="lineNum">    1056 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof( socket_t ) );</span>
-<span class="lineNum">    1057 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_lookup_host( NULL, NULL ), SOCKET_BADPARAM );</span>
-<span class="lineNum">    1058 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_lookup_host( &amp;s, NULL ), SOCKET_BADHOSTNAME );</span>
-<span class="lineNum">    1059 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_lookup_host( &amp;s, &quot;foo.com&quot; ), SOCKET_OK );</span>
-<span class="lineNum">    1060 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
-<span class="lineNum">    1061 </span>                :<span class="lineCov">          1 :     s.host = host;</span>
-<span class="lineNum">    1062 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_lookup_host( &amp;s, NULL ), SOCKET_OK );</span>
-<span class="lineNum">    1063 </span>                :            : 
-<span class="lineNum">    1064 </span>                :            :     /* test socket_aiofd_write_fn */
-<span class="lineNum">    1065 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_write_fn( NULL, NULL, NULL ) );</span>
-<span class="lineNum">    1066 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_write_fn( &amp;(s.aiofd), NULL, NULL ) );</span>
-<span class="lineNum">    1067 </span>                :            : 
-<span class="lineNum">    1068 </span>                :<span class="lineCov">          1 :     s.connected = TRUE;</span>
-<span class="lineNum">    1069 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( list_initialize( &amp;(s.aiofd.wbuf), 2, NULL ) );</span>
-<span class="lineNum">    1070 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( list_push_tail( &amp;(s.aiofd.wbuf), (void*)host ) );</span>
-<span class="lineNum">    1071 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_write_fn( &amp;(s.aiofd), NULL, (void*)(&amp;s) ) );</span>
-<span class="lineNum">    1072 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_write_fn( &amp;(s.aiofd), (uint8_t const * const)&amp;host, (void*)(&amp;s) ) );</span>
-<span class="lineNum">    1073 </span>                :            :     
-<span class="lineNum">    1074 </span>                :<span class="lineCov">          1 :     s.connected = FALSE;</span>
-<span class="lineNum">    1075 </span>                :<span class="lineCov">          1 :     s.aiofd.rfd = STDIN_FILENO;</span>
-<span class="lineNum">    1076 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_write_fn( &amp;(s.aiofd), (uint8_t const * const)&amp;host, (void*)(&amp;s) ) );</span>
-<span class="lineNum">    1077 </span>                :            :     
-<span class="lineNum">    1078 </span>                :<span class="lineCov">          1 :     s.ops.error_fn = &amp;test_error_fn;</span>
-<span class="lineNum">    1079 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
-<span class="lineNum">    1080 </span>                :<span class="lineCov">          1 :     s.user_data = &amp;test_flag;</span>
-<span class="lineNum">    1081 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_write_fn( &amp;(s.aiofd), (uint8_t const * const)&amp;host, (void*)(&amp;s) ) );</span>
-<span class="lineNum">    1082 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
-<span class="lineNum">    1083 </span>                :            : 
-<span class="lineNum">    1084 </span>                :<span class="lineCov">          1 :     fake_socket_getsockopt = TRUE;</span>
-<span class="lineNum">    1085 </span>                :<span class="lineCov">          1 :     fake_socket_errval = 0;</span>
-<span class="lineNum">    1086 </span>                :<span class="lineCov">          1 :     fake_socket_get_error_ret = TRUE;</span>
-<span class="lineNum">    1087 </span>                :<span class="lineCov">          1 :     list_clear( &amp;(s.aiofd.wbuf) );</span>
-<span class="lineNum">    1088 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_write_fn( &amp;(s.aiofd), (uint8_t const * const)&amp;host, (void*)(&amp;s) ) );</span>
-<span class="lineNum">    1089 </span>                :            : 
-<span class="lineNum">    1090 </span>                :<span class="lineCov">          1 :     fake_socket_errval = -1;</span>
-<span class="lineNum">    1091 </span>                :<span class="lineCov">          1 :     s.ops.error_fn = NULL;</span>
-<span class="lineNum">    1092 </span>                :<span class="lineCov">          1 :     s.connected = FALSE;</span>
-<span class="lineNum">    1093 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_write_fn( &amp;(s.aiofd), (uint8_t const * const)&amp;host, (void*)(&amp;s) ) );</span>
-<span class="lineNum">    1094 </span>                :<span class="lineCov">          1 :     fake_socket_errval = 0;</span>
-<span class="lineNum">    1095 </span>                :<span class="lineCov">          1 :     fake_socket_getsockopt = FALSE;</span>
-<span class="lineNum">    1096 </span>                :            : 
-<span class="lineNum">    1097 </span>                :            :     /* test socket_aiofd_error_fn */
-<span class="lineNum">    1098 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_error_fn( NULL, 0, NULL ) );</span>
-<span class="lineNum">    1099 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_error_fn( &amp;(s.aiofd), 0, NULL ) );</span>
-<span class="lineNum">    1100 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_error_fn( &amp;(s.aiofd), 0, (void*)(&amp;s) ) );</span>
-<span class="lineNum">    1101 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
-<span class="lineNum">    1102 </span>                :<span class="lineCov">          1 :     s.ops.error_fn = &amp;test_error_fn;</span>
-<span class="lineNum">    1103 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_error_fn( &amp;(s.aiofd), 0, (void*)(&amp;s) ) );</span>
-<span class="lineNum">    1104 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
+<span class="lineNum">     979 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">     980 </span>                :            : 
+<span class="lineNum">     981 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
+<span class="lineNum">     982 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ops, 0, sizeof(socket_ops_t) );</span>
+<span class="lineNum">     983 </span>                :            : 
+<span class="lineNum">     984 </span>                :            :     /* test socket_get_errror */
+<span class="lineNum">     985 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_get_error( NULL, NULL ) );</span>
+<span class="lineNum">     986 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_get_error( &amp;s, NULL ) );</span>
+<span class="lineNum">     987 </span>                :<span class="lineCov">          1 :     fake_socket_getsockopt = TRUE;</span>
+<span class="lineNum">     988 </span>                :<span class="lineCov">          1 :     fake_socket_errval = TRUE;</span>
+<span class="lineNum">     989 </span>                :<span class="lineCov">          1 :     fake_socket_get_error_ret = TRUE;</span>
+<span class="lineNum">     990 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
+<span class="lineNum">     991 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_get_error( &amp;s, &amp;test_flag ) );</span>
+<span class="lineNum">     992 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
+<span class="lineNum">     993 </span>                :            :     
+<span class="lineNum">     994 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">     995 </span>                :            : 
+<span class="lineNum">     996 </span>                :            :     /* test socket_do_tcp_connect */
+<span class="lineNum">     997 </span>                :<span class="lineCov">          1 :     fake_connect = TRUE;</span>
+<span class="lineNum">     998 </span>                :<span class="lineCov">          1 :     fake_connect_ret = 0;</span>
+<span class="lineNum">     999 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_connect( NULL ) );</span>
+<span class="lineNum">    1000 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
+<span class="lineNum">    1001 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_connect( &amp;s ) );</span>
+<span class="lineNum">    1002 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
+<span class="lineNum">    1003 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_connect( &amp;s ) );</span>
+<span class="lineNum">    1004 </span>                :<span class="lineCov">          1 :     s.port = 1024;</span>
+<span class="lineNum">    1005 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_tcp_connect( &amp;s ) );</span>
+<span class="lineNum">    1006 </span>                :<span class="lineCov">          1 :     fake_connect_ret = -1;</span>
+<span class="lineNum">    1007 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_connect( &amp;s ) );</span>
+<span class="lineNum">    1008 </span>                :<span class="lineCov">          1 :     fake_connect_errno = TRUE;</span>
+<span class="lineNum">    1009 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = EINPROGRESS;</span>
+<span class="lineNum">    1010 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_tcp_connect( &amp;s ) );</span>
+<span class="lineNum">    1011 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = EACCES;</span>
+<span class="lineNum">    1012 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_connect( &amp;s ) );</span>
+<span class="lineNum">    1013 </span>                :            : 
+<span class="lineNum">    1014 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1015 </span>                :            : 
+<span class="lineNum">    1016 </span>                :            :     /* test socket_do_unix_connect */
+<span class="lineNum">    1017 </span>                :<span class="lineCov">          1 :     fake_connect = TRUE;</span>
+<span class="lineNum">    1018 </span>                :<span class="lineCov">          1 :     fake_connect_ret = 0;</span>
+<span class="lineNum">    1019 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_connect( NULL ) );</span>
+<span class="lineNum">    1020 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
+<span class="lineNum">    1021 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_connect( &amp;s ) );</span>
+<span class="lineNum">    1022 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
+<span class="lineNum">    1023 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_connect( &amp;s ) );</span>
+<span class="lineNum">    1024 </span>                :<span class="lineCov">          1 :     s.host = host;</span>
+<span class="lineNum">    1025 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_unix_connect( &amp;s ) );</span>
+<span class="lineNum">    1026 </span>                :<span class="lineCov">          1 :     fake_connect_ret = -1;</span>
+<span class="lineNum">    1027 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_connect( &amp;s ) );</span>
+<span class="lineNum">    1028 </span>                :<span class="lineCov">          1 :     fake_connect_errno = TRUE;</span>
+<span class="lineNum">    1029 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = EINPROGRESS;</span>
+<span class="lineNum">    1030 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_unix_connect( &amp;s ) );</span>
+<span class="lineNum">    1031 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = EACCES;</span>
+<span class="lineNum">    1032 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_connect( &amp;s ) );</span>
+<span class="lineNum">    1033 </span>                :            :     
+<span class="lineNum">    1034 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1035 </span>                :            : 
+<span class="lineNum">    1036 </span>                :            :     /* test socket_lookup_host */
+<span class="lineNum">    1037 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof( socket_t ) );</span>
+<span class="lineNum">    1038 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_lookup_host( NULL, NULL ), SOCKET_BADPARAM );</span>
+<span class="lineNum">    1039 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_lookup_host( &amp;s, NULL ), SOCKET_BADHOSTNAME );</span>
+<span class="lineNum">    1040 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_lookup_host( &amp;s, &quot;foo.com&quot; ), SOCKET_OK );</span>
+<span class="lineNum">    1041 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
+<span class="lineNum">    1042 </span>                :<span class="lineCov">          1 :     s.host = host;</span>
+<span class="lineNum">    1043 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_lookup_host( &amp;s, NULL ), SOCKET_OK );</span>
+<span class="lineNum">    1044 </span>                :            :     
+<span class="lineNum">    1045 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1046 </span>                :            : 
+<span class="lineNum">    1047 </span>                :            :     /* test socket_aiofd_write_fn */
+<span class="lineNum">    1048 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_write_fn( NULL, NULL, NULL ) );</span>
+<span class="lineNum">    1049 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_write_fn( &amp;(s.aiofd), NULL, NULL ) );</span>
+<span class="lineNum">    1050 </span>                :<span class="lineCov">          1 :     s.connected = TRUE;</span>
+<span class="lineNum">    1051 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( list_initialize( &amp;(s.aiofd.wbuf), 2, NULL ) );</span>
+<span class="lineNum">    1052 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( list_push_tail( &amp;(s.aiofd.wbuf), (void*)host ) );</span>
+<span class="lineNum">    1053 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_write_fn( &amp;(s.aiofd), NULL, (void*)(&amp;s) ) );</span>
+<span class="lineNum">    1054 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_write_fn( &amp;(s.aiofd), (uint8_t const * const)&amp;host, (void*)(&amp;s) ) );</span>
+<span class="lineNum">    1055 </span>                :<span class="lineCov">          1 :     s.connected = FALSE;</span>
+<span class="lineNum">    1056 </span>                :<span class="lineCov">          1 :     s.aiofd.rfd = STDIN_FILENO;</span>
+<span class="lineNum">    1057 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_write_fn( &amp;(s.aiofd), (uint8_t const * const)&amp;host, (void*)(&amp;s) ) );</span>
+<span class="lineNum">    1058 </span>                :<span class="lineCov">          1 :     s.ops.error_fn = &amp;test_error_fn;</span>
+<span class="lineNum">    1059 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
+<span class="lineNum">    1060 </span>                :<span class="lineCov">          1 :     s.user_data = &amp;test_flag;</span>
+<span class="lineNum">    1061 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_write_fn( &amp;(s.aiofd), (uint8_t const * const)&amp;host, (void*)(&amp;s) ) );</span>
+<span class="lineNum">    1062 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
+<span class="lineNum">    1063 </span>                :<span class="lineCov">          1 :     fake_socket_getsockopt = TRUE;</span>
+<span class="lineNum">    1064 </span>                :<span class="lineCov">          1 :     fake_socket_errval = 0;</span>
+<span class="lineNum">    1065 </span>                :<span class="lineCov">          1 :     fake_socket_get_error_ret = TRUE;</span>
+<span class="lineNum">    1066 </span>                :<span class="lineCov">          1 :     list_clear( &amp;(s.aiofd.wbuf) );</span>
+<span class="lineNum">    1067 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_write_fn( &amp;(s.aiofd), (uint8_t const * const)&amp;host, (void*)(&amp;s) ) );</span>
+<span class="lineNum">    1068 </span>                :<span class="lineCov">          1 :     fake_socket_errval = -1;</span>
+<span class="lineNum">    1069 </span>                :<span class="lineCov">          1 :     s.ops.error_fn = NULL;</span>
+<span class="lineNum">    1070 </span>                :<span class="lineCov">          1 :     s.connected = FALSE;</span>
+<span class="lineNum">    1071 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_write_fn( &amp;(s.aiofd), (uint8_t const * const)&amp;host, (void*)(&amp;s) ) );</span>
+<span class="lineNum">    1072 </span>                :<span class="lineCov">          1 :     fake_socket_errval = 0;</span>
+<span class="lineNum">    1073 </span>                :<span class="lineCov">          1 :     fake_socket_getsockopt = FALSE;</span>
+<span class="lineNum">    1074 </span>                :            : 
+<span class="lineNum">    1075 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1076 </span>                :            : 
+<span class="lineNum">    1077 </span>                :            :     /* test socket_aiofd_error_fn */
+<span class="lineNum">    1078 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_error_fn( NULL, 0, NULL ) );</span>
+<span class="lineNum">    1079 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_error_fn( &amp;(s.aiofd), 0, NULL ) );</span>
+<span class="lineNum">    1080 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_error_fn( &amp;(s.aiofd), 0, (void*)(&amp;s) ) );</span>
+<span class="lineNum">    1081 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
+<span class="lineNum">    1082 </span>                :<span class="lineCov">          1 :     s.ops.error_fn = &amp;test_error_fn;</span>
+<span class="lineNum">    1083 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_error_fn( &amp;(s.aiofd), 0, (void*)(&amp;s) ) );</span>
+<span class="lineNum">    1084 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
+<span class="lineNum">    1085 </span>                :            : 
+<span class="lineNum">    1086 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1087 </span>                :            : 
+<span class="lineNum">    1088 </span>                :            :     /* test socket_aiofd_read_fn */
+<span class="lineNum">    1089 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_read_fn( NULL, 0, NULL ) );</span>
+<span class="lineNum">    1090 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_read_fn( &amp;(s.aiofd), 0, NULL ) );</span>
+<span class="lineNum">    1091 </span>                :<span class="lineCov">          1 :     s.aiofd.rfd = 0;</span>
+<span class="lineNum">    1092 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_read_fn( &amp;(s.aiofd), 0, (void*)(&amp;s) ) );</span>
+<span class="lineNum">    1093 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_read_fn( &amp;(s.aiofd), 1, (void*)(&amp;s) ) );</span>
+<span class="lineNum">    1094 </span>                :<span class="lineCov">          1 :     s.bound = TRUE;</span>
+<span class="lineNum">    1095 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
+<span class="lineNum">    1096 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_read_fn( &amp;(s.aiofd), 0, (void*)(&amp;s) ) );</span>
+<span class="lineNum">    1097 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( test_flag );</span>
+<span class="lineNum">    1098 </span>                :<span class="lineCov">          1 :     s.ops.connect_fn = &amp;test_connect_fn;</span>
+<span class="lineNum">    1099 </span>                :<span class="lineCov">          1 :     test_connect_fn_ret = SOCKET_ERROR;</span>
+<span class="lineNum">    1100 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
+<span class="lineNum">    1101 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_read_fn( &amp;(s.aiofd), 0, (void*)(&amp;s) ) );</span>
+<span class="lineNum">    1102 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
+<span class="lineNum">    1103 </span>                :            : 
+<span class="lineNum">    1104 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
 <span class="lineNum">    1105 </span>                :            : 
-<span class="lineNum">    1106 </span>                :            :     /* test socket_aiofd_read_fn */
-<span class="lineNum">    1107 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_read_fn( NULL, 0, NULL ) );</span>
-<span class="lineNum">    1108 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_read_fn( &amp;(s.aiofd), 0, NULL ) );</span>
-<span class="lineNum">    1109 </span>                :            :     
-<span class="lineNum">    1110 </span>                :<span class="lineCov">          1 :     s.aiofd.rfd = 0;</span>
-<span class="lineNum">    1111 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_aiofd_read_fn( &amp;(s.aiofd), 0, (void*)(&amp;s) ) );</span>
-<span class="lineNum">    1112 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_read_fn( &amp;(s.aiofd), 1, (void*)(&amp;s) ) );</span>
-<span class="lineNum">    1113 </span>                :            : 
-<span class="lineNum">    1114 </span>                :<span class="lineCov">          1 :     s.bound = TRUE;</span>
-<span class="lineNum">    1115 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
-<span class="lineNum">    1116 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_read_fn( &amp;(s.aiofd), 0, (void*)(&amp;s) ) );</span>
-<span class="lineNum">    1117 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( test_flag );</span>
-<span class="lineNum">    1118 </span>                :            : 
-<span class="lineNum">    1119 </span>                :<span class="lineCov">          1 :     s.ops.connect_fn = &amp;test_connect_fn;</span>
-<span class="lineNum">    1120 </span>                :<span class="lineCov">          1 :     test_connect_fn_ret = SOCKET_ERROR;</span>
-<span class="lineNum">    1121 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
-<span class="lineNum">    1122 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_aiofd_read_fn( &amp;(s.aiofd), 0, (void*)(&amp;s) ) );</span>
-<span class="lineNum">    1123 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
-<span class="lineNum">    1124 </span>                :            : 
-<span class="lineNum">    1125 </span>                :            :     /* test socket_initialize */
-<span class="lineNum">    1126 </span>                :<span class="lineCov">          1 :     fake_socket = TRUE;</span>
-<span class="lineNum">    1127 </span>                :<span class="lineCov">          1 :     fake_setsockopt = TRUE;</span>
-<span class="lineNum">    1128 </span>                :<span class="lineCov">          1 :     fake_fcntl = TRUE;</span>
-<span class="lineNum">    1129 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize = TRUE;</span>
-<span class="lineNum">    1130 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof( socket_t ) );</span>
-<span class="lineNum">    1131 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ops, 0, sizeof( socket_ops_t ) );</span>
-<span class="lineNum">    1132 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( NULL, SOCKET_UNKNOWN, NULL, NULL, NULL ) );</span>
-<span class="lineNum">    1133 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_UNKNOWN, NULL, NULL, NULL ) );</span>
-<span class="lineNum">    1134 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_LAST, NULL, NULL, NULL ) );</span>
-<span class="lineNum">    1135 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_TCP, NULL, NULL, NULL ) );</span>
-<span class="lineNum">    1136 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_TCP, &amp;ops, NULL, NULL ) );</span>
-<span class="lineNum">    1137 </span>                :            : 
-<span class="lineNum">    1138 </span>                :<span class="lineCov">          1 :     fake_socket_ret = -1;</span>
-<span class="lineNum">    1139 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_TCP, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1140 </span>                :<span class="lineCov">          1 :     fake_socket_ret = 0;</span>
-<span class="lineNum">    1141 </span>                :<span class="lineCov">          1 :     fake_setsockopt_ret = -1;</span>
-<span class="lineNum">    1142 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_TCP, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1143 </span>                :<span class="lineCov">          1 :     fake_setsockopt_ret = 0;</span>
-<span class="lineNum">    1144 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = -1;</span>
-<span class="lineNum">    1145 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_TCP, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1146 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = 0;</span>
-<span class="lineNum">    1147 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = FALSE;</span>
-<span class="lineNum">    1148 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_TCP, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1149 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = TRUE;</span>
-<span class="lineNum">    1150 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_initialize( &amp;s, SOCKET_TCP, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1151 </span>                :            : 
-<span class="lineNum">    1152 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof( socket_t ) );</span>
-<span class="lineNum">    1153 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ops, 0, sizeof( socket_ops_t ) );</span>
-<span class="lineNum">    1154 </span>                :<span class="lineCov">          1 :     fake_socket_ret = -1;</span>
-<span class="lineNum">    1155 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_UNIX, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1156 </span>                :<span class="lineCov">          1 :     fake_socket_ret = 0;</span>
-<span class="lineNum">    1157 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_initialize( &amp;s, SOCKET_UNIX, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1158 </span>                :<span class="lineCov">          1 :     fake_socket = FALSE;</span>
-<span class="lineNum">    1159 </span>                :<span class="lineCov">          1 :     fake_setsockopt = FALSE;</span>
-<span class="lineNum">    1160 </span>                :<span class="lineCov">          1 :     fake_fcntl = FALSE;</span>
-<span class="lineNum">    1161 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize = FALSE;</span>
-<span class="lineNum">    1162 </span>                :            : 
-<span class="lineNum">    1163 </span>                :            :     /* test socket_is_connected */
-<span class="lineNum">    1164 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
-<span class="lineNum">    1165 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_is_connected( NULL ) );</span>
-<span class="lineNum">    1166 </span>                :<span class="lineCov">          1 :     s.aiofd.rfd = -1;</span>
-<span class="lineNum">    1167 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_is_connected( &amp;s ) );</span>
-<span class="lineNum">    1168 </span>                :<span class="lineCov">          1 :     s.aiofd.rfd = STDIN_FILENO;</span>
-<span class="lineNum">    1169 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_is_connected( &amp;s ) );</span>
-<span class="lineNum">    1170 </span>                :<span class="lineCov">          1 :     s.connected = TRUE;</span>
-<span class="lineNum">    1171 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_is_connected( &amp;s ) );</span>
-<span class="lineNum">    1172 </span>                :            : 
-<span class="lineNum">    1173 </span>                :            :     /* test socket_is_bound */
-<span class="lineNum">    1174 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
-<span class="lineNum">    1175 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_is_bound( NULL ) );</span>
-<span class="lineNum">    1176 </span>                :<span class="lineCov">          1 :     s.aiofd.rfd = -1;</span>
-<span class="lineNum">    1177 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_is_bound( &amp;s ) );</span>
-<span class="lineNum">    1178 </span>                :<span class="lineCov">          1 :     s.aiofd.rfd = STDIN_FILENO;</span>
-<span class="lineNum">    1179 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_is_bound( &amp;s ) );</span>
-<span class="lineNum">    1180 </span>                :<span class="lineCov">          1 :     s.bound = TRUE;</span>
-<span class="lineNum">    1181 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_is_bound( &amp;s ) );</span>
-<span class="lineNum">    1182 </span>                :            : 
-<span class="lineNum">    1183 </span>                :            :     /* test socket_connect */
-<span class="lineNum">    1184 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
-<span class="lineNum">    1185 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( NULL, NULL, 0 ), SOCKET_BADPARAM );</span>
-<span class="lineNum">    1186 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_BADHOSTNAME );</span>
-<span class="lineNum">    1187 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, host, 0 ), SOCKET_INVALIDPORT );</span>
-<span class="lineNum">    1188 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_LAST;</span>
-<span class="lineNum">    1189 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, host, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1190 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNKNOWN;</span>
-<span class="lineNum">    1191 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, host, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1192 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
-<span class="lineNum">    1193 </span>                :<span class="lineCov">          1 :     s.host = host;</span>
-<span class="lineNum">    1194 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_INVALIDPORT );</span>
-<span class="lineNum">    1195 </span>                :<span class="lineCov">          1 :     fake_socket_connected = TRUE;</span>
-<span class="lineNum">    1196 </span>                :<span class="lineCov">          1 :     fake_socket_connected_ret = TRUE;</span>
-<span class="lineNum">    1197 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 1024 ), SOCKET_CONNECTED );</span>
-<span class="lineNum">    1198 </span>                :<span class="lineCov">          1 :     s.port = 1024;</span>
-<span class="lineNum">    1199 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_CONNECTED );</span>
-<span class="lineNum">    1200 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
-<span class="lineNum">    1201 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_CONNECTED );</span>
+<span class="lineNum">    1106 </span>                :            :     /* test socket_initialize */
+<span class="lineNum">    1107 </span>                :<span class="lineCov">          1 :     fake_socket = TRUE;</span>
+<span class="lineNum">    1108 </span>                :<span class="lineCov">          1 :     fake_setsockopt = TRUE;</span>
+<span class="lineNum">    1109 </span>                :<span class="lineCov">          1 :     fake_fcntl = TRUE;</span>
+<span class="lineNum">    1110 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize = TRUE;</span>
+<span class="lineNum">    1111 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof( socket_t ) );</span>
+<span class="lineNum">    1112 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ops, 0, sizeof( socket_ops_t ) );</span>
+<span class="lineNum">    1113 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( NULL, SOCKET_UNKNOWN, NULL, NULL, NULL ) );</span>
+<span class="lineNum">    1114 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_UNKNOWN, NULL, NULL, NULL ) );</span>
+<span class="lineNum">    1115 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_LAST, NULL, NULL, NULL ) );</span>
+<span class="lineNum">    1116 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_TCP, NULL, NULL, NULL ) );</span>
+<span class="lineNum">    1117 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_TCP, &amp;ops, NULL, NULL ) );</span>
+<span class="lineNum">    1118 </span>                :<span class="lineCov">          1 :     fake_socket_ret = -1;</span>
+<span class="lineNum">    1119 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_TCP, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1120 </span>                :<span class="lineCov">          1 :     fake_socket_ret = 0;</span>
+<span class="lineNum">    1121 </span>                :<span class="lineCov">          1 :     fake_setsockopt_ret = -1;</span>
+<span class="lineNum">    1122 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_TCP, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1123 </span>                :<span class="lineCov">          1 :     fake_setsockopt_ret = 0;</span>
+<span class="lineNum">    1124 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = -1;</span>
+<span class="lineNum">    1125 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_TCP, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1126 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = 0;</span>
+<span class="lineNum">    1127 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = FALSE;</span>
+<span class="lineNum">    1128 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_TCP, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1129 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = TRUE;</span>
+<span class="lineNum">    1130 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_initialize( &amp;s, SOCKET_TCP, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1131 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof( socket_t ) );</span>
+<span class="lineNum">    1132 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ops, 0, sizeof( socket_ops_t ) );</span>
+<span class="lineNum">    1133 </span>                :<span class="lineCov">          1 :     fake_socket_ret = -1;</span>
+<span class="lineNum">    1134 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_initialize( &amp;s, SOCKET_UNIX, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1135 </span>                :<span class="lineCov">          1 :     fake_socket_ret = 0;</span>
+<span class="lineNum">    1136 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_initialize( &amp;s, SOCKET_UNIX, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1137 </span>                :<span class="lineCov">          1 :     fake_socket = FALSE;</span>
+<span class="lineNum">    1138 </span>                :<span class="lineCov">          1 :     fake_setsockopt = FALSE;</span>
+<span class="lineNum">    1139 </span>                :<span class="lineCov">          1 :     fake_fcntl = FALSE;</span>
+<span class="lineNum">    1140 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize = FALSE;</span>
+<span class="lineNum">    1141 </span>                :            :     
+<span class="lineNum">    1142 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1143 </span>                :            : 
+<span class="lineNum">    1144 </span>                :            :     /* test socket_is_connected */
+<span class="lineNum">    1145 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
+<span class="lineNum">    1146 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_is_connected( NULL ) );</span>
+<span class="lineNum">    1147 </span>                :<span class="lineCov">          1 :     s.aiofd.rfd = -1;</span>
+<span class="lineNum">    1148 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_is_connected( &amp;s ) );</span>
+<span class="lineNum">    1149 </span>                :<span class="lineCov">          1 :     s.aiofd.rfd = STDIN_FILENO;</span>
+<span class="lineNum">    1150 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_is_connected( &amp;s ) );</span>
+<span class="lineNum">    1151 </span>                :<span class="lineCov">          1 :     s.connected = TRUE;</span>
+<span class="lineNum">    1152 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_is_connected( &amp;s ) );</span>
+<span class="lineNum">    1153 </span>                :            : 
+<span class="lineNum">    1154 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1155 </span>                :            : 
+<span class="lineNum">    1156 </span>                :            :     /* test socket_is_bound */
+<span class="lineNum">    1157 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
+<span class="lineNum">    1158 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_is_bound( NULL ) );</span>
+<span class="lineNum">    1159 </span>                :<span class="lineCov">          1 :     s.aiofd.rfd = -1;</span>
+<span class="lineNum">    1160 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_is_bound( &amp;s ) );</span>
+<span class="lineNum">    1161 </span>                :<span class="lineCov">          1 :     s.aiofd.rfd = STDIN_FILENO;</span>
+<span class="lineNum">    1162 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_is_bound( &amp;s ) );</span>
+<span class="lineNum">    1163 </span>                :<span class="lineCov">          1 :     s.bound = TRUE;</span>
+<span class="lineNum">    1164 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_is_bound( &amp;s ) );</span>
+<span class="lineNum">    1165 </span>                :            : 
+<span class="lineNum">    1166 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1167 </span>                :            : 
+<span class="lineNum">    1168 </span>                :            :     /* test socket_connect */
+<span class="lineNum">    1169 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
+<span class="lineNum">    1170 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( NULL, NULL, 0 ), SOCKET_BADPARAM );</span>
+<span class="lineNum">    1171 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_BADHOSTNAME );</span>
+<span class="lineNum">    1172 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, host, 0 ), SOCKET_INVALIDPORT );</span>
+<span class="lineNum">    1173 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_LAST;</span>
+<span class="lineNum">    1174 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, host, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1175 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNKNOWN;</span>
+<span class="lineNum">    1176 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, host, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1177 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
+<span class="lineNum">    1178 </span>                :<span class="lineCov">          1 :     s.host = host;</span>
+<span class="lineNum">    1179 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_INVALIDPORT );</span>
+<span class="lineNum">    1180 </span>                :<span class="lineCov">          1 :     fake_socket_connected = TRUE;</span>
+<span class="lineNum">    1181 </span>                :<span class="lineCov">          1 :     fake_socket_connected_ret = TRUE;</span>
+<span class="lineNum">    1182 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 1024 ), SOCKET_CONNECTED );</span>
+<span class="lineNum">    1183 </span>                :<span class="lineCov">          1 :     s.port = 1024;</span>
+<span class="lineNum">    1184 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_CONNECTED );</span>
+<span class="lineNum">    1185 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
+<span class="lineNum">    1186 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_CONNECTED );</span>
+<span class="lineNum">    1187 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
+<span class="lineNum">    1188 </span>                :<span class="lineCov">          1 :     fake_socket_connected_ret = FALSE;</span>
+<span class="lineNum">    1189 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_CONNECT_FAIL );</span>
+<span class="lineNum">    1190 </span>                :<span class="lineCov">          1 :     fake_socket_connect = TRUE;</span>
+<span class="lineNum">    1191 </span>                :<span class="lineCov">          1 :     fake_socket_connect_ret = TRUE;</span>
+<span class="lineNum">    1192 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_OK );</span>
+<span class="lineNum">    1193 </span>                :<span class="lineCov">          1 :     fake_socket_connect_ret = FALSE;</span>
+<span class="lineNum">    1194 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_CONNECT_FAIL );</span>
+<span class="lineNum">    1195 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
+<span class="lineNum">    1196 </span>                :<span class="lineCov">          1 :     fake_socket_connect_ret = TRUE;</span>
+<span class="lineNum">    1197 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_OK );</span>
+<span class="lineNum">    1198 </span>                :<span class="lineCov">          1 :     fake_socket_connect_ret = FALSE;</span>
+<span class="lineNum">    1199 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_CONNECT_FAIL );</span>
+<span class="lineNum">    1200 </span>                :            :     
+<span class="lineNum">    1201 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
 <span class="lineNum">    1202 </span>                :            : 
-<span class="lineNum">    1203 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
-<span class="lineNum">    1204 </span>                :<span class="lineCov">          1 :     fake_socket_connected_ret = FALSE;</span>
-<span class="lineNum">    1205 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_CONNECT_FAIL );</span>
-<span class="lineNum">    1206 </span>                :            : 
-<span class="lineNum">    1207 </span>                :<span class="lineCov">          1 :     fake_socket_connect = TRUE;</span>
-<span class="lineNum">    1208 </span>                :<span class="lineCov">          1 :     fake_socket_connect_ret = TRUE;</span>
-<span class="lineNum">    1209 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_OK );</span>
-<span class="lineNum">    1210 </span>                :<span class="lineCov">          1 :     fake_socket_connect_ret = FALSE;</span>
-<span class="lineNum">    1211 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_CONNECT_FAIL );</span>
-<span class="lineNum">    1212 </span>                :            :     
-<span class="lineNum">    1213 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
-<span class="lineNum">    1214 </span>                :<span class="lineCov">          1 :     fake_socket_connect_ret = TRUE;</span>
-<span class="lineNum">    1215 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_OK );</span>
-<span class="lineNum">    1216 </span>                :<span class="lineCov">          1 :     fake_socket_connect_ret = FALSE;</span>
-<span class="lineNum">    1217 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_connect( &amp;s, NULL, 0 ), SOCKET_CONNECT_FAIL );</span>
-<span class="lineNum">    1218 </span>                :            : 
-<span class="lineNum">    1219 </span>                :            :     /* test socket_bind */
-<span class="lineNum">    1220 </span>                :<span class="lineCov">          1 :     fake_setsockopt = TRUE;</span>
-<span class="lineNum">    1221 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt = TRUE;</span>
-<span class="lineNum">    1222 </span>                :<span class="lineCov">          1 :     fake_socket_bound = TRUE;</span>
-<span class="lineNum">    1223 </span>                :<span class="lineCov">          1 :     fake_socket_lookup_host = TRUE;</span>
-<span class="lineNum">    1224 </span>                :<span class="lineCov">          1 :     fake_socket_bind = TRUE;</span>
-<span class="lineNum">    1225 </span>                :            : 
-<span class="lineNum">    1226 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof( socket_t ) );</span>
-<span class="lineNum">    1227 </span>                :            : 
-<span class="lineNum">    1228 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( NULL, NULL, 0 ), SOCKET_BADPARAM );</span>
-<span class="lineNum">    1229 </span>                :            :     
-<span class="lineNum">    1230 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = TRUE;</span>
-<span class="lineNum">    1231 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_BOUND );</span>
-<span class="lineNum">    1232 </span>                :            : 
-<span class="lineNum">    1233 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = FALSE;</span>
-<span class="lineNum">    1234 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_LAST;</span>
-<span class="lineNum">    1235 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, host, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1236 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNKNOWN;</span>
-<span class="lineNum">    1237 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, host, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1238 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
-<span class="lineNum">    1239 </span>                :            : 
-<span class="lineNum">    1240 </span>                :<span class="lineCov">          1 :     fake_socket_lookup_host_ret = SOCKET_ERROR;</span>
-<span class="lineNum">    1241 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, host, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1242 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1203 </span>                :            :     /* test socket_bind */
+<span class="lineNum">    1204 </span>                :<span class="lineCov">          1 :     fake_setsockopt = TRUE;</span>
+<span class="lineNum">    1205 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt = TRUE;</span>
+<span class="lineNum">    1206 </span>                :<span class="lineCov">          1 :     fake_socket_bound = TRUE;</span>
+<span class="lineNum">    1207 </span>                :<span class="lineCov">          1 :     fake_socket_lookup_host = TRUE;</span>
+<span class="lineNum">    1208 </span>                :<span class="lineCov">          1 :     fake_socket_bind = TRUE;</span>
+<span class="lineNum">    1209 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof( socket_t ) );</span>
+<span class="lineNum">    1210 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( NULL, NULL, 0 ), SOCKET_BADPARAM );</span>
+<span class="lineNum">    1211 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = TRUE;</span>
+<span class="lineNum">    1212 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_BOUND );</span>
+<span class="lineNum">    1213 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = FALSE;</span>
+<span class="lineNum">    1214 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_LAST;</span>
+<span class="lineNum">    1215 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, host, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1216 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNKNOWN;</span>
+<span class="lineNum">    1217 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, host, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1218 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
+<span class="lineNum">    1219 </span>                :<span class="lineCov">          1 :     fake_socket_lookup_host_ret = SOCKET_ERROR;</span>
+<span class="lineNum">    1220 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, host, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1221 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1222 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
+<span class="lineNum">    1223 </span>                :<span class="lineCov">          1 :     fake_socket_bind_ret = FALSE;</span>
+<span class="lineNum">    1224 </span>                :<span class="lineCov">          1 :     fake_setsockopt_ret = 0;</span>
+<span class="lineNum">    1225 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1226 </span>                :<span class="lineCov">          1 :     fake_setsockopt_ret = 1;</span>
+<span class="lineNum">    1227 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1228 </span>                :<span class="lineCov">          1 :     fake_socket_bind_ret = TRUE;</span>
+<span class="lineNum">    1229 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt_ret = FALSE;</span>
+<span class="lineNum">    1230 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1231 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt_ret = TRUE;</span>
+<span class="lineNum">    1232 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_OK );</span>
+<span class="lineNum">    1233 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
+<span class="lineNum">    1234 </span>                :<span class="lineCov">          1 :     fake_socket_bind_ret = FALSE;</span>
+<span class="lineNum">    1235 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1236 </span>                :<span class="lineCov">          1 :     fake_socket_bind_ret = TRUE;</span>
+<span class="lineNum">    1237 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt_ret = FALSE;</span>
+<span class="lineNum">    1238 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1239 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt_ret = TRUE;</span>
+<span class="lineNum">    1240 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_OK );</span>
+<span class="lineNum">    1241 </span>                :            : 
+<span class="lineNum">    1242 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
 <span class="lineNum">    1243 </span>                :            : 
-<span class="lineNum">    1244 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
-<span class="lineNum">    1245 </span>                :            :     
-<span class="lineNum">    1246 </span>                :<span class="lineCov">          1 :     fake_socket_bind_ret = FALSE;</span>
-<span class="lineNum">    1247 </span>                :<span class="lineCov">          1 :     fake_setsockopt_ret = 0;</span>
-<span class="lineNum">    1248 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1249 </span>                :<span class="lineCov">          1 :     fake_setsockopt_ret = 1;</span>
-<span class="lineNum">    1250 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1251 </span>                :<span class="lineCov">          1 :     fake_socket_bind_ret = TRUE;</span>
-<span class="lineNum">    1252 </span>                :            : 
-<span class="lineNum">    1253 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt_ret = FALSE;</span>
-<span class="lineNum">    1254 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1255 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt_ret = TRUE;</span>
-<span class="lineNum">    1256 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_OK );</span>
-<span class="lineNum">    1257 </span>                :            : 
-<span class="lineNum">    1258 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
-<span class="lineNum">    1259 </span>                :<span class="lineCov">          1 :     fake_socket_bind_ret = FALSE;</span>
-<span class="lineNum">    1260 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1261 </span>                :<span class="lineCov">          1 :     fake_socket_bind_ret = TRUE;</span>
-<span class="lineNum">    1262 </span>                :            :     
-<span class="lineNum">    1263 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt_ret = FALSE;</span>
-<span class="lineNum">    1264 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1265 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt_ret = TRUE;</span>
-<span class="lineNum">    1266 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_bind( &amp;s, NULL, 0 ), SOCKET_OK );</span>
-<span class="lineNum">    1267 </span>                :            : 
-<span class="lineNum">    1268 </span>                :<span class="lineCov">          1 :     fake_socket_bind = FALSE;</span>
-<span class="lineNum">    1269 </span>                :<span class="lineCov">          1 :     fake_socket_lookup_host = FALSE;</span>
-<span class="lineNum">    1270 </span>                :<span class="lineCov">          1 :     fake_socket_bound = FALSE;</span>
-<span class="lineNum">    1271 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt = FALSE;</span>
-<span class="lineNum">    1272 </span>                :<span class="lineCov">          1 :     fake_setsockopt = FALSE;</span>
-<span class="lineNum">    1273 </span>                :            : 
-<span class="lineNum">    1274 </span>                :            :     /* test socket_do_tcp_bind */
-<span class="lineNum">    1275 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
-<span class="lineNum">    1276 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_bind( NULL ) );</span>
-<span class="lineNum">    1277 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
-<span class="lineNum">    1278 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_bind( &amp;s ) );</span>
-<span class="lineNum">    1279 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
-<span class="lineNum">    1280 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_bind( &amp;s ) );</span>
-<span class="lineNum">    1281 </span>                :<span class="lineCov">          1 :     s.port = 1024;</span>
-<span class="lineNum">    1282 </span>                :<span class="lineCov">          1 :     fake_bind = TRUE;</span>
-<span class="lineNum">    1283 </span>                :<span class="lineCov">          1 :     fake_bind_ret = 0;</span>
-<span class="lineNum">    1284 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_tcp_bind( &amp;s ) );</span>
-<span class="lineNum">    1285 </span>                :<span class="lineCov">          1 :     fake_bind_ret = -1;</span>
-<span class="lineNum">    1286 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_bind( &amp;s ) );</span>
-<span class="lineNum">    1287 </span>                :<span class="lineCov">          1 :     fake_bind = FALSE;</span>
-<span class="lineNum">    1288 </span>                :<span class="lineCov">          1 :     fake_bind_ret = 0;</span>
-<span class="lineNum">    1289 </span>                :            : 
-<span class="lineNum">    1290 </span>                :            :     /* test socket_do_unix_bind */
-<span class="lineNum">    1291 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
-<span class="lineNum">    1292 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_bind( NULL ) );</span>
-<span class="lineNum">    1293 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
-<span class="lineNum">    1294 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_bind( &amp;s ) );</span>
-<span class="lineNum">    1295 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
-<span class="lineNum">    1296 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_bind( &amp;s ) );</span>
-<span class="lineNum">    1297 </span>                :<span class="lineCov">          1 :     s.host = host;</span>
-<span class="lineNum">    1298 </span>                :<span class="lineCov">          1 :     fake_bind = TRUE;</span>
-<span class="lineNum">    1299 </span>                :<span class="lineCov">          1 :     fake_bind_ret = 0;</span>
-<span class="lineNum">    1300 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_unix_bind( &amp;s ) );</span>
-<span class="lineNum">    1301 </span>                :<span class="lineCov">          1 :     fake_bind_ret = -1;</span>
-<span class="lineNum">    1302 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_bind( &amp;s ) );</span>
-<span class="lineNum">    1303 </span>                :<span class="lineCov">          1 :     fake_bind = FALSE;</span>
-<span class="lineNum">    1304 </span>                :<span class="lineCov">          1 :     fake_bind_ret = 0;</span>
-<span class="lineNum">    1305 </span>                :            : 
-<span class="lineNum">    1306 </span>                :            :     /* test_socket_listen */
-<span class="lineNum">    1307 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof( socket_t ) );</span>
-<span class="lineNum">    1308 </span>                :            : 
-<span class="lineNum">    1309 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_listen( NULL, 0 ), SOCKET_BADPARAM );</span>
-<span class="lineNum">    1310 </span>                :            :     
-<span class="lineNum">    1311 </span>                :<span class="lineCov">          1 :     fake_listen = TRUE;</span>
-<span class="lineNum">    1312 </span>                :<span class="lineCov">          1 :     fake_listen_ret = -1;</span>
-<span class="lineNum">    1313 </span>                :<span class="lineCov">          1 :     fake_socket_bound = TRUE;</span>
-<span class="lineNum">    1314 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = FALSE;</span>
-<span class="lineNum">    1315 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_listen( &amp;s, 0 ), SOCKET_BOUND );</span>
-<span class="lineNum">    1316 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = TRUE;</span>
-<span class="lineNum">    1317 </span>                :<span class="lineCov">          1 :     fake_socket_connected = TRUE;</span>
-<span class="lineNum">    1318 </span>                :<span class="lineCov">          1 :     fake_socket_connected_ret = TRUE;</span>
-<span class="lineNum">    1319 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_listen( &amp;s, 0 ), SOCKET_CONNECTED );</span>
-<span class="lineNum">    1320 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = FALSE;</span>
-<span class="lineNum">    1321 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_listen( &amp;s, 0 ), SOCKET_BOUND );</span>
-<span class="lineNum">    1322 </span>                :            : 
-<span class="lineNum">    1323 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = TRUE;</span>
-<span class="lineNum">    1324 </span>                :<span class="lineCov">          1 :     fake_socket_connected_ret = FALSE;</span>
-<span class="lineNum">    1325 </span>                :            : 
-<span class="lineNum">    1326 </span>                :<span class="lineCov">          1 :     fake_listen_ret = 0;</span>
-<span class="lineNum">    1327 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_listen( &amp;s, 0 ), SOCKET_OK );</span>
-<span class="lineNum">    1328 </span>                :            :     
-<span class="lineNum">    1329 </span>                :<span class="lineCov">          1 :     fake_listen_ret = -1;</span>
-<span class="lineNum">    1330 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_listen( &amp;s, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1331 </span>                :            : 
-<span class="lineNum">    1332 </span>                :<span class="lineCov">          1 :     fake_listen = FALSE;</span>
-<span class="lineNum">    1333 </span>                :<span class="lineCov">          1 :     fake_listen_ret = 0;</span>
-<span class="lineNum">    1334 </span>                :<span class="lineCov">          1 :     fake_socket_bound = FALSE;</span>
-<span class="lineNum">    1335 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = FALSE;</span>
-<span class="lineNum">    1336 </span>                :<span class="lineCov">          1 :     fake_socket_connected = FALSE;</span>
-<span class="lineNum">    1337 </span>                :<span class="lineCov">          1 :     fake_socket_connected_ret = FALSE;</span>
+<span class="lineNum">    1244 </span>                :            :     /* test socket_do_tcp_bind */
+<span class="lineNum">    1245 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
+<span class="lineNum">    1246 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_bind( NULL ) );</span>
+<span class="lineNum">    1247 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
+<span class="lineNum">    1248 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_bind( &amp;s ) );</span>
+<span class="lineNum">    1249 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
+<span class="lineNum">    1250 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_bind( &amp;s ) );</span>
+<span class="lineNum">    1251 </span>                :<span class="lineCov">          1 :     s.port = 1024;</span>
+<span class="lineNum">    1252 </span>                :<span class="lineCov">          1 :     fake_bind = TRUE;</span>
+<span class="lineNum">    1253 </span>                :<span class="lineCov">          1 :     fake_bind_ret = 0;</span>
+<span class="lineNum">    1254 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_tcp_bind( &amp;s ) );</span>
+<span class="lineNum">    1255 </span>                :<span class="lineCov">          1 :     fake_bind_ret = -1;</span>
+<span class="lineNum">    1256 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_bind( &amp;s ) );</span>
+<span class="lineNum">    1257 </span>                :<span class="lineCov">          1 :     fake_bind = FALSE;</span>
+<span class="lineNum">    1258 </span>                :<span class="lineCov">          1 :     fake_bind_ret = 0;</span>
+<span class="lineNum">    1259 </span>                :            : 
+<span class="lineNum">    1260 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1261 </span>                :            : 
+<span class="lineNum">    1262 </span>                :            :     /* test socket_do_unix_bind */
+<span class="lineNum">    1263 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
+<span class="lineNum">    1264 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_bind( NULL ) );</span>
+<span class="lineNum">    1265 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
+<span class="lineNum">    1266 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_bind( &amp;s ) );</span>
+<span class="lineNum">    1267 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
+<span class="lineNum">    1268 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_bind( &amp;s ) );</span>
+<span class="lineNum">    1269 </span>                :<span class="lineCov">          1 :     s.host = host;</span>
+<span class="lineNum">    1270 </span>                :<span class="lineCov">          1 :     fake_bind = TRUE;</span>
+<span class="lineNum">    1271 </span>                :<span class="lineCov">          1 :     fake_bind_ret = 0;</span>
+<span class="lineNum">    1272 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_unix_bind( &amp;s ) );</span>
+<span class="lineNum">    1273 </span>                :<span class="lineCov">          1 :     fake_bind_ret = -1;</span>
+<span class="lineNum">    1274 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_bind( &amp;s ) );</span>
+<span class="lineNum">    1275 </span>                :<span class="lineCov">          1 :     fake_bind = FALSE;</span>
+<span class="lineNum">    1276 </span>                :<span class="lineCov">          1 :     fake_bind_ret = 0;</span>
+<span class="lineNum">    1277 </span>                :            : 
+<span class="lineNum">    1278 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1279 </span>                :            : 
+<span class="lineNum">    1280 </span>                :            :     /* test_socket_listen */
+<span class="lineNum">    1281 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof( socket_t ) );</span>
+<span class="lineNum">    1282 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_listen( NULL, 0 ), SOCKET_BADPARAM );</span>
+<span class="lineNum">    1283 </span>                :<span class="lineCov">          1 :     fake_listen = TRUE;</span>
+<span class="lineNum">    1284 </span>                :<span class="lineCov">          1 :     fake_listen_ret = -1;</span>
+<span class="lineNum">    1285 </span>                :<span class="lineCov">          1 :     fake_socket_bound = TRUE;</span>
+<span class="lineNum">    1286 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = FALSE;</span>
+<span class="lineNum">    1287 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_listen( &amp;s, 0 ), SOCKET_BOUND );</span>
+<span class="lineNum">    1288 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = TRUE;</span>
+<span class="lineNum">    1289 </span>                :<span class="lineCov">          1 :     fake_socket_connected = TRUE;</span>
+<span class="lineNum">    1290 </span>                :<span class="lineCov">          1 :     fake_socket_connected_ret = TRUE;</span>
+<span class="lineNum">    1291 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_listen( &amp;s, 0 ), SOCKET_CONNECTED );</span>
+<span class="lineNum">    1292 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = FALSE;</span>
+<span class="lineNum">    1293 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_listen( &amp;s, 0 ), SOCKET_BOUND );</span>
+<span class="lineNum">    1294 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = TRUE;</span>
+<span class="lineNum">    1295 </span>                :<span class="lineCov">          1 :     fake_socket_connected_ret = FALSE;</span>
+<span class="lineNum">    1296 </span>                :<span class="lineCov">          1 :     fake_listen_ret = 0;</span>
+<span class="lineNum">    1297 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_listen( &amp;s, 0 ), SOCKET_OK );</span>
+<span class="lineNum">    1298 </span>                :<span class="lineCov">          1 :     fake_listen_ret = -1;</span>
+<span class="lineNum">    1299 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_listen( &amp;s, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1300 </span>                :            : 
+<span class="lineNum">    1301 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1302 </span>                :            : 
+<span class="lineNum">    1303 </span>                :            :     /* test socket_read */
+<span class="lineNum">    1304 </span>                :<span class="lineCov">          1 :     fake_aiofd_read = TRUE;</span>
+<span class="lineNum">    1305 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
+<span class="lineNum">    1306 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_read( NULL, NULL, 0 ), 0 );</span>
+<span class="lineNum">    1307 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_read( &amp;s, NULL, 0 ), 0 );</span>
+<span class="lineNum">    1308 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_read( &amp;s, buf, 0 ), 0 );</span>
+<span class="lineNum">    1309 </span>                :<span class="lineCov">          1 :     fake_aiofd_read_ret = 0;</span>
+<span class="lineNum">    1310 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_read( &amp;s, buf, 64 ), 0 );</span>
+<span class="lineNum">    1311 </span>                :<span class="lineCov">          1 :     fake_aiofd_read_ret = 64;</span>
+<span class="lineNum">    1312 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_read( &amp;s, buf, 64 ), 64 );</span>
+<span class="lineNum">    1313 </span>                :<span class="lineCov">          1 :     fake_aiofd_read = FALSE;</span>
+<span class="lineNum">    1314 </span>                :            : 
+<span class="lineNum">    1315 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1316 </span>                :            : 
+<span class="lineNum">    1317 </span>                :            :     /* test socket_write */
+<span class="lineNum">    1318 </span>                :<span class="lineCov">          1 :     fake_aiofd_write = TRUE;</span>
+<span class="lineNum">    1319 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
+<span class="lineNum">    1320 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_write( NULL, NULL, 0 ), SOCKET_BADPARAM );</span>
+<span class="lineNum">    1321 </span>                :<span class="lineCov">          1 :     fake_aiofd_write_ret = FALSE;</span>
+<span class="lineNum">    1322 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_write( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1323 </span>                :<span class="lineCov">          1 :     fake_aiofd_write_ret = TRUE;</span>
+<span class="lineNum">    1324 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_write( &amp;s, NULL, 0 ), SOCKET_OK );</span>
+<span class="lineNum">    1325 </span>                :<span class="lineCov">          1 :     fake_aiofd_write = FALSE;</span>
+<span class="lineNum">    1326 </span>                :            : 
+<span class="lineNum">    1327 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1328 </span>                :            : 
+<span class="lineNum">    1329 </span>                :            :     /* test socket_writev */
+<span class="lineNum">    1330 </span>                :<span class="lineCov">          1 :     fake_aiofd_writev = TRUE;</span>
+<span class="lineNum">    1331 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
+<span class="lineNum">    1332 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_writev( NULL, NULL, 0 ), SOCKET_BADPARAM );</span>
+<span class="lineNum">    1333 </span>                :<span class="lineCov">          1 :     fake_aiofd_writev_ret = FALSE;</span>
+<span class="lineNum">    1334 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_writev( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
+<span class="lineNum">    1335 </span>                :<span class="lineCov">          1 :     fake_aiofd_writev_ret = TRUE;</span>
+<span class="lineNum">    1336 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_writev( &amp;s, NULL, 0 ), SOCKET_OK );</span>
+<span class="lineNum">    1337 </span>                :<span class="lineCov">          1 :     fake_aiofd_writev = FALSE;</span>
 <span class="lineNum">    1338 </span>                :            : 
-<span class="lineNum">    1339 </span>                :            :     /* test socket_read */
-<span class="lineNum">    1340 </span>                :<span class="lineCov">          1 :     fake_aiofd_read = TRUE;</span>
-<span class="lineNum">    1341 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
-<span class="lineNum">    1342 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_read( NULL, NULL, 0 ), 0 );</span>
-<span class="lineNum">    1343 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_read( &amp;s, NULL, 0 ), 0 );</span>
-<span class="lineNum">    1344 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_read( &amp;s, buf, 0 ), 0 );</span>
-<span class="lineNum">    1345 </span>                :<span class="lineCov">          1 :     fake_aiofd_read_ret = 0;</span>
-<span class="lineNum">    1346 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_read( &amp;s, buf, 64 ), 0 );</span>
-<span class="lineNum">    1347 </span>                :<span class="lineCov">          1 :     fake_aiofd_read_ret = 64;</span>
-<span class="lineNum">    1348 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_read( &amp;s, buf, 64 ), 64 );</span>
-<span class="lineNum">    1349 </span>                :<span class="lineCov">          1 :     fake_aiofd_read = FALSE;</span>
-<span class="lineNum">    1350 </span>                :            : 
-<span class="lineNum">    1351 </span>                :            :     /* test socket_write */
-<span class="lineNum">    1352 </span>                :<span class="lineCov">          1 :     fake_aiofd_write = TRUE;</span>
-<span class="lineNum">    1353 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
-<span class="lineNum">    1354 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_write( NULL, NULL, 0 ), SOCKET_BADPARAM );</span>
-<span class="lineNum">    1355 </span>                :<span class="lineCov">          1 :     fake_aiofd_write_ret = FALSE;</span>
-<span class="lineNum">    1356 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_write( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1357 </span>                :<span class="lineCov">          1 :     fake_aiofd_write_ret = TRUE;</span>
-<span class="lineNum">    1358 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_write( &amp;s, NULL, 0 ), SOCKET_OK );</span>
-<span class="lineNum">    1359 </span>                :<span class="lineCov">          1 :     fake_aiofd_write = FALSE;</span>
-<span class="lineNum">    1360 </span>                :            : 
-<span class="lineNum">    1361 </span>                :            :     /* test socket_writev */
-<span class="lineNum">    1362 </span>                :<span class="lineCov">          1 :     fake_aiofd_writev = TRUE;</span>
-<span class="lineNum">    1363 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
-<span class="lineNum">    1364 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_writev( NULL, NULL, 0 ), SOCKET_BADPARAM );</span>
-<span class="lineNum">    1365 </span>                :<span class="lineCov">          1 :     fake_aiofd_writev_ret = FALSE;</span>
-<span class="lineNum">    1366 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_writev( &amp;s, NULL, 0 ), SOCKET_ERROR );</span>
-<span class="lineNum">    1367 </span>                :<span class="lineCov">          1 :     fake_aiofd_writev_ret = TRUE;</span>
-<span class="lineNum">    1368 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( socket_writev( &amp;s, NULL, 0 ), SOCKET_OK );</span>
-<span class="lineNum">    1369 </span>                :<span class="lineCov">          1 :     fake_aiofd_writev = FALSE;</span>
-<span class="lineNum">    1370 </span>                :            : 
-<span class="lineNum">    1371 </span>                :            :     /* test socket_accept */
-<span class="lineNum">    1372 </span>                :<span class="lineCov">          1 :     fake_accept = TRUE;</span>
-<span class="lineNum">    1373 </span>                :<span class="lineCov">          1 :     fake_socket_bound = TRUE;</span>
-<span class="lineNum">    1374 </span>                :<span class="lineCov">          1 :     fake_setsockopt = TRUE;</span>
-<span class="lineNum">    1375 </span>                :<span class="lineCov">          1 :     fake_fcntl = TRUE;</span>
-<span class="lineNum">    1376 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize = TRUE;</span>
-<span class="lineNum">    1377 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt = TRUE;</span>
-<span class="lineNum">    1378 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
-<span class="lineNum">    1379 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ops, 0, sizeof(socket_ops_t) );</span>
-<span class="lineNum">    1380 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( NULL, NULL, NULL, NULL ) );</span>
-<span class="lineNum">    1381 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, NULL, NULL, NULL ) );</span>
-<span class="lineNum">    1382 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, NULL, NULL ) );</span>
+<span class="lineNum">    1339 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1340 </span>                :            : 
+<span class="lineNum">    1341 </span>                :            :     /* test socket_accept */
+<span class="lineNum">    1342 </span>                :<span class="lineCov">          1 :     fake_accept = TRUE;</span>
+<span class="lineNum">    1343 </span>                :<span class="lineCov">          1 :     fake_socket_bound = TRUE;</span>
+<span class="lineNum">    1344 </span>                :<span class="lineCov">          1 :     fake_setsockopt = TRUE;</span>
+<span class="lineNum">    1345 </span>                :<span class="lineCov">          1 :     fake_fcntl = TRUE;</span>
+<span class="lineNum">    1346 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize = TRUE;</span>
+<span class="lineNum">    1347 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt = TRUE;</span>
+<span class="lineNum">    1348 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;s, 0, sizeof(socket_t) );</span>
+<span class="lineNum">    1349 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ops, 0, sizeof(socket_ops_t) );</span>
+<span class="lineNum">    1350 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( NULL, NULL, NULL, NULL ) );</span>
+<span class="lineNum">    1351 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, NULL, NULL, NULL ) );</span>
+<span class="lineNum">    1352 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, NULL, NULL ) );</span>
+<span class="lineNum">    1353 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1354 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = FALSE;</span>
+<span class="lineNum">    1355 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1356 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = TRUE;</span>
+<span class="lineNum">    1357 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_LAST;</span>
+<span class="lineNum">    1358 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1359 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNKNOWN;</span>
+<span class="lineNum">    1360 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1361 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
+<span class="lineNum">    1362 </span>                :<span class="lineCov">          1 :     fail_alloc = TRUE;</span>
+<span class="lineNum">    1363 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1364 </span>                :<span class="lineCov">          1 :     fail_alloc = FALSE;</span>
+<span class="lineNum">    1365 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
+<span class="lineNum">    1366 </span>                :<span class="lineCov">          1 :     s.host = host;</span>
+<span class="lineNum">    1367 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = FALSE;</span>
+<span class="lineNum">    1368 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = -1;</span>
+<span class="lineNum">    1369 </span>                :<span class="lineCov">          1 :     fake_accept_ret = -1;</span>
+<span class="lineNum">    1370 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1371 </span>                :<span class="lineCov">          1 :     fake_accept_ret = 0;</span>
+<span class="lineNum">    1372 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1373 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
+<span class="lineNum">    1374 </span>                :<span class="lineCov">          1 :     fake_accept_ret = -1;</span>
+<span class="lineNum">    1375 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1376 </span>                :<span class="lineCov">          1 :     fake_accept_ret = 0;</span>
+<span class="lineNum">    1377 </span>                :<span class="lineCov">          1 :     fake_setsockopt_ret = -1;</span>
+<span class="lineNum">    1378 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = -1;</span>
+<span class="lineNum">    1379 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = FALSE;</span>
+<span class="lineNum">    1380 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1381 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = 0;</span>
+<span class="lineNum">    1382 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = FALSE;</span>
 <span class="lineNum">    1383 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1384 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = FALSE;</span>
-<span class="lineNum">    1385 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1386 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = TRUE;</span>
-<span class="lineNum">    1387 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_LAST;</span>
-<span class="lineNum">    1388 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1389 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNKNOWN;</span>
+<span class="lineNum">    1384 </span>                :<span class="lineCov">          1 :     fake_setsockopt_ret = 0;</span>
+<span class="lineNum">    1385 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = -1;</span>
+<span class="lineNum">    1386 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = FALSE;</span>
+<span class="lineNum">    1387 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
+<span class="lineNum">    1388 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = 0;</span>
+<span class="lineNum">    1389 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = FALSE;</span>
 <span class="lineNum">    1390 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1391 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
-<span class="lineNum">    1392 </span>                :<span class="lineCov">          1 :     fail_alloc = TRUE;</span>
+<span class="lineNum">    1391 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = TRUE;</span>
+<span class="lineNum">    1392 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt_ret = FALSE;</span>
 <span class="lineNum">    1393 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1394 </span>                :<span class="lineCov">          1 :     fail_alloc = FALSE;</span>
-<span class="lineNum">    1395 </span>                :            : 
-<span class="lineNum">    1396 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_UNIX;</span>
-<span class="lineNum">    1397 </span>                :<span class="lineCov">          1 :     s.host = host;</span>
-<span class="lineNum">    1398 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = FALSE;</span>
-<span class="lineNum">    1399 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = -1;</span>
-<span class="lineNum">    1400 </span>                :<span class="lineCov">          1 :     fake_accept_ret = -1;</span>
-<span class="lineNum">    1401 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1402 </span>                :<span class="lineCov">          1 :     fake_accept_ret = 0;</span>
-<span class="lineNum">    1403 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1404 </span>                :            : 
-<span class="lineNum">    1405 </span>                :<span class="lineCov">          1 :     s.type = SOCKET_TCP;</span>
-<span class="lineNum">    1406 </span>                :<span class="lineCov">          1 :     fake_accept_ret = -1;</span>
-<span class="lineNum">    1407 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1408 </span>                :<span class="lineCov">          1 :     fake_accept_ret = 0;</span>
-<span class="lineNum">    1409 </span>                :<span class="lineCov">          1 :     fake_setsockopt_ret = -1;</span>
-<span class="lineNum">    1410 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = -1;</span>
-<span class="lineNum">    1411 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = FALSE;</span>
-<span class="lineNum">    1412 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1413 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = 0;</span>
-<span class="lineNum">    1414 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = FALSE;</span>
-<span class="lineNum">    1415 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1416 </span>                :<span class="lineCov">          1 :     fake_setsockopt_ret = 0;</span>
-<span class="lineNum">    1417 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = -1;</span>
-<span class="lineNum">    1418 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = FALSE;</span>
-<span class="lineNum">    1419 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1420 </span>                :<span class="lineCov">          1 :     fake_fcntl_ret = 0;</span>
-<span class="lineNum">    1421 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = FALSE;</span>
-<span class="lineNum">    1422 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1423 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize_ret = TRUE;</span>
-<span class="lineNum">    1424 </span>                :            : 
-<span class="lineNum">    1425 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt_ret = FALSE;</span>
-<span class="lineNum">    1426 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, NULL ) );</span>
-<span class="lineNum">    1427 </span>                :            :     
-<span class="lineNum">    1428 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
-<span class="lineNum">    1429 </span>                :<span class="lineCov">          1 :     ops.connect_fn = &amp;test_connect_fn;</span>
-<span class="lineNum">    1430 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, &amp;test_flag ) );</span>
-<span class="lineNum">    1431 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
-<span class="lineNum">    1432 </span>                :            : 
-<span class="lineNum">    1433 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ops, 0, sizeof(socket_ops_t) );</span>
-<span class="lineNum">    1434 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt_ret = FALSE;</span>
-<span class="lineNum">    1435 </span>                :<span class="lineCov">          1 :     p = socket_accept( &amp;s, &amp;ops, el, NULL );</span>
-<span class="lineNum">    1436 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NOT_NULL( p );</span>
-<span class="lineNum">    1437 </span>                :<span class="lineCov">          1 :     FREE( p );</span>
-<span class="lineNum">    1438 </span>                :            : 
-<span class="lineNum">    1439 </span>                :            : 
-<span class="lineNum">    1440 </span>                :<span class="lineCov">          1 :     fake_accept = FALSE;</span>
-<span class="lineNum">    1441 </span>                :<span class="lineCov">          1 :     fake_socket_bound = FALSE;</span>
-<span class="lineNum">    1442 </span>                :<span class="lineCov">          1 :     fake_setsockopt = FALSE;</span>
-<span class="lineNum">    1443 </span>                :<span class="lineCov">          1 :     fake_fcntl = FALSE;</span>
-<span class="lineNum">    1444 </span>                :<span class="lineCov">          1 :     fake_aiofd_initialize = FALSE;</span>
-<span class="lineNum">    1445 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt = FALSE;</span>
-<span class="lineNum">    1446 </span>                :            : 
-<span class="lineNum">    1447 </span>                :            :     /* reset all switches */
-<span class="lineNum">    1448 </span>                :<span class="lineCov">          1 :     fake_listen = FALSE;</span>
-<span class="lineNum">    1449 </span>                :<span class="lineCov">          1 :     fake_listen_ret = 0;</span>
-<span class="lineNum">    1450 </span>                :<span class="lineCov">          1 :     fake_socket_getsockopt = FALSE;</span>
-<span class="lineNum">    1451 </span>                :<span class="lineCov">          1 :     fake_socket_errval = 0;</span>
-<span class="lineNum">    1452 </span>                :<span class="lineCov">          1 :     fake_socket_get_error_ret = FALSE;</span>
-<span class="lineNum">    1453 </span>                :<span class="lineCov">          1 :     fail_socket_initialize = FALSE;</span>
-<span class="lineNum">    1454 </span>                :<span class="lineCov">          1 :     fake_socket_connected = FALSE;</span>
-<span class="lineNum">    1455 </span>                :<span class="lineCov">          1 :     fake_socket_connected_ret = FALSE;</span>
-<span class="lineNum">    1456 </span>                :<span class="lineCov">          1 :     fake_socket_connect = FALSE;</span>
-<span class="lineNum">    1457 </span>                :<span class="lineCov">          1 :     fake_socket_connect_ret = FALSE;</span>
-<span class="lineNum">    1458 </span>                :<span class="lineCov">          1 :     fake_socket_bound = FALSE;</span>
-<span class="lineNum">    1459 </span>                :<span class="lineCov">          1 :     fake_socket_bound_ret = FALSE;</span>
-<span class="lineNum">    1460 </span>                :<span class="lineCov">          1 :     fake_socket_lookup_host = FALSE;</span>
-<span class="lineNum">    1461 </span>                :<span class="lineCov">          1 :     fake_socket_lookup_host_ret = FALSE;</span>
-<span class="lineNum">    1462 </span>                :<span class="lineCov">          1 :     fake_socket_bind = FALSE;</span>
-<span class="lineNum">    1463 </span>                :<span class="lineCov">          1 :     fake_socket_bind_ret = FALSE;</span>
-<span class="lineNum">    1464 </span>                :<span class="lineCov">          1 : }</span>
-<span class="lineNum">    1465 </span>                :            : 
-<span class="lineNum">    1466 </span>                :            : #endif
-<span class="lineNum">    1467 </span>                :            : 
-<span class="lineNum">    1468 </span>                :            : 
+<span class="lineNum">    1394 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
+<span class="lineNum">    1395 </span>                :<span class="lineCov">          1 :     ops.connect_fn = &amp;test_connect_fn;</span>
+<span class="lineNum">    1396 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NULL( socket_accept( &amp;s, &amp;ops, el, &amp;test_flag ) );</span>
+<span class="lineNum">    1397 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
+<span class="lineNum">    1398 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ops, 0, sizeof(socket_ops_t) );</span>
+<span class="lineNum">    1399 </span>                :<span class="lineCov">          1 :     fake_aiofd_enable_read_evt_ret = TRUE;</span>
+<span class="lineNum">    1400 </span>                :<span class="lineCov">          1 :     p = socket_accept( &amp;s, &amp;ops, el, NULL );</span>
+<span class="lineNum">    1401 </span>                :<span class="lineCov">          1 :     CU_ASSERT_PTR_NOT_NULL( p );</span>
+<span class="lineNum">    1402 </span>                :<span class="lineCov">          1 :     FREE( p );</span>
+<span class="lineNum">    1403 </span>                :            : 
+<span class="lineNum">    1404 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
+<span class="lineNum">    1405 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">    1406 </span>                :            : 
+<span class="lineNum">    1407 </span>                :            : #endif
+<span class="lineNum">    1408 </span>                :            : 
+<span class="lineNum">    1409 </span>                :            : 
 </pre>
       </td>
     </tr>

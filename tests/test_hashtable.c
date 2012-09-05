@@ -62,7 +62,6 @@ static void test_hashtable_newdel( void )
 		CU_ASSERT_EQUAL( ht->mfn, &match_fn );
 		CU_ASSERT_EQUAL( ht->dfn, NULL );
 		CU_ASSERT_EQUAL( ht->initial, size );
-		CU_ASSERT_TRUE( (ht->limit >= 0.0f) && (ht->limit < 3.0f) );
 		CU_ASSERT_EQUAL( ht->count, 0 );
 		CU_ASSERT_NOT_EQUAL( ht->size, 0 );
 		CU_ASSERT_PTR_NOT_NULL( ht->lists );

@@ -21,6 +21,7 @@
 #define ADD_SUITE(x) x##_test_suite = add_##x##_test_suite();
 #define ADD_TEST(x,y) CHECK_PTR_RET( CU_add_test( pSuite, x, y ), NULL );
 
+void reset_test_flags( void );
 
 #endif/*__TEST_MACROS_H__*/
 

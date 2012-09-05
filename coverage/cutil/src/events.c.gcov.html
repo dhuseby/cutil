@@ -299,14 +299,14 @@
 <span class="lineNum">     228 </span>                :<span class="lineNoCov">          0 :     return evt;</span>
 <a name="229"><span class="lineNum">     229 </span>                :            : }</a>
 <span class="lineNum">     230 </span>                :            : 
-<span class="lineNum">     231 </span>                :<span class="lineCov">       1325 : void evt_deinitialize_event_handler( evt_t * const evt )</span>
+<span class="lineNum">     231 </span>                :<span class="lineCov">       1323 : void evt_deinitialize_event_handler( evt_t * const evt )</span>
 <span class="lineNum">     232 </span>                :            : {
 <span class="lineNum">     233 </span>                :            :     /* stop the event handler if needed */
-<span class="lineNum">     234 </span>        [<span class="branchCov" title="Branch 0 was taken 522 times"> + </span><span class="branchCov" title="Branch 1 was taken 803 times"> + </span>]:<span class="lineCov">       1325 :     if ( evt-&gt;el != NULL )</span>
+<span class="lineNum">     234 </span>        [<span class="branchCov" title="Branch 0 was taken 522 times"> + </span><span class="branchCov" title="Branch 1 was taken 801 times"> + </span>]:<span class="lineCov">       1323 :     if ( evt-&gt;el != NULL )</span>
 <span class="lineNum">     235 </span>                :            :     {
 <span class="lineNum">     236 </span>                :<span class="lineCov">        522 :         evt_stop_event_handler( evt-&gt;el, evt );</span>
 <span class="lineNum">     237 </span>                :            :     }
-<a name="238"><span class="lineNum">     238 </span>                :<span class="lineCov">       1325 : }</span></a>
+<a name="238"><span class="lineNum">     238 </span>                :<span class="lineCov">       1323 : }</span></a>
 <span class="lineNum">     239 </span>                :            : 
 <span class="lineNum">     240 </span>                :<span class="lineNoCov">          0 : void evt_delete_event_handler( void * e )</span>
 <span class="lineNum">     241 </span>                :            : {

@@ -166,18 +166,18 @@
 <span class="lineNum">      95 </span>                :<span class="lineCov">       9668 :     return TRUE;</span>
 <a name="96"><span class="lineNum">      96 </span>                :            : }</a>
 <span class="lineNum">      97 </span>                :            : 
-<span class="lineNum">      98 </span>                :<span class="lineCov">       5823 : int list_deinitialize( list_t * const list )</span>
+<span class="lineNum">      98 </span>                :<span class="lineCov">       5822 : int list_deinitialize( list_t * const list )</span>
 <span class="lineNum">      99 </span>                :            : {
 <span class="lineNum">     100 </span>                :            :     list_itr_t itr, end;
-<span class="lineNum">     101 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 5822 times"> + </span>]:<span class="lineCov">       5823 :     CHECK_PTR_RET( list, FALSE );</span>
+<span class="lineNum">     101 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 5821 times"> + </span>]:<span class="lineCov">       5822 :     CHECK_PTR_RET( list, FALSE );</span>
 <span class="lineNum">     102 </span>                :            : 
 <span class="lineNum">     103 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     104 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 5821 times"> + </span>]:<span class="lineCov">       5822 :     CHECK_RET( !fail_list_deinit, FALSE );</span>
+<span class="lineNum">     104 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 5820 times"> + </span>]:<span class="lineCov">       5821 :     CHECK_RET( !fail_list_deinit, FALSE );</span>
 <span class="lineNum">     105 </span>                :            : #endif
 <span class="lineNum">     106 </span>                :            : 
 <span class="lineNum">     107 </span>                :            :     /* empty lists need no work */
-<span class="lineNum">     108 </span>        [<span class="branchCov" title="Branch 0 was taken 4002 times"> + </span><span class="branchCov" title="Branch 1 was taken 1819 times"> + </span>]:<span class="lineCov">       5821 :     if ( list-&gt;size == 0 )</span>
-<span class="lineNum">     109 </span>                :<span class="lineCov">       4002 :         return TRUE;</span>
+<span class="lineNum">     108 </span>        [<span class="branchCov" title="Branch 0 was taken 4001 times"> + </span><span class="branchCov" title="Branch 1 was taken 1819 times"> + </span>]:<span class="lineCov">       5820 :     if ( list-&gt;size == 0 )</span>
+<span class="lineNum">     109 </span>                :<span class="lineCov">       4001 :         return TRUE;</span>
 <span class="lineNum">     110 </span>                :            : 
 <span class="lineNum">     111 </span>        [<span class="branchCov" title="Branch 0 was taken 648 times"> + </span><span class="branchCov" title="Branch 1 was taken 1171 times"> + </span>]:<span class="lineCov">       1819 :     if ( list-&gt;dfn )</span>
 <span class="lineNum">     112 </span>                :            :     {
@@ -192,7 +192,7 @@
 <span class="lineNum">     121 </span>                :            :     /* free the items array */
 <span class="lineNum">     122 </span>                :<span class="lineCov">       1819 :     FREE( list-&gt;items );</span>
 <span class="lineNum">     123 </span>                :            : 
-<span class="lineNum">     124 </span>                :<span class="lineCov">       5823 :     return TRUE;</span>
+<span class="lineNum">     124 </span>                :<span class="lineCov">       5822 :     return TRUE;</span>
 <a name="125"><span class="lineNum">     125 </span>                :            : }</a>
 <span class="lineNum">     126 </span>                :            : 
 <span class="lineNum">     127 </span>                :<span class="lineCov">      29826 : uint_t list_count( list_t const * const list )</span>
