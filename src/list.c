@@ -54,7 +54,7 @@ static int list_grow( list_t * const list, uint_t amount );
 
 /********** PUBLIC **********/
 
-list_t * list_new( uint_t const initial_capacity, delete_fn dfn )
+list_t * list_new( uint_t const initial_capacity, list_delete_fn dfn )
 {
 	list_t * list = CALLOC( 1, sizeof(list_t) );
 	CHECK_PTR_RET( list, NULL );
@@ -73,7 +73,7 @@ void list_delete( void * l )
 	FREE( l );
 }
 
-int list_initialize( list_t * const list, uint_t const initial_capacity, delete_fn dfn )
+int list_initialize( list_t * const list, uint_t const initial_capacity, list_delete_fn dfn )
 {
 	uint_t i;
 	CHECK_PTR_RET( list, FALSE );
@@ -144,7 +144,7 @@ int list_reserve( list_t * const list, uint const amount )
 
 int list_clear( list_t * const list )
 {
-	delete_fn dfn = NULL;
+	list_delete_fn dfn = NULL;
 	CHECK_PTR_RET( list, FALSE );
 
 	/* remember the delete function pointer */

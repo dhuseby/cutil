@@ -21,7 +21,7 @@
 #include "macros.h"
 
 /* define the delete function ponter type */
-typedef void (*delete_fn)(void*);
+typedef void (*list_delete_fn)(void*);
 
 /* defines the list iterator type */
 typedef int_t list_itr_t;
@@ -32,7 +32,7 @@ typedef struct list_item_s list_item_t;
 /* dynamic list struct */
 typedef struct list_s
 {
-	delete_fn		dfn;					/* destruction function for each node */
+	list_delete_fn	dfn;					/* destruction function for each node */
 	uint_t			size;					/* total number of allocated slots in list */
 	uint_t			count;					/* number of items in the list */
 	list_itr_t		used_head;				/* head node of the used circular list */
@@ -42,11 +42,11 @@ typedef struct list_s
 } list_t;
 
 /* heap allocated list */
-list_t * list_new( uint_t const initial_capacity, delete_fn dfn );
+list_t * list_new( uint_t const initial_capacity, list_delete_fn dfn );
 void list_delete( void * l );
 
 /* stack allocated list */
-int list_initialize( list_t * const list, uint_t const initial_capacity, delete_fn dfn );
+int list_initialize( list_t * const list, uint_t const initial_capacity, list_delete_fn dfn );
 int list_deinitialize( list_t * const list );
 
 /* gets the number of items in the list */

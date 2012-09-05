@@ -99,7 +99,7 @@ SUITE( bitset );
 SUITE( btree );
 SUITE( buffer );
 SUITE( child );
-/*SUITE( hashtable );*/
+SUITE( hashtable );
 SUITE( list );
 SUITE( pair );
 SUITE( privileges );
@@ -118,7 +118,7 @@ int main()
 	ADD_SUITE( btree );
 	ADD_SUITE( buffer );
 	ADD_SUITE( child );
-	/*ADD_SUITE( hashtable );*/
+	ADD_SUITE( hashtable );
 	ADD_SUITE( list );
 	ADD_SUITE( pair );
 	ADD_SUITE( privileges );

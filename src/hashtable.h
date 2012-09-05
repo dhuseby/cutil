@@ -19,150 +19,77 @@
 
 #include <stdint.h>
 #include "macros.h"
-
-#ifdef USE_THREADING
-#include <pthread.h>
-#endif
+#include "list.h"
 
 /* the hashtable iterator type */
-typedef int_t ht_itr_t;
+typedef struct ht_itr_s ht_itr_t;
 
-/* the hash table opaque tuple type */
-typedef struct tuple_s tuple_t;
+/* the hash table opaque item type */
+typedef struct ht_item_s ht_item_t;
 
-/* the key hashing function type,
- * this must return a hash value > 0 because 0 is
- * reserved for internal use */
-typedef uint_t (*key_hash_fn)(void const * const key);
+/* hash function prototype */
+typedef uint_t (*ht_hash_fn)(void const * const key);
 
-/* define the key comparison function type,
- * it must return 1 if the keys are equal and
- * 0 if the keys are not. */
-typedef int (*key_eq_fn)(void const * const l, void const * const r);
+/* match function prototype
+ * it must return 1 if the data matches, 0 otherwise */
+typedef int (*ht_match_fn)(void const * const l, void const * const r);
 
-/* define the value delete function type */
+/* the delete function prototype */
 typedef void (*ht_delete_fn)(void * value);
 
 /* the hash table structure */
 typedef struct ht_s
 {
-	key_hash_fn			khfn;				/* key hash function */
-	key_eq_fn			kefn;				/* key compare function */
-	ht_delete_fn		kdfn;				/* key delete function */
-	ht_delete_fn		vdfn;				/* value delete function */
-	uint_t				prime_index;		/* the index of the table size */
-	uint_t				num_tuples;			/* number of tuples in the table */
-	uint_t				initial_capacity;	/* the initial capacity value */
-	float				load_factor;		/* load level that triggers resize */
-	int_t				free_head;			/* first node in free list */
-	tuple_t*			tuples;				/* pointer to tuple table */
-#ifdef USE_THREADING
-	pthread_mutex_t		lock;				/* hashtable lock */
-#endif
+	ht_hash_fn			hfn;				/* hash function */
+	ht_match_fn			mfn;				/* match function */
+	ht_delete_fn		dfn;				/* key delete function */
+	uint_t				initial;			/* initial capacity */
+	float				limit;				/* load limit that will trigger resize */
+	uint_t				count;				/* number of items in the hashtable */
+	uint_t				size;;				/* the size of the list array */
+	list_t*				lists;				/* pointer to list array */
 } ht_t;
 
-
-#ifdef USE_THREADING
-/* threading protection */
-void ht_lock(ht_t * const htable);
-int ht_try_lock(ht_t * const htable);
-void ht_unlock(ht_t * const htable);
-pthread_mutex_t * ht_get_mutex(ht_t * const htable);
-#endif
-
-int ht_initialize( ht_t * const htable, 
-				   uint_t initial_capacity, 
-				   key_hash_fn khfn, 
-				   ht_delete_fn vdfn,
-				   key_eq_fn kefn,
-				   ht_delete_fn kdfn );
-void ht_deinitialize( ht_t * const htable );
-
-/* dynamically allocates and initializes a hashtable */
-/* NOTE: If NULL is passed in for the key_hash_fn function, the pointer to the 
- * key will be cast to an int32 and used as the hash value.  If NULL is passed 
- * for the delete functions, then the key/values will not be deleted when 
- * hashtableDeinitialize or hashtableDelete are called. */
-ht_t* ht_new( uint_t initial_capacity, 
-			  key_hash_fn khfn,
-			  ht_delete_fn vdfn, 
-			  key_eq_fn kefn, 
-			  ht_delete_fn kdfn );
-
-/* deinitializes and frees a hashtable allocated with hashtableNew() */
-/* NOTE: this calls hashtableDeinitialize if there are values left in the
- * hashtable */
+/* heap allocated hash table */
+ht_t* ht_new( uint_t const initial_capacity, ht_hash_fn hfn, 
+			  ht_match_fn mfn, ht_delete_fn dfn );
 void ht_delete( void * ht );
 
-/* returns the number of key/value pairs stored in the hashtable */
-uint_t ht_size( ht_t * const htable );
+/* stack allocated hash table */
+int ht_initialize( ht_t * const htable, uint_t const initial_capacity, 
+				   ht_hash_fn hfn, ht_match_fn mfn, ht_delete_fn dfn );
+int ht_deinitialize( ht_t * const htable );
 
-/* returns the current fraction of how full the hash table is.
- * the range is 0.0f to 1.0f, where 1.0f is completly full */
-float ht_load( ht_t * const htable );
+/* returns the number of items stored in the hashtable */
+uint_t ht_count( ht_t * const htable );
 
-/* returns the load limit that will trigger a resize when the 
- * hashtable where to exceed it during a hashtableAdd. */
-float ht_get_resize_load_factor( ht_t const * const htable );
+/* inserts the given data into the hash table */
+int ht_insert( ht_t * const htable, void * const data);
 
-/* set the load limit that will trigger a resize.  this defaults
- * 0.65f or 65% full. */
-int ht_set_resize_load_factor( ht_t * const htable, float load );
-
-/* this function will prune all empty filler nodes left over from
- * previous hashtableRemove calls.	the empty filler nodes left over
- * to keep the probing chains from breaking.  this function clears
- * them out by allocating a new table and rehashing the non-filler
- * nodes into it and freeing the old table.  this operation elliminates
- * the filler nodes and "compacts" the table.  use this to keep your
- * load factor from endlessly climbing and causing resizes. */
-int ht_compact( ht_t * const htable );
-
-/* adds a key/value pair to the hashtable. */
-/* NOTE: if the number of values stored in the table will exceed a load factor 
- * of 65% then the hashtable grows to make more room.
- * NOTE: the hashtable takes ownership of the key data if a key delete
- * function was given when the hashtable was created. */
-int ht_add( ht_t * const htable, 
-			void * const key, 
-			void * const value);
-
-int ht_add_prehash( ht_t * const htable,
-					uint_t const hash,
-					void * const key,
-					void * const value );
-
-/* clears all key/value pairs from the hashtable reinitializes it */
+/* clears all data from the hash table */
 int ht_clear( ht_t * const htable );
 
-/* find a value by it's key. this function uses the compare_keys_fn function 
- * to find the item */
-ht_itr_t ht_find( ht_t const * const htable, void const * const key );
-ht_itr_t ht_find_prehash( ht_t const * const htable, 
-						  uint_t const hash, 
-						  void const * const key );
+/* finds the corresponding data in the hash table */
+ht_itr_t ht_find( ht_t const * const htable, void * const data );
 
 /* remove the key/value at the specified iterator position */
 int ht_remove( ht_t * const htable, ht_itr_t const itr );
 
+/* get the data at the given iterator position */
+void* ht_itr_get( ht_t const * const htable, ht_itr_t const itr );
+
 /* iterator based access to the hashtable */
+#if 0
 ht_itr_t ht_itr_begin( ht_t const * const htable );
 ht_itr_t ht_itr_end( ht_t const * const htable );
 ht_itr_t ht_itr_rbegin( ht_t const * const hatable );
 #define ht_itr_rend(x) ht_itr_end(x)
-
-ht_itr_t ht_itr_next( ht_t const * const htable, 
-					  ht_itr_t const itr );
-ht_itr_t ht_itr_rnext( ht_t const * const htable,
-					   ht_itr_t const itr );
-
-void* ht_itr_get( ht_t const * const htable, 
-				  ht_itr_t const itr,
-				  void** const key );
+ht_itr_t ht_itr_next( ht_t const * const htable, ht_itr_t const itr );
+ht_itr_t ht_itr_rnext( ht_t const * const htable, ht_itr_t const itr );
+#endif
 
 #if defined(UNIT_TESTING)
-void ht_force_grow( ht_t * const ht );
-void ht_set_fail_grow( int fail );
+void test_hashtable_private_functions( void );
 #endif
 
 #endif
