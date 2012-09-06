@@ -69,6 +69,9 @@ extern int fake_ht_init;
 extern int fake_ht_init_ret;
 extern int fake_ht_deinit;
 extern int fake_ht_deinit_ret;
+extern int fake_ht_grow;
+extern int fake_ht_grow_ret;
+extern int fake_ht_find;
 
 /* list */
 extern int fake_list_grow;
@@ -77,6 +80,10 @@ extern int fake_list_init;
 extern int fake_list_init_ret;
 extern int fake_list_deinit;
 extern int fake_list_deinit_ret;
+extern int fake_list_push;
+extern int fake_list_push_ret;
+extern int fake_list_get;
+extern void* fake_list_get_ret;
 
 /* socket */
 extern int fake_socket_getsockopt;

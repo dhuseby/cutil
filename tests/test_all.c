@@ -76,7 +76,7 @@ int main()
 	CU_cleanup_registry();
 
 	/* clean up the event loop */
-	/*evt_delete( el );*/
+	evt_delete( el );
 
 	return CU_get_error();
 }

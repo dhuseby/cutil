@@ -27,18 +27,11 @@
 
 #if defined(UNIT_TESTING)
 #include "test_flags.h"
+extern ht_itr_t fake_ht_find_ret;
 #endif
 
-/* iterator type */
-struct ht_itr_s
-{
-	int_t				idx;				/* index of the current list */
-	list_itr_t			itr;				/* list iterator */
-};
-
 #define LIST_AT( lists, index )  (&(lists[index]))
-#define ITEM_AT( lists, itr ) (list_itr_get(LIST_AT(itr.list), itr.itr))
-#define ITR_EQ( i, j ) ((i.idx == j.idx) && (i.itr == j.itr))
+#define ITEM_AT( lists, itr ) (list_get(LIST_AT(itr.list), itr.itr))
 
 /* index constants */
 ht_itr_t const ht_itr_end_t = { -1, -1 };
@@ -134,7 +127,7 @@ int ht_deinitialize( ht_t * const htable )
 #if defined(UNIT_TESTING)
 	CHECK_RET( !fake_ht_deinit, fake_ht_deinit_ret );
 #endif
-	CHECK_PTR( htable );
+	CHECK_PTR_RET( htable, FALSE );
 
 	/* free up all of the memory in the lists */
 	for( i = 0; i < htable->size; i++ )
@@ -157,12 +150,11 @@ uint_t ht_count( ht_t * const htable )
 int ht_insert( ht_t * const htable, void * const data )
 {
 	uint_t index;
-	ht_itr_t itr;
 	CHECK_PTR_RET( htable, FALSE );
 	CHECK_PTR_RET( data, FALSE );
 
 	/* make sure the item isn't already in the list */
-	CHECK_RET( !ITR_EQ(ht_find( htable, data ), ht_itr_end_t), FALSE );
+	CHECK_RET( ITR_EQ(ht_find( htable, data ), ht_itr_end_t), FALSE );
 
 	/* does the table need to grow? */
 	if ( (htable->count / htable->size) > htable->limit )
@@ -173,6 +165,9 @@ int ht_insert( ht_t * const htable, void * const data )
 
 	/* add the data to the appropriate list */
 	CHECK_RET( list_push_tail( LIST_AT( htable->lists, index ), data ), FALSE );
+
+	/* update the count */
+	htable->count++;
 
 	return TRUE;
 }
@@ -198,6 +193,9 @@ ht_itr_t ht_find( ht_t const * const htable, void * const data )
 	uint_t index;
 	ht_itr_t ret;
 	list_itr_t itr, end;
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_ht_find, fake_ht_find_ret );
+#endif
 	CHECK_PTR_RET( htable, ht_itr_end_t );
 	CHECK_PTR_RET( data, ht_itr_end_t );
 
@@ -208,7 +206,7 @@ ht_itr_t ht_find( ht_t const * const htable, void * const data )
 	itr = list_itr_begin( LIST_AT( htable->lists, index ) );
 	for( ; itr != end; itr = list_itr_next( LIST_AT( htable->lists, index ), itr ) )
 	{
-		if ( (*(htable->mfn))( data, list_itr_get(LIST_AT( htable->lists, index ), itr) ) )
+		if ( (*(htable->mfn))( data, list_get(LIST_AT( htable->lists, index ), itr) ) )
 		{
 			ret.idx = index;
 			ret.itr = itr;
@@ -224,22 +222,25 @@ int ht_remove( ht_t * const htable, ht_itr_t const itr )
 	CHECK_PTR_RET( htable, FALSE );
 	CHECK_RET( !ITR_EQ( itr, ht_itr_end_t ), FALSE );
 	CHECK_RET( ((itr.idx >= 0) && (itr.idx < htable->size)), FALSE );
-	CHECK_RET( itr.itr != -1, FALSE );
+	CHECK_RET( htable->count > 0, FALSE );
+	CHECK_PTR_RET( list_get( LIST_AT( htable->lists, itr.idx ), itr.itr ), FALSE );
 
 	/* remove the item from the list */
 	list_pop( LIST_AT( htable->lists, itr.idx ), itr.itr );
 
+	/* update the count */
+	htable->count--;
+
 	return TRUE;
 }
 
-void * ht_itr_get( ht_t const * const htable, ht_itr_t const itr )
+void * ht_get( ht_t const * const htable, ht_itr_t const itr )
 {
 	CHECK_PTR_RET( htable, FALSE );
 	CHECK_RET( !ITR_EQ( itr, ht_itr_end_t ), FALSE );
 	CHECK_RET( ((itr.idx >= 0) && (itr.idx < htable->size)), FALSE );
-	CHECK_RET( itr.itr != -1, FALSE );
 
-	return list_itr_get( LIST_AT( htable->lists, itr.idx ), itr.itr );
+	return list_get( LIST_AT( htable->lists, itr.idx ), itr.itr );
 }
 
 
@@ -250,8 +251,13 @@ static uint_t ht_get_new_size( uint_t const count, float const limit )
 	uint_t index = 0;
 
 	/* find the first prime that results in a load less than the limit */
-	while( ( index < NUM_PRIMES ) && ( ((float)count / (float)PRIMES[index]) > limit ) )
+	while( ( index < (NUM_PRIMES - 1) ) && ( ((float)count / (float)PRIMES[index]) > limit ) )
+	{
+		DEBUG( "%f / %f = %f > %f\n", (float)count, (float)PRIMES[index], ((float)count / (float)PRIMES[index]), limit );
 		index++;
+	}
+	
+	DEBUG( "%f / %f = %f > %f\n", (float)count, (float)PRIMES[index], ((float)count / (float)PRIMES[index]), limit );
 
 	return PRIMES[index];
 }
@@ -260,6 +266,9 @@ static int ht_grow( ht_t * const htable )
 {
 	uint_t i, count, new_size, old_size;
 	list_t *new_lists, *old_lists;
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_ht_grow, fake_ht_grow_ret );
+#endif
 	CHECK_PTR_RET( htable, FALSE );
 
 	/* if it's empty, then use the initial capacity */
@@ -320,6 +329,21 @@ static int ht_grow( ht_t * const htable )
 
 void test_hashtable_private_functions( void )
 {
+	ht_t ht;
+	MEMSET( &ht, 0, sizeof(ht_t) );
+
+	/* ht_get_new_size */
+	CU_ASSERT_EQUAL( ht_get_new_size( (uint_t)-1, 0.1 ), 1610612741 );
+
+	/* ht_grow */
+	CU_ASSERT_FALSE( ht_grow( NULL ) );
+	fail_alloc = TRUE;
+	CU_ASSERT_FALSE( ht_grow( &ht ) );
+	fail_alloc = FALSE;
+	fake_list_init = TRUE;
+	fake_list_init_ret = FALSE;
+	CU_ASSERT_FALSE( ht_grow( &ht ) );
+	fake_list_init = FALSE;
 }
 
 #endif

@@ -83,9 +83,9 @@ list_itr_t list_pop( list_t * const list, list_itr_t const itr );
 #define list_pop_tail(list) list_pop(list, list_itr_end(list))
 
 /* functions for getting the data pointer from the list */
-void* list_itr_get( list_t const * const list, list_itr_t const itr );
-#define list_get_head(list) list_itr_get(list, list_itr_head(list))
-#define list_get_tail(list) list_itr_get(list, list_itr_tail(list))
+void* list_get( list_t const * const list, list_itr_t const itr );
+#define list_get_head(list) list_get(list, list_itr_head(list))
+#define list_get_tail(list) list_get(list, list_itr_tail(list))
 
 #endif/*__LIST_H__*/
  

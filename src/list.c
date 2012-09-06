@@ -202,6 +202,9 @@ list_itr_t list_itr_rnext( list_t const * const list, list_itr_t const itr )
 int list_push( list_t * const list, void * const data, list_itr_t const itr )
 {
 	list_itr_t item = list_itr_end_t;
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_list_push, fake_list_push_ret );
+#endif
 	CHECK_PTR_RET( list, FALSE );
 
 	/* do we need to resize to accomodate this node? */
@@ -264,8 +267,11 @@ list_itr_t list_pop( list_t * const list, list_itr_t const itr )
 	return (itr == list_itr_end_t) ? list_itr_end_t : next;
 }
 
-void * list_itr_get( list_t const * const list, list_itr_t const itr )
+void * list_get( list_t const * const list, list_itr_t const itr )
 {
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_list_get, fake_list_get_ret );
+#endif
 	CHECK_PTR_RET( list, NULL );
 	CHECK_RET( itr != list_itr_end_t, NULL );
 	CHECK_RET( list->size, NULL );							/* empty list? */

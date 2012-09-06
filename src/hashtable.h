@@ -21,11 +21,14 @@
 #include "macros.h"
 #include "list.h"
 
-/* the hashtable iterator type */
-typedef struct ht_itr_s ht_itr_t;
+/* iterator type */
+typedef struct ht_itr_s
+{
+	int_t				idx;				/* index of the list */
+	list_itr_t			itr;				/* list iterator */
+} ht_itr_t;
 
-/* the hash table opaque item type */
-typedef struct ht_item_s ht_item_t;
+#define ITR_EQ( i, j ) ((i.idx == j.idx) && (i.itr == j.itr))
 
 /* hash function prototype */
 typedef uint_t (*ht_hash_fn)(void const * const key);
@@ -76,7 +79,7 @@ ht_itr_t ht_find( ht_t const * const htable, void * const data );
 int ht_remove( ht_t * const htable, ht_itr_t const itr );
 
 /* get the data at the given iterator position */
-void* ht_itr_get( ht_t const * const htable, ht_itr_t const itr );
+void* ht_get( ht_t const * const htable, ht_itr_t const itr );
 
 /* iterator based access to the hashtable */
 #if 0

@@ -153,7 +153,7 @@ static void test_child_wait( void )
 	child_ops_t ops = { &exit_fn, &read_fn, &write_fn };
 
 	child = NULL;
-	child = child_process_new( "./child_sleep.sh", args, env, &ops, el, TRUE, NULL );
+	child = child_process_new( "./child.sh", args, env, &ops, el, TRUE, NULL );
 
 	/* run the event loop */
 	evt_run( el );

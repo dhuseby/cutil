@@ -31,27 +31,27 @@
             <td class="headerValue">cutil test coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">55</td>
-            <td class="headerCovTableEntry">107</td>
-            <td class="headerCovTableEntryLo">51.4 %</td>
+            <td class="headerCovTableEntry">121</td>
+            <td class="headerCovTableEntry">121</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
             <td class="headerValue">2012-09-05</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">7</td>
             <td class="headerCovTableEntry">13</td>
-            <td class="headerCovTableEntryLo">53.8 %</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td></td>
             <td></td>
             <td></td>
             <td class="headerItem">Branches:</td>
-            <td class="headerCovTableEntry">26</td>
-            <td class="headerCovTableEntry">98</td>
-            <td class="headerCovTableEntryLo">26.5 %</td>
+            <td class="headerCovTableEntry">102</td>
+            <td class="headerCovTableEntry">102</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -98,303 +98,327 @@
 <span class="lineNum">      27 </span>                :            : 
 <span class="lineNum">      28 </span>                :            : #if defined(UNIT_TESTING)
 <span class="lineNum">      29 </span>                :            : #include &quot;test_flags.h&quot;
-<span class="lineNum">      30 </span>                :            : #endif
-<span class="lineNum">      31 </span>                :            : 
-<span class="lineNum">      32 </span>                :            : /* iterator type */
-<span class="lineNum">      33 </span>                :            : struct ht_itr_s
-<span class="lineNum">      34 </span>                :            : {
-<span class="lineNum">      35 </span>                :            :     int_t               idx;                /* index of the current list */
-<span class="lineNum">      36 </span>                :            :     list_itr_t          itr;                /* list iterator */
-<span class="lineNum">      37 </span>                :            : };
+<span class="lineNum">      30 </span>                :            : extern ht_itr_t fake_ht_find_ret;
+<span class="lineNum">      31 </span>                :            : #endif
+<span class="lineNum">      32 </span>                :            : 
+<span class="lineNum">      33 </span>                :            : #define LIST_AT( lists, index )  (&amp;(lists[index]))
+<span class="lineNum">      34 </span>                :            : #define ITEM_AT( lists, itr ) (list_get(LIST_AT(itr.list), itr.itr))
+<span class="lineNum">      35 </span>                :            : 
+<span class="lineNum">      36 </span>                :            : /* index constants */
+<span class="lineNum">      37 </span>                :            : ht_itr_t const ht_itr_end_t = { -1, -1 };
 <span class="lineNum">      38 </span>                :            : 
-<span class="lineNum">      39 </span>                :            : #define LIST_AT( lists, index )  (&amp;(lists[index]))
-<span class="lineNum">      40 </span>                :            : #define ITEM_AT( lists, itr ) (list_itr_get(LIST_AT(itr.list), itr.itr))
-<span class="lineNum">      41 </span>                :            : #define ITR_EQ( i, j ) ((i.idx == j.idx) &amp;&amp; (i.itr == j.itr))
-<span class="lineNum">      42 </span>                :            : 
-<span class="lineNum">      43 </span>                :            : /* index constants */
-<span class="lineNum">      44 </span>                :            : ht_itr_t const ht_itr_end_t = { -1, -1 };
-<span class="lineNum">      45 </span>                :            : 
-<span class="lineNum">      46 </span>                :            : /* load factor is how full the table will get before a resize is triggered */
-<span class="lineNum">      47 </span>                :            : float const default_load_limit = 3.0f;
-<span class="lineNum">      48 </span>                :            : 
-<span class="lineNum">      49 </span>                :            : /* this list of primes are the table size used by the hashtable.  each prime 
-<span class="lineNum">      50 </span>                :            :  * is roughly double the size of the previous prime to get amortized resize
-<span class="lineNum">      51 </span>                :            :  * operations. */
-<span class="lineNum">      52 </span>                :            : uint_t const NUM_PRIMES = 30;
-<span class="lineNum">      53 </span>                :            : uint_t const PRIMES[] =
-<span class="lineNum">      54 </span>                :            : {
-<span class="lineNum">      55 </span>                :            :     3, 7, 13, 29, 53, 97, 193, 389, 769, 1543, 3079,
-<span class="lineNum">      56 </span>                :            :     6151, 12289, 24593, 49157,
-<span class="lineNum">      57 </span>                :            :     98317, 196613, 393241, 786433,
-<span class="lineNum">      58 </span>                :            :     1572869, 3145739, 6291469,
-<span class="lineNum">      59 </span>                :            :     12582917, 251658343, 50331653,
-<span class="lineNum">      60 </span>                :            :     100663319, 201326611,
-<span class="lineNum">      61 </span>                :            :     402563189, 805306457,
-<span class="lineNum">      62 </span>                :            :     1610612741
-<span class="lineNum">      63 </span>                :            : };
-<span class="lineNum">      64 </span>                :            : 
-<span class="lineNum">      65 </span>                :            : /* forward declarations of private functions */
-<span class="lineNum">      66 </span>                :            : static uint_t ht_get_new_size( uint_t const count, float const limit );
-<span class="lineNum">      67 </span>                :            : static int ht_grow( ht_t * const htable );
-<a name="68"><span class="lineNum">      68 </span>                :            : </a>
-<span class="lineNum">      69 </span>                :            : /* heap allocate the hashtable */
-<span class="lineNum">      70 </span>                :<span class="lineCov">        129 : ht_t* ht_new( uint_t const initial_capacity, ht_hash_fn hfn, </span>
-<span class="lineNum">      71 </span>                :            :               ht_match_fn mfn, ht_delete_fn dfn )
-<span class="lineNum">      72 </span>                :            : {
-<span class="lineNum">      73 </span>                :<span class="lineCov">        129 :     ht_t* htable = NULL;</span>
-<span class="lineNum">      74 </span>                :            : 
-<span class="lineNum">      75 </span>                :            :     /* allocate a hashtable struct */
-<span class="lineNum">      76 </span>        [<span class="branchCov" title="Branch 0 was taken 128 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        129 :     htable = (ht_t*)CALLOC(1, sizeof(ht_t));</span>
-<span class="lineNum">      77 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        129 :     CHECK_PTR_RET(htable, NULL);</span>
+<span class="lineNum">      39 </span>                :            : /* load factor is how full the table will get before a resize is triggered */
+<span class="lineNum">      40 </span>                :            : float const default_load_limit = 3.0f;
+<span class="lineNum">      41 </span>                :            : 
+<span class="lineNum">      42 </span>                :            : /* this list of primes are the table size used by the hashtable.  each prime 
+<span class="lineNum">      43 </span>                :            :  * is roughly double the size of the previous prime to get amortized resize
+<span class="lineNum">      44 </span>                :            :  * operations. */
+<span class="lineNum">      45 </span>                :            : uint_t const NUM_PRIMES = 30;
+<span class="lineNum">      46 </span>                :            : uint_t const PRIMES[] =
+<span class="lineNum">      47 </span>                :            : {
+<span class="lineNum">      48 </span>                :            :     3, 7, 13, 29, 53, 97, 193, 389, 769, 1543, 3079,
+<span class="lineNum">      49 </span>                :            :     6151, 12289, 24593, 49157,
+<span class="lineNum">      50 </span>                :            :     98317, 196613, 393241, 786433,
+<span class="lineNum">      51 </span>                :            :     1572869, 3145739, 6291469,
+<span class="lineNum">      52 </span>                :            :     12582917, 251658343, 50331653,
+<span class="lineNum">      53 </span>                :            :     100663319, 201326611,
+<span class="lineNum">      54 </span>                :            :     402563189, 805306457,
+<span class="lineNum">      55 </span>                :            :     1610612741
+<span class="lineNum">      56 </span>                :            : };
+<span class="lineNum">      57 </span>                :            : 
+<span class="lineNum">      58 </span>                :            : /* forward declarations of private functions */
+<span class="lineNum">      59 </span>                :            : static uint_t ht_get_new_size( uint_t const count, float const limit );
+<span class="lineNum">      60 </span>                :            : static int ht_grow( ht_t * const htable );
+<a name="61"><span class="lineNum">      61 </span>                :            : </a>
+<span class="lineNum">      62 </span>                :            : /* heap allocate the hashtable */
+<span class="lineNum">      63 </span>                :<span class="lineCov">        130 : ht_t* ht_new( uint_t const initial_capacity, ht_hash_fn hfn, </span>
+<span class="lineNum">      64 </span>                :            :               ht_match_fn mfn, ht_delete_fn dfn )
+<span class="lineNum">      65 </span>                :            : {
+<span class="lineNum">      66 </span>                :<span class="lineCov">        130 :     ht_t* htable = NULL;</span>
+<span class="lineNum">      67 </span>                :            : 
+<span class="lineNum">      68 </span>                :            :     /* allocate a hashtable struct */
+<span class="lineNum">      69 </span>        [<span class="branchCov" title="Branch 0 was taken 129 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        130 :     htable = (ht_t*)CALLOC(1, sizeof(ht_t));</span>
+<span class="lineNum">      70 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 129 times"> + </span>]:<span class="lineCov">        130 :     CHECK_PTR_RET(htable, NULL);</span>
+<span class="lineNum">      71 </span>                :            : 
+<span class="lineNum">      72 </span>                :            :     /* initialize the hashtable */
+<span class="lineNum">      73 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 128 times"> + </span>]:<span class="lineCov">        129 :     if ( !ht_initialize(htable, initial_capacity, hfn, mfn, dfn) )</span>
+<span class="lineNum">      74 </span>                :            :     {
+<span class="lineNum">      75 </span>                :<span class="lineCov">          1 :         FREE( htable );</span>
+<span class="lineNum">      76 </span>                :<span class="lineCov">          1 :         return NULL;</span>
+<span class="lineNum">      77 </span>                :            :     }
 <span class="lineNum">      78 </span>                :            : 
-<span class="lineNum">      79 </span>                :            :     /* initialize the hashtable */
-<span class="lineNum">      80 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 128 times"> + </span>]:<span class="lineCov">        128 :     if ( !ht_initialize(htable, initial_capacity, hfn, mfn, dfn) )</span>
-<span class="lineNum">      81 </span>                :            :     {
-<span class="lineNum">      82 </span>                :<span class="lineNoCov">          0 :         FREE( htable );</span>
-<span class="lineNum">      83 </span>                :<span class="lineNoCov">          0 :         return NULL;</span>
-<span class="lineNum">      84 </span>                :            :     }
-<span class="lineNum">      85 </span>                :            : 
-<span class="lineNum">      86 </span>                :            :     /* return the new hashtable */
-<span class="lineNum">      87 </span>                :<span class="lineCov">        129 :     return htable;</span>
-<span class="lineNum">      88 </span>                :            : }
-<a name="89"><span class="lineNum">      89 </span>                :            : </a>
-<span class="lineNum">      90 </span>                :            : /* deinitializes and frees a hashtable allocated with ht_new() */
-<span class="lineNum">      91 </span>                :<span class="lineCov">        128 : void ht_delete(void * ht)</span>
-<span class="lineNum">      92 </span>                :            : {
-<span class="lineNum">      93 </span>                :<span class="lineCov">        128 :     ht_t * htable = (ht_t*)ht;</span>
-<span class="lineNum">      94 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        256 :     CHECK_PTR(htable);</span>
-<span class="lineNum">      95 </span>                :            : 
-<span class="lineNum">      96 </span>                :            :     /* de-init the hashtable if needed */
-<span class="lineNum">      97 </span>                :<span class="lineCov">        128 :     ht_deinitialize(htable);</span>
-<span class="lineNum">      98 </span>                :            : 
-<span class="lineNum">      99 </span>                :            :     /* free the hashtable */
-<span class="lineNum">     100 </span>                :<span class="lineCov">        128 :     FREE((void*)htable);</span>
-<span class="lineNum">     101 </span>                :            : }
-<a name="102"><span class="lineNum">     102 </span>                :            : </a>
-<span class="lineNum">     103 </span>                :            : /* initializes a hashtable */
-<span class="lineNum">     104 </span>                :<span class="lineCov">        256 : int ht_initialize( ht_t * const htable, uint_t const initial_capacity, </span>
-<span class="lineNum">     105 </span>                :            :                    ht_hash_fn hfn, ht_match_fn mfn, ht_delete_fn dfn )
-<span class="lineNum">     106 </span>                :            : {
-<span class="lineNum">     107 </span>                :<span class="lineCov">        256 :     uint_t i = 0;</span>
-<span class="lineNum">     108 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     109 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     CHECK_RET( !fake_ht_init, fake_ht_init_ret );</span>
-<span class="lineNum">     110 </span>                :            : #endif
-<span class="lineNum">     111 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     CHECK_PTR_RET( htable, FALSE );</span>
-<span class="lineNum">     112 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     CHECK_PTR_RET( hfn, FALSE );</span>
-<span class="lineNum">     113 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     CHECK_PTR_RET( mfn, FALSE );</span>
-<span class="lineNum">     114 </span>                :            : 
-<span class="lineNum">     115 </span>                :            :     /* zero out the memory */
-<span class="lineNum">     116 </span>                :<span class="lineCov">        256 :     MEMSET( htable, 0, sizeof(ht_t) );</span>
+<span class="lineNum">      79 </span>                :            :     /* return the new hashtable */
+<span class="lineNum">      80 </span>                :<span class="lineCov">        130 :     return htable;</span>
+<span class="lineNum">      81 </span>                :            : }
+<a name="82"><span class="lineNum">      82 </span>                :            : </a>
+<span class="lineNum">      83 </span>                :            : /* deinitializes and frees a hashtable allocated with ht_new() */
+<span class="lineNum">      84 </span>                :<span class="lineCov">        129 : void ht_delete(void * ht)</span>
+<span class="lineNum">      85 </span>                :            : {
+<span class="lineNum">      86 </span>                :<span class="lineCov">        129 :     ht_t * htable = (ht_t*)ht;</span>
+<span class="lineNum">      87 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 128 times"> + </span>]:<span class="lineCov">        257 :     CHECK_PTR(htable);</span>
+<span class="lineNum">      88 </span>                :            : 
+<span class="lineNum">      89 </span>                :            :     /* de-init the hashtable if needed */
+<span class="lineNum">      90 </span>                :<span class="lineCov">        128 :     ht_deinitialize(htable);</span>
+<span class="lineNum">      91 </span>                :            : 
+<span class="lineNum">      92 </span>                :            :     /* free the hashtable */
+<span class="lineNum">      93 </span>                :<span class="lineCov">        128 :     FREE((void*)htable);</span>
+<span class="lineNum">      94 </span>                :            : }
+<a name="95"><span class="lineNum">      95 </span>                :            : </a>
+<span class="lineNum">      96 </span>                :            : /* initializes a hashtable */
+<span class="lineNum">      97 </span>                :<span class="lineCov">        270 : int ht_initialize( ht_t * const htable, uint_t const initial_capacity, </span>
+<span class="lineNum">      98 </span>                :            :                    ht_hash_fn hfn, ht_match_fn mfn, ht_delete_fn dfn )
+<span class="lineNum">      99 </span>                :            : {
+<span class="lineNum">     100 </span>                :<span class="lineCov">        270 :     uint_t i = 0;</span>
+<span class="lineNum">     101 </span>                :            : #if defined(UNIT_TESTING)
+<span class="lineNum">     102 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 268 times"> + </span>]:<span class="lineCov">        270 :     CHECK_RET( !fake_ht_init, fake_ht_init_ret );</span>
+<span class="lineNum">     103 </span>                :            : #endif
+<span class="lineNum">     104 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 267 times"> + </span>]:<span class="lineCov">        268 :     CHECK_PTR_RET( htable, FALSE );</span>
+<span class="lineNum">     105 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 266 times"> + </span>]:<span class="lineCov">        267 :     CHECK_PTR_RET( hfn, FALSE );</span>
+<span class="lineNum">     106 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 265 times"> + </span>]:<span class="lineCov">        266 :     CHECK_PTR_RET( mfn, FALSE );</span>
+<span class="lineNum">     107 </span>                :            : 
+<span class="lineNum">     108 </span>                :            :     /* zero out the memory */
+<span class="lineNum">     109 </span>                :<span class="lineCov">        265 :     MEMSET( htable, 0, sizeof(ht_t) );</span>
+<span class="lineNum">     110 </span>                :            : 
+<span class="lineNum">     111 </span>                :            :     /* initialize the members */
+<span class="lineNum">     112 </span>                :<span class="lineCov">        265 :     htable-&gt;hfn = hfn;</span>
+<span class="lineNum">     113 </span>                :<span class="lineCov">        265 :     htable-&gt;mfn = mfn;</span>
+<span class="lineNum">     114 </span>                :<span class="lineCov">        265 :     htable-&gt;dfn = dfn;</span>
+<span class="lineNum">     115 </span>                :<span class="lineCov">        265 :     htable-&gt;initial = initial_capacity;</span>
+<span class="lineNum">     116 </span>                :<span class="lineCov">        265 :     htable-&gt;limit = default_load_limit;</span>
 <span class="lineNum">     117 </span>                :            : 
-<span class="lineNum">     118 </span>                :            :     /* initialize the members */
-<span class="lineNum">     119 </span>                :<span class="lineCov">        256 :     htable-&gt;hfn = hfn;</span>
-<span class="lineNum">     120 </span>                :<span class="lineCov">        256 :     htable-&gt;mfn = mfn;</span>
-<span class="lineNum">     121 </span>                :<span class="lineCov">        256 :     htable-&gt;dfn = dfn;</span>
-<span class="lineNum">     122 </span>                :<span class="lineCov">        256 :     htable-&gt;initial = initial_capacity;</span>
-<span class="lineNum">     123 </span>                :<span class="lineCov">        256 :     htable-&gt;limit = default_load_limit;</span>
-<span class="lineNum">     124 </span>                :            : 
-<span class="lineNum">     125 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     CHECK_RET( ht_grow( htable ), FALSE );</span>
-<span class="lineNum">     126 </span>                :            : 
-<span class="lineNum">     127 </span>                :<span class="lineCov">        256 :     return TRUE;</span>
-<span class="lineNum">     128 </span>                :            : }
-<a name="129"><span class="lineNum">     129 </span>                :            : </a>
-<span class="lineNum">     130 </span>                :            : /* deinitialize a hashtable. */
-<span class="lineNum">     131 </span>                :<span class="lineCov">        256 : int ht_deinitialize( ht_t * const htable )</span>
-<span class="lineNum">     132 </span>                :            : {
-<span class="lineNum">     133 </span>                :            :     int i;
-<span class="lineNum">     134 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     135 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     CHECK_RET( !fake_ht_deinit, fake_ht_deinit_ret );</span>
-<span class="lineNum">     136 </span>                :            : #endif
-<span class="lineNum">     137 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     CHECK_PTR( htable );</span>
-<span class="lineNum">     138 </span>                :            : 
-<span class="lineNum">     139 </span>                :            :     /* free up all of the memory in the lists */
-<span class="lineNum">     140 </span>        [<span class="branchCov" title="Branch 0 was taken 7488 times"> + </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">       7744 :     for( i = 0; i &lt; htable-&gt;size; i++ )</span>
-<span class="lineNum">     141 </span>                :            :     {
-<span class="lineNum">     142 </span>                :<span class="lineCov">       7488 :         list_clear( LIST_AT( htable-&gt;lists, i ) );</span>
-<span class="lineNum">     143 </span>                :            :     }
-<span class="lineNum">     144 </span>                :            : 
-<span class="lineNum">     145 </span>                :            :     /* free up the lists */
-<span class="lineNum">     146 </span>                :<span class="lineCov">        256 :     FREE( htable-&gt;lists );</span>
-<span class="lineNum">     147 </span>                :            : 
-<span class="lineNum">     148 </span>                :<span class="lineCov">        256 :     return TRUE;</span>
-<a name="149"><span class="lineNum">     149 </span>                :            : }</a>
-<span class="lineNum">     150 </span>                :            : 
-<span class="lineNum">     151 </span>                :<span class="lineNoCov">          0 : uint_t ht_count( ht_t * const htable )</span>
-<span class="lineNum">     152 </span>                :            : {
-<span class="lineNum">     153 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( htable, 0 );</span>
-<span class="lineNum">     154 </span>                :<span class="lineNoCov">          0 :     return htable-&gt;count;</span>
-<a name="155"><span class="lineNum">     155 </span>                :            : }</a>
-<span class="lineNum">     156 </span>                :            : 
-<span class="lineNum">     157 </span>                :<span class="lineNoCov">          0 : int ht_insert( ht_t * const htable, void * const data )</span>
-<span class="lineNum">     158 </span>                :            : {
-<span class="lineNum">     159 </span>                :            :     uint_t index;
-<span class="lineNum">     160 </span>                :            :     ht_itr_t itr;
-<span class="lineNum">     161 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( htable, FALSE );</span>
-<span class="lineNum">     162 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( data, FALSE );</span>
-<span class="lineNum">     163 </span>                :            : 
-<span class="lineNum">     164 </span>                :            :     /* make sure the item isn't already in the list */
-<span class="lineNum">     165 </span>[<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( !ITR_EQ(ht_find( htable, data ), ht_itr_end_t), FALSE );</span>
-<span class="lineNum">     166 </span>                :            : 
-<span class="lineNum">     167 </span>                :            :     /* does the table need to grow? */
-<span class="lineNum">     168 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     if ( (htable-&gt;count / htable-&gt;size) &gt; htable-&gt;limit )</span>
-<span class="lineNum">     169 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :         CHECK_RET( ht_grow( htable ), FALSE );</span>
-<span class="lineNum">     170 </span>                :            : 
-<span class="lineNum">     171 </span>                :            :     /* hash the data and figure out which list to add it to */
-<span class="lineNum">     172 </span>                :<span class="lineNoCov">          0 :     index = (*(htable-&gt;hfn))(data) % htable-&gt;size;</span>
-<span class="lineNum">     173 </span>                :            : 
-<span class="lineNum">     174 </span>                :            :     /* add the data to the appropriate list */
-<span class="lineNum">     175 </span>        [<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( list_push_tail( LIST_AT( htable-&gt;lists, index ), data ), FALSE );</span>
-<span class="lineNum">     176 </span>                :            : 
-<span class="lineNum">     177 </span>                :<span class="lineNoCov">          0 :     return TRUE;</span>
-<a name="178"><span class="lineNum">     178 </span>                :            : }</a>
+<span class="lineNum">     118 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 264 times"> + </span>]:<span class="lineCov">        265 :     CHECK_RET( ht_grow( htable ), FALSE );</span>
+<span class="lineNum">     119 </span>                :            : 
+<span class="lineNum">     120 </span>                :<span class="lineCov">        270 :     return TRUE;</span>
+<span class="lineNum">     121 </span>                :            : }
+<a name="122"><span class="lineNum">     122 </span>                :            : </a>
+<span class="lineNum">     123 </span>                :            : /* deinitialize a hashtable. */
+<span class="lineNum">     124 </span>                :<span class="lineCov">        268 : int ht_deinitialize( ht_t * const htable )</span>
+<span class="lineNum">     125 </span>                :            : {
+<span class="lineNum">     126 </span>                :            :     int i;
+<span class="lineNum">     127 </span>                :            : #if defined(UNIT_TESTING)
+<span class="lineNum">     128 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 266 times"> + </span>]:<span class="lineCov">        268 :     CHECK_RET( !fake_ht_deinit, fake_ht_deinit_ret );</span>
+<span class="lineNum">     129 </span>                :            : #endif
+<span class="lineNum">     130 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 265 times"> + </span>]:<span class="lineCov">        266 :     CHECK_PTR_RET( htable, FALSE );</span>
+<span class="lineNum">     131 </span>                :            : 
+<span class="lineNum">     132 </span>                :            :     /* free up all of the memory in the lists */
+<span class="lineNum">     133 </span>        [<span class="branchCov" title="Branch 0 was taken 7538 times"> + </span><span class="branchCov" title="Branch 1 was taken 265 times"> + </span>]:<span class="lineCov">       7803 :     for( i = 0; i &lt; htable-&gt;size; i++ )</span>
+<span class="lineNum">     134 </span>                :            :     {
+<span class="lineNum">     135 </span>                :<span class="lineCov">       7538 :         list_clear( LIST_AT( htable-&gt;lists, i ) );</span>
+<span class="lineNum">     136 </span>                :            :     }
+<span class="lineNum">     137 </span>                :            : 
+<span class="lineNum">     138 </span>                :            :     /* free up the lists */
+<span class="lineNum">     139 </span>                :<span class="lineCov">        265 :     FREE( htable-&gt;lists );</span>
+<span class="lineNum">     140 </span>                :            : 
+<span class="lineNum">     141 </span>                :<span class="lineCov">        268 :     return TRUE;</span>
+<a name="142"><span class="lineNum">     142 </span>                :            : }</a>
+<span class="lineNum">     143 </span>                :            : 
+<span class="lineNum">     144 </span>                :<span class="lineCov">          2 : uint_t ht_count( ht_t * const htable )</span>
+<span class="lineNum">     145 </span>                :            : {
+<span class="lineNum">     146 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          2 :     CHECK_PTR_RET( htable, 0 );</span>
+<span class="lineNum">     147 </span>                :<span class="lineCov">          2 :     return htable-&gt;count;</span>
+<a name="148"><span class="lineNum">     148 </span>                :            : }</a>
+<span class="lineNum">     149 </span>                :            : 
+<span class="lineNum">     150 </span>                :<span class="lineCov">        300 : int ht_insert( ht_t * const htable, void * const data )</span>
+<span class="lineNum">     151 </span>                :            : {
+<span class="lineNum">     152 </span>                :            :     uint_t index;
+<span class="lineNum">     153 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 299 times"> + </span>]:<span class="lineCov">        300 :     CHECK_PTR_RET( htable, FALSE );</span>
+<span class="lineNum">     154 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 298 times"> + </span>]:<span class="lineCov">        299 :     CHECK_PTR_RET( data, FALSE );</span>
+<span class="lineNum">     155 </span>                :            : 
+<span class="lineNum">     156 </span>                :            :     /* make sure the item isn't already in the list */
+<span class="lineNum">     157 </span>[<span class="branchCov" title="Branch 1 was taken 296 times"> + </span><span class="branchCov" title="Branch 2 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 4 was taken 1 time"> + </span><span class="branchCov" title="Branch 5 was taken 295 times"> + </span>]:<span class="lineCov">        298 :     CHECK_RET( ITR_EQ(ht_find( htable, data ), ht_itr_end_t), FALSE );</span>
+<span class="lineNum">     158 </span>                :            : 
+<span class="lineNum">     159 </span>                :            :     /* does the table need to grow? */
+<span class="lineNum">     160 </span>        [<span class="branchCov" title="Branch 0 was taken 90 times"> + </span><span class="branchCov" title="Branch 1 was taken 205 times"> + </span>]:<span class="lineCov">        295 :     if ( (htable-&gt;count / htable-&gt;size) &gt; htable-&gt;limit )</span>
+<span class="lineNum">     161 </span>        [<span class="branchCov" title="Branch 1 was taken 87 times"> + </span><span class="branchCov" title="Branch 2 was taken 3 times"> + </span>]:<span class="lineCov">         90 :         CHECK_RET( ht_grow( htable ), FALSE );</span>
+<span class="lineNum">     162 </span>                :            : 
+<span class="lineNum">     163 </span>                :            :     /* hash the data and figure out which list to add it to */
+<span class="lineNum">     164 </span>                :<span class="lineCov">        208 :     index = (*(htable-&gt;hfn))(data) % htable-&gt;size;</span>
+<span class="lineNum">     165 </span>                :            : 
+<span class="lineNum">     166 </span>                :            :     /* add the data to the appropriate list */
+<span class="lineNum">     167 </span>        [<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchCov" title="Branch 3 was taken 207 times"> + </span>]:<span class="lineCov">        208 :     CHECK_RET( list_push_tail( LIST_AT( htable-&gt;lists, index ), data ), FALSE );</span>
+<span class="lineNum">     168 </span>                :            : 
+<span class="lineNum">     169 </span>                :            :     /* update the count */
+<span class="lineNum">     170 </span>                :<span class="lineCov">        207 :     htable-&gt;count++;</span>
+<span class="lineNum">     171 </span>                :            : 
+<span class="lineNum">     172 </span>                :<span class="lineCov">        300 :     return TRUE;</span>
+<a name="173"><span class="lineNum">     173 </span>                :            : }</a>
+<span class="lineNum">     174 </span>                :            : 
+<span class="lineNum">     175 </span>                :<span class="lineCov">          7 : int ht_clear( ht_t * const htable )</span>
+<span class="lineNum">     176 </span>                :            : {
+<span class="lineNum">     177 </span>                :            :     ht_t tmp;
+<span class="lineNum">     178 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">          7 :     CHECK_PTR_RET( htable, FALSE );</span>
 <span class="lineNum">     179 </span>                :            : 
-<span class="lineNum">     180 </span>                :<span class="lineNoCov">          0 : int ht_clear( ht_t * const htable )</span>
-<span class="lineNum">     181 </span>                :            : {
-<span class="lineNum">     182 </span>                :            :     ht_t tmp;
-<span class="lineNum">     183 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( htable, FALSE );</span>
-<span class="lineNum">     184 </span>                :            : 
-<span class="lineNum">     185 </span>                :            :     /* make a copy of the htable members */
-<span class="lineNum">     186 </span>                :<span class="lineNoCov">          0 :     MEMCPY( &amp;tmp, htable, sizeof(ht_t) );</span>
-<span class="lineNum">     187 </span>                :<span class="lineNoCov">          0 :     tmp.lists = NULL;</span>
-<span class="lineNum">     188 </span>                :            : 
-<span class="lineNum">     189 </span>                :            :     /* deinit, then init the table */
-<span class="lineNum">     190 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( ht_deinitialize( htable ), FALSE );</span>
-<span class="lineNum">     191 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( ht_initialize( htable, tmp.initial, tmp.hfn, tmp.mfn, tmp.dfn ), FALSE );</span>
-<span class="lineNum">     192 </span>                :            : 
-<span class="lineNum">     193 </span>                :<span class="lineNoCov">          0 :     return TRUE;</span>
-<a name="194"><span class="lineNum">     194 </span>                :            : }</a>
-<span class="lineNum">     195 </span>                :            : 
-<span class="lineNum">     196 </span>                :<span class="lineNoCov">          0 : ht_itr_t ht_find( ht_t const * const htable, void * const data )</span>
-<span class="lineNum">     197 </span>                :            : {
-<span class="lineNum">     198 </span>                :            :     uint_t index;
-<span class="lineNum">     199 </span>                :            :     ht_itr_t ret;
-<span class="lineNum">     200 </span>                :            :     list_itr_t itr, end;
-<span class="lineNum">     201 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
-<span class="lineNum">     202 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( data, ht_itr_end_t );</span>
-<span class="lineNum">     203 </span>                :            : 
-<span class="lineNum">     204 </span>                :            :     /* get the list index */
-<span class="lineNum">     205 </span>                :<span class="lineNoCov">          0 :     index = (*(htable-&gt;hfn))(data) % htable-&gt;size;</span>
-<span class="lineNum">     206 </span>                :            : 
-<span class="lineNum">     207 </span>                :<span class="lineNoCov">          0 :     end = list_itr_end( LIST_AT( htable-&gt;lists, index ) );</span>
-<span class="lineNum">     208 </span>                :<span class="lineNoCov">          0 :     itr = list_itr_begin( LIST_AT( htable-&gt;lists, index ) );</span>
-<span class="lineNum">     209 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :     for( ; itr != end; itr = list_itr_next( LIST_AT( htable-&gt;lists, index ), itr ) )</span>
-<span class="lineNum">     210 </span>                :            :     {
-<span class="lineNum">     211 </span>        [<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :         if ( (*(htable-&gt;mfn))( data, list_itr_get(LIST_AT( htable-&gt;lists, index ), itr) ) )</span>
-<span class="lineNum">     212 </span>                :            :         {
-<span class="lineNum">     213 </span>                :<span class="lineNoCov">          0 :             ret.idx = index;</span>
-<span class="lineNum">     214 </span>                :<span class="lineNoCov">          0 :             ret.itr = itr;</span>
-<span class="lineNum">     215 </span>                :<span class="lineNoCov">          0 :             return ret;</span>
-<span class="lineNum">     216 </span>                :            :         }
-<span class="lineNum">     217 </span>                :            :     }
-<span class="lineNum">     218 </span>                :            : 
-<span class="lineNum">     219 </span>                :<span class="lineNoCov">          0 :     return ht_itr_end_t;</span>
-<a name="220"><span class="lineNum">     220 </span>                :            : }</a>
-<span class="lineNum">     221 </span>                :            : 
-<span class="lineNum">     222 </span>                :<span class="lineNoCov">          0 : int ht_remove( ht_t * const htable, ht_itr_t const itr )</span>
-<span class="lineNum">     223 </span>                :            : {
-<span class="lineNum">     224 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( htable, FALSE );</span>
-<span class="lineNum">     225 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( !ITR_EQ( itr, ht_itr_end_t ), FALSE );</span>
-<span class="lineNum">     226 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( ((itr.idx &gt;= 0) &amp;&amp; (itr.idx &lt; htable-&gt;size)), FALSE );</span>
-<span class="lineNum">     227 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( itr.itr != -1, FALSE );</span>
-<span class="lineNum">     228 </span>                :            : 
-<span class="lineNum">     229 </span>                :            :     /* remove the item from the list */
-<span class="lineNum">     230 </span>                :<span class="lineNoCov">          0 :     list_pop( LIST_AT( htable-&gt;lists, itr.idx ), itr.itr );</span>
-<span class="lineNum">     231 </span>                :            : 
-<span class="lineNum">     232 </span>                :<span class="lineNoCov">          0 :     return TRUE;</span>
-<a name="233"><span class="lineNum">     233 </span>                :            : }</a>
-<span class="lineNum">     234 </span>                :            : 
-<span class="lineNum">     235 </span>                :<span class="lineNoCov">          0 : void * ht_itr_get( ht_t const * const htable, ht_itr_t const itr )</span>
-<span class="lineNum">     236 </span>                :            : {
-<span class="lineNum">     237 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( htable, FALSE );</span>
-<span class="lineNum">     238 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( !ITR_EQ( itr, ht_itr_end_t ), FALSE );</span>
-<span class="lineNum">     239 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( ((itr.idx &gt;= 0) &amp;&amp; (itr.idx &lt; htable-&gt;size)), FALSE );</span>
-<span class="lineNum">     240 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( itr.itr != -1, FALSE );</span>
-<span class="lineNum">     241 </span>                :            : 
-<span class="lineNum">     242 </span>                :<span class="lineNoCov">          0 :     return list_itr_get( LIST_AT( htable-&gt;lists, itr.idx ), itr.itr );</span>
-<span class="lineNum">     243 </span>                :            : }
-<span class="lineNum">     244 </span>                :            : 
+<span class="lineNum">     180 </span>                :            :     /* make a copy of the htable members */
+<span class="lineNum">     181 </span>                :<span class="lineCov">          6 :     MEMCPY( &amp;tmp, htable, sizeof(ht_t) );</span>
+<span class="lineNum">     182 </span>                :<span class="lineCov">          6 :     tmp.lists = NULL;</span>
+<span class="lineNum">     183 </span>                :            : 
+<span class="lineNum">     184 </span>                :            :     /* deinit, then init the table */
+<span class="lineNum">     185 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 5 times"> + </span>]:<span class="lineCov">          6 :     CHECK_RET( ht_deinitialize( htable ), FALSE );</span>
+<span class="lineNum">     186 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 4 times"> + </span>]:<span class="lineCov">          5 :     CHECK_RET( ht_initialize( htable, tmp.initial, tmp.hfn, tmp.mfn, tmp.dfn ), FALSE );</span>
+<span class="lineNum">     187 </span>                :            : 
+<span class="lineNum">     188 </span>                :<span class="lineCov">          7 :     return TRUE;</span>
+<a name="189"><span class="lineNum">     189 </span>                :            : }</a>
+<span class="lineNum">     190 </span>                :            : 
+<span class="lineNum">     191 </span>                :<span class="lineCov">        601 : ht_itr_t ht_find( ht_t const * const htable, void * const data )</span>
+<span class="lineNum">     192 </span>                :            : {
+<span class="lineNum">     193 </span>                :            :     uint_t index;
+<span class="lineNum">     194 </span>                :            :     ht_itr_t ret;
+<span class="lineNum">     195 </span>                :            :     list_itr_t itr, end;
+<span class="lineNum">     196 </span>                :            : #if defined(UNIT_TESTING)
+<span class="lineNum">     197 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 598 times"> + </span>]:<span class="lineCov">        601 :     CHECK_RET( !fake_ht_find, fake_ht_find_ret );</span>
+<span class="lineNum">     198 </span>                :            : #endif
+<span class="lineNum">     199 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 596 times"> + </span>]:<span class="lineCov">        598 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
+<span class="lineNum">     200 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 594 times"> + </span>]:<span class="lineCov">        596 :     CHECK_PTR_RET( data, ht_itr_end_t );</span>
+<span class="lineNum">     201 </span>                :            : 
+<span class="lineNum">     202 </span>                :            :     /* get the list index */
+<span class="lineNum">     203 </span>                :<span class="lineCov">        594 :     index = (*(htable-&gt;hfn))(data) % htable-&gt;size;</span>
+<span class="lineNum">     204 </span>                :            : 
+<span class="lineNum">     205 </span>                :<span class="lineCov">        594 :     end = list_itr_end( LIST_AT( htable-&gt;lists, index ) );</span>
+<span class="lineNum">     206 </span>                :<span class="lineCov">        594 :     itr = list_itr_begin( LIST_AT( htable-&gt;lists, index ) );</span>
+<span class="lineNum">     207 </span>        [<span class="branchCov" title="Branch 1 was taken 1274 times"> + </span><span class="branchCov" title="Branch 2 was taken 590 times"> + </span>]:<span class="lineCov">       1864 :     for( ; itr != end; itr = list_itr_next( LIST_AT( htable-&gt;lists, index ), itr ) )</span>
+<span class="lineNum">     208 </span>                :            :     {
+<span class="lineNum">     209 </span>        [<span class="branchCov" title="Branch 2 was taken 4 times"> + </span><span class="branchCov" title="Branch 3 was taken 1270 times"> + </span>]:<span class="lineCov">       1274 :         if ( (*(htable-&gt;mfn))( data, list_get(LIST_AT( htable-&gt;lists, index ), itr) ) )</span>
+<span class="lineNum">     210 </span>                :            :         {
+<span class="lineNum">     211 </span>                :<span class="lineCov">          4 :             ret.idx = index;</span>
+<span class="lineNum">     212 </span>                :<span class="lineCov">          4 :             ret.itr = itr;</span>
+<span class="lineNum">     213 </span>                :<span class="lineCov">          4 :             return ret;</span>
+<span class="lineNum">     214 </span>                :            :         }
+<span class="lineNum">     215 </span>                :            :     }
+<span class="lineNum">     216 </span>                :            : 
+<span class="lineNum">     217 </span>                :<span class="lineCov">        601 :     return ht_itr_end_t;</span>
+<a name="218"><span class="lineNum">     218 </span>                :            : }</a>
+<span class="lineNum">     219 </span>                :            : 
+<span class="lineNum">     220 </span>                :<span class="lineCov">         10 : int ht_remove( ht_t * const htable, ht_itr_t const itr )</span>
+<span class="lineNum">     221 </span>                :            : {
+<span class="lineNum">     222 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 9 times"> + </span>]:<span class="lineCov">         10 :     CHECK_PTR_RET( htable, FALSE );</span>
+<span class="lineNum">     223 </span>[<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchCov" title="Branch 3 was taken 2 times"> + </span>]:<span class="lineCov">          9 :     CHECK_RET( !ITR_EQ( itr, ht_itr_end_t ), FALSE );</span>
+<span class="lineNum">     224 </span>[<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 3 times"> + </span><span class="branchCov" title="Branch 3 was taken 3 times"> + </span>]:<span class="lineCov">          8 :     CHECK_RET( ((itr.idx &gt;= 0) &amp;&amp; (itr.idx &lt; htable-&gt;size)), FALSE );</span>
+<span class="lineNum">     225 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          3 :     CHECK_RET( htable-&gt;count &gt; 0, FALSE );</span>
+<span class="lineNum">     226 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          2 :     CHECK_PTR_RET( list_get( LIST_AT( htable-&gt;lists, itr.idx ), itr.itr ), FALSE );</span>
+<span class="lineNum">     227 </span>                :            : 
+<span class="lineNum">     228 </span>                :            :     /* remove the item from the list */
+<span class="lineNum">     229 </span>                :<span class="lineCov">          1 :     list_pop( LIST_AT( htable-&gt;lists, itr.idx ), itr.itr );</span>
+<span class="lineNum">     230 </span>                :            : 
+<span class="lineNum">     231 </span>                :            :     /* update the count */
+<span class="lineNum">     232 </span>                :<span class="lineCov">          1 :     htable-&gt;count--;</span>
+<span class="lineNum">     233 </span>                :            : 
+<span class="lineNum">     234 </span>                :<span class="lineCov">         10 :     return TRUE;</span>
+<a name="235"><span class="lineNum">     235 </span>                :            : }</a>
+<span class="lineNum">     236 </span>                :            : 
+<span class="lineNum">     237 </span>                :<span class="lineCov">          7 : void * ht_get( ht_t const * const htable, ht_itr_t const itr )</span>
+<span class="lineNum">     238 </span>                :            : {
+<span class="lineNum">     239 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">          7 :     CHECK_PTR_RET( htable, FALSE );</span>
+<span class="lineNum">     240 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          6 :     CHECK_RET( !ITR_EQ( itr, ht_itr_end_t ), FALSE );</span>
+<span class="lineNum">     241 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 3 times"> + </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          5 :     CHECK_RET( ((itr.idx &gt;= 0) &amp;&amp; (itr.idx &lt; htable-&gt;size)), FALSE );</span>
+<span class="lineNum">     242 </span>                :            : 
+<span class="lineNum">     243 </span>                :<span class="lineCov">          7 :     return list_get( LIST_AT( htable-&gt;lists, itr.idx ), itr.itr );</span>
+<span class="lineNum">     244 </span>                :            : }
 <span class="lineNum">     245 </span>                :            : 
-<a name="246"><span class="lineNum">     246 </span>                :            : /********** PRIVATE **********/</a>
-<span class="lineNum">     247 </span>                :            : 
-<span class="lineNum">     248 </span>                :<span class="lineCov">        256 : static uint_t ht_get_new_size( uint_t const count, float const limit )</span>
-<span class="lineNum">     249 </span>                :            : {
-<span class="lineNum">     250 </span>                :<span class="lineCov">        256 :     uint_t index = 0;</span>
-<span class="lineNum">     251 </span>                :            : 
-<span class="lineNum">     252 </span>                :            :     /* find the first prime that results in a load less than the limit */
-<span class="lineNum">     253 </span>[<span class="branchCov" title="Branch 0 was taken 956 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 700 times"> + </span><span class="branchCov" title="Branch 3 was taken 256 times"> + </span>]:<span class="lineCov">        956 :     while( ( index &lt; NUM_PRIMES ) &amp;&amp; ( ((float)count / (float)PRIMES[index]) &gt; limit ) )</span>
-<span class="lineNum">     254 </span>                :<span class="lineCov">        700 :         index++;</span>
-<span class="lineNum">     255 </span>                :            : 
-<span class="lineNum">     256 </span>                :<span class="lineCov">        256 :     return PRIMES[index];</span>
-<a name="257"><span class="lineNum">     257 </span>                :            : }</a>
-<span class="lineNum">     258 </span>                :            : 
-<span class="lineNum">     259 </span>                :<span class="lineCov">        256 : static int ht_grow( ht_t * const htable )</span>
-<span class="lineNum">     260 </span>                :            : {
-<span class="lineNum">     261 </span>                :            :     uint_t i, count, new_size, old_size;
-<span class="lineNum">     262 </span>                :            :     list_t *new_lists, *old_lists;
-<span class="lineNum">     263 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     CHECK_PTR_RET( htable, FALSE );</span>
+<span class="lineNum">     246 </span>                :            : 
+<a name="247"><span class="lineNum">     247 </span>                :            : /********** PRIVATE **********/</a>
+<span class="lineNum">     248 </span>                :            : 
+<span class="lineNum">     249 </span>                :<span class="lineCov">        270 : static uint_t ht_get_new_size( uint_t const count, float const limit )</span>
+<span class="lineNum">     250 </span>                :            : {
+<span class="lineNum">     251 </span>                :<span class="lineCov">        270 :     uint_t index = 0;</span>
+<span class="lineNum">     252 </span>                :            : 
+<span class="lineNum">     253 </span>                :            :     /* find the first prime that results in a load less than the limit */
+<span class="lineNum">     254 </span>[<span class="branchCov" title="Branch 0 was taken 1004 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 735 times"> + </span><span class="branchCov" title="Branch 3 was taken 269 times"> + </span>]:<span class="lineCov">       1005 :     while( ( index &lt; (NUM_PRIMES - 1) ) &amp;&amp; ( ((float)count / (float)PRIMES[index]) &gt; limit ) )</span>
+<span class="lineNum">     255 </span>                :            :     {
+<span class="lineNum">     256 </span>                :            :         DEBUG( &quot;%f / %f = %f &gt; %f\n&quot;, (float)count, (float)PRIMES[index], ((float)count / (float)PRIMES[index]), limit );
+<span class="lineNum">     257 </span>                :<span class="lineCov">        735 :         index++;</span>
+<span class="lineNum">     258 </span>                :            :     }
+<span class="lineNum">     259 </span>                :            :     
+<span class="lineNum">     260 </span>                :            :     DEBUG( &quot;%f / %f = %f &gt; %f\n&quot;, (float)count, (float)PRIMES[index], ((float)count / (float)PRIMES[index]), limit );
+<span class="lineNum">     261 </span>                :            : 
+<span class="lineNum">     262 </span>                :<span class="lineCov">        270 :     return PRIMES[index];</span>
+<a name="263"><span class="lineNum">     263 </span>                :            : }</a>
 <span class="lineNum">     264 </span>                :            : 
-<span class="lineNum">     265 </span>                :            :     /* if it's empty, then use the initial capacity */
-<span class="lineNum">     266 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     count = htable-&gt;count ? htable-&gt;count : htable-&gt;initial;</span>
-<span class="lineNum">     267 </span>                :            : 
-<span class="lineNum">     268 </span>                :            :     /* figure out the new size from the count */
-<span class="lineNum">     269 </span>                :<span class="lineCov">        256 :     new_size = ht_get_new_size( count, htable-&gt;limit );</span>
-<span class="lineNum">     270 </span>                :            : 
-<span class="lineNum">     271 </span>                :            :     /* remember some stuff */
-<span class="lineNum">     272 </span>                :<span class="lineCov">        256 :     old_size = htable-&gt;size;</span>
-<span class="lineNum">     273 </span>                :<span class="lineCov">        256 :     old_lists = htable-&gt;lists;</span>
-<span class="lineNum">     274 </span>                :            : 
-<span class="lineNum">     275 </span>                :            :     /* allocate the new list array */
-<span class="lineNum">     276 </span>        [<span class="branchCov" title="Branch 0 was taken 256 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        256 :     new_lists = CALLOC( new_size, sizeof(list_t) );</span>
-<span class="lineNum">     277 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     CHECK_PTR_RET( new_lists, FALSE );</span>
-<span class="lineNum">     278 </span>                :            : 
-<span class="lineNum">     279 </span>                :            :     /* initialize the lists */
-<span class="lineNum">     280 </span>        [<span class="branchCov" title="Branch 0 was taken 7488 times"> + </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">       7744 :     for ( i = 0; i &lt; new_size; i++ )</span>
-<span class="lineNum">     281 </span>                :            :     {
-<span class="lineNum">     282 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 7488 times"> + </span>]:<span class="lineCov">       7488 :         if ( !list_initialize( LIST_AT( new_lists, i ), 0, htable-&gt;dfn ) )</span>
-<span class="lineNum">     283 </span>                :            :         {
-<span class="lineNum">     284 </span>                :<span class="lineNoCov">          0 :             FREE( new_lists );</span>
-<span class="lineNum">     285 </span>                :<span class="lineNoCov">          0 :             return FALSE;</span>
-<span class="lineNum">     286 </span>                :            :         }
-<span class="lineNum">     287 </span>                :            :     }
-<span class="lineNum">     288 </span>                :            : 
-<span class="lineNum">     289 </span>                :            :     /* set up the hash table with the empty lists */
-<span class="lineNum">     290 </span>                :<span class="lineCov">        256 :     htable-&gt;count = 0;</span>
-<span class="lineNum">     291 </span>                :<span class="lineCov">        256 :     htable-&gt;size = new_size;</span>
-<span class="lineNum">     292 </span>                :<span class="lineCov">        256 :     htable-&gt;lists = new_lists;</span>
-<span class="lineNum">     293 </span>                :            :     
-<span class="lineNum">     294 </span>                :            :     /* hash the old data into the new table */
-<span class="lineNum">     295 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 256 times"> + </span>]:<span class="lineCov">        256 :     for ( i = 0; i &lt; old_size; i++ )</span>
-<span class="lineNum">     296 </span>                :            :     {
-<span class="lineNum">     297 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :         while( list_count( LIST_AT( old_lists, i ) ) )</span>
-<span class="lineNum">     298 </span>                :            :         {
-<span class="lineNum">     299 </span>                :            :             /* hash the data item into the new table */
-<span class="lineNum">     300 </span>                :<span class="lineNoCov">          0 :             ht_insert( htable, list_get_head( LIST_AT( old_lists, i ) ) );</span>
-<span class="lineNum">     301 </span>                :            : 
-<span class="lineNum">     302 </span>                :            :             /* remove the data item from the old list */
-<span class="lineNum">     303 </span>                :<span class="lineNoCov">          0 :             list_pop_head( LIST_AT( old_lists, i ) );</span>
-<span class="lineNum">     304 </span>                :            :         }
-<span class="lineNum">     305 </span>                :            : 
-<span class="lineNum">     306 </span>                :            :         /* free up the list memory */
-<span class="lineNum">     307 </span>                :<span class="lineNoCov">          0 :         list_deinitialize( LIST_AT( old_lists, i ) );</span>
-<span class="lineNum">     308 </span>                :            :     }
-<span class="lineNum">     309 </span>                :            : 
-<span class="lineNum">     310 </span>                :            :     /* free up the old lists array */
-<span class="lineNum">     311 </span>                :<span class="lineCov">        256 :     FREE( old_lists );</span>
-<span class="lineNum">     312 </span>                :            : 
-<span class="lineNum">     313 </span>                :<span class="lineCov">        256 :     return TRUE;</span>
-<span class="lineNum">     314 </span>                :            : }
-<span class="lineNum">     315 </span>                :            : 
-<span class="lineNum">     316 </span>                :            : 
-<span class="lineNum">     317 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     265 </span>                :<span class="lineCov">        358 : static int ht_grow( ht_t * const htable )</span>
+<span class="lineNum">     266 </span>                :            : {
+<span class="lineNum">     267 </span>                :            :     uint_t i, count, new_size, old_size;
+<span class="lineNum">     268 </span>                :            :     list_t *new_lists, *old_lists;
+<span class="lineNum">     269 </span>                :            : #if defined(UNIT_TESTING)
+<span class="lineNum">     270 </span>        [<span class="branchCov" title="Branch 0 was taken 88 times"> + </span><span class="branchCov" title="Branch 1 was taken 270 times"> + </span>]:<span class="lineCov">        358 :     CHECK_RET( !fake_ht_grow, fake_ht_grow_ret );</span>
+<span class="lineNum">     271 </span>                :            : #endif
+<span class="lineNum">     272 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 269 times"> + </span>]:<span class="lineCov">        270 :     CHECK_PTR_RET( htable, FALSE );</span>
+<span class="lineNum">     273 </span>                :            : 
+<span class="lineNum">     274 </span>                :            :     /* if it's empty, then use the initial capacity */
+<span class="lineNum">     275 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 266 times"> + </span>]:<span class="lineCov">        269 :     count = htable-&gt;count ? htable-&gt;count : htable-&gt;initial;</span>
+<span class="lineNum">     276 </span>                :            : 
+<span class="lineNum">     277 </span>                :            :     /* figure out the new size from the count */
+<span class="lineNum">     278 </span>                :<span class="lineCov">        269 :     new_size = ht_get_new_size( count, htable-&gt;limit );</span>
+<span class="lineNum">     279 </span>                :            : 
+<span class="lineNum">     280 </span>                :            :     /* remember some stuff */
+<span class="lineNum">     281 </span>                :<span class="lineCov">        269 :     old_size = htable-&gt;size;</span>
+<span class="lineNum">     282 </span>                :<span class="lineCov">        269 :     old_lists = htable-&gt;lists;</span>
+<span class="lineNum">     283 </span>                :            : 
+<span class="lineNum">     284 </span>                :            :     /* allocate the new list array */
+<span class="lineNum">     285 </span>        [<span class="branchCov" title="Branch 0 was taken 268 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        269 :     new_lists = CALLOC( new_size, sizeof(list_t) );</span>
+<span class="lineNum">     286 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 268 times"> + </span>]:<span class="lineCov">        269 :     CHECK_PTR_RET( new_lists, FALSE );</span>
+<span class="lineNum">     287 </span>                :            : 
+<span class="lineNum">     288 </span>                :            :     /* initialize the lists */
+<span class="lineNum">     289 </span>        [<span class="branchCov" title="Branch 0 was taken 7562 times"> + </span><span class="branchCov" title="Branch 1 was taken 267 times"> + </span>]:<span class="lineCov">       7829 :     for ( i = 0; i &lt; new_size; i++ )</span>
+<span class="lineNum">     290 </span>                :            :     {
+<span class="lineNum">     291 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 7561 times"> + </span>]:<span class="lineCov">       7562 :         if ( !list_initialize( LIST_AT( new_lists, i ), 0, htable-&gt;dfn ) )</span>
+<span class="lineNum">     292 </span>                :            :         {
+<span class="lineNum">     293 </span>                :<span class="lineCov">          1 :             FREE( new_lists );</span>
+<span class="lineNum">     294 </span>                :<span class="lineCov">          1 :             return FALSE;</span>
+<span class="lineNum">     295 </span>                :            :         }
+<span class="lineNum">     296 </span>                :            :     }
+<span class="lineNum">     297 </span>                :            : 
+<span class="lineNum">     298 </span>                :            :     /* set up the hash table with the empty lists */
+<span class="lineNum">     299 </span>                :<span class="lineCov">        267 :     htable-&gt;count = 0;</span>
+<span class="lineNum">     300 </span>                :<span class="lineCov">        267 :     htable-&gt;size = new_size;</span>
+<span class="lineNum">     301 </span>                :<span class="lineCov">        267 :     htable-&gt;lists = new_lists;</span>
+<span class="lineNum">     302 </span>                :            :     
+<span class="lineNum">     303 </span>                :            :     /* hash the old data into the new table */
+<span class="lineNum">     304 </span>        [<span class="branchCov" title="Branch 0 was taken 23 times"> + </span><span class="branchCov" title="Branch 1 was taken 267 times"> + </span>]:<span class="lineCov">        290 :     for ( i = 0; i &lt; old_size; i++ )</span>
+<span class="lineNum">     305 </span>                :            :     {
+<span class="lineNum">     306 </span>        [<span class="branchCov" title="Branch 1 was taken 92 times"> + </span><span class="branchCov" title="Branch 2 was taken 23 times"> + </span>]:<span class="lineCov">        115 :         while( list_count( LIST_AT( old_lists, i ) ) )</span>
+<span class="lineNum">     307 </span>                :            :         {
+<span class="lineNum">     308 </span>                :            :             /* hash the data item into the new table */
+<span class="lineNum">     309 </span>                :<span class="lineCov">         92 :             ht_insert( htable, list_get_head( LIST_AT( old_lists, i ) ) );</span>
+<span class="lineNum">     310 </span>                :            : 
+<span class="lineNum">     311 </span>                :            :             /* remove the data item from the old list */
+<span class="lineNum">     312 </span>                :<span class="lineCov">         92 :             list_pop_head( LIST_AT( old_lists, i ) );</span>
+<span class="lineNum">     313 </span>                :            :         }
+<span class="lineNum">     314 </span>                :            : 
+<span class="lineNum">     315 </span>                :            :         /* free up the list memory */
+<span class="lineNum">     316 </span>                :<span class="lineCov">         23 :         list_deinitialize( LIST_AT( old_lists, i ) );</span>
+<span class="lineNum">     317 </span>                :            :     }
 <span class="lineNum">     318 </span>                :            : 
-<a name="319"><span class="lineNum">     319 </span>                :            : #include &lt;CUnit/Basic.h&gt;</a>
-<span class="lineNum">     320 </span>                :            : 
-<span class="lineNum">     321 </span>                :<span class="lineCov">          1 : void test_hashtable_private_functions( void )</span>
-<span class="lineNum">     322 </span>                :            : {
-<span class="lineNum">     323 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">     319 </span>                :            :     /* free up the old lists array */
+<span class="lineNum">     320 </span>                :<span class="lineCov">        267 :     FREE( old_lists );</span>
+<span class="lineNum">     321 </span>                :            : 
+<span class="lineNum">     322 </span>                :<span class="lineCov">        358 :     return TRUE;</span>
+<span class="lineNum">     323 </span>                :            : }
 <span class="lineNum">     324 </span>                :            : 
-<span class="lineNum">     325 </span>                :            : #endif
-<span class="lineNum">     326 </span>                :            : 
+<span class="lineNum">     325 </span>                :            : 
+<span class="lineNum">     326 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     327 </span>                :            : 
+<a name="328"><span class="lineNum">     328 </span>                :            : #include &lt;CUnit/Basic.h&gt;</a>
+<span class="lineNum">     329 </span>                :            : 
+<span class="lineNum">     330 </span>                :<span class="lineCov">          1 : void test_hashtable_private_functions( void )</span>
+<span class="lineNum">     331 </span>                :            : {
+<span class="lineNum">     332 </span>                :            :     ht_t ht;
+<span class="lineNum">     333 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ht, 0, sizeof(ht_t) );</span>
+<span class="lineNum">     334 </span>                :            : 
+<span class="lineNum">     335 </span>                :            :     /* ht_get_new_size */
+<span class="lineNum">     336 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( ht_get_new_size( (uint_t)-1, 0.1 ), 1610612741 );</span>
+<span class="lineNum">     337 </span>                :            : 
+<span class="lineNum">     338 </span>                :            :     /* ht_grow */
+<span class="lineNum">     339 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( ht_grow( NULL ) );</span>
+<span class="lineNum">     340 </span>                :<span class="lineCov">          1 :     fail_alloc = TRUE;</span>
+<span class="lineNum">     341 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( ht_grow( &amp;ht ) );</span>
+<span class="lineNum">     342 </span>                :<span class="lineCov">          1 :     fail_alloc = FALSE;</span>
+<span class="lineNum">     343 </span>                :<span class="lineCov">          1 :     fake_list_init = TRUE;</span>
+<span class="lineNum">     344 </span>                :<span class="lineCov">          1 :     fake_list_init_ret = FALSE;</span>
+<span class="lineNum">     345 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( ht_grow( &amp;ht ) );</span>
+<span class="lineNum">     346 </span>                :<span class="lineCov">          1 :     fake_list_init = FALSE;</span>
+<span class="lineNum">     347 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">     348 </span>                :            : 
+<span class="lineNum">     349 </span>                :            : #endif
+<span class="lineNum">     350 </span>                :            : 
 </pre>
       </td>
     </tr>

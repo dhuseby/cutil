@@ -282,11 +282,11 @@ static void test_list_push_tail_small( void )
 	j = 0;
 	for ( itr = list_itr_begin( &list ); itr != end; itr = list_itr_next( &list, itr ) )
 	{
-		if ( (int_t)list_itr_get( &list, itr ) != j )
+		if ( (int_t)list_get( &list, itr ) != j )
 		{
-			NOTICE("[%d] %d != %d\n", (int_t)itr, (int_t)list_itr_get( &list, itr ), j );
+			NOTICE("[%d] %d != %d\n", (int_t)itr, (int_t)list_get( &list, itr ), j );
 		}
-		CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), j );
+		CU_ASSERT_EQUAL( (int_t)list_get( &list, itr ), j );
 		j++;
 	}
 
@@ -324,11 +324,11 @@ static void test_list_push_tail( void )
 		j = 0;
 		for ( itr = list_itr_begin( &list ); itr != end; itr = list_itr_next( &list, itr ) )
 		{
-			if ( (int_t)list_itr_get( &list, itr ) != j )
+			if ( (int_t)list_get( &list, itr ) != j )
 			{
-				NOTICE("[%d] %d != %d\n", (int_t)itr, (int_t)list_itr_get( &list, itr ), j );
+				NOTICE("[%d] %d != %d\n", (int_t)itr, (int_t)list_get( &list, itr ), j );
 			}
-			CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), j );
+			CU_ASSERT_EQUAL( (int_t)list_get( &list, itr ), j );
 			j++;
 		}
 
@@ -405,7 +405,7 @@ static void test_list_pop_head_static( void )
 	i = 0;
 	for ( itr = list_itr_begin( &list ); itr != end; itr = list_itr_next( &list, itr ) )
 	{
-		CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), i );
+		CU_ASSERT_EQUAL( (int_t)list_get( &list, itr ), i );
 		i++;
 	}
 
@@ -414,7 +414,7 @@ static void test_list_pop_head_static( void )
 	i = ((size * multiple) - 1);
 	for ( itr = list_itr_rbegin( &list ); itr != end; itr = list_itr_rnext( &list, itr ) )
 	{
-		CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), i );
+		CU_ASSERT_EQUAL( (int_t)list_get( &list, itr ), i );
 		i--;
 	}
 
@@ -456,12 +456,12 @@ static void test_list_pop_tail_static( void )
 			/* make sure the previous item in the list is what we expect */
 			itr = list_itr_begin( &list );
 			itr = list_itr_next( &list, itr );
-			/*CU_ASSERT_EQUAL( (int)list_itr_get(&list, itr), (i - 1) );*/
-			if ( (i - 1) != (int_t)list_itr_get(&list, itr) )
+			/*CU_ASSERT_EQUAL( (int)list_get(&list, itr), (i - 1) );*/
+			if ( (i - 1) != (int_t)list_get(&list, itr) )
 			{
 				itr = list_itr_begin( &list );
 				itr = list_itr_next( &list, itr );
-				j = (int_t)list_itr_get( &list, itr );
+				j = (int_t)list_get( &list, itr );
 			}
 		}
 	}
@@ -472,7 +472,7 @@ static void test_list_pop_tail_static( void )
 	i = ((size * multiple) - 1);
 	for ( ; itr != list_itr_end( &list ); itr = list_itr_next( &list, itr ) )
 	{
-		CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), i );
+		CU_ASSERT_EQUAL( (int_t)list_get( &list, itr ), i );
 		i--;
 	}
 
@@ -480,7 +480,7 @@ static void test_list_pop_tail_static( void )
 	i = 0;
 	for ( ; itr != list_itr_rend( &list ); itr = list_itr_rnext( &list, itr ) )
 	{
-		CU_ASSERT_EQUAL( (int_t)list_itr_get( &list, itr ), i );
+		CU_ASSERT_EQUAL( (int_t)list_get( &list, itr ), i );
 		i++;
 	}
 
@@ -749,7 +749,7 @@ static void test_list_get_middle( void )
 		{
 			if ( j & 0x1 )
 			{
-				k = (int_t)list_itr_get( &list, itr );
+				k = (int_t)list_get( &list, itr );
 				CU_ASSERT_EQUAL( j, k );
 			}
 			itr = list_itr_next( &list, itr );
@@ -875,26 +875,26 @@ static void test_list_get_prereqs( void )
 	MEMSET( &list, 0, sizeof(list_t) );
 
 	/* pass in NULL for the list */
-	CU_ASSERT_PTR_NULL( list_itr_get( NULL, -1 ) );
+	CU_ASSERT_PTR_NULL( list_get( NULL, -1 ) );
 
 	/* pass int -1 */
-	CU_ASSERT_PTR_NULL( list_itr_get( &list, -1 ) );
+	CU_ASSERT_PTR_NULL( list_get( &list, -1 ) );
 
 	/* init the list with zero size */
 	CU_ASSERT_TRUE( list_initialize( &list, 0, NULL ) );
 
 	/* pass in not -1, this will trigger the size check */
-	CU_ASSERT_PTR_NULL( list_itr_get( &list, 0 ) );
+	CU_ASSERT_PTR_NULL( list_get( &list, 0 ) );
 
 	/* make the size at least 4 */
 	CU_ASSERT_TRUE( list_reserve( &list, 4 ) );
 
 	/* pass in bogus iterators */
-	CU_ASSERT_PTR_NULL( list_itr_get( &list, -2 ) );
-	CU_ASSERT_PTR_NULL( list_itr_get( &list, 5 ) );
+	CU_ASSERT_PTR_NULL( list_get( &list, -2 ) );
+	CU_ASSERT_PTR_NULL( list_get( &list, 5 ) );
 
 	/* try to get an item from the free list */
-	CU_ASSERT_PTR_NULL( list_itr_get( &list, 3 ) );
+	CU_ASSERT_PTR_NULL( list_get( &list, 3 ) );
 
 	/* clean up */
 	CU_ASSERT_TRUE( list_deinitialize( &list ) );

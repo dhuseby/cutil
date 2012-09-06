@@ -70,6 +70,9 @@ int fake_ht_init = FALSE;
 int fake_ht_init_ret = FALSE;
 int fake_ht_deinit = FALSE;
 int fake_ht_deinit_ret = FALSE;
+int fake_ht_grow = FALSE;
+int fake_ht_grow_ret = FALSE;
+int fake_ht_find = FALSE;
 
 /* list */
 int fake_list_grow = FALSE;
@@ -78,6 +81,10 @@ int fake_list_init = FALSE;
 int fake_list_init_ret = FALSE;
 int fake_list_deinit = FALSE;
 int fake_list_deinit_ret = FALSE;
+int fake_list_push = FALSE;
+int fake_list_push_ret = FALSE;
+int fake_list_get = FALSE;
+void* fake_list_get_ret = NULL;
 
 /* socket */
 int fake_socket_getsockopt = FALSE;
@@ -150,6 +157,9 @@ void reset_test_flags( void )
 	fake_ht_init_ret = FALSE;
 	fake_ht_deinit = FALSE;
 	fake_ht_deinit_ret = FALSE;
+	fake_ht_grow = FALSE;
+	fake_ht_grow_ret = FALSE;
+	fake_ht_find = FALSE;
 
 	/* list */
 	fake_list_grow = FALSE;
@@ -158,6 +168,10 @@ void reset_test_flags( void )
 	fake_list_init_ret = FALSE;
 	fake_list_deinit = FALSE;
 	fake_list_deinit_ret = FALSE;
+	fake_list_push = FALSE;
+	fake_list_push_ret = FALSE;
+	fake_list_get = FALSE;
+	fake_list_get_ret = NULL;
 
 	/* socket */
 	fake_socket_getsockopt = FALSE;
