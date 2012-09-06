@@ -20,6 +20,7 @@
 #include <unistd.h>
 
 #include "debug.h"
+#include "macros.h"
 
 #if defined(UNIT_TESTING)
 #include "test_flags.h"
@@ -38,8 +39,8 @@ static gid_t orig_groups[NGROUPS_MAX];
 
 void drop_privileges( int permanent )
 {
-	gid_t newgid = getgid(), oldgid = getegid();
-	uid_t newuid = getuid(), olduid = geteuid();
+	gid_t newgid = GETGID(), oldgid = GETEGID();
+	uid_t newuid = GETUID(), olduid = GETEUID();
 
 	if (!permanent) 
 	{
@@ -48,26 +49,26 @@ void drop_privileges( int permanent )
 		 */
 		orig_gid = oldgid;
 		orig_uid = olduid;
-		orig_ngroups = getgroups(NGROUPS_MAX, orig_groups);
+		orig_ngroups = GETGROUPS(NGROUPS_MAX, orig_groups);
 	}
 
 	/* If root privileges are to be dropped, be sure to pare down the ancillary
-	* groups for the process before doing anything else because the setgroups(  )
+	* groups for the process before doing anything else because the SETGROUPS(  )
 	* system call requires root privileges.  Drop ancillary groups regardless of
 	* whether privileges are being dropped temporarily or permanently.
 	*/
 	if (!olduid) 
-		setgroups(1, &newgid);
+		SETGROUPS(1, &newgid);
 
 	if (newgid != oldgid) 
 	{
-		if (setregid((permanent ? newgid : -1), newgid) == -1) 
+		if (SETREGID((permanent ? newgid : -1), newgid) == -1) 
 			abort();
 	}
 
 	if (newuid != olduid) 
 	{
-		if (setregid((permanent ? newuid : -1), newuid) == -1) 
+		if (SETREGID((permanent ? newuid : -1), newuid) == -1) 
 			abort();
 	}
 
@@ -75,39 +76,39 @@ void drop_privileges( int permanent )
 	if (permanent) 
 	{
 		if ( (newgid != oldgid) && 
-			 ((setegid(oldgid) != -1) || (getegid() != newgid)) )
+			 ((SETEGID(oldgid) != -1) || (GETEGID() != newgid)) )
 		  abort();
 
 		if ( (newuid != olduid) && 
-			 ((seteuid(olduid) != -1) || (geteuid() != newuid)) )
+			 ((SETEUID(olduid) != -1) || (GETEUID() != newuid)) )
 		  abort();
 	} 
 	else 
 	{
-		if ( (newgid != oldgid) && (getegid() != newgid) )
+		if ( (newgid != oldgid) && (GETEGID() != newgid) )
 			abort();
 
-		if ( (newuid != olduid) && (geteuid() != newuid) )
+		if ( (newuid != olduid) && (GETEUID() != newuid) )
 			abort();
 	}
 }
 
 void restore_privileges( void )
 {
-	if ( geteuid() != orig_uid )
+	if ( GETEUID() != orig_uid )
 	{
-		if ( (seteuid(orig_uid) == -1) || (geteuid() != orig_uid) ) 
+		if ( (SETEUID(orig_uid) == -1) || (GETEUID() != orig_uid) ) 
 			abort();
 	}
 
-	if ( getegid() != orig_gid )
+	if ( GETEGID() != orig_gid )
 	{
-		if ( (setegid(orig_gid) == -1) || (getegid() != orig_gid) ) 
+		if ( (SETEGID(orig_gid) == -1) || (GETEGID() != orig_gid) ) 
 			abort();
 	}
 	
 	if (!orig_uid)
-		setgroups(orig_ngroups, orig_groups);
+		SETGROUPS(orig_ngroups, orig_groups);
 }
 
 #if defined(UNIT_TESTING)

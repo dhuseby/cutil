@@ -91,6 +91,26 @@ extern int fake_fork;
 extern int fake_fork_ret;
 #define FORK(...) (fake_fork ? fake_fork_ret : fork(__VA_ARGS__))
 
+extern int fake_getegid;
+extern int fake_getegid_ret;
+#define GETEGID(...) (fake_getegid ? fake_getegid_ret : getegid(__VA_ARGS__))
+
+extern int fake_geteuid;
+extern int fake_geteuid_ret;
+#define GETEUID(...) (fake_geteuid ? fake_geteuid_ret : geteuid(__VA_ARGS__))
+
+extern int fake_getgid;
+extern int fake_getgid_ret;
+#define GETGID(...) (fake_getgid ? fake_getgid_ret : getgid(__VA_ARGS__))
+
+extern int fake_getgroups;
+extern int fake_getgroups_ret;
+#define GETGROUPS(...) (fake_getgroups ? fake_getgroups_ret : getgroups(__VA_ARGS__))
+
+extern int fake_getuid;
+extern int fake_getuid_ret;
+#define GETUID(...) (fake_getuid ? fake_getuid_ret : getuid(__VA_ARGS__))
+
 extern int fake_listen;
 extern int fake_listen_ret;
 #define LISTEN(...) (fake_listen ? fake_listen_ret : listen(__VA_ARGS__))
@@ -98,6 +118,22 @@ extern int fake_listen_ret;
 extern int fake_pipe;
 extern int fake_pipe_ret;
 #define PIPE(...) (fake_pipe ? fake_pipe_ret : pipe(__VA_ARGS__))
+
+extern int fake_setegid;
+extern int fake_setegid_ret;
+#define SETEGID(...) (fake_setegid ? fake_setegid_ret : setegid(__VA_ARGS__))
+
+extern int fake_seteuid;
+extern int fake_seteuid_ret;
+#define SETEUID(...) (fake_seteuid ? fake_seteuid_ret : seteuid(__VA_ARGS__))
+
+extern int fake_setgroups;
+extern int fake_setgroups_ret;
+#define SETGROUPS(...) (fake_setgroups ? fake_setgroups_ret : setgroups(__VA_ARGS__))
+
+extern int fake_setregid;
+extern int fake_setregid_ret;
+#define SETREGID(...) (fake_setregid ? fake_setregid_ret : setregid(__VA_ARGS__))
 
 extern int fake_setsockopt;
 extern int fake_setsockopt_ret;
@@ -117,6 +153,11 @@ extern int fake_socket_ret;
 #define CONNECT connect
 #define FCNTL fcntl
 #define FORK fork
+#define GETEGID getegid
+#define GETEUID geteuid
+#define GETGID getgid
+#define GETGROUPS getgroups
+#define GETUID getuid
 #define LISTEN listen
 #define PIPE pipe
 #define SETSOCKOPT setsockopt

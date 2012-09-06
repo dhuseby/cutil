@@ -70,5 +70,4 @@ CU_pSuite add_events_test_suite()
 
 	return pSuite;
 }
-#endif
 

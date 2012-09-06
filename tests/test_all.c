@@ -36,6 +36,7 @@ SUITE( bitset );
 SUITE( btree );
 SUITE( buffer );
 SUITE( child );
+SUITE( events );
 SUITE( hashtable );
 SUITE( list );
 SUITE( pair );
@@ -57,6 +58,7 @@ int main()
 	ADD_SUITE( btree );
 	ADD_SUITE( buffer );
 	ADD_SUITE( child );
+	ADD_SUITE( events );
 	ADD_SUITE( hashtable );
 	ADD_SUITE( list );
 	ADD_SUITE( pair );
