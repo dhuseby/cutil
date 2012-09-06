@@ -27,7 +27,11 @@
 #include "debug.h"
 #include "macros.h"
 
-/* this function was lifted from "Secure Programming Cookbook for C and C++"
+#if defined(UNIT_TESTING)
+#include "test_flags.h"
+#endif
+
+/* these functions were lifted from "Secure Programming Cookbook for C and C++"
  * by Matt Messier and John Viega, O'Reilly July 2003, ISBN: 0-596-00394-3.
  *
  * I hope they don't mind I borrowed the code.
@@ -220,5 +224,15 @@ int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int
 
 	return new_environ;
 }
+
+#if defined(UNIT_TESTING)
+
+#include <CUnit/Basic.h>
+
+void test_sanitize_private_functions( void )
+{
+}
+
+#endif
 
 

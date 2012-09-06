@@ -28,6 +28,10 @@
 #include "macros.h"
 #include "btree.h"
 
+#if defined(UNIT_TESTING)
+#include "test_flags.h"
+#endif
+
 #define DEFAULT_INITIAL_CAPACITY (16)
 #define min(x, y) ((x < y) ? x : y)
 #define max(x, y) ((x > y) ? x : y)
@@ -1147,4 +1151,15 @@ void* bt_itr_get_key(bt_t const * const btree, bt_itr_t const itr)
 
 	return p->key;
 }
+
+#if defined(UNIT_TESTING)
+
+#include <CUnit/Basic.h>
+
+void test_btree_private_functions( void )
+{
+}
+
+#endif
+
 

@@ -18,6 +18,10 @@
 #include "macros.h"
 #include "pair.h"
 
+#if defined(UNIT_TESTING)
+#include "test_flags.h"
+#endif
+
 struct pair_s
 {
 	void * first;
@@ -53,4 +57,15 @@ void * pair_second( pair_t const * const pair )
 	CHECK_PTR_RET( pair, NULL );
 	return pair->second;
 }
+
+#if defined(UNIT_TESTING)
+
+#include <CUnit/Basic.h>
+
+void test_pair_private_functions( void )
+{
+}
+
+#endif
+
 

@@ -21,6 +21,10 @@
 
 #include "debug.h"
 
+#if defined(UNIT_TESTING)
+#include "test_flags.h"
+#endif
+
 /* these two functions were lifted from "Secure Programming Cookbook for C and C++"
  * by Matt Messier and John Viega, O'Reilly July 2003, ISBN: 0-596-00394-3.
  *
@@ -105,4 +109,14 @@ void restore_privileges( void )
 	if (!orig_uid)
 		setgroups(orig_ngroups, orig_groups);
 }
+
+#if defined(UNIT_TESTING)
+
+#include <CUnit/Basic.h>
+
+void test_privileges_private_functions( void )
+{
+}
+
+#endif
 

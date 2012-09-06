@@ -23,11 +23,9 @@
 #include <cutil/buffer.h>
 
 #include "test_macros.h"
+#include "test_flags.h"
 
-extern int fail_alloc;
-extern int fail_buffer_init;
-extern int fail_buffer_deinit;
-extern int fail_buffer_init_alloc;
+extern void test_buffer_private_functions( void );
 
 int8_t const * const buf = "blah";
 size_t const size = 5;
@@ -149,6 +147,7 @@ static void test_buffer_append_pwned( void )
 		CU_ASSERT_EQUAL( b->iov_len, (size_t)size1 );
 
 		buffer_append( b, p, size2 );
+		FREE( p );
 		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
 		CU_ASSERT_EQUAL( b->iov_len, (size_t)(size1 + size2) );
 
@@ -221,16 +220,19 @@ static void test_buffer_append_prereqs( void )
 	CU_ASSERT_TRUE( buffer_append( &b, (void*)&c, 1 ) );
 	CU_ASSERT_PTR_NOT_NULL( ((struct iovec)b).iov_base );
 	CU_ASSERT_EQUAL( ((struct iovec)b).iov_len, 1 );
+	CU_ASSERT_TRUE( buffer_deinitialize( &b ) );
 }
 
 static int init_buffer_suite( void )
 {
 	srand(0xDEADBEEF);
+	reset_test_flags();
 	return 0;
 }
 
 static int deinit_buffer_suite( void )
 {
+	reset_test_flags();
 	return 0;
 }
 
@@ -250,6 +252,7 @@ static CU_pSuite add_buffer_tests( CU_pSuite pSuite )
 	ADD_TEST( "buffer deinit null", test_buffer_deinit_null );
 	ADD_TEST( "buffer deinit fail", test_buffer_deinit_fail );
 	ADD_TEST( "buffer append pre-reqs", test_buffer_append_prereqs );
+	ADD_TEST( "buffer private functions", test_buffer_private_functions );
 	
 	return pSuite;
 }

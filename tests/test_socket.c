@@ -29,13 +29,14 @@
 #include <cutil/socket.h>
 
 #include "test_macros.h"
+#include "test_flags.h"
 
 #define REPEAT (128)
 #define SIZEMAX (128)
 #define MULTIPLE (8)
 
 extern evt_loop_t * el;
-extern int fail_socket_initialize;
+extern void test_socket_private_functions( void );
 
 static socket_ret_t connect_fn( socket_t * const s, void * user_data )
 {
@@ -578,19 +579,13 @@ static void test_socket_flush( void )
 static int init_socket_suite( void )
 {
 	srand(0xDEADBEEF);
-
-	/* set up the event loop */
-	el = evt_new();
-
+	reset_test_flags();
 	return 0;
 }
 
 static int deinit_socket_suite( void )
 {
-	/* take down the event loop */
-	evt_delete( el );
-	el = NULL;
-
+	reset_test_flags();
 	return 0;
 }
 

@@ -28,11 +28,15 @@
 #include <cutil/macros.h>
 #include <cutil/child.h>
 
-#define REPEAT (128)
+#include "test_macros.h"
+#include "test_flags.h"
+
+#define REPEAT (1)
 #define SIZEMAX (128)
 #define MULTIPLE (8)
 
 extern evt_loop_t * el;
+extern void test_child_private_functions( void );
 
 static int exit_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )
 {
@@ -62,7 +66,7 @@ static void test_child_newdel( void )
 	for ( i = 0; i < REPEAT; i++ )
 	{
 		child = NULL;
-		child = child_process_new( "./child.sh", args, env, &ops, el, NULL );
+		child = child_process_new( "./child.sh", args, env, &ops, el, TRUE, NULL );
 
 		/* run the event loop */
 		evt_run( el );
@@ -84,10 +88,12 @@ static void test_child_newdel_fail_first_pipe( void )
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
-		child_process_set_num_good_pipes( 0 );
+		fake_pipe = TRUE;
+		fake_pipe_ret = -1;
 		child = NULL;
-		child = child_process_new( "./child.sh", args, env, &ops, el, NULL );
-		child_process_set_num_good_pipes( -1 );
+		child = child_process_new( "./child.sh", args, env, &ops, el, TRUE, NULL );
+		fake_pipe = FALSE;
+		fake_pipe_ret = 0;
 		
 		CU_ASSERT_PTR_NULL( child );
 	}
@@ -104,10 +110,12 @@ static void test_child_newdel_fail_second_pipe( void )
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
-		child_process_set_num_good_pipes( 1 );
+		fake_pipe = TRUE;
+		fake_pipe_ret = -1;
 		child = NULL;
-		child = child_process_new( "./child.sh", args, env, &ops, el, NULL );
-		child_process_set_num_good_pipes( -1 );
+		child = child_process_new( "./child.sh", args, env, &ops, el, TRUE, NULL );
+		fake_pipe = FALSE;
+		fake_pipe_ret = 0;
 		
 		CU_ASSERT_PTR_NULL( child );
 	}
@@ -124,10 +132,12 @@ static void test_child_newdel_fail_fork( void )
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
-		child_process_set_fail_fork( TRUE );
+		fake_fork = TRUE;
+		fake_fork_ret = -1;
 		child = NULL;
-		child = child_process_new( "./child.sh", args, env, &ops, el, NULL );
-		child_process_set_fail_fork( FALSE );
+		child = child_process_new( "./child.sh", args, env, &ops, el, TRUE, NULL );
+		fake_fork = FALSE;
+		fake_fork_ret = 0;
 
 		CU_ASSERT_PTR_NULL( child );
 	}
@@ -143,7 +153,7 @@ static void test_child_wait( void )
 	child_ops_t ops = { &exit_fn, &read_fn, &write_fn };
 
 	child = NULL;
-	child = child_process_new( "./child_sleep.sh", args, env, &ops, el, NULL );
+	child = child_process_new( "./child_sleep.sh", args, env, &ops, el, TRUE, NULL );
 
 	/* run the event loop */
 	evt_run( el );
@@ -191,7 +201,7 @@ static void test_child_read( void )
 		child_pid = -1;
 		cpid = -1;
 		child = NULL;
-		child = child_process_new( "./child_pid.sh", args, env, &ops, el, NULL );
+		child = child_process_new( "./child_pid.sh", args, env, &ops, el, TRUE, NULL );
 
 		CU_ASSERT_PTR_NOT_NULL( child );
 
@@ -212,30 +222,25 @@ static void test_child_read( void )
 static int init_child_suite( void )
 {
 	srand(0xDEADBEEF);
-
-	/* set up the event loop */
-	el = evt_new();
-
+	reset_test_flags();
 	return 0;
 }
 
 static int deinit_child_suite( void )
 {
-	/* take down the event loop */
-	evt_delete( el );
-	el = NULL;
-
+	reset_test_flags();
 	return 0;
 }
 
 static CU_pSuite add_child_tests( CU_pSuite pSuite )
 {
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of child process", test_child_newdel), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of child process fail first pipe", test_child_newdel_fail_first_pipe), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of child process fail second pipe", test_child_newdel_fail_second_pipe), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of child process fail fork", test_child_newdel_fail_fork), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "wait on child process", test_child_wait), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "test read from child process", test_child_read), NULL );
+	ADD_TEST( "new/delete of child process", test_child_newdel);
+	ADD_TEST( "new/delete of child process fail first pipe", test_child_newdel_fail_first_pipe);
+	ADD_TEST( "new/delete of child process fail second pipe", test_child_newdel_fail_second_pipe);
+	ADD_TEST( "new/delete of child process fail fork", test_child_newdel_fail_fork);
+	ADD_TEST( "wait on child process", test_child_wait);
+	ADD_TEST( "test read from child process", test_child_read);
+	ADD_TEST( "child process private functions", test_child_private_functions );
 	return pSuite;
 }
 

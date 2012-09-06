@@ -21,10 +21,9 @@
 #include <cutil/bitset.h>
 
 #include "test_macros.h"
+#include "test_flags.h"
 
-extern int fail_alloc;
-extern int fail_bitset_init;
-extern int fail_bitset_deinit;
+extern void test_bitset_private_functions( void );
 
 void test_bitset_newdel( void )
 {
@@ -278,7 +277,7 @@ void test_bitset_randombitflips( void )
 	size_t i, j, nflips, size;
 	size_t * idxs;
 
-	size = (rand() % 65535);
+	size = (rand() % 8192);
 	MEMSET( &bset, 0, sizeof(bitset_t) );
 	CU_ASSERT_TRUE( bset_initialize( &bset, size ) );
 
@@ -451,11 +450,13 @@ void test_bitset_setall_prereqs( void )
 static int init_bitset_suite( void )
 {
 	srand(0xDEADBEEF);
+	reset_test_flags();
 	return 0;
 }
 
 static int deinit_bitset_suite( void )
 {
+	reset_test_flags();
 	return 0;
 }
 
@@ -482,6 +483,7 @@ static CU_pSuite add_bitset_tests( CU_pSuite pSuite )
 	ADD_TEST( "bitset test pre-reqs",		test_bitset_test_prereqs );
 	ADD_TEST( "bitset clear all pre-reqs",	test_bitset_clearall_prereqs );
 	ADD_TEST( "bitset set all pre-reqs",	test_bitset_setall_prereqs );
+	ADD_TEST( "bitset private functions",	test_bitset_private_functions );
 	
 	return pSuite;
 }

@@ -29,134 +29,7 @@
 #include <cutil/events.h>
 
 #include "test_macros.h"
-
-/* global event loop */
-evt_loop_t * el = NULL;
-
-/* malloc/calloc/realloc fail switch */
-int fail_alloc = FALSE;
-
-/* aiofd */
-int fake_aiofd_initialize = FALSE;
-int fake_aiofd_initialize_ret = FALSE;
-int fake_aiofd_read = FALSE;
-int fake_aiofd_read_ret = 0;
-int fake_aiofd_write = FALSE;
-int fake_aiofd_write_ret = FALSE;
-int fake_aiofd_writev = FALSE;
-int fake_aiofd_writev_ret = FALSE;
-int fake_aiofd_enable_read_evt = FALSE;
-int fake_aiofd_enable_read_evt_ret = FALSE;
-
-/* bitset */
-int fail_bitset_init = FALSE;
-int fail_bitset_deinit = FALSE;
-
-/* buffer */
-int fail_buffer_init = FALSE;
-int fail_buffer_deinit = FALSE;
-int fail_buffer_init_alloc = FALSE;
-
-/* list */
-int fail_list_grow = FALSE;
-int fail_list_init = FALSE;
-int fail_list_deinit = FALSE;
-
-/* socket */
-int fake_accept = FALSE;
-int fake_accept_ret = 0;
-int fake_bind = FALSE;
-int fake_bind_ret = 0;
-int fake_connect = FALSE;
-int fake_connect_ret = 0;
-int fake_connect_errno = FALSE;
-int fake_connect_errno_value = 0;
-int fake_fcntl = FALSE;
-int fake_fcntl_ret = 0;
-int fake_listen = FALSE;
-int fake_listen_ret = 0;
-int fake_setsockopt = FALSE;
-int fake_setsockopt_ret = 0;
-int fake_socket = FALSE;
-int fake_socket_ret = 0;
-int fake_socket_getsockopt = FALSE;
-int fake_socket_errval = 0;
-int fake_socket_get_error_ret = FALSE;
-int fail_socket_initialize = FALSE;
-int fake_socket_connected = FALSE;
-int fake_socket_connected_ret = FALSE;
-int fake_socket_connect = FALSE;
-int fake_socket_connect_ret = FALSE;
-int fake_socket_bound = FALSE;
-int fake_socket_bound_ret = FALSE;
-int fake_socket_lookup_host = FALSE;
-int fake_socket_lookup_host_ret = FALSE;
-int fake_socket_bind = FALSE;
-int fake_socket_bind_ret = FALSE;
-
-void reset_test_flags( void )
-{
-	/* malloc/calloc/realloc fail switch */
-	fail_alloc = FALSE;
-
-	/* aiofd */
-	fake_aiofd_initialize = FALSE;
-	fake_aiofd_initialize_ret = FALSE;
-	fake_aiofd_read = FALSE;
-	fake_aiofd_read_ret = 0;
-	fake_aiofd_write = FALSE;
-	fake_aiofd_write_ret = FALSE;
-	fake_aiofd_writev = FALSE;
-	fake_aiofd_writev_ret = FALSE;
-	fake_aiofd_enable_read_evt = FALSE;
-	fake_aiofd_enable_read_evt_ret = FALSE;
-
-	/* bitset */
-	fail_bitset_init = FALSE;
-	fail_bitset_deinit = FALSE;
-
-	/* buffer */
-	fail_buffer_init = FALSE;
-	fail_buffer_deinit = FALSE;
-	fail_buffer_init_alloc = FALSE;
-
-	/* list */
-	fail_list_grow = FALSE;
-	fail_list_init = FALSE;
-	fail_list_deinit = FALSE;
-
-	/* socket */
-	fake_accept = FALSE;
-	fake_accept_ret = 0;
-	fake_bind = FALSE;
-	fake_bind_ret = 0;
-	fake_connect = FALSE;
-	fake_connect_ret = 0;
-	fake_connect_errno = FALSE;
-	fake_connect_errno_value = 0;
-	fake_fcntl = FALSE;
-	fake_fcntl_ret = 0;
-	fake_listen = FALSE;
-	fake_listen_ret = 0;
-	fake_setsockopt = FALSE;
-	fake_setsockopt_ret = 0;
-	fake_socket = FALSE;
-	fake_socket_ret = 0;
-	fake_socket_getsockopt = FALSE;
-	fake_socket_errval = 0;
-	fake_socket_get_error_ret = FALSE;
-	fail_socket_initialize = FALSE;
-	fake_socket_connected = FALSE;
-	fake_socket_connected_ret = FALSE;
-	fake_socket_connect = FALSE;
-	fake_socket_connect_ret = FALSE;
-	fake_socket_bound = FALSE;
-	fake_socket_bound_ret = FALSE;
-	fake_socket_lookup_host = FALSE;
-	fake_socket_lookup_host_ret = FALSE;
-	fake_socket_bind = FALSE;
-	fake_socket_bind_ret = FALSE;
-}
+#include "test_flags.h"
 
 SUITE( aiofd );
 SUITE( bitset );
@@ -169,6 +42,8 @@ SUITE( pair );
 SUITE( privileges );
 SUITE( socket );
 SUITE( sanitize );
+
+evt_loop_t * el = NULL;
 
 int main()
 {
@@ -189,12 +64,19 @@ int main()
 	ADD_SUITE( socket );
 	ADD_SUITE( sanitize );
 
+	/* set up the event loop */
+	el = evt_new();
+	CHECK_PTR_RET( el, 0 );
+
 	/* run all tests using the CUnit Basic interface */
 	CU_basic_set_mode( CU_BRM_VERBOSE );
 	CU_basic_run_tests();
 
 	/* clean up */
 	CU_cleanup_registry();
+
+	/* clean up the event loop */
+	/*evt_delete( el );*/
 
 	return CU_get_error();
 }

@@ -21,6 +21,11 @@
 #include <cutil/macros.h>
 #include <cutil/btree.h>
 
+#include "test_macros.h"
+#include "test_flags.h"
+
+extern void test_btree_private_functions( void );
+
 void test_btree_newdel( void )
 {
 	int i;
@@ -222,10 +227,10 @@ void test_btree_random_dynamic( void )
 	int_t i = 0;
 	int_t* v = NULL;
 	int_t* k = NULL;
-	int_t cur;
+	int_t cur = -1;
 	int_t prev = -1;
-	bt_t * bt;
-	bt_itr_t itr;
+	bt_t * bt = NULL;
+	bt_itr_t itr = NULL;
 	size_t size = (rand() % 1024);
 
 	bt = bt_new( 10, pint_less, FREE, FREE );
@@ -268,22 +273,25 @@ void test_btree_random_dynamic( void )
 static int init_btree_suite( void )
 {
 	srand(0xDEADBEEF);
+	reset_test_flags();
 	return 0;
 }
 
 static int deinit_btree_suite( void )
 {
+	reset_test_flags();
 	return 0;
 }
 
 static CU_pSuite add_btree_tests( CU_pSuite pSuite )
 {
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of btree", test_btree_newdel), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "iteration of btree", test_btree_iterator), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "iteration of random btree", test_btree_random), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "iteration of random btree using default compare", test_btree_random_default), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "iteration of random btree add duplicates", test_btree_random_duplicate), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "random btree with dynamically allocated keys and values", test_btree_random_dynamic), NULL );
+	ADD_TEST( "new/delete of btree", test_btree_newdel);
+	ADD_TEST( "iteration of btree", test_btree_iterator);
+	ADD_TEST( "iteration of random btree", test_btree_random);
+	ADD_TEST( "iteration of random btree using default compare", test_btree_random_default);
+	ADD_TEST( "iteration of random btree add duplicates", test_btree_random_duplicate);
+	ADD_TEST( "random btree with dynamically allocated keys and values", test_btree_random_dynamic);
+	ADD_TEST( "btree private functions", test_btree_private_functions );
 	
 	return pSuite;
 }

@@ -19,10 +19,7 @@
 #include "buffer.h"
 
 #if defined(UNIT_TESTING)
-extern int fail_alloc;
-extern int fail_buffer_init;
-extern int fail_buffer_deinit;
-extern int fail_buffer_init_alloc;
+#include "test_flags.h"
 int fail_alloc_bak = FALSE;
 #endif
 
@@ -140,4 +137,13 @@ int buffer_append( buffer_t * const b, void * p, size_t len )
 	return TRUE;
 }
 
+#if defined(UNIT_TESTING)
+
+#include <CUnit/Basic.h>
+
+void test_buffer_private_functions( void )
+{
+}
+
+#endif
 

@@ -40,47 +40,8 @@
 #include "socket.h"
 
 #if defined(UNIT_TESTING)
+#include "test_flags.h"
 extern evt_loop_t * el;
-extern int fake_aiofd_initialize;
-extern int fake_aiofd_initialize_ret;
-extern int fake_aiofd_read;
-extern int fake_aiofd_read_ret;
-extern int fake_aiofd_write;
-extern int fake_aiofd_write_ret;
-extern int fake_aiofd_writev;
-extern int fake_aiofd_writev_ret;
-extern int fake_aiofd_enable_read_evt;
-extern int fake_aiofd_enable_read_evt_ret;
-
-extern int fake_accept;
-extern int fake_accept_ret;
-extern int fake_bind;
-extern int fake_bind_ret;
-extern int fake_connect;
-extern int fake_connect_ret;
-extern int fake_connect_errno;
-extern int fake_connect_errno_value;
-extern int fake_listen;
-extern int fake_listen_ret;
-extern int fake_setsockopt;
-extern int fake_setsockopt_ret;
-extern int fake_socket;
-extern int fake_socket_ret;
-
-extern int fake_socket_getsockopt;
-extern int fake_socket_errval;
-extern int fake_socket_get_error_ret;
-extern int fail_socket_initialize;
-extern int fake_socket_connected;
-extern int fake_socket_connected_ret;
-extern int fake_socket_connect;
-extern int fake_socket_connect_ret;
-extern int fake_socket_bound;
-extern int fake_socket_bound_ret;
-extern int fake_socket_lookup_host;
-extern int fake_socket_lookup_host_ret;
-extern int fake_socket_bind;
-extern int fake_socket_bind_ret;
 #endif
 
 struct socket_s
@@ -1037,7 +998,8 @@ void test_socket_private_functions( void )
 	MEMSET( &s, 0, sizeof( socket_t ) );
 	CU_ASSERT_EQUAL( socket_lookup_host( NULL, NULL ), SOCKET_BADPARAM );
 	CU_ASSERT_EQUAL( socket_lookup_host( &s, NULL ), SOCKET_BADHOSTNAME );
-	CU_ASSERT_EQUAL( socket_lookup_host( &s, "foo.com" ), SOCKET_OK );
+	CU_ASSERT_EQUAL( socket_lookup_host( &s, "foo.com" ), SOCKET_OK ); /* strdup's the hostname */
+	FREE( s.host );
 	s.type = SOCKET_UNIX;
 	s.host = host;
 	CU_ASSERT_EQUAL( socket_lookup_host( &s, NULL ), SOCKET_OK );
@@ -1402,6 +1364,7 @@ void test_socket_private_functions( void )
 	FREE( p );
 
 	reset_test_flags();
+	FREE( host );
 }
 
 #endif

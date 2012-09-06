@@ -40,8 +40,7 @@
 #include "child.h"
 
 #if defined(UNIT_TESTING)
-static int fail_fork = FALSE;
-static int good_pipes = -1;
+#include "test_flags.h"
 #endif
 
 struct child_process_s
@@ -155,18 +154,9 @@ static int child_aiofd_read_fn( aiofd_t * const aiofd,
 }
 
 
-static pid_t safe_fork( int keepfds[], int nfds )
+static pid_t safe_fork( int keepfds[], int nfds, int drop )
 {
-	pid_t childpid;
-
-#if defined(UNIT_TESTING)
-	if ( fail_fork == TRUE )
-		childpid = -1;
-	else
-		childpid = fork();
-#else
-	childpid = fork();
-#endif
+	pid_t childpid = FORK();
 
 	/* this is a workaround to a bug in Mac OS X < 10.7 */
 #if defined (__APPLE__) && defined (UNIT_TESTING)
@@ -187,25 +177,13 @@ static pid_t safe_fork( int keepfds[], int nfds )
 	sanitize_files( keepfds, nfds );
 
 	/* remove root privileges and any unnecessary group privileges permanently */
-	drop_privileges( TRUE );
+	if ( drop )
+		drop_privileges( TRUE );
 
 	ASSERT( childpid == 0 );
 
 	/* this returns 0 */
 	return childpid;
-}
-
-static int safe_pipe( int pipefd[2] )
-{
-#if defined(UNIT_TESTING)
-	if ( good_pipes != -1)
-	{
-		if ( good_pipes == 0 )
-			return -1;
-		good_pipes--;
-	}
-#endif
-	return pipe(pipefd);
 }
 
 #define PIPE_READ_FD 0
@@ -217,6 +195,7 @@ static int child_process_initialize( child_process_t * const child,
 									 int8_t const * const environ[],
 									 child_ops_t const * const ops,
 									 evt_loop_t * const el,
+									 int const drop_privileges,
 									 void * user_data )
 {
 	/* 
@@ -250,11 +229,11 @@ static int child_process_initialize( child_process_t * const child,
 	MEMCPY( (void*)&(child->ops), ops, sizeof(child_ops_t) );
 
 	/* set up the pipes */
-	if ( safe_pipe(c2p_pipe) == -1 )
+	if ( PIPE(c2p_pipe) == -1 )
 	{
 		return FALSE;
 	}
-	if ( safe_pipe(p2c_pipe) == -1 )
+	if ( PIPE(p2c_pipe) == -1 )
 	{
 		close( c2p_pipe[PIPE_WRITE_FD] );
 		close( c2p_pipe[PIPE_READ_FD] );
@@ -266,7 +245,7 @@ static int child_process_initialize( child_process_t * const child,
 	keepfds[1] = p2c_pipe[PIPE_WRITE_FD];
 	keepfds[2] = c2p_pipe[PIPE_READ_FD];
 	keepfds[3] = c2p_pipe[PIPE_WRITE_FD];
-	child->pid = safe_fork( keepfds, 4 );
+	child->pid = safe_fork( keepfds, 4, drop_privileges );
 	if ( child->pid == -1 )
 	{
 		close( p2c_pipe[PIPE_WRITE_FD] );
@@ -341,6 +320,7 @@ child_process_t * child_process_new( int8_t const * const path,
 									 int8_t const * const environ[],
 									 child_ops_t const * const ops,
 									 evt_loop_t * const el,
+									 int const drop_privileges,
 									 void * user_data )
 {
 	child_process_t * child = NULL;
@@ -354,7 +334,7 @@ child_process_t * child_process_new( int8_t const * const path,
 	child = (child_process_t*)CALLOC( 1, sizeof(child_process_t) );
 	CHECK_PTR_RET_MSG( child, NULL, "failed to allocate child_process_t\n" );
 
-	if ( child_process_initialize( child, path, argv, environ, ops, el, user_data ) == FALSE )
+	if ( child_process_initialize( child, path, argv, environ, ops, el, drop_privileges, user_data ) == FALSE )
 	{
 		FREE( child );
 		return NULL;
@@ -436,14 +416,13 @@ int child_process_flush( child_process_t * const cp )
 }
 
 #if defined(UNIT_TESTING)
-void child_process_set_fail_fork( int fail )
+
+#include <CUnit/Basic.h>
+
+void test_child_private_functions( void )
 {
-	fail_fork = fail;
 }
-void child_process_set_num_good_pipes( int ngood )
-{
-	good_pipes = ngood;
-}
+
 #endif
 
 

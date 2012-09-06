@@ -18,8 +18,8 @@ GCNO=$(SRC:.c=.gcno)
 GCOV=$(SRC:.c=.c.gcov)
 # set CFLAGS to something gcov can use
 CFLAGS=-O3 -I$(EXTRA_LIBS_ROOT)/include
-coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)/include
-test: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)/include
+coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)/include -I../tests
+test: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)/include -I../tests
 
 # install utility
 INSTALL=/usr/bin/install

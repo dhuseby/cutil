@@ -128,8 +128,4 @@ socket_ret_t socket_writev( socket_t * const s,
 /* flush the socket output */
 socket_ret_t socket_flush( socket_t* const s );
 
-#if defined(UNIT_TESTING)
-void test_socket_private_functions( void );
-#endif
-
 #endif/*__SOCKET_H__*/

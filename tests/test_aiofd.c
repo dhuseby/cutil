@@ -28,11 +28,15 @@
 #include <cutil/macros.h>
 #include <cutil/aiofd.h>
 
+#include "test_macros.h"
+#include "test_flags.h"
+
 #define REPEAT (128)
 #define SIZEMAX (128)
 #define MULTIPLE (8)
 
 extern evt_loop_t * el;
+extern void test_aiofd_private_functions(void);
 
 static int read_fn( aiofd_t * const aiofd, size_t nread, void * user_data )
 {
@@ -72,25 +76,20 @@ static void test_aiofd_newdel( void )
 static int init_aiofd_suite( void )
 {
 	srand(0xDEADBEEF);
-
-	/* set up the event loop */
-	el = evt_new();
-
+	reset_test_flags();
 	return 0;
 }
 
 static int deinit_aiofd_suite( void )
 {
-	/* take down the event loop */
-	evt_delete( el );
-	el = NULL;
-
+	reset_test_flags();
 	return 0;
 }
 
 static CU_pSuite add_aiofd_tests( CU_pSuite pSuite )
 {
-	CHECK_PTR_RET( CU_add_test( pSuite, "new/delete of aiofd", test_aiofd_newdel), NULL );
+	ADD_TEST( "new/delete of aiofd", test_aiofd_newdel );
+	ADD_TEST( "test aiofd private functions", test_aiofd_private_functions );
 	return pSuite;
 }
 

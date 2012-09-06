@@ -29,16 +29,13 @@
 #include <cutil/list.h>
 
 #include "test_macros.h"
+#include "test_flags.h"
 
 #define REPEAT (128)
 #define SIZEMAX (128)
 #define MULTIPLE (8)
 
-/* the fail switches */
-extern int fail_alloc;
-extern int fail_list_grow;
-extern int fail_list_init;
-extern int fail_list_deinit;
+extern void test_list_private_functions( void );
 
 static void test_list_newdel( void )
 {
@@ -551,7 +548,8 @@ static void test_list_new_grow_fail( void )
 	list_t * list = NULL;
 
 	/* turn on the flag that forces grows to fail */
-	fail_list_grow = TRUE;
+	fake_list_grow = TRUE;
+	fake_list_grow_ret = FALSE;
 
 	size = (rand() % SIZEMAX);
 	list = list_new( size, NULL );
@@ -559,7 +557,7 @@ static void test_list_new_grow_fail( void )
 	CU_ASSERT_PTR_NULL( list );
 	CU_ASSERT_EQUAL( list_count( list ), 0 );
 	
-	fail_list_grow = FALSE;
+	fake_list_grow = FALSE;
 }
 
 static void test_list_init_grow_fail( void )
@@ -569,7 +567,8 @@ static void test_list_init_grow_fail( void )
 	list_t list;
 
 	/* turn on the flag that forces grows to fail */
-	fail_list_grow = TRUE;
+	fake_list_grow = TRUE;
+	fake_list_grow_ret = FALSE;
 
 	MEMSET( &list, 0, sizeof(list_t) );
 	size = (rand() % SIZEMAX);
@@ -577,7 +576,7 @@ static void test_list_init_grow_fail( void )
 
 	CU_ASSERT_EQUAL( list_count( &list ), 0 );
 
-	fail_list_grow = FALSE;
+	fake_list_grow = FALSE;
 }
 
 static void test_list_new_alloc_fail( void )
@@ -624,7 +623,8 @@ static void test_list_push_fail( void )
 	list_initialize( &list, 0, NULL );
 
 	/* turn on the flag that forces grows to fail */
-	fail_list_grow = TRUE;
+	fake_list_grow = TRUE;
+	fake_list_grow_ret = FALSE;
 
 	ret = list_push_head( &list, (void*)1 );
 	CU_ASSERT_EQUAL( ret, FALSE );
@@ -632,7 +632,7 @@ static void test_list_push_fail( void )
 	
 	list_deinitialize( &list );
 	
-	fail_list_grow = FALSE;
+	fake_list_grow = FALSE;
 }
 
 static void test_list_push_middle( void )
@@ -792,13 +792,15 @@ static void test_list_clear_dep_fails( void )
 	list_t list;
 	MEMSET( &list, 0, sizeof(list_t) );
 	
-	fail_list_init = TRUE;
+	fake_list_init = TRUE;
+	fake_list_init_ret = FALSE;
 	CU_ASSERT_FALSE( list_clear( &list ) );
-	fail_list_init = FALSE;
+	fake_list_init = FALSE;
 
-	fail_list_deinit = TRUE;
+	fake_list_deinit = TRUE;
+	fake_list_deinit_ret = FALSE;
 	CU_ASSERT_FALSE( list_clear( &list ) );
-	fail_list_deinit = FALSE;
+	fake_list_deinit = FALSE;
 }
 
 static void test_list_begin_null( void )
@@ -862,6 +864,9 @@ static void test_list_pop_prereqs( void )
 
 	/* try to pop and item from the free list */
 	CU_ASSERT_EQUAL( list_pop( &list, 7 ), -1 );
+
+	/* clean up */
+	CU_ASSERT_TRUE( list_deinitialize( &list ) );
 }
 
 static void test_list_get_prereqs( void )
@@ -890,17 +895,22 @@ static void test_list_get_prereqs( void )
 
 	/* try to get an item from the free list */
 	CU_ASSERT_PTR_NULL( list_itr_get( &list, 3 ) );
+
+	/* clean up */
+	CU_ASSERT_TRUE( list_deinitialize( &list ) );
 }
 
 
 static int init_list_suite( void )
 {
 	srand(0xDEADBEEF);
+	reset_test_flags();
 	return 0;
 }
 
 static int deinit_list_suite( void )
 {
+	reset_test_flags();
 	return 0;
 }
 

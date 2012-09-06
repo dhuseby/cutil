@@ -26,6 +26,10 @@
 #include "macros.h"
 #include "events.h"
 
+#if defined(UNIT_TESTING)
+#include "test_flags.h"
+#endif
+
 /* libev signal event callback */
 static void evt_signal_callback( struct ev_loop * loop,
 								 struct ev_signal * w,
@@ -152,7 +156,7 @@ void evt_delete(void * e)
 	CHECK_PTR( el );
 
 	/* clean up the default event loop */
-	ev_default_destroy();
+	ev_loop_destroy( EV_DEFAULT_UC );
 }
 
 
@@ -343,4 +347,13 @@ evt_ret_t evt_stop( evt_loop_t * const el, int once )
 	return EVT_OK;
 }
 
+#if defined(UNIT_TESTING)
+
+#include <CUnit/Basic.h>
+
+void test_events_private_functions( void )
+{
+}
+
+#endif
 

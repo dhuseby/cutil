@@ -25,9 +25,7 @@
 #include "list.h"
 
 #if defined(UNIT_TESTING)
-extern int fail_list_grow;
-extern int fail_list_init;
-extern int fail_list_deinit;
+#include "test_flags.h"
 #endif
 
 /* node used in queue structure */
@@ -78,7 +76,7 @@ int list_initialize( list_t * const list, uint_t const initial_capacity, list_de
 	uint_t i;
 	CHECK_PTR_RET( list, FALSE );
 #if defined(UNIT_TESTING)
-	CHECK_RET( !fail_list_init, FALSE );
+	CHECK_RET( !fake_list_init, fake_list_init_ret );
 #endif
 
 	/* intialize the members */
@@ -98,11 +96,10 @@ int list_initialize( list_t * const list, uint_t const initial_capacity, list_de
 int list_deinitialize( list_t * const list )
 {
 	list_itr_t itr, end;
-	CHECK_PTR_RET( list, FALSE );
-
 #if defined(UNIT_TESTING)
-	CHECK_RET( !fail_list_deinit, FALSE );
+	CHECK_RET( !fake_list_deinit, fake_list_deinit_ret );
 #endif
+	CHECK_PTR_RET( list, FALSE );
 
 	/* empty lists need no work */
 	if ( list->size == 0 )
@@ -346,7 +343,7 @@ static int list_grow( list_t * const list, uint_t amount )
 	CHECK_RET( amount, TRUE ); /* do nothing if grow amount is 0 */
 
 #if defined(UNIT_TESTING)
-	CHECK_RET( !fail_list_grow, FALSE );
+	CHECK_RET( !fake_list_grow, fake_list_grow_ret );
 #endif
 
 	/* figure out how big the new item array should be */

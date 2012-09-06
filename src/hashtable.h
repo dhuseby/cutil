@@ -88,8 +88,5 @@ ht_itr_t ht_itr_next( ht_t const * const htable, ht_itr_t const itr );
 ht_itr_t ht_itr_rnext( ht_t const * const htable, ht_itr_t const itr );
 #endif
 
-#if defined(UNIT_TESTING)
-void test_hashtable_private_functions( void );
 #endif
 
-#endif

@@ -61,6 +61,7 @@
 #define STRDUP strdup
 
 #if defined(UNIT_TESTING)
+
 extern int fail_alloc;
 #define MALLOC(...) (fail_alloc ? NULL : malloc(__VA_ARGS__))
 #define CALLOC(...) (fail_alloc ? NULL : calloc(__VA_ARGS__))
@@ -86,9 +87,17 @@ extern int fake_fcntl;
 extern int fake_fcntl_ret;
 #define FCNTL(...) (fake_fcntl ? fake_fcntl_ret : fcntl(__VA_ARGS__))
 
+extern int fake_fork;
+extern int fake_fork_ret;
+#define FORK(...) (fake_fork ? fake_fork_ret : fork(__VA_ARGS__))
+
 extern int fake_listen;
 extern int fake_listen_ret;
 #define LISTEN(...) (fake_listen ? fake_listen_ret : listen(__VA_ARGS__))
+
+extern int fake_pipe;
+extern int fake_pipe_ret;
+#define PIPE(...) (fake_pipe ? fake_pipe_ret : pipe(__VA_ARGS__))
 
 extern int fake_setsockopt;
 extern int fake_setsockopt_ret;
@@ -107,7 +116,9 @@ extern int fake_socket_ret;
 #define BIND bind
 #define CONNECT connect
 #define FCNTL fcntl
+#define FORK fork
 #define LISTEN listen
+#define PIPE pipe
 #define SETSOCKOPT setsockopt
 #define SOCKET socket
 #define ERRNO errno

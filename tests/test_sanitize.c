@@ -26,6 +26,11 @@
 #include <cutil/macros.h>
 #include <cutil/sanitize.h>
 
+#include "test_macros.h"
+#include "test_flags.h"
+
+extern void test_sanitize_private_functions( void );
+
 static int added_tz = FALSE;
 
 static void test_sanitize_environment( void )
@@ -37,6 +42,8 @@ static void test_sanitize_environment( void )
 
 	CU_ASSERT_EQUAL( strcmp( new_env[0], "IFS= \t\n" ), 0 );
 	CU_ASSERT_EQUAL( strcmp( new_env[1], "PATH=" _PATH_STDPATH ), 0 );
+
+	FREE( new_env );
 }
 
 static int8_t * preserve_environ[] =
@@ -56,6 +63,8 @@ static void test_sanitize_environment_preserve( void )
 	CU_ASSERT_EQUAL( strcmp( new_env[1], "PATH=" _PATH_STDPATH ), 0 );
 	CU_ASSERT_EQUAL( strncmp( new_env[2], "TZ=", 3 ), 0 );
 	CU_ASSERT_EQUAL( strncmp( new_env[3], "USER=", 5 ), 0 );
+
+	FREE( new_env );
 }
 
 static int8_t * add_environ[] =
@@ -75,6 +84,8 @@ static void test_sanitize_environment_add( void )
 	CU_ASSERT_EQUAL( strcmp( new_env[1], "PATH=" _PATH_STDPATH ), 0 );
 	CU_ASSERT_EQUAL( strncmp( new_env[2], "TZ=", 3 ), 0 );
 	CU_ASSERT_EQUAL( strcmp( new_env[3], "FOO=BAR" ), 0 );
+
+	FREE( new_env );
 }
 
 static void test_sanitize_open_files( void )
@@ -123,6 +134,7 @@ static void test_sanitize_closed_std_descriptors( void )
 static int init_sanitize_suite( void )
 {
 	srand(0xDEADBEEF);
+	reset_test_flags();
 
 	/* set the TZ variable if it doesn't exist */
 	if ( getenv( "TZ" ) == NULL )
@@ -140,16 +152,19 @@ static int deinit_sanitize_suite( void )
 	{
 		unsetenv( "TZ" );
 	}
+	reset_test_flags();
 	return 0;
 }
 
 static CU_pSuite add_sanitize_tests( CU_pSuite pSuite )
 {
-	CHECK_PTR_RET( CU_add_test( pSuite, "sanitize environment to empty test", test_sanitize_environment), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "sanitize environment w/preserve test", test_sanitize_environment_preserve), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "sanitize environment w/add test", test_sanitize_environment_add), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "close open files sanitize files test", test_sanitize_open_files), NULL );
-	CHECK_PTR_RET( CU_add_test( pSuite, "open closed std file descriptors sanitize files test", test_sanitize_closed_std_descriptors), NULL );
+	ADD_TEST( "sanitize environment to empty test", test_sanitize_environment);
+	ADD_TEST( "sanitize environment w/preserve test", test_sanitize_environment_preserve);
+	ADD_TEST( "sanitize environment w/add test", test_sanitize_environment_add);
+	ADD_TEST( "close open files sanitize files test", test_sanitize_open_files);
+	ADD_TEST( "open closed std file descriptors sanitize files test", test_sanitize_closed_std_descriptors);
+	ADD_TEST( "sanitize private functions", test_sanitize_private_functions );
+
 	return pSuite;
 }
 

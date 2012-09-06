@@ -28,12 +28,13 @@
 #include <cutil/privileges.h>
 
 #include "test_macros.h"
+#include "test_flags.h"
 
 #define REPEAT (128)
 #define SIZEMAX (128)
 #define MULTIPLE (8)
 
-extern int fail_alloc;
+extern void test_privileges_private_functions( void );
 
 static void test_privileges_temp_drop( void )
 {
@@ -50,11 +51,13 @@ static void test_privileges_permanent_drop( void )
 static int init_privileges_suite( void )
 {
 	srand(0xDEADBEEF);
+	reset_test_flags();
 	return 0;
 }
 
 static int deinit_privileges_suite( void )
 {
+	reset_test_flags();
 	return 0;
 }
 
@@ -62,6 +65,7 @@ static CU_pSuite add_privileges_tests( CU_pSuite pSuite )
 {
 	ADD_TEST( "privileges temporary drop", test_privileges_temp_drop );
 	ADD_TEST( "privileges permanent drop", test_privileges_permanent_drop );
+	ADD_TEST( "privileges private functions", test_privileges_private_functions );
 	return pSuite;
 }
 

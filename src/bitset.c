@@ -19,8 +19,7 @@
 #include "bitset.h"
 
 #if defined(UNIT_TESTING)
-extern int fail_bitset_init;
-extern int fail_bitset_deinit;
+#include "test_flags.h"
 #endif
 
 #define DWORDS_NEEDED(x) ((x + 0x1f) & ~0x1f)
@@ -132,5 +131,15 @@ int bset_set_all( bitset_t * const bset )
 	}
 	return TRUE;
 }
+
+#if defined(UNIT_TESTING)
+
+#include <CUnit/Basic.h>
+
+void test_bitset_private_functions(void)
+{
+}
+
+#endif
 
 

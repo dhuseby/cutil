@@ -27,16 +27,7 @@
 #include "aiofd.h"
 
 #if defined(UNIT_TESTING)
-extern int fake_aiofd_initialize;
-extern int fake_aiofd_initialize_ret;
-extern int fake_aiofd_read;
-extern int fake_aiofd_read_ret;
-extern int fake_aiofd_write;
-extern int fake_aiofd_write_ret;
-extern int fake_aiofd_writev;
-extern int fake_aiofd_writev_ret;
-extern int fake_aiofd_enable_read_evt;
-extern int fake_aiofd_enable_read_evt_ret;
+#include "test_flags.h"
 #endif
 
 typedef struct aiofd_write_s
@@ -451,4 +442,15 @@ int aiofd_get_listen( aiofd_t * const aiofd )
 	CHECK_PTR_RET( aiofd, FALSE );
 	return aiofd->listen;
 }
+
+#if defined(UNIT_TESTING)
+
+#include <CUnit/Basic.h>
+
+void test_aiofd_private_functions( void )
+{
+}
+
+#endif
+
 

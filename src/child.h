@@ -39,6 +39,7 @@ child_process_t * child_process_new( int8_t const * const path,
 									 int8_t const * const environ[],
 									 child_ops_t const * const ops,
 									 evt_loop_t * const el,
+									 int const drop_privileges,
 									 void * user_data );
 void child_process_delete( void * cp, int wait );
 
@@ -62,11 +63,6 @@ int child_process_writev( child_process_t * const cp,
 
 /* flush the child process output */
 int child_process_flush( child_process_t * const cp );
-
-#if defined(UNIT_TESTING)
-void child_process_set_fail_fork( int fail );
-void child_process_set_num_good_pipes( int ngood );
-#endif
 
 #endif/*__CHILD_H__*/
 

@@ -23,8 +23,9 @@
 #include <cutil/pair.h>
 
 #include "test_macros.h"
+#include "test_flags.h"
 
-extern int fail_alloc;
+extern void test_pair_private_functions( void );
 
 int8_t const * const first = "first";
 int8_t const * const second = "second";
@@ -88,11 +89,13 @@ void test_pair_accessor_prereqs( void )
 static int init_pair_suite( void )
 {
 	srand(0xDEADBEEF);
+	reset_test_flags();
 	return 0;
 }
 
 static int deinit_pair_suite( void )
 {
+	reset_test_flags();
 	return 0;
 }
 
@@ -103,6 +106,7 @@ static CU_pSuite add_pair_tests( CU_pSuite pSuite )
 	ADD_TEST( "pair fail alloc",		test_pair_fail_alloc );
 	ADD_TEST( "pair delete null",		test_pair_delete_null );
 	ADD_TEST( "pair accessor pre-reqs", test_pair_accessor_prereqs );
+	ADD_TEST( "pair private functions", test_pair_private_functions );
 	
 	return pSuite;
 }

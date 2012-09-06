@@ -85,6 +85,5 @@ int aiofd_flush( aiofd_t * const aiofd );
 int aiofd_set_listen( aiofd_t * const aiofd, int listen );
 int aiofd_get_listen( aiofd_t * const aiofd );
 
-
 #endif/*__AIOFD_H__*/
 

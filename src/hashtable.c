@@ -26,7 +26,7 @@
 #include "hashtable.h"
 
 #if defined(UNIT_TESTING)
-extern int fail_ht_grow;
+#include "test_flags.h"
 #endif
 
 /* iterator type */
@@ -105,6 +105,9 @@ int ht_initialize( ht_t * const htable, uint_t const initial_capacity,
 				   ht_hash_fn hfn, ht_match_fn mfn, ht_delete_fn dfn )
 {
 	uint_t i = 0;
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_ht_init, fake_ht_init_ret );
+#endif
 	CHECK_PTR_RET( htable, FALSE );
 	CHECK_PTR_RET( hfn, FALSE );
 	CHECK_PTR_RET( mfn, FALSE );
@@ -128,6 +131,9 @@ int ht_initialize( ht_t * const htable, uint_t const initial_capacity,
 int ht_deinitialize( ht_t * const htable )
 {
 	int i;
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_ht_deinit, fake_ht_deinit_ret );
+#endif
 	CHECK_PTR( htable );
 
 	/* free up all of the memory in the lists */
