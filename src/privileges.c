@@ -21,6 +21,7 @@
 
 #include "debug.h"
 #include "macros.h"
+#include "privileges.h"
 
 #if defined(UNIT_TESTING)
 #include "test_flags.h"
@@ -32,24 +33,27 @@
  * I hope they don't mind I borrowed the code.
  */
 
-static int orig_ngroups = -1;
-static gid_t orig_gid = -1;
-static uid_t orig_uid = -1;
-static gid_t orig_groups[NGROUPS_MAX];
-
-void drop_privileges( int permanent )
+int drop_privileges( int permanent, priv_state_t * const orig )
 {
 	gid_t newgid = GETGID(), oldgid = GETEGID();
 	uid_t newuid = GETUID(), olduid = GETEUID();
 
+	CHECK_RET( newgid != -1, FALSE );
+	CHECK_RET( oldgid != -1, FALSE );
+	CHECK_RET( newuid != -1, FALSE );
+	CHECK_RET( olduid != -1, FALSE );
+
 	if (!permanent) 
 	{
+		CHECK_PTR_RET( orig, FALSE );
+
 		/* Save information about the privileges that are being dropped so that they
 		 * can be restored later.
 		 */
-		orig_gid = oldgid;
-		orig_uid = olduid;
-		orig_ngroups = GETGROUPS(NGROUPS_MAX, orig_groups);
+		orig->gid = oldgid;
+		orig->uid = olduid;
+		orig->ngroups = GETGROUPS(NGROUPS_MAX, orig->groups);
+		CHECK_RET( orig->ngroups != -1, FALSE );
 	}
 
 	/* If root privileges are to be dropped, be sure to pare down the ancillary
@@ -57,58 +61,61 @@ void drop_privileges( int permanent )
 	* system call requires root privileges.  Drop ancillary groups regardless of
 	* whether privileges are being dropped temporarily or permanently.
 	*/
-	if (!olduid) 
-		SETGROUPS(1, &newgid);
+	if ( !olduid ) 
+		CHECK_RET( SETGROUPS(1, &newgid) != -1, FALSE );
 
-	if (newgid != oldgid) 
-	{
-		if (SETREGID((permanent ? newgid : -1), newgid) == -1) 
-			abort();
-	}
+	if ( newgid != oldgid ) 
+		if ( SETREGID((permanent ? newgid : -1), newgid) == -1 )
+			return FALSE;
 
-	if (newuid != olduid) 
-	{
-		if (SETREGID((permanent ? newuid : -1), newuid) == -1) 
-			abort();
-	}
+	if ( newuid != olduid ) 
+		if ( SETREUID((permanent ? newuid : -1), newuid) == -1 )
+			return FALSE;
 
 	/* verify that the changes were successful */
 	if (permanent) 
 	{
 		if ( (newgid != oldgid) && 
 			 ((SETEGID(oldgid) != -1) || (GETEGID() != newgid)) )
-		  abort();
+			return FALSE;
 
 		if ( (newuid != olduid) && 
 			 ((SETEUID(olduid) != -1) || (GETEUID() != newuid)) )
-		  abort();
+			return FALSE;
 	} 
 	else 
 	{
 		if ( (newgid != oldgid) && (GETEGID() != newgid) )
-			abort();
+			return FALSE;
 
 		if ( (newuid != olduid) && (GETEUID() != newuid) )
-			abort();
+			return FALSE;
 	}
+
+	return TRUE;
 }
 
-void restore_privileges( void )
+int restore_privileges( priv_state_t const * const orig )
 {
-	if ( GETEUID() != orig_uid )
+	CHECK_PTR_RET( orig, FALSE );
+
+	if ( GETEUID() != orig->uid )
 	{
-		if ( (SETEUID(orig_uid) == -1) || (GETEUID() != orig_uid) ) 
-			abort();
+		if ( (SETEUID(orig->uid) == -1) || (GETEUID() != orig->uid) ) 
+			return FALSE;
 	}
 
-	if ( GETEGID() != orig_gid )
+	if ( GETEGID() != orig->gid )
 	{
-		if ( (SETEGID(orig_gid) == -1) || (GETEGID() != orig_gid) ) 
-			abort();
+		if ( (SETEGID(orig->gid) == -1) || (GETEGID() != orig->gid) ) 
+			return FALSE;
 	}
 	
-	if (!orig_uid)
-		SETGROUPS(orig_ngroups, orig_groups);
+	if ( !orig->uid )
+		if ( SETGROUPS(orig->ngroups, orig->groups) == -1 )
+			return FALSE;
+
+	return TRUE;
 }
 
 #if defined(UNIT_TESTING)

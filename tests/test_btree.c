@@ -67,7 +67,7 @@ static int pint_less( void * l, void * r )
 	return 0;
 }
 
-void test_btree_iterator( void )
+static void test_btree_iterator( void )
 {
 	int_t i;
 	int_t cur, prev;
@@ -128,7 +128,7 @@ void test_btree_iterator( void )
 	bt_delete( (void*)bt );
 }
 
-void test_btree_random( void )
+static void test_btree_random( void )
 {
 	int_t i = 0;
 	int_t v = 0;
@@ -159,7 +159,7 @@ void test_btree_random( void )
 	bt_delete( (void*)bt );
 }
 
-void test_btree_random_default( void )
+static void test_btree_random_default( void )
 {
 	int_t i = 0;
 	int_t v = 0;
@@ -190,7 +190,7 @@ void test_btree_random_default( void )
 	bt_delete( (void*)bt );
 }
 
-void test_btree_random_duplicate( void )
+static void test_btree_random_duplicate( void )
 {
 	int_t i = 0;
 	int_t v = 0;
@@ -222,7 +222,7 @@ void test_btree_random_duplicate( void )
 	bt_delete( (void*)bt );
 }
 
-void test_btree_random_dynamic( void )
+static void test_btree_random_dynamic( void )
 {
 	int_t i = 0;
 	int_t* v = NULL;
@@ -268,7 +268,38 @@ void test_btree_random_dynamic( void )
 	bt_delete( (void*)bt );
 }
 
+static void test_btree_print(void)
+{
+	int_t i = 0;
+	int_t* v = NULL;
+	int_t* k = NULL;
+	int_t cur = -1;
+	int_t prev = -1;
+	bt_t * bt = NULL;
+	bt_itr_t itr = NULL;
+	size_t size = (rand() % 1024);
 
+	bt = bt_new( 10, pint_less, FREE, FREE );
+	for ( i = 0; i < size; i++ )
+	{
+		v = CALLOC( 1, sizeof(int_t) );
+		CU_ASSERT_PTR_NOT_NULL( v );
+		k = CALLOC( 1, sizeof(int_t) );
+		CU_ASSERT_PTR_NOT_NULL( k );
+
+		(*k) = rand();
+		(*v) = rand();
+		CU_ASSERT_EQUAL( bt_add( bt, (void*)k, (void*)v ), TRUE );
+		CU_ASSERT_EQUAL( bt_add( bt, (void*)k, (void*)v ), FALSE );
+	}
+
+	CU_ASSERT_EQUAL( bt_size( bt ), size );
+
+	bt_print( NULL );
+	bt_print( bt );
+
+	bt_delete( (void*)bt );
+}
 
 static int init_btree_suite( void )
 {
@@ -292,6 +323,7 @@ static CU_pSuite add_btree_tests( CU_pSuite pSuite )
 	ADD_TEST( "iteration of random btree add duplicates", test_btree_random_duplicate);
 	ADD_TEST( "random btree with dynamically allocated keys and values", test_btree_random_dynamic);
 	ADD_TEST( "btree private functions", test_btree_private_functions );
+	ADD_TEST( "btree print", test_btree_print );
 	
 	return pSuite;
 }

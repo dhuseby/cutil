@@ -32,6 +32,10 @@ extern int fake_fcntl;
 extern int fake_fcntl_ret;
 extern int fake_fork;
 extern int fake_fork_ret;
+extern int fake_fstat;
+extern int fake_fstat_ret;
+extern int fake_getdtablesize;
+extern int fake_getdtablesize_ret;
 extern int fake_getegid;
 extern int fake_getegid_ret;
 extern int fake_geteuid;
@@ -54,6 +58,8 @@ extern int fake_setgroups;
 extern int fake_setgroups_ret;
 extern int fake_setregid;
 extern int fake_setregid_ret;
+extern int fake_setreuid;
+extern int fake_setreuid_ret;
 extern int fake_setsockopt;
 extern int fake_setsockopt_ret;
 extern int fake_socket;
@@ -82,6 +88,12 @@ extern int fail_buffer_init_alloc;
 
 /* child */
 
+/* event */
+extern int fake_ev_default_loop;
+extern void* fake_ev_default_loop_ret;
+extern int fake_event_handler_init;
+extern int fake_event_handler_init_ret;
+
 /* hashtable */
 extern int fake_ht_init;
 extern int fake_ht_init_ret;
@@ -102,6 +114,10 @@ extern int fake_list_push;
 extern int fake_list_push_ret;
 extern int fake_list_get;
 extern void* fake_list_get_ret;
+
+/* sanitize */
+extern int fake_open_devnull;
+extern int fake_open_devnull_ret;
 
 /* socket */
 extern int fake_socket_getsockopt;

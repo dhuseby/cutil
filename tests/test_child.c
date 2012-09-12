@@ -218,6 +218,21 @@ static void test_child_read( void )
 	}
 }
 
+void test_child_process_write( void )
+{
+	CU_ASSERT_FALSE( child_process_write( NULL, NULL, 0 ) );
+}
+
+void test_child_process_writev( void )
+{
+	CU_ASSERT_FALSE( child_process_writev( NULL, NULL, 0 ) );
+}
+
+void test_child_process_flush( void )
+{
+	CU_ASSERT_FALSE( child_process_flush( NULL ) );
+}
+
 
 static int init_child_suite( void )
 {
@@ -240,6 +255,10 @@ static CU_pSuite add_child_tests( CU_pSuite pSuite )
 	ADD_TEST( "new/delete of child process fail fork", test_child_newdel_fail_fork);
 	ADD_TEST( "wait on child process", test_child_wait);
 	ADD_TEST( "test read from child process", test_child_read);
+	ADD_TEST( "test child process write", test_child_process_write );
+	ADD_TEST( "test child process writev", test_child_process_writev );
+	ADD_TEST( "test child process flush", test_child_process_flush );
+
 	ADD_TEST( "child process private functions", test_child_private_functions );
 	return pSuite;
 }

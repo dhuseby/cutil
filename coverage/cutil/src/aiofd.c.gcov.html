@@ -31,27 +31,27 @@
             <td class="headerValue">cutil test coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">121</td>
+            <td class="headerCovTableEntry">124</td>
             <td class="headerCovTableEntry">150</td>
-            <td class="headerCovTableEntryMed">80.7 %</td>
+            <td class="headerCovTableEntryMed">82.7 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-09-06</td>
+            <td class="headerValue">2012-09-12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">15</td>
             <td class="headerCovTableEntry">16</td>
-            <td class="headerCovTableEntryHi">93.8 %</td>
+            <td class="headerCovTableEntry">16</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td></td>
             <td></td>
             <td></td>
             <td class="headerItem">Branches:</td>
-            <td class="headerCovTableEntry">50</td>
+            <td class="headerCovTableEntry">51</td>
             <td class="headerCovTableEntry">101</td>
-            <td class="headerCovTableEntryLo">49.5 %</td>
+            <td class="headerCovTableEntryLo">50.5 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -508,10 +508,10 @@
 <span class="lineNum">     437 </span>                :<span class="lineCov">          3 :     return TRUE;</span>
 <a name="438"><span class="lineNum">     438 </span>                :            : }</a>
 <span class="lineNum">     439 </span>                :            : 
-<span class="lineNum">     440 </span>                :<span class="lineNoCov">          0 : int aiofd_get_listen( aiofd_t * const aiofd )</span>
+<span class="lineNum">     440 </span>                :<span class="lineCov">          1 : int aiofd_get_listen( aiofd_t * const aiofd )</span>
 <span class="lineNum">     441 </span>                :            : {
-<span class="lineNum">     442 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( aiofd, FALSE );</span>
-<span class="lineNum">     443 </span>                :<span class="lineNoCov">          0 :     return aiofd-&gt;listen;</span>
+<span class="lineNum">     442 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET( aiofd, FALSE );</span>
+<span class="lineNum">     443 </span>                :<span class="lineCov">          1 :     return aiofd-&gt;listen;</span>
 <span class="lineNum">     444 </span>                :            : }
 <span class="lineNum">     445 </span>                :            : 
 <span class="lineNum">     446 </span>                :            : #if defined(UNIT_TESTING)

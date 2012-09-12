@@ -25,8 +25,9 @@ typedef enum evt_ret_e
 	EVT_OK = 1,
 
 	/* errors */
-	EVT_BAD_PTR = -1,
-	EVT_ERROR = -2
+	EVT_BADPTR = -1,
+	EVT_ERROR = -2,
+	EVT_BADPARAM = -3
 
 } evt_ret_t;
 
@@ -34,8 +35,15 @@ typedef enum evt_type_e
 {
 	EVT_SIGNAL,
 	EVT_CHILD,
-	EVT_IO
+	EVT_IO,
+
+	EVT_TYPE_LAST,
+	EVT_TYPE_FIRST = EVT_SIGNAL,
+	EVT_TYPE_COUNT = EVT_TYPE_LAST - EVT_TYPE_FIRST
+
 } evt_type_t;
+
+#define VALID_EVENT_TYPE( t ) ((t >= EVT_TYPE_FIRST) && (t < EVT_TYPE_LAST))
 
 typedef enum evt_io_type_e
 {

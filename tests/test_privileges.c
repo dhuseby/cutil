@@ -38,13 +38,368 @@ extern void test_privileges_private_functions( void );
 
 static void test_privileges_temp_drop( void )
 {
-	drop_privileges( FALSE );
-	restore_privileges();
+	priv_state_t orig;
+	CU_ASSERT_FALSE( drop_privileges( FALSE, NULL ) );
+	CU_ASSERT_FALSE( restore_privileges( NULL ) );
+	
+	MEMSET( &orig, 0, sizeof( priv_state_t ) );
+	CU_ASSERT_TRUE( drop_privileges( FALSE, &orig ) );
+	CU_ASSERT_TRUE( restore_privileges( &orig ) );
 }
 
 static void test_privileges_permanent_drop( void )
 {
-	drop_privileges( TRUE );
+	CU_ASSERT_TRUE( drop_privileges( TRUE, NULL ) );
+}
+
+static void test_privileges_drop_failures( void )
+{
+	priv_state_t orig;
+	MEMSET( &orig, 0, sizeof( priv_state_t ) );
+
+	fake_getgid = TRUE;
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_getgid = FALSE;
+
+	fake_getegid = TRUE;
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_getegid = FALSE;
+
+	fake_getuid = TRUE;
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_getuid = FALSE;
+
+	fake_geteuid = TRUE;
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_geteuid = FALSE;
+
+	fake_getgroups = TRUE;
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_getgroups = FALSE;
+
+	fake_setgroups = TRUE;
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 0; /* make it look like we have root privileges */
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+	fake_setgroups = FALSE;
+
+	fake_getgid = TRUE;
+	fake_getgid_ret = 20;
+	fake_getegid = TRUE;
+	fake_getegid_ret = 30;
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_getgid = FALSE;
+	fake_getgid_ret = -1;
+	fake_getegid = FALSE;
+	fake_getegid_ret = -1;
+
+	fake_getgid = TRUE;
+	fake_getgid_ret = 20;
+	fake_getegid = TRUE;
+	fake_getegid_ret = 30;
+	CU_ASSERT_FALSE( drop_privileges( TRUE, NULL ) );
+	fake_getgid = FALSE;
+	fake_getgid_ret = -1;
+	fake_getegid = FALSE;
+	fake_getegid_ret = -1;
+
+	fake_getgid = TRUE;
+	fake_getgid_ret = 20;
+	fake_getegid = TRUE;
+	fake_getegid_ret = 30;
+	fake_setregid = TRUE;
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_setregid = FALSE;
+	fake_getgid = FALSE;
+	fake_getgid_ret = -1;
+	fake_getegid = FALSE;
+	fake_getegid_ret = -1;
+
+	fake_getgid = TRUE;
+	fake_getgid_ret = 20;
+	fake_getegid = TRUE;
+	fake_getegid_ret = 30;
+	fake_setregid = TRUE;
+	fake_setregid_ret = 0;
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_setregid = FALSE;
+	fake_setregid_ret = -1;
+	fake_getgid = FALSE;
+	fake_getgid_ret = -1;
+	fake_getegid = FALSE;
+	fake_getegid_ret = -1;
+
+
+	fake_getuid = TRUE;
+	fake_getuid_ret = 20;
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 30;
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_getuid = FALSE;
+	fake_getuid_ret = -1;
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+
+	fake_getuid = TRUE;
+	fake_getuid_ret = 20;
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 30;
+	CU_ASSERT_FALSE( drop_privileges( TRUE, NULL ) );
+	fake_getuid = FALSE;
+	fake_getuid_ret = -1;
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+
+	fake_getuid = TRUE;
+	fake_getuid_ret = 20;
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 30;
+	fake_setregid = TRUE;
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_setregid = FALSE;
+	fake_getuid = FALSE;
+	fake_getuid_ret = -1;
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+
+
+	fake_getgid = TRUE;
+	fake_getgid_ret = 20;
+	fake_getegid = TRUE;
+	fake_getegid_ret = 20;
+	CU_ASSERT_TRUE( drop_privileges( TRUE, NULL ) );
+	CU_ASSERT_TRUE( drop_privileges( FALSE, &orig ) );
+	fake_getgid = FALSE;
+	fake_getgid_ret = -1;
+	fake_getegid = FALSE;
+	fake_getegid_ret = -1;
+
+	fake_getgid = TRUE;
+	fake_getgid_ret = 30;
+	fake_getegid = TRUE;
+	fake_getegid_ret = 20;
+	fake_setregid = TRUE;
+	fake_setregid_ret = 0;
+	CU_ASSERT_FALSE( drop_privileges( TRUE, NULL ) );
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_setregid = FALSE;
+	fake_setregid_ret = -1;
+	fake_getgid = FALSE;
+	fake_getgid_ret = -1;
+	fake_getegid = FALSE;
+	fake_getegid_ret = -1;
+
+	fake_getgid = TRUE;
+	fake_getgid_ret = 30;
+	fake_getegid = TRUE;
+	fake_getegid_ret = 20;
+	fake_setregid = TRUE;
+	fake_setregid_ret = 0;
+	fake_setegid = TRUE;
+	CU_ASSERT_FALSE( drop_privileges( TRUE, NULL ) );
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_setegid = FALSE;
+	fake_setregid = FALSE;
+	fake_setregid_ret = -1;
+	fake_getgid = FALSE;
+	fake_getgid_ret = -1;
+	fake_getegid = FALSE;
+	fake_getegid_ret = -1;
+
+	fake_getgid = TRUE;
+	fake_getgid_ret = 30;
+	fake_getegid = TRUE;
+	fake_getegid_ret = 20;
+	fake_setregid = TRUE;
+	fake_setregid_ret = 0;
+	fake_setegid = TRUE;
+	fake_setegid_ret = 0;
+	CU_ASSERT_FALSE( drop_privileges( TRUE, NULL ) );
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_setegid = FALSE;
+	fake_setegid_ret = -1;
+	fake_setregid = FALSE;
+	fake_setregid_ret = -1;
+	fake_getgid = FALSE;
+	fake_getgid_ret = -1;
+	fake_getegid = FALSE;
+	fake_getegid_ret = -1;
+
+
+	fake_getuid = TRUE;
+	fake_getuid_ret = 20;
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 20;
+	CU_ASSERT_TRUE( drop_privileges( TRUE, NULL ) );
+	CU_ASSERT_TRUE( drop_privileges( FALSE, &orig ) );
+	fake_getuid = FALSE;
+	fake_getuid_ret = -1;
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+
+	fake_getuid = TRUE;
+	fake_getuid_ret = 30;
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 20;
+	fake_setreuid = TRUE;
+	fake_setreuid_ret = 0;
+	CU_ASSERT_FALSE( drop_privileges( TRUE, NULL ) );
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_setreuid = FALSE;
+	fake_setreuid_ret = -1;
+	fake_getuid = FALSE;
+	fake_getuid_ret = -1;
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+
+	fake_getuid = TRUE;
+	fake_getuid_ret = 30;
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 20;
+	fake_setreuid = TRUE;
+	fake_setreuid_ret = 0;
+	fake_seteuid = TRUE;
+	CU_ASSERT_FALSE( drop_privileges( TRUE, NULL ) );
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_seteuid = FALSE;
+	fake_setreuid = FALSE;
+	fake_setreuid_ret = -1;
+	fake_getuid = FALSE;
+	fake_getuid_ret = -1;
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+
+	fake_getuid = TRUE;
+	fake_getuid_ret = 30;
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 20;
+	fake_setreuid = TRUE;
+	fake_setreuid_ret = 0;
+	fake_seteuid = TRUE;
+	fake_seteuid_ret = 0;
+	CU_ASSERT_FALSE( drop_privileges( TRUE, NULL ) );
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_seteuid = FALSE;
+	fake_seteuid_ret = -1;
+	fake_setreuid = FALSE;
+	fake_setreuid_ret = -1;
+	fake_getuid = FALSE;
+	fake_getuid_ret = -1;
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+}
+
+static void test_privileges_restore_failures( void )
+{
+	priv_state_t orig, tmp;
+	MEMSET( &tmp, 0, sizeof( priv_state_t ) );
+	MEMSET( &orig, 0, sizeof( priv_state_t ) );
+
+	fake_geteuid = TRUE;
+	CU_ASSERT_FALSE( restore_privileges( &orig ) );
+	fake_geteuid = FALSE;
+
+	CU_ASSERT_TRUE( drop_privileges( FALSE, &orig ) );
+	
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 0;
+	MEMCPY( &tmp, &orig, sizeof( priv_state_t ) );
+	CU_ASSERT_FALSE( restore_privileges( &tmp ) );
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 0;
+	fake_seteuid = TRUE;
+	MEMCPY( &tmp, &orig, sizeof( priv_state_t ) );
+	CU_ASSERT_FALSE( restore_privileges( &tmp ) );
+	fake_seteuid = FALSE;
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 0;
+	fake_seteuid = TRUE;
+	fake_seteuid_ret = 0;
+	MEMCPY( &tmp, &orig, sizeof( priv_state_t ) );
+	CU_ASSERT_FALSE( restore_privileges( &tmp ) );
+	fake_seteuid = FALSE;
+	fake_seteuid_ret = -1;
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+
+	fake_getegid = TRUE;
+	fake_getegid_ret = 0;
+	MEMCPY( &tmp, &orig, sizeof( priv_state_t ) );
+	CU_ASSERT_FALSE( restore_privileges( &tmp ) );
+	fake_getegid = FALSE;
+	fake_getegid_ret = -1;
+
+	fake_getegid = TRUE;
+	fake_getegid_ret = 0;
+	fake_setegid = TRUE;
+	MEMCPY( &tmp, &orig, sizeof( priv_state_t ) );
+	CU_ASSERT_FALSE( restore_privileges( &tmp ) );
+	fake_setegid = FALSE;
+	fake_getegid = FALSE;
+	fake_getegid_ret = -1;
+
+	fake_getegid = TRUE;
+	fake_getegid_ret = 0;
+	fake_setegid = TRUE;
+	fake_setegid_ret = 0;
+	MEMCPY( &tmp, &orig, sizeof( priv_state_t ) );
+	CU_ASSERT_FALSE( restore_privileges( &tmp ) );
+	fake_setegid = FALSE;
+	fake_setegid_ret = -1;
+	fake_getegid = FALSE;
+	fake_getegid_ret = -1;
+}
+
+static void test_privileges_drop_root( void )
+{
+	priv_state_t orig;
+	MEMSET( &orig, 0, sizeof( priv_state_t ) );
+
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 0; /* make it look like we have root privileges */
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+
+	fake_setgroups = TRUE;
+	fake_setgroups_ret = 0;
+	CU_ASSERT_FALSE( drop_privileges( FALSE, &orig ) );
+	fake_setgroups = FALSE;
+	fake_setgroups_ret = -1;
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+}
+
+static void test_privileges_restore_root( void )
+{
+	priv_state_t orig;
+	MEMSET( &orig, 0, sizeof( priv_state_t ) );
+
+	CU_ASSERT_TRUE( drop_privileges( FALSE, &orig ) );
+
+	orig.uid = 0;
+
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 0;
+	CU_ASSERT_FALSE( restore_privileges( &orig ) );
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
+
+	fake_geteuid = TRUE;
+	fake_geteuid_ret = 0;
+	fake_setgroups = TRUE;
+	fake_setgroups_ret = 0;
+	CU_ASSERT_TRUE( restore_privileges( &orig ) );
+	fake_setgroups = TRUE;
+	fake_setgroups_ret = -1;
+	fake_geteuid = FALSE;
+	fake_geteuid_ret = -1;
 }
 
 
@@ -65,6 +420,11 @@ static CU_pSuite add_privileges_tests( CU_pSuite pSuite )
 {
 	ADD_TEST( "privileges temporary drop", test_privileges_temp_drop );
 	ADD_TEST( "privileges permanent drop", test_privileges_permanent_drop );
+	ADD_TEST( "privileges drop failures", test_privileges_drop_failures );
+	ADD_TEST( "privileges restore failures", test_privileges_restore_failures );
+	ADD_TEST( "privileges drop root", test_privileges_drop_root );
+	ADD_TEST( "privileges restore root", test_privileges_restore_root );
+	
 	ADD_TEST( "privileges private functions", test_privileges_private_functions );
 	return pSuite;
 }

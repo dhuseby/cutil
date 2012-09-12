@@ -97,6 +97,7 @@ socket_ret_t socket_bind( socket_t * const s,
 /* listen for incoming connections */
 socket_ret_t socket_listen( socket_t * const s,
 							int const backlog );
+int socket_is_listening( socket_t * const s );
 
 /* accept an incoming connection */
 socket_t* socket_accept( socket_t * const s,

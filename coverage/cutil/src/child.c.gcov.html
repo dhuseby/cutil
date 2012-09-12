@@ -31,27 +31,27 @@
             <td class="headerValue">cutil test coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">107</td>
-            <td class="headerCovTableEntry">138</td>
-            <td class="headerCovTableEntryMed">77.5 %</td>
+            <td class="headerCovTableEntry">154</td>
+            <td class="headerCovTableEntry">168</td>
+            <td class="headerCovTableEntryHi">91.7 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-09-06</td>
+            <td class="headerValue">2012-09-12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">10</td>
-            <td class="headerCovTableEntry">15</td>
-            <td class="headerCovTableEntryLo">66.7 %</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td></td>
             <td></td>
             <td></td>
             <td class="headerItem">Branches:</td>
-            <td class="headerCovTableEntry">48</td>
+            <td class="headerCovTableEntry">56</td>
             <td class="headerCovTableEntry">102</td>
-            <td class="headerCovTableEntryLo">47.1 %</td>
+            <td class="headerCovTableEntryLo">54.9 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -124,40 +124,40 @@
 <span class="lineNum">      53 </span>                :            :     void *          user_data;      /* passed to ops callbacks */
 <a name="54"><span class="lineNum">      54 </span>                :            : };</a>
 <span class="lineNum">      55 </span>                :            : 
-<span class="lineNum">      56 </span>                :<span class="lineCov">          3 : static evt_ret_t sigchld_cb( evt_loop_t * const el,</span>
+<span class="lineNum">      56 </span>                :<span class="lineCov">          7 : static evt_ret_t sigchld_cb( evt_loop_t * const el,</span>
 <span class="lineNum">      57 </span>                :            :                              evt_t * const evt,
 <span class="lineNum">      58 </span>                :            :                              evt_params_t * const params,
 <span class="lineNum">      59 </span>                :            :                              void * user_data )
 <span class="lineNum">      60 </span>                :            : {
-<span class="lineNum">      61 </span>                :<span class="lineCov">          3 :     child_process_t * child = (child_process_t*)user_data;</span>
-<span class="lineNum">      62 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          3 :     CHECK_PTR_RET( child, EVT_BAD_PTR );</span>
-<span class="lineNum">      63 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          3 :     CHECK_RET( (child-&gt;pid == params-&gt;child_params.pid), EVT_ERROR );</span>
+<span class="lineNum">      61 </span>                :<span class="lineCov">          7 :     child_process_t * child = (child_process_t*)user_data;</span>
+<span class="lineNum">      62 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">          7 :     CHECK_PTR_RET( child, EVT_BADPTR );</span>
+<span class="lineNum">      63 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">          6 :     CHECK_RET( (child-&gt;pid == params-&gt;child_params.pid), EVT_ERROR );</span>
 <span class="lineNum">      64 </span>                :            :     
 <span class="lineNum">      65 </span>                :            :     DEBUG( &quot;received SIGCHLD\n&quot; );
 <span class="lineNum">      66 </span>                :            : 
 <span class="lineNum">      67 </span>                :            :     /* execute the exit_fn callback */
-<span class="lineNum">      68 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          3 :     if ( child-&gt;ops.exit_fn != NULL )</span>
+<span class="lineNum">      68 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          5 :     if ( child-&gt;ops.exit_fn != NULL )</span>
 <span class="lineNum">      69 </span>                :            :     {
 <span class="lineNum">      70 </span>                :            :         DEBUG( &quot;calling child process exit callback\n&quot; );
-<span class="lineNum">      71 </span>                :<span class="lineCov">          3 :         (*(child-&gt;ops.exit_fn))( child, </span>
+<span class="lineNum">      71 </span>                :<span class="lineCov">          4 :         (*(child-&gt;ops.exit_fn))( child, </span>
 <span class="lineNum">      72 </span>                :            :                                  params-&gt;child_params.rpid, 
 <span class="lineNum">      73 </span>                :            :                                  params-&gt;child_params.rstatus,
 <span class="lineNum">      74 </span>                :            :                                  child-&gt;user_data );
 <span class="lineNum">      75 </span>                :            :     }
 <span class="lineNum">      76 </span>                :            : 
 <span class="lineNum">      77 </span>                :            :     /* record that the child process has exited */
-<span class="lineNum">      78 </span>                :<span class="lineCov">          3 :     child-&gt;exited = TRUE;</span>
+<span class="lineNum">      78 </span>                :<span class="lineCov">          5 :     child-&gt;exited = TRUE;</span>
 <span class="lineNum">      79 </span>                :            : 
-<span class="lineNum">      80 </span>                :<span class="lineCov">          3 :     return EVT_OK;</span>
+<span class="lineNum">      80 </span>                :<span class="lineCov">          7 :     return EVT_OK;</span>
 <span class="lineNum">      81 </span>                :            : }
 <a name="82"><span class="lineNum">      82 </span>                :            : </a>
 <span class="lineNum">      83 </span>                :            : 
-<span class="lineNum">      84 </span>                :<span class="lineNoCov">          0 : static int child_aiofd_write_fn( aiofd_t * const aiofd,</span>
+<span class="lineNum">      84 </span>                :<span class="lineCov">          1 : static int child_aiofd_write_fn( aiofd_t * const aiofd,</span>
 <span class="lineNum">      85 </span>                :            :                                  uint8_t const * const buffer,
 <span class="lineNum">      86 </span>                :            :                                  void * user_data )
 <span class="lineNum">      87 </span>                :            : {
-<span class="lineNum">      88 </span>                :<span class="lineNoCov">          0 :     child_process_t * child = (child_process_t*)user_data;</span>
-<span class="lineNum">      89 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( aiofd, FALSE );</span>
+<span class="lineNum">      88 </span>                :<span class="lineCov">          1 :     child_process_t * child = (child_process_t*)user_data;</span>
+<span class="lineNum">      89 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET( aiofd, FALSE );</span>
 <span class="lineNum">      90 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( child, FALSE );</span>
 <span class="lineNum">      91 </span>                :            : 
 <span class="lineNum">      92 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     ASSERT( child-&gt;aiofd.rfd != -1 );</span>
@@ -183,22 +183,22 @@
 <span class="lineNum">     112 </span>                :<span class="lineNoCov">          0 :             (*(child-&gt;ops.write_fn))( child, buffer, child-&gt;user_data );</span>
 <span class="lineNum">     113 </span>                :            :         }
 <span class="lineNum">     114 </span>                :            : 
-<span class="lineNum">     115 </span>                :<span class="lineNoCov">          0 :         return TRUE;</span>
+<span class="lineNum">     115 </span>                :<span class="lineCov">          1 :         return TRUE;</span>
 <span class="lineNum">     116 </span>                :            :     }
 <span class="lineNum">     117 </span>                :            : 
 <span class="lineNum">     118 </span>                :            :     return TRUE;
 <span class="lineNum">     119 </span>                :            : }
 <a name="120"><span class="lineNum">     120 </span>                :            : </a>
 <span class="lineNum">     121 </span>                :            : 
-<span class="lineNum">     122 </span>                :<span class="lineNoCov">          0 : static int child_aiofd_error_fn( aiofd_t * const aiofd,</span>
+<span class="lineNum">     122 </span>                :<span class="lineCov">          1 : static int child_aiofd_error_fn( aiofd_t * const aiofd,</span>
 <span class="lineNum">     123 </span>                :            :                                   int err,
 <span class="lineNum">     124 </span>                :            :                                   void * user_data )
 <span class="lineNum">     125 </span>                :            : {
-<span class="lineNum">     126 </span>                :<span class="lineNoCov">          0 :     child_process_t * child = (child_process_t*)user_data;</span>
-<span class="lineNum">     127 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( aiofd, FALSE );</span>
+<span class="lineNum">     126 </span>                :<span class="lineCov">          1 :     child_process_t * child = (child_process_t*)user_data;</span>
+<span class="lineNum">     127 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET( aiofd, FALSE );</span>
 <span class="lineNum">     128 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( child, FALSE );</span>
 <span class="lineNum">     129 </span>                :            : 
-<span class="lineNum">     130 </span>                :<span class="lineNoCov">          0 :     return TRUE;</span>
+<span class="lineNum">     130 </span>                :<span class="lineCov">          1 :     return TRUE;</span>
 <span class="lineNum">     131 </span>                :            : }
 <a name="132"><span class="lineNum">     132 </span>                :            : </a>
 <span class="lineNum">     133 </span>                :            : 
@@ -249,7 +249,7 @@
 <span class="lineNum">     178 </span>                :            : 
 <span class="lineNum">     179 </span>                :            :     /* remove root privileges and any unnecessary group privileges permanently */
 <span class="lineNum">     180 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          3 :     if ( drop )</span>
-<span class="lineNum">     181 </span>                :<span class="lineCov">          3 :         drop_privileges( TRUE );</span>
+<span class="lineNum">     181 </span>                :<span class="lineCov">          3 :         drop_privileges( TRUE, NULL );</span>
 <span class="lineNum">     182 </span>                :            : 
 <span class="lineNum">     183 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          3 :     ASSERT( childpid == 0 );</span>
 <span class="lineNum">     184 </span>                :            : 
@@ -464,39 +464,85 @@
 <span class="lineNum">     393 </span>                :<span class="lineCov">          1 :     return aiofd_read( &amp;(cp-&gt;aiofd), buffer, n );</span>
 <a name="394"><span class="lineNum">     394 </span>                :            : }</a>
 <span class="lineNum">     395 </span>                :            : 
-<span class="lineNum">     396 </span>                :<span class="lineNoCov">          0 : int child_process_write( child_process_t * const cp, </span>
+<span class="lineNum">     396 </span>                :<span class="lineCov">          1 : int child_process_write( child_process_t * const cp, </span>
 <span class="lineNum">     397 </span>                :            :                          uint8_t const * const buffer, 
 <span class="lineNum">     398 </span>                :            :                          size_t const n )
 <span class="lineNum">     399 </span>                :            : {
-<span class="lineNum">     400 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( cp, FALSE );</span>
-<span class="lineNum">     401 </span>                :<span class="lineNoCov">          0 :     return aiofd_write( &amp;(cp-&gt;aiofd), buffer, n );</span>
+<span class="lineNum">     400 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET( cp, FALSE );</span>
+<span class="lineNum">     401 </span>                :<span class="lineCov">          1 :     return aiofd_write( &amp;(cp-&gt;aiofd), buffer, n );</span>
 <a name="402"><span class="lineNum">     402 </span>                :            : }</a>
 <span class="lineNum">     403 </span>                :            : 
-<span class="lineNum">     404 </span>                :<span class="lineNoCov">          0 : int child_process_writev( child_process_t * const cp,</span>
+<span class="lineNum">     404 </span>                :<span class="lineCov">          1 : int child_process_writev( child_process_t * const cp,</span>
 <span class="lineNum">     405 </span>                :            :                           struct iovec * iov,
 <span class="lineNum">     406 </span>                :            :                           size_t iovcnt )
 <span class="lineNum">     407 </span>                :            : {
-<span class="lineNum">     408 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( cp, FALSE );</span>
-<span class="lineNum">     409 </span>                :<span class="lineNoCov">          0 :     return aiofd_writev( &amp;(cp-&gt;aiofd), iov, iovcnt );</span>
+<span class="lineNum">     408 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET( cp, FALSE );</span>
+<span class="lineNum">     409 </span>                :<span class="lineCov">          1 :     return aiofd_writev( &amp;(cp-&gt;aiofd), iov, iovcnt );</span>
 <a name="410"><span class="lineNum">     410 </span>                :            : }</a>
 <span class="lineNum">     411 </span>                :            : 
-<span class="lineNum">     412 </span>                :<span class="lineNoCov">          0 : int child_process_flush( child_process_t * const cp )</span>
+<span class="lineNum">     412 </span>                :<span class="lineCov">          1 : int child_process_flush( child_process_t * const cp )</span>
 <span class="lineNum">     413 </span>                :            : {
-<span class="lineNum">     414 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_PTR_RET( cp, FALSE );</span>
-<span class="lineNum">     415 </span>                :<span class="lineNoCov">          0 :     return aiofd_flush( &amp;(cp-&gt;aiofd) );</span>
+<span class="lineNum">     414 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET( cp, FALSE );</span>
+<span class="lineNum">     415 </span>                :<span class="lineCov">          1 :     return aiofd_flush( &amp;(cp-&gt;aiofd) );</span>
 <span class="lineNum">     416 </span>                :            : }
 <span class="lineNum">     417 </span>                :            : 
 <span class="lineNum">     418 </span>                :            : #if defined(UNIT_TESTING)
 <span class="lineNum">     419 </span>                :            : 
-<a name="420"><span class="lineNum">     420 </span>                :            : #include &lt;CUnit/Basic.h&gt;</a>
+<span class="lineNum">     420 </span>                :            : #include &lt;CUnit/Basic.h&gt;
 <span class="lineNum">     421 </span>                :            : 
-<span class="lineNum">     422 </span>                :<span class="lineCov">          1 : void test_child_private_functions( void )</span>
-<span class="lineNum">     423 </span>                :            : {
-<span class="lineNum">     424 </span>                :<span class="lineCov">          1 : }</span>
-<span class="lineNum">     425 </span>                :            : 
-<span class="lineNum">     426 </span>                :            : #endif
-<span class="lineNum">     427 </span>                :            : 
-<span class="lineNum">     428 </span>                :            : 
+<a name="422"><span class="lineNum">     422 </span>                :            : static int test_flag = FALSE;</a>
+<span class="lineNum">     423 </span>                :            : 
+<span class="lineNum">     424 </span>                :<span class="lineCov">          1 : static int test_exit_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )</span>
+<span class="lineNum">     425 </span>                :            : {
+<span class="lineNum">     426 </span>                :<span class="lineCov">          1 :     *((int*)user_data) = TRUE;</span>
+<span class="lineNum">     427 </span>                :<span class="lineCov">          1 :     return TRUE;</span>
+<a name="428"><span class="lineNum">     428 </span>                :            : }</a>
+<span class="lineNum">     429 </span>                :            : 
+<span class="lineNum">     430 </span>                :<span class="lineCov">          1 : static void test_sigchld_cb( void )</span>
+<span class="lineNum">     431 </span>                :            : {
+<span class="lineNum">     432 </span>                :            :     child_process_t child;
+<span class="lineNum">     433 </span>                :            :     evt_params_t params;
+<span class="lineNum">     434 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;child, 0, sizeof(child_process_t) );</span>
+<span class="lineNum">     435 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;params, 0, sizeof(evt_params_t) );</span>
+<span class="lineNum">     436 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, NULL, NULL ), EVT_BADPTR );</span>
+<span class="lineNum">     437 </span>                :            : 
+<span class="lineNum">     438 </span>                :<span class="lineCov">          1 :     params.child_params.pid = 1;</span>
+<span class="lineNum">     439 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &amp;params, &amp;child ), EVT_ERROR );</span>
+<span class="lineNum">     440 </span>                :            : 
+<span class="lineNum">     441 </span>                :<span class="lineCov">          1 :     params.child_params.pid = 0;</span>
+<span class="lineNum">     442 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &amp;params, &amp;child ), EVT_OK );</span>
+<span class="lineNum">     443 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( child.exited );</span>
+<span class="lineNum">     444 </span>                :            : 
+<span class="lineNum">     445 </span>                :<span class="lineCov">          1 :     child.exited = 0;</span>
+<span class="lineNum">     446 </span>                :<span class="lineCov">          1 :     child.ops.exit_fn = &amp;test_exit_fn;</span>
+<span class="lineNum">     447 </span>                :<span class="lineCov">          1 :     child.user_data = &amp;test_flag;</span>
+<span class="lineNum">     448 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
+<span class="lineNum">     449 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &amp;params, &amp;child ), EVT_OK );</span>
+<span class="lineNum">     450 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( child.exited );</span>
+<span class="lineNum">     451 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
+<span class="lineNum">     452 </span>                :<span class="lineCov">          1 :     test_flag = FALSE;</span>
+<a name="453"><span class="lineNum">     453 </span>                :<span class="lineCov">          1 : }</span></a>
+<span class="lineNum">     454 </span>                :            : 
+<span class="lineNum">     455 </span>                :<span class="lineCov">          1 : static void test_child_aiofd_write_fn( void )</span>
+<span class="lineNum">     456 </span>                :            : {
+<span class="lineNum">     457 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( child_aiofd_write_fn( NULL, NULL, NULL ) );</span>
+<a name="458"><span class="lineNum">     458 </span>                :<span class="lineCov">          1 : }</span></a>
+<span class="lineNum">     459 </span>                :            : 
+<span class="lineNum">     460 </span>                :<span class="lineCov">          1 : static void test_child_aiofd_error_fn( void )</span>
+<span class="lineNum">     461 </span>                :            : {
+<span class="lineNum">     462 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( child_aiofd_error_fn( NULL, 0, NULL ) );</span>
+<a name="463"><span class="lineNum">     463 </span>                :<span class="lineCov">          1 : }</span></a>
+<span class="lineNum">     464 </span>                :            : 
+<span class="lineNum">     465 </span>                :<span class="lineCov">          1 : void test_child_private_functions( void )</span>
+<span class="lineNum">     466 </span>                :            : {
+<span class="lineNum">     467 </span>                :<span class="lineCov">          1 :     test_sigchld_cb();</span>
+<span class="lineNum">     468 </span>                :<span class="lineCov">          1 :     test_child_aiofd_write_fn();</span>
+<span class="lineNum">     469 </span>                :<span class="lineCov">          1 :     test_child_aiofd_error_fn();</span>
+<span class="lineNum">     470 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">     471 </span>                :            : 
+<span class="lineNum">     472 </span>                :            : #endif
+<span class="lineNum">     473 </span>                :            : 
+<span class="lineNum">     474 </span>                :            : 
 </pre>
       </td>
     </tr>

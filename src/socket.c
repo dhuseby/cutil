@@ -699,6 +699,12 @@ socket_ret_t socket_listen( socket_t * const s, int const backlog )
 	return SOCKET_OK;
 }
 
+int socket_is_listening( socket_t * const s )
+{
+	CHECK_PTR_RET( s, FALSE );
+	return aiofd_get_listen( &(s->aiofd) );
+}
+
 socket_t * socket_accept( socket_t * const s,
 						  socket_ops_t * const ops,
 						  evt_loop_t * const el,

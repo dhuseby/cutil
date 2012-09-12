@@ -59,7 +59,7 @@ static evt_ret_t sigchld_cb( evt_loop_t * const el,
 							 void * user_data )
 {
 	child_process_t * child = (child_process_t*)user_data;
-	CHECK_PTR_RET( child, EVT_BAD_PTR );
+	CHECK_PTR_RET( child, EVT_BADPTR );
 	CHECK_RET( (child->pid == params->child_params.pid), EVT_ERROR );
 	
 	DEBUG( "received SIGCHLD\n" );
@@ -178,7 +178,7 @@ static pid_t safe_fork( int keepfds[], int nfds, int drop )
 
 	/* remove root privileges and any unnecessary group privileges permanently */
 	if ( drop )
-		drop_privileges( TRUE );
+		drop_privileges( TRUE, NULL );
 
 	ASSERT( childpid == 0 );
 
@@ -419,8 +419,54 @@ int child_process_flush( child_process_t * const cp )
 
 #include <CUnit/Basic.h>
 
+static int test_flag = FALSE;
+
+static int test_exit_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )
+{
+	*((int*)user_data) = TRUE;
+	return TRUE;
+}
+
+static void test_sigchld_cb( void )
+{
+	child_process_t child;
+	evt_params_t params;
+	MEMSET( &child, 0, sizeof(child_process_t) );
+	MEMSET( &params, 0, sizeof(evt_params_t) );
+	CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, NULL, NULL ), EVT_BADPTR );
+
+	params.child_params.pid = 1;
+	CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &params, &child ), EVT_ERROR );
+
+	params.child_params.pid = 0;
+	CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &params, &child ), EVT_OK );
+	CU_ASSERT_TRUE( child.exited );
+
+	child.exited = 0;
+	child.ops.exit_fn = &test_exit_fn;
+	child.user_data = &test_flag;
+	test_flag = FALSE;
+	CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &params, &child ), EVT_OK );
+	CU_ASSERT_TRUE( child.exited );
+	CU_ASSERT_TRUE( test_flag );
+	test_flag = FALSE;
+}
+
+static void test_child_aiofd_write_fn( void )
+{
+	CU_ASSERT_FALSE( child_aiofd_write_fn( NULL, NULL, NULL ) );
+}
+
+static void test_child_aiofd_error_fn( void )
+{
+	CU_ASSERT_FALSE( child_aiofd_error_fn( NULL, 0, NULL ) );
+}
+
 void test_child_private_functions( void )
 {
+	test_sigchld_cb();
+	test_child_aiofd_write_fn();
+	test_child_aiofd_error_fn();
 }
 
 #endif

@@ -38,20 +38,20 @@
 
 /* used for debugging purposes */
 #define ASSERT(x) assert(x)
-#define WARN(fmt, ...) { fprintf(stderr, "WARNING:%12s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); }
-#define NOTICE(fmt, ...) { fprintf(stderr, "NOTICE:%13s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); }
-#define LOG(...) { fprintf(stderr, __VA_ARGS__); fflush(stderr); }
-#define FAIL(fmt, ...) { fprintf(stderr, "ERR:%16s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); assert(0); }
+#define WARN(fmt, ...) do { fprintf(stderr, "WARNING:%12s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); } while(0)
+#define NOTICE(fmt, ...) do { fprintf(stderr, "NOTICE:%13s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); } while(0)
+#define LOG(...) do { fprintf(stderr, __VA_ARGS__); fflush(stderr); } while(0)
+#define FAIL(fmt, ...) do { fprintf(stderr, "ERR:%16s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); assert(0); } while(0)
 
 /* runtime check macros */
-#define CHECK(x) { if(!(x)) return; }
-#define CHECK_MSG(x, ...) { if(!(x)) { DEBUG(__VA_ARGS__); return; } }
-#define CHECK_RET(x, y) { if(!(x)) return (y); }
-#define CHECK_RET_MSG(x, y, ...) { if(!(x)) { DEBUG(__VA_ARGS__); return (y); } }
-#define CHECK_PTR(x) { if(!(x)) return; }
-#define CHECK_PTR_MSG(x, ...) { if(!(x)) { DEBUG(__VA_ARGS__); return; } }
-#define CHECK_PTR_RET(x, y) { if(!(x)) return (y); }
-#define CHECK_PTR_RET_MSG(x, y, ...) { if(!(x)) { DEBUG(__VA_ARGS__); return (y); } }
+#define CHECK(x) do { if(!(x)) return; } while(0)
+#define CHECK_MSG(x, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return; } } while(0)
+#define CHECK_RET(x, y) do { if(!(x)) return (y); } while(0)
+#define CHECK_RET_MSG(x, y, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return (y); } } while(0)
+#define CHECK_PTR(x) do { if(!(x)) return; } while(0)
+#define CHECK_PTR_MSG(x, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return; } } while(0)
+#define CHECK_PTR_RET(x, y) do { if(!(x)) return (y); } while(0)
+#define CHECK_PTR_RET_MSG(x, y, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return (y); } } while(0)
 
 /* abstractions of the memory allocator */
 #define FREE free
@@ -62,6 +62,7 @@
 
 #if defined(UNIT_TESTING)
 
+/* system calls */
 extern int fail_alloc;
 #define MALLOC(...) (fail_alloc ? NULL : malloc(__VA_ARGS__))
 #define CALLOC(...) (fail_alloc ? NULL : calloc(__VA_ARGS__))
@@ -90,6 +91,14 @@ extern int fake_fcntl_ret;
 extern int fake_fork;
 extern int fake_fork_ret;
 #define FORK(...) (fake_fork ? fake_fork_ret : fork(__VA_ARGS__))
+
+extern int fake_fstat;
+extern int fake_fstat_ret;
+#define FSTAT(...) (fake_fstat ? fake_fstat_ret : fstat(__VA_ARGS__))
+
+extern int fake_getdtablesize;
+extern int fake_getdtablesize_ret;
+#define GETDTABLESIZE(...) (fake_getdtablesize ? fake_getdtablesize_ret : getdtablesize(__VA_ARGS__))
 
 extern int fake_getegid;
 extern int fake_getegid_ret;
@@ -135,6 +144,10 @@ extern int fake_setregid;
 extern int fake_setregid_ret;
 #define SETREGID(...) (fake_setregid ? fake_setregid_ret : setregid(__VA_ARGS__))
 
+extern int fake_setreuid;
+extern int fake_setreuid_ret;
+#define SETREUID(...) (fake_setreuid ? fake_setreuid_ret : setreuid(__VA_ARGS__))
+
 extern int fake_setsockopt;
 extern int fake_setsockopt_ret;
 #define SETSOCKOPT(...) (fake_setsockopt ? fake_setsockopt_ret : setsockopt(__VA_ARGS__))
@@ -142,6 +155,11 @@ extern int fake_setsockopt_ret;
 extern int fake_socket;
 extern int fake_socket_ret;
 #define SOCKET(...) (fake_socket ? fake_socket_ret : socket(__VA_ARGS__))
+
+/* event */
+extern int fake_ev_default_loop;
+extern void* fake_ev_default_loop_ret;
+#define EV_DEFAULT_LOOP(...) (fake_ev_default_loop ? fake_ev_default_loop_ret : ev_default_loop(__VA_ARGS__))
 
 #else
 
@@ -163,6 +181,8 @@ extern int fake_socket_ret;
 #define SETSOCKOPT setsockopt
 #define SOCKET socket
 #define ERRNO errno
+
+#define EV_DEFAULT_LOOP ev_default_loop
 
 #endif
 

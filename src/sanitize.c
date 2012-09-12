@@ -45,6 +45,10 @@ static int open_devnull( int fd )
 {
 	FILE *f = 0;
 
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_open_devnull, fake_open_devnull_ret );
+#endif
+
 	if ( fd == STDIN_FILENO )
 	{
 		f = freopen( _PATH_DEVNULL, "rb", stdin );
@@ -61,14 +65,14 @@ static int open_devnull( int fd )
 	return ( f && (fileno(f) == fd) );
 }
 
-void sanitize_files( int keep[], int nfds )
+int sanitize_files( int keep[], int nfds )
 {
 	int skip;
 	int i, fd, fds;
 	struct stat st;
 
 	/* figure out the maximum file descriptor value */
-	if ( (fds = getdtablesize()) == -1 )
+	if ( (fds = GETDTABLESIZE()) == -1 )
 	{
 		fds = OPEN_MAX;
 	}
@@ -89,12 +93,14 @@ void sanitize_files( int keep[], int nfds )
 	}
 
 	/* verify that the standard descriptors are open.  if they're not, attempt to
-	 * open them use /dev/null.  if any are unsuccessful, abort. */
+	 * open them use /dev/null.  if any are unsuccessful, fail */
 	for ( fd = STDIN_FILENO; fd <= STDERR_FILENO; fd++ )
 	{
-		if ( (fstat( fd, &st ) == -1) && ((errno != EBADF) || (!open_devnull(fd))) )
-			abort();
+		if ( (FSTAT( fd, &st ) == -1) && ((errno != EBADF) || (!open_devnull(fd))) )
+			return FALSE;
 	}
+
+	return TRUE;
 }
 
 /* the standard clean environment */
@@ -164,9 +170,7 @@ int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int
 	/* allocate the new environment variable array */
 	new_size += (arr_size * sizeof(int8_t *));
 	new_environ = (int8_t**)CALLOC( new_size, sizeof(int8_t) );
-	if ( new_environ == NULL )
-		abort();
-
+	CHECK_PTR_RET( new_environ, FALSE );
 
 	/* copy over the default basic environment */
 	ptr = (int8_t*)new_environ + (arr_size * sizeof(int8_t*));
@@ -229,8 +233,13 @@ int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int
 
 #include <CUnit/Basic.h>
 
+void test_sanitize_files( void )
+{
+}
+
 void test_sanitize_private_functions( void )
 {
+	test_sanitize_files();
 }
 
 #endif

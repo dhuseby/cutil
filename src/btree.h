@@ -36,14 +36,6 @@ typedef int (*bt_key_cmp_fn)( void * l, void * r);
 /* define the value delete function type */
 typedef void (*bt_delete_fn)(void * value);
 
-#ifdef USE_THREADING
-/* threading protection */
-void bt_lock(bt_t * const btree);
-int bt_try_lock(bt_t * const btree);
-void bt_unlock(bt_t * const btree);
-pthread_mutex_t * bt_get_mutex(bt_t * const btree);
-#endif
-
 /* dynamically allocates and initializes a binary tree */
 /* NOTE: If NULL is passed in for the key_cmp_fn function, the pointer to the 
  * key will be cast to an int32 and used as the compare value.  If NULL is passed 

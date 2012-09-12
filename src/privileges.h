@@ -17,8 +17,21 @@
 #ifndef __PRIVILEGES_H__
 #define __PRIVILEGES_H__
 
-void drop_privileges( int permanent );
-void restore_privileges( void );
+#include <sys/param.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+typedef struct priv_state_s
+{
+	gid_t	gid;
+	uid_t	uid;
+	int		ngroups;
+	gid_t	groups[NGROUPS_MAX];
+
+} priv_state_t;
+
+int drop_privileges( int permanent, priv_state_t * const orig );
+int restore_privileges( priv_state_t const * const orig );
 
 #endif/*__PRIVILEGES_H__*/
 

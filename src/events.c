@@ -28,6 +28,7 @@
 
 #if defined(UNIT_TESTING)
 #include "test_flags.h"
+extern evt_loop_t * el;
 #endif
 
 /* libev signal event callback */
@@ -35,13 +36,15 @@ static void evt_signal_callback( struct ev_loop * loop,
 								 struct ev_signal * w,
 								 int revents )
 {
+	CHECK_PTR( loop );
+	CHECK_PTR( w );
+	CHECK( revents == EV_SIGNAL );
 	DEBUG("received signal event\n");
 
 	/* get the pointer to our own struct */
 	evt_t * evt = (evt_t*)w;
 
-	ASSERT( evt->el == loop );
-	ASSERT( revents == EV_SIGNAL );
+	CHECK( evt->el == loop );
 
 	if ( evt->callback != NULL )
 	{
@@ -60,13 +63,15 @@ static void evt_child_callback( struct ev_loop * loop,
 								struct ev_child * w,
 								int revents )
 {
+	CHECK_PTR( loop );
+	CHECK_PTR( w );
+	CHECK( revents == EV_CHILD );
 	DEBUG("received child event\n");
 
 	/* get the pointer to our own struct */
 	evt_t * evt = (evt_t*)w;
 
-	ASSERT( evt->el == loop );
-	ASSERT( revents == EV_CHILD );
+	CHECK( evt->el == loop );
 
 	if ( evt->callback != NULL )
 	{
@@ -87,13 +92,15 @@ static void evt_io_callback( struct ev_loop * loop,
 							 struct ev_io * w,
 							 int revents )
 {
+	CHECK_PTR( loop );
+	CHECK_PTR( w );
+	CHECK( (revents & EV_READ) || (revents & EV_WRITE) );
 	DEBUG("receive io event\n");
 
 	/* get the pointer to our own struct */
 	evt_t * evt = (evt_t*)w;
 
-	ASSERT( evt->el == loop );
-	ASSERT( (revents & EV_READ) || (revents & EV_WRITE) );
+	CHECK( evt->el == loop );
 
 	if ( evt->callback != NULL )
 	{
@@ -136,12 +143,8 @@ evt_loop_t* evt_new( void )
 	evt_loop_t* el = NULL;
 	
 	/* initialize the event loop, auto-selecting backend */
-	el = (evt_loop_t*)ev_default_loop( EVFLAG_AUTO | EVFLAG_NOENV );
-	if ( el == NULL )
-	{
-		WARN("failed to start event loop\n");
-		return NULL;
-	}
+	el = (evt_loop_t*)EV_DEFAULT_LOOP( EVFLAG_AUTO | EVFLAG_NOENV );
+	CHECK_PTR_RET_MSG( el, NULL, "failed to start event loop\n" );
 
 	// log which backend was chosen
 	evt_log_backend( el );
@@ -166,7 +169,11 @@ int evt_initialize_event_handler( evt_t * const evt,
 								  evt_fn callback,
 								  void * user_data )
 {
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_event_handler_init, fake_event_handler_init_ret );
+#endif
 	CHECK_PTR_RET( evt, FALSE );
+	CHECK_RET( VALID_EVENT_TYPE( t ), FALSE );
 	CHECK_PTR_RET( params, FALSE );
 
 	MEMSET( (void*)evt, 0, sizeof(evt_t) );
@@ -219,15 +226,15 @@ evt_t * evt_new_event_handler( evt_type_t const t,
 {
 	evt_t * evt = NULL;
 
-	evt = MALLOC( sizeof(evt_t) );
-	if ( evt == NULL )
-	{
-		WARN( "failed to allocate event handler struct\n" );
-		return NULL;
-	}
+	evt = CALLOC( 1, sizeof(evt_t) );
+	CHECK_PTR_RET( evt, NULL );
 
 	/* initialize it */
-	evt_initialize_event_handler( evt, t, params, callback, user_data );
+	if ( !evt_initialize_event_handler( evt, t, params, callback, user_data ) )
+	{
+		FREE( evt );
+		return NULL;
+	}
 
 	return evt;
 }
@@ -255,8 +262,9 @@ void evt_delete_event_handler( void * e )
 evt_ret_t evt_start_event_handler( evt_loop_t * const el,
 								   evt_t * const evt )
 {
-	CHECK_PTR_RET_MSG( el, EVT_BAD_PTR, "bad event loop pointer\n" );
-	CHECK_PTR_RET_MSG( evt, EVT_BAD_PTR, "bad event pointer\n" );
+	CHECK_PTR_RET_MSG( el, EVT_BADPTR, "bad event loop pointer\n" );
+	CHECK_PTR_RET_MSG( evt, EVT_BADPTR, "bad event pointer\n" );
+	CHECK_RET( VALID_EVENT_TYPE( evt->evt_type ), EVT_BADPARAM );
 
 	/* store the pointer to the loop we're hooking into */
 	evt->el = el;
@@ -292,8 +300,8 @@ evt_ret_t evt_start_event_handler( evt_loop_t * const el,
 evt_ret_t evt_stop_event_handler( evt_loop_t * const el,
 								  evt_t * const evt )
 {
-	CHECK_PTR_RET( el, EVT_BAD_PTR );
-	CHECK_PTR_RET( evt, EVT_BAD_PTR );
+	CHECK_PTR_RET( el, EVT_BADPTR );
+	CHECK_PTR_RET( evt, EVT_BADPTR );
 
 	switch ( evt->evt_type )
 	{
@@ -326,7 +334,7 @@ evt_ret_t evt_stop_event_handler( evt_loop_t * const el,
 
 evt_ret_t evt_run( evt_loop_t * const el )
 {
-	CHECK_PTR_RET( el, EVT_BAD_PTR );
+	CHECK_PTR_RET( el, EVT_BADPTR );
 
 	/* start the libev event loop */
 	ev_run( (struct ev_loop*)el, 0 );
@@ -336,7 +344,7 @@ evt_ret_t evt_run( evt_loop_t * const el )
 
 evt_ret_t evt_stop( evt_loop_t * const el, int once )
 {
-	CHECK_PTR_RET( el, EVT_BAD_PTR );
+	CHECK_PTR_RET( el, EVT_BADPTR );
 
 	/* stop the libev event loop */
 	if ( once )
@@ -351,8 +359,88 @@ evt_ret_t evt_stop( evt_loop_t * const el, int once )
 
 #include <CUnit/Basic.h>
 
+static int test_flag = FALSE;
+
+evt_ret_t test_evt_callback( evt_loop_t * const el, evt_t * const evt, evt_params_t * const params, void * user_data )
+{
+	*((int*)user_data) = TRUE;
+}
+
+void test_evt_signal_callback( void )
+{
+	evt_t evt;
+	MEMSET( &evt, 0, sizeof(evt_t) );
+
+	evt_signal_callback( NULL, NULL, 0 );
+	evt_signal_callback( (struct ev_loop*)el, NULL, 0 );
+	evt_signal_callback( (struct ev_loop*)el, (struct ev_signal*)&evt, 0 );
+	evt_signal_callback( (struct ev_loop*)el, (struct ev_signal*)&evt, EV_SIGNAL );
+
+	evt.el = el;
+	evt_signal_callback( (struct ev_loop*)el, (struct ev_signal*)&evt, EV_SIGNAL );
+	
+	evt.callback = &test_evt_callback;
+	evt.user_data = &test_flag;
+	test_flag = FALSE;
+	evt_signal_callback( (struct ev_loop*)el, (struct ev_signal*)&evt, EV_SIGNAL );
+	CU_ASSERT_TRUE( test_flag );
+	test_flag = FALSE;
+}
+
+void test_evt_child_callback( void )
+{
+	evt_t evt;
+	MEMSET( &evt, 0, sizeof(evt_t) );
+
+	evt_child_callback( NULL, NULL, 0 );
+	evt_child_callback( (struct ev_loop*)el, NULL, 0 );
+	evt_child_callback( (struct ev_loop*)el, (struct ev_child*)&evt, 0 );
+	evt_child_callback( (struct ev_loop*)el, (struct ev_child*)&evt, EV_CHILD );
+
+	evt.el = el;
+	evt_child_callback( (struct ev_loop*)el, (struct ev_child*)&evt, EV_CHILD );
+	
+	evt.callback = &test_evt_callback;
+	evt.user_data = &test_flag;
+	test_flag = FALSE;
+	evt_child_callback( (struct ev_loop*)el, (struct ev_child*)&evt, EV_CHILD );
+	CU_ASSERT_TRUE( test_flag );
+	test_flag = FALSE;
+}
+
+void test_evt_io_callback( void )
+{
+	evt_t evt;
+	MEMSET( &evt, 0, sizeof(evt_t) );
+
+	evt_io_callback( NULL, NULL, 0 );
+	evt_io_callback( (struct ev_loop*)el, NULL, 0 );
+	evt_io_callback( (struct ev_loop*)el, (struct ev_io*)&evt, 0 );
+	evt_io_callback( (struct ev_loop*)el, (struct ev_io*)&evt, EV_READ );
+
+	evt.el = el;
+	evt_io_callback( (struct ev_loop*)el, (struct ev_io*)&evt, EV_READ );
+	
+	evt.callback = &test_evt_callback;
+	evt.user_data = &test_flag;
+	test_flag = FALSE;
+	evt_io_callback( (struct ev_loop*)el, (struct ev_io*)&evt, EV_READ );
+	CU_ASSERT_TRUE( test_flag );
+	test_flag = FALSE;
+}
+
+void test_evt_log_backend( void )
+{
+	evt_log_backend( NULL );
+}
+
+
 void test_events_private_functions( void )
 {
+	test_evt_signal_callback();
+	test_evt_child_callback();
+	test_evt_io_callback();
+	test_evt_log_backend();
 }
 
 #endif

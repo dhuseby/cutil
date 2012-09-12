@@ -20,9 +20,6 @@
 #include <string.h>
 #include <assert.h>
 #include <inttypes.h>
-#ifdef USE_THREADING
-#include <pthread.h>
-#endif
 
 #include "debug.h"
 #include "macros.h"
@@ -66,10 +63,6 @@ struct bt_s
 	/* binary tree */
 	node_t*				tree;		/* pointer to btree root */
 	uint_t				size;		/* number of nodes in the tree */
-
-#ifdef USE_THREADING
-	pthread_mutex_t		lock;		/* btree lock */
-#endif
 };
 
 
@@ -82,44 +75,6 @@ static int default_key_cmp( void * l, void * r )
 		return 0;
 	return 1;
 }
-
-
-#ifdef USE_THREADING
-void bt_lock(bt_t * const btree)
-{
-	CHECK_PTR(btree);
-
-	/* lock the mutex */
-	pthread_mutex_lock(&btree->lock);
-}
-
-
-int bt_try_lock(bt_t * const btree)
-{
-	CHECK_PTR_RET(btree, -1);
-
-	/* try to lock the mutex */
-	return pthread_mutex_trylock(&btree->lock);
-}
-
-
-void bt_unlock(bt_t * const btree)
-{
-	CHECK_PTR(btree);
-
-	/* lock the mutex */
-	pthread_mutex_unlock(&btree->lock);
-}
-
-
-pthread_mutex_t * bt_get_mutex(bt_t * const btree)
-{
-	CHECK_PTR_RET(btree, NULL);
-	
-	/* return the mutex pointer */
-	return &btree->lock;	
-}
-#endif
 
 static void bt_add_more_nodes( bt_t * const btree )
 {
@@ -215,11 +170,6 @@ static void bt_initialize
 	/* set up the binary tree */
 	btree->tree = NULL;
 	btree->size = 0;
-
-#ifdef USE_THREADING
-	/* initialize the mutex */
-	pthread_mutex_init(&btree->lock, 0);
-#endif
 }
 
 
@@ -281,12 +231,6 @@ static void bt_deinitialize(bt_t * const btree)
 	btree->tree = NULL;
 	btree->size = 0;
 	btree->num_lists = 0;
-
-#ifdef USE_THREADING
-	/* destroy the lock */
-	ret = pthread_mutex_destroy(&btree->lock);
-	ASSERT(ret == 0);
-#endif
 }
 
 
@@ -1057,7 +1001,7 @@ void * bt_remove(bt_t * const btree, void * const key )
 	return val;
 }
 
-void bt_print_node( node_t * const p, int const indent )
+static void bt_print_node( node_t * const p, int const indent )
 {
 	CHECK_PTR( p );
 
@@ -1065,9 +1009,9 @@ void bt_print_node( node_t * const p, int const indent )
 
 	/* print the node */
 #if defined(PORTABLE_64_BIT)
-	printf( "%*s%d(%" PRId64 ")\n", (indent * 5), " ", p->balance, (int_t)p->val );
+	DEBUG( "%*s%d(%" PRId64 ")\n", (indent * 5), " ", p->balance, (int_t)p->val );
 #else
-	printf( "%*s%d(%" PRId32 ")\n", (indent * 5), " ", p->balance, (int_t)p->val );
+	DEBUG( "%*s%d(%" PRId32 ")\n", (indent * 5), " ", p->balance, (int_t)p->val );
 #endif
 
 	bt_print_node( p->left, indent + 1 );

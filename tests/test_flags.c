@@ -33,6 +33,10 @@ int fake_fcntl = FALSE;
 int fake_fcntl_ret = -1;
 int fake_fork = FALSE;
 int fake_fork_ret = -1;
+int fake_fstat = FALSE;
+int fake_fstat_ret = -1;
+int fake_getdtablesize = FALSE;
+int fake_getdtablesize_ret = -1;
 int fake_getegid = FALSE;
 int fake_getegid_ret = -1;
 int fake_geteuid = FALSE;
@@ -55,6 +59,8 @@ int fake_setgroups = FALSE;
 int fake_setgroups_ret = -1;
 int fake_setregid = FALSE;
 int fake_setregid_ret = -1;
+int fake_setreuid = FALSE;
+int fake_setreuid_ret = -1;
 int fake_setsockopt = FALSE;
 int fake_setsockopt_ret = -1;
 int fake_socket = FALSE;
@@ -83,6 +89,12 @@ int fail_buffer_init_alloc = FALSE;
 
 /* child */
 
+/* event */
+int fake_ev_default_loop = FALSE;
+void* fake_ev_default_loop_ret = NULL;
+int fake_event_handler_init = FALSE;
+int fake_event_handler_init_ret = FALSE;
+
 /* hashtable */
 int fake_ht_init = FALSE;
 int fake_ht_init_ret = FALSE;
@@ -103,6 +115,10 @@ int fake_list_push = FALSE;
 int fake_list_push_ret = FALSE;
 int fake_list_get = FALSE;
 void* fake_list_get_ret = NULL;
+
+/* sanitize */
+int fake_open_devnull = FALSE;
+int fake_open_devnull_ret = FALSE;
 
 /* socket */
 int fake_socket_getsockopt = FALSE;
@@ -138,6 +154,10 @@ void reset_test_flags( void )
 	fake_fcntl_ret = -1;
 	fake_fork = FALSE;
 	fake_fork_ret = -1;
+	fake_fstat = FALSE;
+	fake_fstat_ret = -1;
+	fake_getdtablesize = FALSE;
+	fake_getdtablesize_ret = -1;
 	fake_getegid = FALSE;
 	fake_getegid_ret = -1;
 	fake_geteuid = FALSE;
@@ -160,6 +180,8 @@ void reset_test_flags( void )
 	fake_setgroups_ret = -1;
 	fake_setregid = FALSE;
 	fake_setregid_ret = -1;
+	fake_setreuid = FALSE;
+	fake_setreuid_ret = -1;
 	fake_setsockopt = FALSE;
 	fake_setsockopt_ret = -1;
 	fake_socket = FALSE;
@@ -188,6 +210,12 @@ void reset_test_flags( void )
 
 	/* child */
 
+	/* event */
+	fake_ev_default_loop = FALSE;
+	fake_ev_default_loop_ret = NULL;
+	fake_event_handler_init = FALSE;
+	fake_event_handler_init_ret = FALSE;
+
 	/* hashtable */
 	fake_ht_init = FALSE;
 	fake_ht_init_ret = FALSE;
@@ -208,6 +236,10 @@ void reset_test_flags( void )
 	fake_list_push_ret = FALSE;
 	fake_list_get = FALSE;
 	fake_list_get_ret = NULL;
+
+	/* sanitize */
+	fake_open_devnull = FALSE;
+	fake_open_devnull_ret = FALSE;
 
 	/* socket */
 	fake_socket_getsockopt = FALSE;

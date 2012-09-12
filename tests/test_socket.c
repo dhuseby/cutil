@@ -327,6 +327,7 @@ static void test_tcp_socket( void )
 
 	/* set it to listen */
 	CU_ASSERT_EQUAL( socket_listen( lsock, 5 ), SOCKET_OK );
+	CU_ASSERT_TRUE( socket_is_listening( lsock ) );
 
 	/* create the client socket */
 	csock = socket_new( SOCKET_TCP, &cops, el, NULL );

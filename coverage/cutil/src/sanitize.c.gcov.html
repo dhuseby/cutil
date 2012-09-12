@@ -31,17 +31,17 @@
             <td class="headerValue">cutil test coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">74</td>
-            <td class="headerCovTableEntry">81</td>
-            <td class="headerCovTableEntryHi">91.4 %</td>
+            <td class="headerCovTableEntry">78</td>
+            <td class="headerCovTableEntry">84</td>
+            <td class="headerCovTableEntryHi">92.9 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-09-06</td>
+            <td class="headerValue">2012-09-12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">4</td>
-            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntry">5</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
@@ -49,9 +49,9 @@
             <td></td>
             <td></td>
             <td class="headerItem">Branches:</td>
-            <td class="headerCovTableEntry">60</td>
-            <td class="headerCovTableEntry">80</td>
-            <td class="headerCovTableEntryMed">75.0 %</td>
+            <td class="headerCovTableEntry">63</td>
+            <td class="headerCovTableEntry">86</td>
+            <td class="headerCovTableEntryLo">73.3 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -116,198 +116,207 @@
 <span class="lineNum">      45 </span>                :            : {
 <span class="lineNum">      46 </span>                :<span class="lineCov">          3 :     FILE *f = 0;</span>
 <span class="lineNum">      47 </span>                :            : 
-<span class="lineNum">      48 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          3 :     if ( fd == STDIN_FILENO )</span>
-<span class="lineNum">      49 </span>                :            :     {
-<span class="lineNum">      50 </span>                :<span class="lineCov">          1 :         f = freopen( _PATH_DEVNULL, &quot;rb&quot;, stdin );</span>
-<span class="lineNum">      51 </span>                :            :     }
-<span class="lineNum">      52 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          2 :     else if ( fd == STDOUT_FILENO )</span>
+<span class="lineNum">      48 </span>                :            : #if defined(UNIT_TESTING)
+<span class="lineNum">      49 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          3 :     CHECK_RET( !fake_open_devnull, fake_open_devnull_ret );</span>
+<span class="lineNum">      50 </span>                :            : #endif
+<span class="lineNum">      51 </span>                :            : 
+<span class="lineNum">      52 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          3 :     if ( fd == STDIN_FILENO )</span>
 <span class="lineNum">      53 </span>                :            :     {
-<span class="lineNum">      54 </span>                :<span class="lineCov">          1 :         f = freopen( _PATH_DEVNULL, &quot;wb&quot;, stdout );</span>
+<span class="lineNum">      54 </span>                :<span class="lineCov">          1 :         f = freopen( _PATH_DEVNULL, &quot;rb&quot;, stdin );</span>
 <span class="lineNum">      55 </span>                :            :     }
-<span class="lineNum">      56 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :     else if ( fd == STDERR_FILENO )</span>
+<span class="lineNum">      56 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          2 :     else if ( fd == STDOUT_FILENO )</span>
 <span class="lineNum">      57 </span>                :            :     {
-<span class="lineNum">      58 </span>                :<span class="lineCov">          1 :         f = freopen( _PATH_DEVNULL, &quot;wb&quot;, stderr );</span>
+<span class="lineNum">      58 </span>                :<span class="lineCov">          1 :         f = freopen( _PATH_DEVNULL, &quot;wb&quot;, stdout );</span>
 <span class="lineNum">      59 </span>                :            :     }
-<span class="lineNum">      60 </span>                :            : 
-<span class="lineNum">      61 </span>[<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          3 :     return ( f &amp;&amp; (fileno(f) == fd) );</span>
-<a name="62"><span class="lineNum">      62 </span>                :            : }</a>
-<span class="lineNum">      63 </span>                :            : 
-<span class="lineNum">      64 </span>                :<span class="lineCov">          5 : void sanitize_files( int keep[], int nfds )</span>
-<span class="lineNum">      65 </span>                :            : {
-<span class="lineNum">      66 </span>                :            :     int skip;
-<span class="lineNum">      67 </span>                :            :     int i, fd, fds;
-<span class="lineNum">      68 </span>                :            :     struct stat st;
-<span class="lineNum">      69 </span>                :            : 
-<span class="lineNum">      70 </span>                :            :     /* figure out the maximum file descriptor value */
-<span class="lineNum">      71 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 5 times"> + </span>]:<span class="lineCov">          5 :     if ( (fds = getdtablesize()) == -1 )</span>
-<span class="lineNum">      72 </span>                :            :     {
-<span class="lineNum">      73 </span>                :<span class="lineNoCov">          0 :         fds = OPEN_MAX;</span>
-<span class="lineNum">      74 </span>                :            :     }
-<span class="lineNum">      75 </span>                :            :     
-<span class="lineNum">      76 </span>                :            :     /* make sure all open descriptors other than the standard ones, and
-<span class="lineNum">      77 </span>                :            :      * the file descriptors we want to keep, are closed */
-<span class="lineNum">      78 </span>        [<span class="branchCov" title="Branch 0 was taken 5105 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">       5110 :     for ( fd = (STDERR_FILENO + 1); fd &lt; fds; fd++ )</span>
-<span class="lineNum">      79 </span>                :            :     {
-<span class="lineNum">      80 </span>                :<span class="lineCov">       5105 :         skip = FALSE;</span>
-<span class="lineNum">      81 </span>        [<span class="branchCov" title="Branch 0 was taken 12252 times"> + </span><span class="branchCov" title="Branch 1 was taken 5105 times"> + </span>]:<span class="lineCov">      17357 :         for ( i = 0; i &lt; nfds; i++ )</span>
-<span class="lineNum">      82 </span>                :            :         {
-<span class="lineNum">      83 </span>        [<span class="branchCov" title="Branch 0 was taken 12 times"> + </span><span class="branchCov" title="Branch 1 was taken 12240 times"> + </span>]:<span class="lineCov">      12252 :             if ( keep[i] == fd )</span>
-<span class="lineNum">      84 </span>                :<span class="lineCov">         12 :                 skip = TRUE;</span>
-<span class="lineNum">      85 </span>                :            :         }
-<span class="lineNum">      86 </span>                :            : 
-<span class="lineNum">      87 </span>        [<span class="branchCov" title="Branch 0 was taken 5093 times"> + </span><span class="branchCov" title="Branch 1 was taken 12 times"> + </span>]:<span class="lineCov">       5105 :         if ( !skip )</span>
-<span class="lineNum">      88 </span>                :<span class="lineCov">       5093 :             close( fd );</span>
-<span class="lineNum">      89 </span>                :            :     }
+<span class="lineNum">      60 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :     else if ( fd == STDERR_FILENO )</span>
+<span class="lineNum">      61 </span>                :            :     {
+<span class="lineNum">      62 </span>                :<span class="lineCov">          1 :         f = freopen( _PATH_DEVNULL, &quot;wb&quot;, stderr );</span>
+<span class="lineNum">      63 </span>                :            :     }
+<span class="lineNum">      64 </span>                :            : 
+<span class="lineNum">      65 </span>[<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          3 :     return ( f &amp;&amp; (fileno(f) == fd) );</span>
+<a name="66"><span class="lineNum">      66 </span>                :            : }</a>
+<span class="lineNum">      67 </span>                :            : 
+<span class="lineNum">      68 </span>                :<span class="lineCov">          5 : int sanitize_files( int keep[], int nfds )</span>
+<span class="lineNum">      69 </span>                :            : {
+<span class="lineNum">      70 </span>                :            :     int skip;
+<span class="lineNum">      71 </span>                :            :     int i, fd, fds;
+<span class="lineNum">      72 </span>                :            :     struct stat st;
+<span class="lineNum">      73 </span>                :            : 
+<span class="lineNum">      74 </span>                :            :     /* figure out the maximum file descriptor value */
+<span class="lineNum">      75 </span>[<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 5 times"> + </span>]:<span class="lineCov">          5 :     if ( (fds = GETDTABLESIZE()) == -1 )</span>
+<span class="lineNum">      76 </span>                :            :     {
+<span class="lineNum">      77 </span>                :<span class="lineNoCov">          0 :         fds = OPEN_MAX;</span>
+<span class="lineNum">      78 </span>                :            :     }
+<span class="lineNum">      79 </span>                :            :     
+<span class="lineNum">      80 </span>                :            :     /* make sure all open descriptors other than the standard ones, and
+<span class="lineNum">      81 </span>                :            :      * the file descriptors we want to keep, are closed */
+<span class="lineNum">      82 </span>        [<span class="branchCov" title="Branch 0 was taken 5105 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">       5110 :     for ( fd = (STDERR_FILENO + 1); fd &lt; fds; fd++ )</span>
+<span class="lineNum">      83 </span>                :            :     {
+<span class="lineNum">      84 </span>                :<span class="lineCov">       5105 :         skip = FALSE;</span>
+<span class="lineNum">      85 </span>        [<span class="branchCov" title="Branch 0 was taken 12252 times"> + </span><span class="branchCov" title="Branch 1 was taken 5105 times"> + </span>]:<span class="lineCov">      17357 :         for ( i = 0; i &lt; nfds; i++ )</span>
+<span class="lineNum">      86 </span>                :            :         {
+<span class="lineNum">      87 </span>        [<span class="branchCov" title="Branch 0 was taken 12 times"> + </span><span class="branchCov" title="Branch 1 was taken 12240 times"> + </span>]:<span class="lineCov">      12252 :             if ( keep[i] == fd )</span>
+<span class="lineNum">      88 </span>                :<span class="lineCov">         12 :                 skip = TRUE;</span>
+<span class="lineNum">      89 </span>                :            :         }
 <span class="lineNum">      90 </span>                :            : 
-<span class="lineNum">      91 </span>                :            :     /* verify that the standard descriptors are open.  if they're not, attempt to
-<span class="lineNum">      92 </span>                :            :      * open them use /dev/null.  if any are unsuccessful, abort. */
-<span class="lineNum">      93 </span>        [<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">         20 :     for ( fd = STDIN_FILENO; fd &lt;= STDERR_FILENO; fd++ )</span>
-<span class="lineNum">      94 </span>                :            :     {
-<span class="lineNum">      95 </span>[<span class="branchCov" title="Branch 1 was taken 3 times"> + </span><span class="branchCov" title="Branch 2 was taken 12 times"> + </span>][<span class="branchCov" title="Branch 4 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]:<span class="lineCov">         15 :         if ( (fstat( fd, &amp;st ) == -1) &amp;&amp; ((errno != EBADF) || (!open_devnull(fd))) )</span>
-<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 7 was not taken"> - </span><span class="branchCov" title="Branch 8 was taken 3 times"> + </span>]
-<span class="lineNum">      96 </span>                :<span class="lineNoCov">          0 :             abort();</span>
-<span class="lineNum">      97 </span>                :            :     }
-<span class="lineNum">      98 </span>                :<span class="lineCov">          5 : }</span>
-<span class="lineNum">      99 </span>                :            : 
-<span class="lineNum">     100 </span>                :            : /* the standard clean environment */
-<span class="lineNum">     101 </span>                :            : static int8_t * clean_environ[] =
-<span class="lineNum">     102 </span>                :            : {
-<span class="lineNum">     103 </span>                :            :     &quot;IFS= \t\n&quot;,
-<span class="lineNum">     104 </span>                :            :     &quot;PATH=&quot; _PATH_STDPATH,
-<span class="lineNum">     105 </span>                :            :     NULL
-<span class="lineNum">     106 </span>                :            : };
-<span class="lineNum">     107 </span>                :            : 
-<span class="lineNum">     108 </span>                :            : /* the default list of environment variables to preserve */
-<span class="lineNum">     109 </span>                :            : static int8_t * preserve_environ[] =
-<span class="lineNum">     110 </span>                :            : {
-<span class="lineNum">     111 </span>                :            :     &quot;TZ&quot;,
-<span class="lineNum">     112 </span>                :            :     NULL
-<a name="113"><span class="lineNum">     113 </span>                :            : };</a>
-<span class="lineNum">     114 </span>                :            : 
-<span class="lineNum">     115 </span>                :<span class="lineCov">          3 : int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int8_t ** addv )</span>
+<span class="lineNum">      91 </span>        [<span class="branchCov" title="Branch 0 was taken 5093 times"> + </span><span class="branchCov" title="Branch 1 was taken 12 times"> + </span>]:<span class="lineCov">       5105 :         if ( !skip )</span>
+<span class="lineNum">      92 </span>                :<span class="lineCov">       5093 :             close( fd );</span>
+<span class="lineNum">      93 </span>                :            :     }
+<span class="lineNum">      94 </span>                :            : 
+<span class="lineNum">      95 </span>                :            :     /* verify that the standard descriptors are open.  if they're not, attempt to
+<span class="lineNum">      96 </span>                :            :      * open them use /dev/null.  if any are unsuccessful, fail */
+<span class="lineNum">      97 </span>        [<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">         20 :     for ( fd = STDIN_FILENO; fd &lt;= STDERR_FILENO; fd++ )</span>
+<span class="lineNum">      98 </span>                :            :     {
+<span class="lineNum">      99 </span>[<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 3 times"> + </span><span class="branchCov" title="Branch 4 was taken 12 times"> + </span>]:<span class="lineCov">         15 :         if ( (FSTAT( fd, &amp;st ) == -1) &amp;&amp; ((errno != EBADF) || (!open_devnull(fd))) )</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>][<span class="branchNoCov" title="Branch 9 was not taken"> - </span><span class="branchCov" title="Branch 10 was taken 3 times"> + </span>]
+<span class="lineNum">     100 </span>                :<span class="lineNoCov">          0 :             return FALSE;</span>
+<span class="lineNum">     101 </span>                :            :     }
+<span class="lineNum">     102 </span>                :            : 
+<span class="lineNum">     103 </span>                :<span class="lineCov">          5 :     return TRUE;</span>
+<span class="lineNum">     104 </span>                :            : }
+<span class="lineNum">     105 </span>                :            : 
+<span class="lineNum">     106 </span>                :            : /* the standard clean environment */
+<span class="lineNum">     107 </span>                :            : static int8_t * clean_environ[] =
+<span class="lineNum">     108 </span>                :            : {
+<span class="lineNum">     109 </span>                :            :     &quot;IFS= \t\n&quot;,
+<span class="lineNum">     110 </span>                :            :     &quot;PATH=&quot; _PATH_STDPATH,
+<span class="lineNum">     111 </span>                :            :     NULL
+<span class="lineNum">     112 </span>                :            : };
+<span class="lineNum">     113 </span>                :            : 
+<span class="lineNum">     114 </span>                :            : /* the default list of environment variables to preserve */
+<span class="lineNum">     115 </span>                :            : static int8_t * preserve_environ[] =
 <span class="lineNum">     116 </span>                :            : {
-<span class="lineNum">     117 </span>                :            :     int i;
-<span class="lineNum">     118 </span>                :            :     int8_t ** new_environ;
-<span class="lineNum">     119 </span>                :            :     int8_t *ptr, *value, *var;
-<span class="lineNum">     120 </span>                :<span class="lineCov">          3 :     size_t arr_size = 1, arr_ptr = 0, len, new_size = 0;</span>
-<span class="lineNum">     121 </span>                :            : 
-<span class="lineNum">     122 </span>                :            :     /* get the size and count of the standard clean environment */
-<span class="lineNum">     123 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          9 :     for ( i = 0; (var = clean_environ[i]) != NULL; i++ )</span>
-<span class="lineNum">     124 </span>                :            :     {
-<span class="lineNum">     125 </span>                :<span class="lineCov">          6 :         new_size += strlen( var ) + 1;</span>
-<span class="lineNum">     126 </span>                :<span class="lineCov">          6 :         arr_size ++;</span>
-<span class="lineNum">     127 </span>                :            :     }
-<span class="lineNum">     128 </span>                :            : 
-<span class="lineNum">     129 </span>                :            :     /* get the size and count of the environment vars being preserved by default preserve */
-<span class="lineNum">     130 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          6 :     for ( i = 0; (var = preserve_environ[i]) != NULL; i++ )</span>
-<span class="lineNum">     131 </span>                :            :     {
-<span class="lineNum">     132 </span>                :            :         /* if the env var isn't in the current env, skip it */
-<span class="lineNum">     133 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 3 times"> + </span>]:<span class="lineCov">          3 :         if ( !(value = getenv(var)) )</span>
-<span class="lineNum">     134 </span>                :<span class="lineNoCov">          0 :             continue;</span>
-<span class="lineNum">     135 </span>                :            : 
-<span class="lineNum">     136 </span>                :<span class="lineCov">          3 :         new_size += strlen( var ) + strlen( value ) + 2;  /* include '=' as well as \0 */</span>
-<span class="lineNum">     137 </span>                :<span class="lineCov">          3 :         arr_size++;</span>
-<span class="lineNum">     138 </span>                :            :     }
-<span class="lineNum">     139 </span>                :            : 
-<span class="lineNum">     140 </span>                :            :     /* get the size and count of the environment vars being preserved by the client */
-<span class="lineNum">     141 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          3 :     if ( (preservec &gt; 0) &amp;&amp; (preservev != NULL) )</span>
-<span class="lineNum">     142 </span>                :            :     {
-<span class="lineNum">     143 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          2 :         for ( i = 0; (i &lt; preservec) &amp;&amp; ((var = preservev[i]) != NULL); i++ )</span>
-<span class="lineNum">     144 </span>                :            :         {
-<span class="lineNum">     145 </span>                :            :             /* if the env var isn't in the current env, skip it */
-<span class="lineNum">     146 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          1 :             if ( !(value = getenv(var)) )</span>
-<span class="lineNum">     147 </span>                :<span class="lineNoCov">          0 :                 continue;</span>
-<span class="lineNum">     148 </span>                :            : 
-<span class="lineNum">     149 </span>                :<span class="lineCov">          1 :             new_size += strlen( var ) + strlen( value ) + 2; /* include '=' as well as \0 */</span>
-<span class="lineNum">     150 </span>                :<span class="lineCov">          1 :             arr_size++;</span>
-<span class="lineNum">     151 </span>                :            :         }
-<span class="lineNum">     152 </span>                :            :     }
-<span class="lineNum">     153 </span>                :            : 
-<span class="lineNum">     154 </span>                :            :     /* get the size and count of the environment vars being added by the clien */
-<span class="lineNum">     155 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          3 :     if ( (addc &gt; 0) &amp;&amp; (addv != NULL) )</span>
-<span class="lineNum">     156 </span>                :            :     {
-<span class="lineNum">     157 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          2 :         for ( i = 0; (i &lt; addc) &amp;&amp; ((var = addv[i]) != NULL); i++ )</span>
-<span class="lineNum">     158 </span>                :            :         {
-<span class="lineNum">     159 </span>                :<span class="lineCov">          1 :             new_size += strlen( var ) + 1;</span>
-<span class="lineNum">     160 </span>                :<span class="lineCov">          1 :             arr_size++;</span>
-<span class="lineNum">     161 </span>                :            :         }
-<span class="lineNum">     162 </span>                :            :     }
-<span class="lineNum">     163 </span>                :            : 
-<span class="lineNum">     164 </span>                :            :     /* allocate the new environment variable array */
-<span class="lineNum">     165 </span>                :<span class="lineCov">          3 :     new_size += (arr_size * sizeof(int8_t *));</span>
-<span class="lineNum">     166 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          3 :     new_environ = (int8_t**)CALLOC( new_size, sizeof(int8_t) );</span>
-<span class="lineNum">     167 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          3 :     if ( new_environ == NULL )</span>
-<span class="lineNum">     168 </span>                :<span class="lineNoCov">          0 :         abort();</span>
+<span class="lineNum">     117 </span>                :            :     &quot;TZ&quot;,
+<span class="lineNum">     118 </span>                :            :     NULL
+<a name="119"><span class="lineNum">     119 </span>                :            : };</a>
+<span class="lineNum">     120 </span>                :            : 
+<span class="lineNum">     121 </span>                :<span class="lineCov">          3 : int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int8_t ** addv )</span>
+<span class="lineNum">     122 </span>                :            : {
+<span class="lineNum">     123 </span>                :            :     int i;
+<span class="lineNum">     124 </span>                :            :     int8_t ** new_environ;
+<span class="lineNum">     125 </span>                :            :     int8_t *ptr, *value, *var;
+<span class="lineNum">     126 </span>                :<span class="lineCov">          3 :     size_t arr_size = 1, arr_ptr = 0, len, new_size = 0;</span>
+<span class="lineNum">     127 </span>                :            : 
+<span class="lineNum">     128 </span>                :            :     /* get the size and count of the standard clean environment */
+<span class="lineNum">     129 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          9 :     for ( i = 0; (var = clean_environ[i]) != NULL; i++ )</span>
+<span class="lineNum">     130 </span>                :            :     {
+<span class="lineNum">     131 </span>                :<span class="lineCov">          6 :         new_size += strlen( var ) + 1;</span>
+<span class="lineNum">     132 </span>                :<span class="lineCov">          6 :         arr_size ++;</span>
+<span class="lineNum">     133 </span>                :            :     }
+<span class="lineNum">     134 </span>                :            : 
+<span class="lineNum">     135 </span>                :            :     /* get the size and count of the environment vars being preserved by default preserve */
+<span class="lineNum">     136 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          6 :     for ( i = 0; (var = preserve_environ[i]) != NULL; i++ )</span>
+<span class="lineNum">     137 </span>                :            :     {
+<span class="lineNum">     138 </span>                :            :         /* if the env var isn't in the current env, skip it */
+<span class="lineNum">     139 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 3 times"> + </span>]:<span class="lineCov">          3 :         if ( !(value = getenv(var)) )</span>
+<span class="lineNum">     140 </span>                :<span class="lineNoCov">          0 :             continue;</span>
+<span class="lineNum">     141 </span>                :            : 
+<span class="lineNum">     142 </span>                :<span class="lineCov">          3 :         new_size += strlen( var ) + strlen( value ) + 2;  /* include '=' as well as \0 */</span>
+<span class="lineNum">     143 </span>                :<span class="lineCov">          3 :         arr_size++;</span>
+<span class="lineNum">     144 </span>                :            :     }
+<span class="lineNum">     145 </span>                :            : 
+<span class="lineNum">     146 </span>                :            :     /* get the size and count of the environment vars being preserved by the client */
+<span class="lineNum">     147 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          3 :     if ( (preservec &gt; 0) &amp;&amp; (preservev != NULL) )</span>
+<span class="lineNum">     148 </span>                :            :     {
+<span class="lineNum">     149 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          2 :         for ( i = 0; (i &lt; preservec) &amp;&amp; ((var = preservev[i]) != NULL); i++ )</span>
+<span class="lineNum">     150 </span>                :            :         {
+<span class="lineNum">     151 </span>                :            :             /* if the env var isn't in the current env, skip it */
+<span class="lineNum">     152 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          1 :             if ( !(value = getenv(var)) )</span>
+<span class="lineNum">     153 </span>                :<span class="lineNoCov">          0 :                 continue;</span>
+<span class="lineNum">     154 </span>                :            : 
+<span class="lineNum">     155 </span>                :<span class="lineCov">          1 :             new_size += strlen( var ) + strlen( value ) + 2; /* include '=' as well as \0 */</span>
+<span class="lineNum">     156 </span>                :<span class="lineCov">          1 :             arr_size++;</span>
+<span class="lineNum">     157 </span>                :            :         }
+<span class="lineNum">     158 </span>                :            :     }
+<span class="lineNum">     159 </span>                :            : 
+<span class="lineNum">     160 </span>                :            :     /* get the size and count of the environment vars being added by the clien */
+<span class="lineNum">     161 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          3 :     if ( (addc &gt; 0) &amp;&amp; (addv != NULL) )</span>
+<span class="lineNum">     162 </span>                :            :     {
+<span class="lineNum">     163 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          2 :         for ( i = 0; (i &lt; addc) &amp;&amp; ((var = addv[i]) != NULL); i++ )</span>
+<span class="lineNum">     164 </span>                :            :         {
+<span class="lineNum">     165 </span>                :<span class="lineCov">          1 :             new_size += strlen( var ) + 1;</span>
+<span class="lineNum">     166 </span>                :<span class="lineCov">          1 :             arr_size++;</span>
+<span class="lineNum">     167 </span>                :            :         }
+<span class="lineNum">     168 </span>                :            :     }
 <span class="lineNum">     169 </span>                :            : 
-<span class="lineNum">     170 </span>                :            : 
-<span class="lineNum">     171 </span>                :            :     /* copy over the default basic environment */
-<span class="lineNum">     172 </span>                :<span class="lineCov">          3 :     ptr = (int8_t*)new_environ + (arr_size * sizeof(int8_t*));</span>
-<span class="lineNum">     173 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          9 :     for ( i = 0; (var = clean_environ[i]) != NULL; i++ )</span>
-<span class="lineNum">     174 </span>                :            :     {
-<span class="lineNum">     175 </span>                :<span class="lineCov">          6 :         new_environ[arr_ptr++] = ptr;</span>
-<span class="lineNum">     176 </span>                :<span class="lineCov">          6 :         len = strlen( var );</span>
-<span class="lineNum">     177 </span>                :<span class="lineCov">          6 :         MEMCPY( ptr, var, len + 1 );</span>
-<span class="lineNum">     178 </span>                :<span class="lineCov">          6 :         ptr += len + 1;</span>
-<span class="lineNum">     179 </span>                :            :     }
-<span class="lineNum">     180 </span>                :            : 
-<span class="lineNum">     181 </span>                :            :     /* copy over the default preserve environment */
-<span class="lineNum">     182 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          6 :     for ( i = 0; (var = preserve_environ[i]) != NULL; i++ )</span>
-<span class="lineNum">     183 </span>                :            :     {
-<span class="lineNum">     184 </span>                :            :         /* if hte env var isn't in the current env, skip it */
-<span class="lineNum">     185 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 3 times"> + </span>]:<span class="lineCov">          3 :         if ( !(value = getenv(var)) )</span>
-<span class="lineNum">     186 </span>                :<span class="lineNoCov">          0 :             continue;</span>
-<span class="lineNum">     187 </span>                :            : 
-<span class="lineNum">     188 </span>                :<span class="lineCov">          3 :         new_environ[arr_ptr++] = ptr;</span>
-<span class="lineNum">     189 </span>                :<span class="lineCov">          3 :         len = strlen(var);</span>
-<span class="lineNum">     190 </span>                :<span class="lineCov">          3 :         MEMCPY( ptr, var, len );</span>
-<span class="lineNum">     191 </span>                :<span class="lineCov">          3 :         *(ptr + len) = '=';</span>
-<span class="lineNum">     192 </span>                :<span class="lineCov">          3 :         MEMCPY( ptr + len + 1, value, strlen(value) + 1 );</span>
-<span class="lineNum">     193 </span>                :<span class="lineCov">          3 :         ptr += len + strlen( value ) + 2; /* include the '=' */</span>
-<span class="lineNum">     194 </span>                :            :     }
-<span class="lineNum">     195 </span>                :            : 
-<span class="lineNum">     196 </span>                :            :     /* copy over the client preserve environment */
-<span class="lineNum">     197 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          3 :     if ( (preservec &gt; 0) &amp;&amp; (preservev != NULL) )</span>
-<span class="lineNum">     198 </span>                :            :     {
-<span class="lineNum">     199 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          2 :         for ( i = 0; (i &lt; preservec) &amp;&amp; ((var = preservev[i]) != NULL); i++ )</span>
-<span class="lineNum">     200 </span>                :            :         {
-<span class="lineNum">     201 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          1 :             if ( !(value = getenv(var)) )</span>
-<span class="lineNum">     202 </span>                :<span class="lineNoCov">          0 :                 continue;</span>
-<span class="lineNum">     203 </span>                :            : 
-<span class="lineNum">     204 </span>                :<span class="lineCov">          1 :             new_environ[arr_ptr++] = ptr;</span>
-<span class="lineNum">     205 </span>                :<span class="lineCov">          1 :             len = strlen(var);</span>
-<span class="lineNum">     206 </span>                :<span class="lineCov">          1 :             MEMCPY( ptr, var, len );</span>
-<span class="lineNum">     207 </span>                :<span class="lineCov">          1 :             *(ptr + len) = '=';</span>
-<span class="lineNum">     208 </span>                :<span class="lineCov">          1 :             MEMCPY( ptr + len + 1, value, strlen(value) + 1 );</span>
-<span class="lineNum">     209 </span>                :<span class="lineCov">          1 :             ptr += len + strlen( value ) + 2; /* include the '=' */</span>
-<span class="lineNum">     210 </span>                :            :         }
-<span class="lineNum">     211 </span>                :            :     }
-<span class="lineNum">     212 </span>                :            : 
-<span class="lineNum">     213 </span>                :            :     /* copy over the client add environment */
-<span class="lineNum">     214 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          3 :     if ( (addc &gt; 0) &amp;&amp; (addv != NULL) )</span>
-<span class="lineNum">     215 </span>                :            :     {
-<span class="lineNum">     216 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          2 :         for ( i = 0; (i &lt; addc) &amp;&amp; ((var = addv[i]) != NULL); i++ )</span>
-<span class="lineNum">     217 </span>                :            :         {
-<span class="lineNum">     218 </span>                :<span class="lineCov">          1 :             new_environ[arr_ptr++] = ptr;</span>
-<span class="lineNum">     219 </span>                :<span class="lineCov">          1 :             len = strlen(var);</span>
-<span class="lineNum">     220 </span>                :<span class="lineCov">          1 :             MEMCPY( ptr, var, len + 1 );</span>
-<span class="lineNum">     221 </span>                :<span class="lineCov">          1 :             ptr += len + 1;</span>
-<span class="lineNum">     222 </span>                :            :         }
-<span class="lineNum">     223 </span>                :            :     }
-<span class="lineNum">     224 </span>                :            : 
-<span class="lineNum">     225 </span>                :<span class="lineCov">          3 :     return new_environ;</span>
-<span class="lineNum">     226 </span>                :            : }
-<span class="lineNum">     227 </span>                :            : 
-<span class="lineNum">     228 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     229 </span>                :            : 
-<a name="230"><span class="lineNum">     230 </span>                :            : #include &lt;CUnit/Basic.h&gt;</a>
+<span class="lineNum">     170 </span>                :            :     /* allocate the new environment variable array */
+<span class="lineNum">     171 </span>                :<span class="lineCov">          3 :     new_size += (arr_size * sizeof(int8_t *));</span>
+<span class="lineNum">     172 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          3 :     new_environ = (int8_t**)CALLOC( new_size, sizeof(int8_t) );</span>
+<span class="lineNum">     173 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          3 :     CHECK_PTR_RET( new_environ, FALSE );</span>
+<span class="lineNum">     174 </span>                :            : 
+<span class="lineNum">     175 </span>                :            :     /* copy over the default basic environment */
+<span class="lineNum">     176 </span>                :<span class="lineCov">          3 :     ptr = (int8_t*)new_environ + (arr_size * sizeof(int8_t*));</span>
+<span class="lineNum">     177 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          9 :     for ( i = 0; (var = clean_environ[i]) != NULL; i++ )</span>
+<span class="lineNum">     178 </span>                :            :     {
+<span class="lineNum">     179 </span>                :<span class="lineCov">          6 :         new_environ[arr_ptr++] = ptr;</span>
+<span class="lineNum">     180 </span>                :<span class="lineCov">          6 :         len = strlen( var );</span>
+<span class="lineNum">     181 </span>                :<span class="lineCov">          6 :         MEMCPY( ptr, var, len + 1 );</span>
+<span class="lineNum">     182 </span>                :<span class="lineCov">          6 :         ptr += len + 1;</span>
+<span class="lineNum">     183 </span>                :            :     }
+<span class="lineNum">     184 </span>                :            : 
+<span class="lineNum">     185 </span>                :            :     /* copy over the default preserve environment */
+<span class="lineNum">     186 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          6 :     for ( i = 0; (var = preserve_environ[i]) != NULL; i++ )</span>
+<span class="lineNum">     187 </span>                :            :     {
+<span class="lineNum">     188 </span>                :            :         /* if hte env var isn't in the current env, skip it */
+<span class="lineNum">     189 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 3 times"> + </span>]:<span class="lineCov">          3 :         if ( !(value = getenv(var)) )</span>
+<span class="lineNum">     190 </span>                :<span class="lineNoCov">          0 :             continue;</span>
+<span class="lineNum">     191 </span>                :            : 
+<span class="lineNum">     192 </span>                :<span class="lineCov">          3 :         new_environ[arr_ptr++] = ptr;</span>
+<span class="lineNum">     193 </span>                :<span class="lineCov">          3 :         len = strlen(var);</span>
+<span class="lineNum">     194 </span>                :<span class="lineCov">          3 :         MEMCPY( ptr, var, len );</span>
+<span class="lineNum">     195 </span>                :<span class="lineCov">          3 :         *(ptr + len) = '=';</span>
+<span class="lineNum">     196 </span>                :<span class="lineCov">          3 :         MEMCPY( ptr + len + 1, value, strlen(value) + 1 );</span>
+<span class="lineNum">     197 </span>                :<span class="lineCov">          3 :         ptr += len + strlen( value ) + 2; /* include the '=' */</span>
+<span class="lineNum">     198 </span>                :            :     }
+<span class="lineNum">     199 </span>                :            : 
+<span class="lineNum">     200 </span>                :            :     /* copy over the client preserve environment */
+<span class="lineNum">     201 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          3 :     if ( (preservec &gt; 0) &amp;&amp; (preservev != NULL) )</span>
+<span class="lineNum">     202 </span>                :            :     {
+<span class="lineNum">     203 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          2 :         for ( i = 0; (i &lt; preservec) &amp;&amp; ((var = preservev[i]) != NULL); i++ )</span>
+<span class="lineNum">     204 </span>                :            :         {
+<span class="lineNum">     205 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          1 :             if ( !(value = getenv(var)) )</span>
+<span class="lineNum">     206 </span>                :<span class="lineNoCov">          0 :                 continue;</span>
+<span class="lineNum">     207 </span>                :            : 
+<span class="lineNum">     208 </span>                :<span class="lineCov">          1 :             new_environ[arr_ptr++] = ptr;</span>
+<span class="lineNum">     209 </span>                :<span class="lineCov">          1 :             len = strlen(var);</span>
+<span class="lineNum">     210 </span>                :<span class="lineCov">          1 :             MEMCPY( ptr, var, len );</span>
+<span class="lineNum">     211 </span>                :<span class="lineCov">          1 :             *(ptr + len) = '=';</span>
+<span class="lineNum">     212 </span>                :<span class="lineCov">          1 :             MEMCPY( ptr + len + 1, value, strlen(value) + 1 );</span>
+<span class="lineNum">     213 </span>                :<span class="lineCov">          1 :             ptr += len + strlen( value ) + 2; /* include the '=' */</span>
+<span class="lineNum">     214 </span>                :            :         }
+<span class="lineNum">     215 </span>                :            :     }
+<span class="lineNum">     216 </span>                :            : 
+<span class="lineNum">     217 </span>                :            :     /* copy over the client add environment */
+<span class="lineNum">     218 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          3 :     if ( (addc &gt; 0) &amp;&amp; (addv != NULL) )</span>
+<span class="lineNum">     219 </span>                :            :     {
+<span class="lineNum">     220 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          2 :         for ( i = 0; (i &lt; addc) &amp;&amp; ((var = addv[i]) != NULL); i++ )</span>
+<span class="lineNum">     221 </span>                :            :         {
+<span class="lineNum">     222 </span>                :<span class="lineCov">          1 :             new_environ[arr_ptr++] = ptr;</span>
+<span class="lineNum">     223 </span>                :<span class="lineCov">          1 :             len = strlen(var);</span>
+<span class="lineNum">     224 </span>                :<span class="lineCov">          1 :             MEMCPY( ptr, var, len + 1 );</span>
+<span class="lineNum">     225 </span>                :<span class="lineCov">          1 :             ptr += len + 1;</span>
+<span class="lineNum">     226 </span>                :            :         }
+<span class="lineNum">     227 </span>                :            :     }
+<span class="lineNum">     228 </span>                :            : 
+<span class="lineNum">     229 </span>                :<span class="lineCov">          3 :     return new_environ;</span>
+<span class="lineNum">     230 </span>                :            : }
 <span class="lineNum">     231 </span>                :            : 
-<span class="lineNum">     232 </span>                :<span class="lineCov">          1 : void test_sanitize_private_functions( void )</span>
-<span class="lineNum">     233 </span>                :            : {
-<span class="lineNum">     234 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">     232 </span>                :            : #if defined(UNIT_TESTING)
+<span class="lineNum">     233 </span>                :            : 
+<a name="234"><span class="lineNum">     234 </span>                :            : #include &lt;CUnit/Basic.h&gt;</a>
 <span class="lineNum">     235 </span>                :            : 
-<span class="lineNum">     236 </span>                :            : #endif
-<span class="lineNum">     237 </span>                :            : 
-<span class="lineNum">     238 </span>                :            : 
+<span class="lineNum">     236 </span>                :<span class="lineCov">          1 : void test_sanitize_files( void )</span>
+<span class="lineNum">     237 </span>                :            : {
+<a name="238"><span class="lineNum">     238 </span>                :<span class="lineCov">          1 : }</span></a>
+<span class="lineNum">     239 </span>                :            : 
+<span class="lineNum">     240 </span>                :<span class="lineCov">          1 : void test_sanitize_private_functions( void )</span>
+<span class="lineNum">     241 </span>                :            : {
+<span class="lineNum">     242 </span>                :<span class="lineCov">          1 :     test_sanitize_files();</span>
+<span class="lineNum">     243 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">     244 </span>                :            : 
+<span class="lineNum">     245 </span>                :            : #endif
+<span class="lineNum">     246 </span>                :            : 
+<span class="lineNum">     247 </span>                :            : 
 </pre>
       </td>
     </tr>
