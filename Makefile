@@ -6,12 +6,15 @@ INSTALL_PROGRAM=$(INSTALL)
 INSTALL_DATA=$(INSTALL) -m 644
 COVERAGE?=./coverage
 
-DIRS = src tests
+SRCDIR = src
+TESTDIR = tests
+DIRS = $(SRCDIR) $(TESTDIR)
 BUILDDIRS = $(DIRS:%=build-%)
 INSTALLDIRS = $(DIRS:%=install-%)
 UNINSTALLDIRS = $(DIRS:%=uninstall-%)
 CLEANDIRS = $(DIRS:%=clean-%)
 TESTDIRS = $(DIRS:%=test-%)
+DEBUGDIRS = $(SRCDIR:%=debug-%)
 GCOVDIRS = $(DIRS:%=gcov-%)
 REPORTDIRS = $(DIRS:%=report-%)
 
@@ -37,6 +40,11 @@ test: $(TESTDIRS)
 $(TESTDIRS):
 	$(MAKE) -C $(@:test-%=%) test
 
+debug: $(DEBUGDIRS)
+
+$(DEBUGDIRS):
+	$(MAKE) -C $(@:debug-%=%) debug
+
 coverage: $(GCOVDIRS) $(REPORTDIRS)
 
 $(GCOVDIRS):
@@ -57,8 +65,9 @@ $(CLEANDIRS):
 .PHONY: subdirs $(INSTALLDIRS)
 .PHONY: subdirs $(UNINSTALL)
 .PHONY: subdirs $(TESTDIRS)
+.PHONY: subdirs $(DEBUGDIRS)
 .PHONY: subdirs $(GCOVDIRS)
 .PHONY: subdirs $(REPORTDIRS)
 .PHONY: subdirs $(CLEANDIRS)
-.PHONY: all install uninstall clean test coverage report
+.PHONY: all install uninstall clean test debug coverage report
 
