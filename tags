@@ -48,8 +48,8 @@
 137	coverage/cutil/src/bitset.c.gcov.html	/^<a name="137"><span class="lineNum">     137 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
 139	coverage/cutil/src/events.c.gcov.html	/^<a name="139"><span class="lineNum">     139 <\/span>                :            : }<\/a>$/;"	a
 140	coverage/cutil/src/list.c.gcov.html	/^<a name="140"><span class="lineNum">     140 <\/span>                :            : }<\/a>$/;"	a
-142	coverage/cutil/src/buffer.c.gcov.html	/^<a name="142"><span class="lineNum">     142 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
 142	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="142"><span class="lineNum">     142 <\/span>                :            : }<\/a>$/;"	a
+144	coverage/cutil/src/buffer.c.gcov.html	/^<a name="144"><span class="lineNum">     144 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
 148	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="148"><span class="lineNum">     148 <\/span>                :            : }<\/a>$/;"	a
 153	coverage/cutil/src/events.c.gcov.html	/^<a name="153"><span class="lineNum">     153 <\/span>                :            : }<\/a>$/;"	a
 155	coverage/cutil/src/child.c.gcov.html	/^<a name="155"><span class="lineNum">     155 <\/span>                :            : <\/a>$/;"	a
@@ -80,7 +80,7 @@
 240	coverage/cutil/src/events.c.gcov.html	/^<a name="240"><span class="lineNum">     240 <\/span>                :            : }<\/a>$/;"	a
 245	coverage/cutil/src/socket.c.gcov.html	/^<a name="245"><span class="lineNum">     245 <\/span>                :            : <\/a>$/;"	a
 247	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="247"><span class="lineNum">     247 <\/span>                :            : \/********** PRIVATE **********\/<\/a>$/;"	a
-249	coverage/cutil/src/events.c.gcov.html	/^<a name="249"><span class="lineNum">     249 <\/span>                :<span class="lineCov">        562 : }<\/span><\/a>$/;"	a
+249	coverage/cutil/src/events.c.gcov.html	/^<a name="249"><span class="lineNum">     249 <\/span>                :<span class="lineCov">        563 : }<\/span><\/a>$/;"	a
 250	coverage/cutil/src/btree.c.gcov.html	/^<a name="250"><span class="lineNum">     250 <\/span>                :            : <\/a>$/;"	a
 257	coverage/cutil/src/btree.c.gcov.html	/^<a name="257"><span class="lineNum">     257 <\/span>                :            : }<\/a>$/;"	a
 260	coverage/cutil/src/events.c.gcov.html	/^<a name="260"><span class="lineNum">     260 <\/span>                :            : };<\/a>$/;"	a
@@ -517,7 +517,7 @@ btree	tests/test_all.c	/^SUITE( btree );$/;"	v
 buf	tests/test_buffer.c	/^int8_t const * const buf = "blah";$/;"	v
 buf	tests/test_child.c	/^static buf[16];$/;"	v	file:
 buffer	tests/test_all.c	/^SUITE( buffer );$/;"	v
-buffer_append	src/buffer.c	/^int buffer_append( buffer_t * const b, void * p, size_t len )$/;"	f
+buffer_append	src/buffer.c	/^void* buffer_append( buffer_t * const b, void * p, size_t len )$/;"	f
 buffer_deinitialize	src/buffer.c	/^int buffer_deinitialize( buffer_t * const b )$/;"	f
 buffer_delete	src/buffer.c	/^void buffer_delete( void * b )$/;"	f
 buffer_initialize	src/buffer.c	/^int buffer_initialize( buffer_t * const b, void * p, size_t len )$/;"	f

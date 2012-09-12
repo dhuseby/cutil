@@ -121,7 +121,7 @@ static void test_buffer_append( void )
 		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
 		CU_ASSERT_EQUAL( b->iov_len, (size_t)size1 );
 
-		buffer_append( b, NULL, size2 );
+		CU_ASSERT_PTR_NOT_NULL( buffer_append( b, NULL, size2 ) );
 		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
 		CU_ASSERT_EQUAL( b->iov_len, (size_t)(size1 + size2) );
 
@@ -146,7 +146,7 @@ static void test_buffer_append_pwned( void )
 		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
 		CU_ASSERT_EQUAL( b->iov_len, (size_t)size1 );
 
-		buffer_append( b, p, size2 );
+		CU_ASSERT_PTR_NOT_NULL( buffer_append( b, p, size2 ) );
 		FREE( p );
 		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
 		CU_ASSERT_EQUAL( b->iov_len, (size_t)(size1 + size2) );
@@ -206,18 +206,18 @@ static void test_buffer_append_prereqs( void )
 	uint8_t c;
 	MEMSET( &b, 0, sizeof(buffer_t) );
 
-	CU_ASSERT_FALSE( buffer_append( NULL, NULL, 0 ) );
-	CU_ASSERT_FALSE( buffer_append( &b, NULL, 0 ) );
-	CU_ASSERT_FALSE( buffer_append( &b, (void*)&c, 0 ) );
+	CU_ASSERT_PTR_NULL( buffer_append( NULL, NULL, 0 ) );
+	CU_ASSERT_PTR_NULL( buffer_append( &b, NULL, 0 ) );
+	CU_ASSERT_PTR_NULL( buffer_append( &b, (void*)&c, 0 ) );
 
 	fail_alloc = TRUE;
-	CU_ASSERT_FALSE( buffer_append( &b, (void*)&c, 1) );
+	CU_ASSERT_PTR_NULL( buffer_append( &b, (void*)&c, 1) );
 	fail_alloc = FALSE;
 	CU_ASSERT_PTR_NULL( ((struct iovec)b).iov_base );
 	CU_ASSERT_EQUAL( ((struct iovec)b).iov_len, 0 );
 
 	/* this is the equivilent of an init with 1 byte */
-	CU_ASSERT_TRUE( buffer_append( &b, (void*)&c, 1 ) );
+	CU_ASSERT_PTR_NOT_NULL( buffer_append( &b, (void*)&c, 1 ) );
 	CU_ASSERT_PTR_NOT_NULL( ((struct iovec)b).iov_base );
 	CU_ASSERT_EQUAL( ((struct iovec)b).iov_len, 1 );
 	CU_ASSERT_TRUE( buffer_deinitialize( &b ) );

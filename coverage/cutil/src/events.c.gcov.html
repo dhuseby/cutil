@@ -310,24 +310,24 @@
 <span class="lineNum">     239 </span>                :<span class="lineCov">          3 :     return evt;</span>
 <a name="240"><span class="lineNum">     240 </span>                :            : }</a>
 <span class="lineNum">     241 </span>                :            : 
-<span class="lineNum">     242 </span>                :<span class="lineCov">        562 : void evt_deinitialize_event_handler( evt_t * const evt )</span>
+<span class="lineNum">     242 </span>                :<span class="lineCov">        563 : void evt_deinitialize_event_handler( evt_t * const evt )</span>
 <span class="lineNum">     243 </span>                :            : {
 <span class="lineNum">     244 </span>                :            :     /* stop the event handler if needed */
-<span class="lineNum">     245 </span>        [<span class="branchCov" title="Branch 0 was taken 14 times"> + </span><span class="branchCov" title="Branch 1 was taken 548 times"> + </span>]:<span class="lineCov">        562 :     if ( evt-&gt;el != NULL )</span>
+<span class="lineNum">     245 </span>        [<span class="branchCov" title="Branch 0 was taken 14 times"> + </span><span class="branchCov" title="Branch 1 was taken 549 times"> + </span>]:<span class="lineCov">        563 :     if ( evt-&gt;el != NULL )</span>
 <span class="lineNum">     246 </span>                :            :     {
 <span class="lineNum">     247 </span>                :<span class="lineCov">         14 :         evt_stop_event_handler( evt-&gt;el, evt );</span>
 <span class="lineNum">     248 </span>                :            :     }
-<a name="249"><span class="lineNum">     249 </span>                :<span class="lineCov">        562 : }</span></a>
+<a name="249"><span class="lineNum">     249 </span>                :<span class="lineCov">        563 : }</span></a>
 <span class="lineNum">     250 </span>                :            : 
-<span class="lineNum">     251 </span>                :<span class="lineCov">          2 : void evt_delete_event_handler( void * e )</span>
+<span class="lineNum">     251 </span>                :<span class="lineCov">          3 : void evt_delete_event_handler( void * e )</span>
 <span class="lineNum">     252 </span>                :            : {
-<span class="lineNum">     253 </span>                :<span class="lineCov">          2 :     evt_t * evt = (evt_t*)e;</span>
+<span class="lineNum">     253 </span>                :<span class="lineCov">          3 :     evt_t * evt = (evt_t*)e;</span>
 <span class="lineNum">     254 </span>                :            : 
-<span class="lineNum">     255 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          3 :     CHECK_PTR( evt );</span>
+<span class="lineNum">     255 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          5 :     CHECK_PTR( evt );</span>
 <span class="lineNum">     256 </span>                :            : 
-<span class="lineNum">     257 </span>                :<span class="lineCov">          1 :     evt_deinitialize_event_handler( evt );</span>
+<span class="lineNum">     257 </span>                :<span class="lineCov">          2 :     evt_deinitialize_event_handler( evt );</span>
 <span class="lineNum">     258 </span>                :            : 
-<span class="lineNum">     259 </span>                :<span class="lineCov">          1 :     FREE( evt );</span>
+<span class="lineNum">     259 </span>                :<span class="lineCov">          2 :     FREE( evt );</span>
 <a name="260"><span class="lineNum">     260 </span>                :            : };</a>
 <span class="lineNum">     261 </span>                :            : 
 <span class="lineNum">     262 </span>                :<span class="lineCov">         29 : evt_ret_t evt_start_event_handler( evt_loop_t * const el,</span>

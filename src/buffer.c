@@ -107,17 +107,17 @@ int buffer_deinitialize( buffer_t * const b )
 	return TRUE;
 }
 
-int buffer_append( buffer_t * const b, void * p, size_t len )
+void* buffer_append( buffer_t * const b, void * p, size_t len )
 {
 	void * new_memory = NULL;
-	CHECK_PTR_RET( b, FALSE );
-	CHECK_RET( len > 0, FALSE );
+	CHECK_PTR_RET( b, NULL );
+	CHECK_RET( len > 0, NULL );
 
 	/* make the buffer bigger */
 	new_memory = REALLOC( b->iov_base, b->iov_len + len );
-	CHECK_PTR_RET( new_memory, FALSE );
+	CHECK_PTR_RET( new_memory, NULL );
 
-	/* realloc succeeded so overwrite the pointer */	
+	/* realloc succeeded so overwrite the old pointer */	
 	b->iov_base = new_memory;
 
 	if ( p != NULL )
@@ -134,7 +134,9 @@ int buffer_append( buffer_t * const b, void * p, size_t len )
 	/* update the buffer length */
 	b->iov_len += len;
 
-	return TRUE;
+	/* return the pointer to the first byte of the new part of memory so that
+	 * it makes it easy to read data into it */
+	return (b->iov_base + b->iov_len);
 }
 
 #if defined(UNIT_TESTING)

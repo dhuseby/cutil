@@ -98,6 +98,7 @@ static void test_new_event_handler( void )
 	evt = evt_new_event_handler( EVT_SIGNAL, NULL, NULL, NULL );
 	fake_event_handler_init_ret = FALSE;
 	fake_event_handler_init = FALSE;
+	evt_delete_event_handler( evt );
 }
 
 static void test_delete_event_handler( void )
