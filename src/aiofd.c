@@ -470,23 +470,26 @@ typedef struct cb_count_s
 } cb_count_t;
 
 static cb_count_t cb_counts;
+static int read_callback_ret = TRUE;
+static int write_callback_ret = TRUE;
+static int error_callback_ret = TRUE;
 
 static int read_callback_fn( aiofd_t * const aiofd, size_t nread, void * user_data )
 {
 	((cb_count_t*)user_data)->r++;
-	return TRUE;
+	return read_callback_ret;
 }
 
 static int write_callback_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )
 {
 	((cb_count_t*)user_data)->w++;
-	return TRUE;
+	return write_callback_ret;
 }
 
 static int error_callback_fn( aiofd_t * const aiofd, int err, void * user_data )
 {
 	((cb_count_t*)user_data)->e++;
-	return TRUE;
+	return error_callback_ret;
 }
 
 static void test_aiofd_write_fn( void )
@@ -701,6 +704,67 @@ static void test_aiofd_read_fn( void )
 	CU_ASSERT_EQUAL( aiofd_read_fn( el, NULL, NULL, NULL ), EVT_BADPTR );
 	CU_ASSERT_EQUAL( aiofd_read_fn( el, &evt, NULL, NULL ), EVT_BADPTR );
 	CU_ASSERT_EQUAL( aiofd_read_fn( el, &evt, &params, NULL ), EVT_BADPTR );
+
+	aiofd.user_data = &cb_counts;
+
+	fake_ioctl = TRUE;
+	fake_ioctl_ret = -1;
+	
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+
+	/* should receive no callbacks */
+	CU_ASSERT_EQUAL( aiofd_read_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 0 );
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+
+	aiofd.ops.error_fn = &error_callback_fn;
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+
+	/* should receive an error callback */
+	CU_ASSERT_EQUAL( aiofd_read_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 0 );
+	CU_ASSERT_EQUAL( cb_counts.e, 1 );
+
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+	fake_errno = TRUE;
+	fake_errno_value = EBADF;
+
+	/* should receive an error callback */
+	CU_ASSERT_EQUAL( aiofd_read_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 0 );
+	CU_ASSERT_EQUAL( cb_counts.e, 1 );
+
+	fake_errno = FALSE;
+	fake_errno_value = -1;
+	fake_ioctl_ret = 0;
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+
+	/* should receive no callbacks */
+	CU_ASSERT_EQUAL( aiofd_read_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 0 );
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+
+	aiofd.ops.read_fn = &read_callback_fn;
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+
+	/* should receive one read callback */
+	CU_ASSERT_EQUAL( aiofd_read_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 1 );
+	CU_ASSERT_EQUAL( cb_counts.w, 0 );
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+	read_callback_ret = FALSE;
+
+	/* should receive one read callback */
+	CU_ASSERT_EQUAL( aiofd_read_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 1 );
+	CU_ASSERT_EQUAL( cb_counts.w, 0 );
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
 }
 
 void test_aiofd_private_functions( void )
