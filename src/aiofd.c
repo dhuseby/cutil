@@ -148,6 +148,11 @@ static evt_ret_t aiofd_read_fn( evt_loop_t * const el,
 	size_t nread = 0;
 	aiofd_t * aiofd = (aiofd_t*)user_data;
 
+	CHECK_PTR_RET( el, EVT_BADPTR );
+	CHECK_PTR_RET( evt, EVT_BADPTR );
+	CHECK_PTR_RET( params, EVT_BADPTR );
+	CHECK_PTR_RET( aiofd, EVT_BADPTR );
+
 	DEBUG( "read event\n" );
 
 	/* get how much data is available to read */
@@ -655,10 +660,10 @@ static void test_aiofd_write_fn( void )
 	aiofd.ops.write_fn = &write_callback_fn;
 	fake_errno_value = EBADF;
 
-	/* results in 1 write callback, queue should not be empty */
+	/* results in no callback, queue should not be empty */
 	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
 	CU_ASSERT_EQUAL( cb_counts.r, 0 );
-	CU_ASSERT_EQUAL( cb_counts.w, 1 ); /* NULL callback pointer */
+	CU_ASSERT_EQUAL( cb_counts.w, 0 ); /* NULL callback pointer */
 	CU_ASSERT_EQUAL( cb_counts.e, 0 );
 	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 1 ); /* queue should be empty */
 
@@ -669,7 +674,7 @@ static void test_aiofd_write_fn( void )
 	/* results in 1 write and 1 error callback, queue should not be empty */
 	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
 	CU_ASSERT_EQUAL( cb_counts.r, 0 );
-	CU_ASSERT_EQUAL( cb_counts.w, 1 ); /* NULL callback pointer */
+	CU_ASSERT_EQUAL( cb_counts.w, 0 ); /* NULL callback pointer */
 	CU_ASSERT_EQUAL( cb_counts.e, 1 );
 	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 1 ); /* queue should be empty */
 
@@ -681,9 +686,27 @@ static void test_aiofd_write_fn( void )
 	fake_writev_ret = -1;
 }
 
+static void test_aiofd_read_fn( void )
+{
+	evt_t evt;
+	evt_params_t params;
+	aiofd_t aiofd;
+
+	MEMSET( &evt, 0, sizeof( evt_t ) );
+	MEMSET( &params, 0, sizeof( evt_params_t ) );
+	MEMSET( &aiofd, 0, sizeof( aiofd_t ) );
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+
+	CU_ASSERT_EQUAL( aiofd_read_fn( NULL, NULL, NULL, NULL ), EVT_BADPTR );
+	CU_ASSERT_EQUAL( aiofd_read_fn( el, NULL, NULL, NULL ), EVT_BADPTR );
+	CU_ASSERT_EQUAL( aiofd_read_fn( el, &evt, NULL, NULL ), EVT_BADPTR );
+	CU_ASSERT_EQUAL( aiofd_read_fn( el, &evt, &params, NULL ), EVT_BADPTR );
+}
+
 void test_aiofd_private_functions( void )
 {
 	test_aiofd_write_fn();
+	test_aiofd_read_fn();
 }
 
 #endif
