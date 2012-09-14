@@ -28,6 +28,7 @@
 
 #if defined(UNIT_TESTING)
 #include "test_flags.h"
+extern evt_loop_t * el;
 #endif
 
 typedef struct aiofd_write_s
@@ -50,6 +51,11 @@ static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
 	ssize_t written = 0;
 	aiofd_t * aiofd = (aiofd_t*)user_data;
 
+	CHECK_PTR_RET( el, EVT_BADPTR );
+	CHECK_PTR_RET( evt, EVT_BADPTR );
+	CHECK_PTR_RET( params, EVT_BADPTR );
+	CHECK_PTR_RET( aiofd, EVT_BADPTR );
+
 	DEBUG( "write event\n" );
 
 	while ( list_count( &(aiofd->wbuf) ) > 0 )
@@ -57,30 +63,36 @@ static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
 		/* we must have data to write */
 		aiofd_write_t * wb = list_get_head( &(aiofd->wbuf) );
 
+		if ( ! wb )
+		{
+			list_pop_head( &(aiofd->wbuf) );
+			return EVT_BADPTR;
+		}
+
 		if ( wb->iov )
 		{
-			written = writev( aiofd->wfd, (struct iovec *)wb->data, (int)wb->size );
+			written = WRITEV( aiofd->wfd, (struct iovec *)wb->data, (int)wb->size );
 		}
 		else
 		{
-			written = write( aiofd->wfd, wb->data, wb->size );
+			written = WRITE( aiofd->wfd, wb->data, wb->size );
 		}
 
 		/* try to write the data to the socket */
 		if ( written < 0 )
 		{
-			if ( (errno == EAGAIN) || (errno == EWOULDBLOCK) )
+			if ( (ERRNO == EAGAIN) || (ERRNO == EWOULDBLOCK) )
 			{
 				DEBUG( "write would block...waiting for next write event\n" );
 				break;
 			}
 			else
 			{
-				WARN( "write error: %d\n", errno );
+				DEBUG( "write error: %d\n", ERRNO );
 				if ( aiofd->ops.error_fn != NULL )
 				{
 					DEBUG( "calling error callback\n" );
-					(*(aiofd->ops.error_fn))( aiofd, errno, aiofd->user_data );
+					(*(aiofd->ops.error_fn))( aiofd, ERRNO, aiofd->user_data );
 				}
 				return EVT_OK;
 			}
@@ -139,12 +151,12 @@ static evt_ret_t aiofd_read_fn( evt_loop_t * const el,
 	DEBUG( "read event\n" );
 
 	/* get how much data is available to read */
-	if ( (ioctl( aiofd->rfd, FIONREAD, &nread ) < 0) && (aiofd->listen == FALSE) )
+	if ( (IOCTL( aiofd->rfd, FIONREAD, &nread ) < 0) && (aiofd->listen == FALSE) )
 	{
 		if ( aiofd->ops.error_fn != NULL )
 		{
 			DEBUG( "calling error callback\n" );
-			(*(aiofd->ops.error_fn))( aiofd, errno, aiofd->user_data );
+			(*(aiofd->ops.error_fn))( aiofd, ERRNO, aiofd->user_data );
 		}
 		return EVT_OK;
 	}
@@ -333,7 +345,7 @@ int32_t aiofd_read( aiofd_t * const aiofd,
 
 	CHECK_RET(n > 0, 0);
 
-	res = read( aiofd->rfd, buffer, n );
+	res = READ( aiofd->rfd, buffer, n );
 	switch ( (int)res )
 	{
 		case 0:
@@ -341,7 +353,7 @@ int32_t aiofd_read( aiofd_t * const aiofd,
 		case -1:
 			if ( aiofd->ops.error_fn != NULL )
 			{
-				(*(aiofd->ops.error_fn))( aiofd, errno, aiofd->user_data );
+				(*(aiofd->ops.error_fn))( aiofd, ERRNO, aiofd->user_data );
 			}
 			return 0;
 		default:
@@ -447,8 +459,231 @@ int aiofd_get_listen( aiofd_t * const aiofd )
 
 #include <CUnit/Basic.h>
 
+typedef struct cb_count_s
+{
+	int r, w, e;
+} cb_count_t;
+
+static cb_count_t cb_counts;
+
+static int read_callback_fn( aiofd_t * const aiofd, size_t nread, void * user_data )
+{
+	((cb_count_t*)user_data)->r++;
+	return TRUE;
+}
+
+static int write_callback_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )
+{
+	((cb_count_t*)user_data)->w++;
+	return TRUE;
+}
+
+static int error_callback_fn( aiofd_t * const aiofd, int err, void * user_data )
+{
+	((cb_count_t*)user_data)->e++;
+	return TRUE;
+}
+
+static void test_aiofd_write_fn( void )
+{
+	evt_t evt;
+	evt_params_t params;
+	aiofd_t aiofd;
+	aiofd_write_t * wb = NULL;
+	int8_t const * const buf = "foo";
+	int const size = 4;
+	struct iovec iov;
+
+	MEMSET( &evt, 0, sizeof( evt_t ) );
+	MEMSET( &params, 0, sizeof( evt_params_t ) );
+	MEMSET( &aiofd, 0, sizeof( aiofd_t ) );
+	MEMSET( &iov, 0, sizeof( struct iovec) );
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+
+	CU_ASSERT_EQUAL( aiofd_write_fn( NULL, NULL, NULL, NULL ), EVT_BADPTR );
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, NULL, NULL, NULL ), EVT_BADPTR );
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, NULL, NULL ), EVT_BADPTR );
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, NULL ), EVT_BADPTR );
+
+	/* nothing in the write buffer, no write callback, should fall through to OK */
+	list_initialize( &(aiofd.wbuf), 0, NULL );
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
+
+	/* set user data to the callback counter */
+	aiofd.user_data = &cb_counts;
+
+	aiofd.ops.write_fn = &write_callback_fn;
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+
+	/* w callback should be called once, queue should be empty */
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 1 );
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 0 );
+
+	/* push a NULL pointer into the write queue and confirm that it recovers gracefully */	
+	list_push_tail( &(aiofd.wbuf), NULL );
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_BADPTR );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 0 );
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 0 );
+
+	/* now queue up a non-iovec pending write */
+	wb = CALLOC( 1, sizeof( aiofd_write_t ) );
+	wb->data = (void*)buf;
+	wb->size = size;
+	wb->iov = FALSE;
+	wb->nleft = size;
+	list_push_tail( &(aiofd.wbuf), wb );
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+	fake_write = TRUE;
+	fake_write_ret = 2;
+
+	/* results in 2 calls to write callback and an empty wbuf queue */
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 2 ); /* 1 for buf write complete, 1 for queue empty */
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 0 ); /* queue should be empty */
+
+	/* remove write callback pointer */
+	wb = CALLOC( 1, sizeof( aiofd_write_t ) );
+	wb->data = (void*)buf;
+	wb->size = size;
+	wb->iov = FALSE;
+	wb->nleft = size;
+	list_push_tail( &(aiofd.wbuf), wb );
+	aiofd.ops.write_fn = NULL;
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+	fake_write_ret = 4;
+
+	/* results in no callback, queue should be empty */
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 0 ); /* NULL callback pointer */
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 0 ); /* queue should be empty */
+
+	/* done with write, moving to writev */
+	fake_write = FALSE;
+	fake_write_ret = -1;
+	fake_writev = TRUE;
+	fake_writev_ret = 2;
+
+	/* queue up a writev */
+	iov.iov_base = (void*)buf;
+	iov.iov_len = size;
+	wb = CALLOC( 1, sizeof( aiofd_write_t ) );
+	wb->data = (void*)&iov;
+	wb->size = 1;
+	wb->iov = TRUE;
+	wb->nleft = size;
+	list_push_tail( &(aiofd.wbuf), wb );
+	aiofd.ops.write_fn = &write_callback_fn;
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+
+	/* results in 2 calls to write callback and an empty wbuf queue */
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 2 ); /* NULL callback pointer */
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 0 ); /* queue should be empty */
+
+
+	wb = CALLOC( 1, sizeof( aiofd_write_t ) );
+	wb->data = (void*)&iov;
+	wb->size = 1;
+	wb->iov = TRUE;
+	wb->nleft = size;
+	list_push_tail( &(aiofd.wbuf), wb );
+	aiofd.ops.write_fn = NULL;
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+	fake_writev_ret = 4;
+
+	/* results in no callback, queue should be empty */
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 0 ); /* NULL callback pointer */
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 0 ); /* queue should be empty */
+
+	wb = CALLOC( 1, sizeof( aiofd_write_t ) );
+	wb->data = (void*)&iov;
+	wb->size = 1;
+	wb->iov = TRUE;
+	wb->nleft = size;
+	list_push_tail( &(aiofd.wbuf), wb );
+	aiofd.ops.write_fn = &write_callback_fn;
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+	fake_writev_ret = -1;
+	fake_errno = TRUE;
+	fake_errno_value = EAGAIN;
+
+	/* results in 1 callback, queue should not be empty */
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 1 ); /* NULL callback pointer */
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 1 ); /* queue should be empty */
+
+	aiofd.ops.write_fn = NULL;
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+	fake_errno_value = EWOULDBLOCK;
+
+	/* results in no callback, queue should not be empty */
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 0 ); /* NULL callback pointer */
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 1 ); /* queue should be empty */
+
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+	fake_errno_value = EBADF;
+
+	/* results in no callback, queue should not be empty */
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 0 ); /* NULL callback pointer */
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 1 ); /* queue should be empty */
+
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+	aiofd.ops.write_fn = &write_callback_fn;
+	fake_errno_value = EBADF;
+
+	/* results in 1 write callback, queue should not be empty */
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 1 ); /* NULL callback pointer */
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 1 ); /* queue should be empty */
+
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+	aiofd.ops.error_fn = &error_callback_fn;
+	fake_errno_value = EBADF;
+
+	/* results in 1 write and 1 error callback, queue should not be empty */
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 1 ); /* NULL callback pointer */
+	CU_ASSERT_EQUAL( cb_counts.e, 1 );
+	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 1 ); /* queue should be empty */
+
+	FREE( wb );
+
+	fake_errno = FALSE;
+	fake_errno_value = -1;
+	fake_writev = FALSE;
+	fake_writev_ret = -1;
+}
+
 void test_aiofd_private_functions( void )
 {
+	test_aiofd_write_fn();
 }
 
 #endif

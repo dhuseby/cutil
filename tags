@@ -210,6 +210,7 @@ CALLOC	src/macros.h	167;"	d
 CALLOC	src/macros.h	68;"	d
 CFLAGS	src/Makefile	/^CFLAGS=-O3 -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
 CFLAGS	src/Makefile	/^coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)\/include -I..\/tests$/;"	m
+CFLAGS	src/Makefile	/^debug: CFLAGS=-O0 -gstabs+ -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
 CFLAGS	src/Makefile	/^test: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)\/include -I..\/tests$/;"	m
 CFLAGS	tests/Makefile	/^CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(CUTIL_ROOT)\/include -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
 CHECK	src/macros.h	47;"	d
@@ -229,9 +230,10 @@ CUTIL_ROOT	tests/Makefile	/^CUTIL_ROOT=..\/src$/;"	m
 DEBUG	src/debug.h	17;"	d
 DEBUG	src/debug.h	20;"	d
 DEBUG	src/debug.h	22;"	d
+DEBUGDIRS	Makefile	/^DEBUGDIRS = $(SRCDIR:%=debug-%)$/;"	m
 DEBUG_ON	src/debug.h	25;"	d
 DEFAULT_INITIAL_CAPACITY	src/btree.c	32;"	d	file:
-DIRS	Makefile	/^DIRS = src tests$/;"	m
+DIRS	Makefile	/^DIRS = $(SRCDIR) $(TESTDIR)$/;"	m
 DWORDS_NEEDED	src/bitset.c	25;"	d	file:
 DWORD_INDEX	src/bitset.c	26;"	d	file:
 EMPTY_ENV	src/child.h	24;"	d
@@ -383,9 +385,11 @@ SOCKET_UNIX	src/socket.h	/^	SOCKET_UNIX,$/;"	e	enum:socket_type_e
 SOCKET_UNKNOWN	src/socket.h	/^	SOCKET_UNKNOWN = -1$/;"	e	enum:socket_type_e
 SRC	src/Makefile	/^SRC=aiofd.c bitset.c btree.c buffer.c child.c daemon.c events.c hashtable.c list.c log.c pair.c privileges.c sanitize.c socket.c$/;"	m
 SRC	tests/Makefile	/^SRC=test_all.c test_aiofd.c test_bitset.c test_btree.c test_buffer.c test_child.c test_events.c test_flags.c test_hashtable.c test_list.c test_pair.c test_privileges.c test_sanitize.c test_socket.c$/;"	m
+SRCDIR	Makefile	/^SRCDIR = src$/;"	m
 STRDUP	src/macros.h	61;"	d
 SUITE	tests/test_macros.h	20;"	d
 T	src/macros.h	190;"	d
+TESTDIR	Makefile	/^TESTDIR = tests$/;"	m
 TESTDIRS	Makefile	/^TESTDIRS = $(DIRS:%=test-%)$/;"	m
 TRUE	src/macros.h	34;"	d
 UNINSTALLDIRS	Makefile	/^UNINSTALLDIRS = $(DIRS:%=uninstall-%)$/;"	m

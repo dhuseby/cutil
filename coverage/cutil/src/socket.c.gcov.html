@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-09-12</td>
+            <td class="headerValue">2012-09-13</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">29</td>
@@ -1044,10 +1044,10 @@
 <span class="lineNum">     972 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_tcp_connect( &amp;s ) );</span>
 <span class="lineNum">     973 </span>                :<span class="lineCov">          1 :     fake_connect_ret = -1;</span>
 <span class="lineNum">     974 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_connect( &amp;s ) );</span>
-<span class="lineNum">     975 </span>                :<span class="lineCov">          1 :     fake_connect_errno = TRUE;</span>
-<span class="lineNum">     976 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = EINPROGRESS;</span>
+<span class="lineNum">     975 </span>                :<span class="lineCov">          1 :     fake_errno = TRUE;</span>
+<span class="lineNum">     976 </span>                :<span class="lineCov">          1 :     fake_errno_value = EINPROGRESS;</span>
 <span class="lineNum">     977 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_tcp_connect( &amp;s ) );</span>
-<span class="lineNum">     978 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = EACCES;</span>
+<span class="lineNum">     978 </span>                :<span class="lineCov">          1 :     fake_errno_value = EACCES;</span>
 <span class="lineNum">     979 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_tcp_connect( &amp;s ) );</span>
 <span class="lineNum">     980 </span>                :            : 
 <span class="lineNum">     981 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>
@@ -1064,10 +1064,10 @@
 <span class="lineNum">     992 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_unix_connect( &amp;s ) );</span>
 <span class="lineNum">     993 </span>                :<span class="lineCov">          1 :     fake_connect_ret = -1;</span>
 <span class="lineNum">     994 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_connect( &amp;s ) );</span>
-<span class="lineNum">     995 </span>                :<span class="lineCov">          1 :     fake_connect_errno = TRUE;</span>
-<span class="lineNum">     996 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = EINPROGRESS;</span>
+<span class="lineNum">     995 </span>                :<span class="lineCov">          1 :     fake_errno = TRUE;</span>
+<span class="lineNum">     996 </span>                :<span class="lineCov">          1 :     fake_errno_value = EINPROGRESS;</span>
 <span class="lineNum">     997 </span>                :<span class="lineCov">          1 :     CU_ASSERT_TRUE( socket_do_unix_connect( &amp;s ) );</span>
-<span class="lineNum">     998 </span>                :<span class="lineCov">          1 :     fake_connect_errno_value = EACCES;</span>
+<span class="lineNum">     998 </span>                :<span class="lineCov">          1 :     fake_errno_value = EACCES;</span>
 <span class="lineNum">     999 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( socket_do_unix_connect( &amp;s ) );</span>
 <span class="lineNum">    1000 </span>                :            :     
 <span class="lineNum">    1001 </span>                :<span class="lineCov">          1 :     reset_test_flags();</span>

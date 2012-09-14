@@ -972,10 +972,10 @@ void test_socket_private_functions( void )
 	CU_ASSERT_TRUE( socket_do_tcp_connect( &s ) );
 	fake_connect_ret = -1;
 	CU_ASSERT_FALSE( socket_do_tcp_connect( &s ) );
-	fake_connect_errno = TRUE;
-	fake_connect_errno_value = EINPROGRESS;
+	fake_errno = TRUE;
+	fake_errno_value = EINPROGRESS;
 	CU_ASSERT_TRUE( socket_do_tcp_connect( &s ) );
-	fake_connect_errno_value = EACCES;
+	fake_errno_value = EACCES;
 	CU_ASSERT_FALSE( socket_do_tcp_connect( &s ) );
 
 	reset_test_flags();
@@ -992,10 +992,10 @@ void test_socket_private_functions( void )
 	CU_ASSERT_TRUE( socket_do_unix_connect( &s ) );
 	fake_connect_ret = -1;
 	CU_ASSERT_FALSE( socket_do_unix_connect( &s ) );
-	fake_connect_errno = TRUE;
-	fake_connect_errno_value = EINPROGRESS;
+	fake_errno = TRUE;
+	fake_errno_value = EINPROGRESS;
 	CU_ASSERT_TRUE( socket_do_unix_connect( &s ) );
-	fake_connect_errno_value = EACCES;
+	fake_errno_value = EACCES;
 	CU_ASSERT_FALSE( socket_do_unix_connect( &s ) );
 	
 	reset_test_flags();

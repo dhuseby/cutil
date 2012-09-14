@@ -80,9 +80,9 @@ extern int fake_connect;
 extern int fake_connect_ret;
 #define CONNECT(...) (fake_connect ? fake_connect_ret : connect(__VA_ARGS__))
 
-extern int fake_connect_errno;
-extern int fake_connect_errno_value;
-#define ERRNO (fake_connect_errno ? fake_connect_errno_value : errno)
+extern int fake_errno;
+extern int fake_errno_value;
+#define ERRNO (fake_errno ? fake_errno_value : errno)
 
 extern int fake_fcntl;
 extern int fake_fcntl_ret;
@@ -120,6 +120,10 @@ extern int fake_getuid;
 extern int fake_getuid_ret;
 #define GETUID(...) (fake_getuid ? fake_getuid_ret : getuid(__VA_ARGS__))
 
+extern int fake_ioctl;
+extern int fake_ioctl_ret;
+#define IOCTL(...) (fake_ioctl ? fake_ioctl_ret : ioctl(__VA_ARGS__))
+
 extern int fake_listen;
 extern int fake_listen_ret;
 #define LISTEN(...) (fake_listen ? fake_listen_ret : listen(__VA_ARGS__))
@@ -127,6 +131,10 @@ extern int fake_listen_ret;
 extern int fake_pipe;
 extern int fake_pipe_ret;
 #define PIPE(...) (fake_pipe ? fake_pipe_ret : pipe(__VA_ARGS__))
+
+extern int fake_read;
+extern int fake_read_ret;
+#define READ(...) (fake_read ? fake_read_ret : read(__VA_ARGS__))
 
 extern int fake_setegid;
 extern int fake_setegid_ret;
@@ -156,6 +164,14 @@ extern int fake_socket;
 extern int fake_socket_ret;
 #define SOCKET(...) (fake_socket ? fake_socket_ret : socket(__VA_ARGS__))
 
+extern int fake_write;
+extern int fake_write_ret;
+#define WRITE(...) (fake_write ? fake_write_ret : write(__VA_ARGS__))
+
+extern int fake_writev;
+extern int fake_writev_ret;
+#define WRITEV(...) (fake_writev ? fake_writev_ret : writev(__VA_ARGS__))
+
 /* event */
 extern int fake_ev_default_loop;
 extern void* fake_ev_default_loop_ret;
@@ -169,18 +185,29 @@ extern void* fake_ev_default_loop_ret;
 #define ACCEPT accept
 #define BIND bind
 #define CONNECT connect
+#define ERRNO errno
 #define FCNTL fcntl
+#define FSTAT fstat
 #define FORK fork
+#define GETDTABLESIZE getdtablesize
 #define GETEGID getegid
 #define GETEUID geteuid
 #define GETGID getgid
 #define GETGROUPS getgroups
 #define GETUID getuid
+#define IOCTL ioctl
 #define LISTEN listen
 #define PIPE pipe
+#define READ read
+#define SETEGID setegid
+#define SETEUID seteuid
+#define SETGROUPS setgroups
+#define SETREGID setregid
+#define SETREUID setreuid
 #define SETSOCKOPT setsockopt
 #define SOCKET socket
-#define ERRNO errno
+#define WRITE write
+#define WRITEV writev
 
 #define EV_DEFAULT_LOOP ev_default_loop
 

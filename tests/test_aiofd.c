@@ -89,6 +89,7 @@ static int deinit_aiofd_suite( void )
 static CU_pSuite add_aiofd_tests( CU_pSuite pSuite )
 {
 	ADD_TEST( "new/delete of aiofd", test_aiofd_newdel );
+
 	ADD_TEST( "test aiofd private functions", test_aiofd_private_functions );
 	return pSuite;
 }

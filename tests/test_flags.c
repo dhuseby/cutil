@@ -27,8 +27,8 @@ int fake_bind = FALSE;
 int fake_bind_ret = -1;
 int fake_connect = FALSE;
 int fake_connect_ret = -1;
-int fake_connect_errno = FALSE;
-int fake_connect_errno_value = 0;
+int fake_errno = FALSE;
+int fake_errno_value = 0;
 int fake_fcntl = FALSE;
 int fake_fcntl_ret = -1;
 int fake_fork = FALSE;
@@ -47,10 +47,14 @@ int fake_getgroups = FALSE;
 int fake_getgroups_ret = -1;
 int fake_getuid = FALSE;
 int fake_getuid_ret = -1;
+int fake_ioctl = FALSE;
+int fake_ioctl_ret = -1;
 int fake_listen = FALSE;
 int fake_listen_ret = -1;
 int fake_pipe = FALSE;
 int fake_pipe_ret = -1;
+int fake_read = FALSE;
+int fake_read_ret = -1;
 int fake_setegid = FALSE;
 int fake_setegid_ret = -1;
 int fake_seteuid = FALSE;
@@ -65,6 +69,10 @@ int fake_setsockopt = FALSE;
 int fake_setsockopt_ret = -1;
 int fake_socket = FALSE;
 int fake_socket_ret = -1;
+int fake_write = FALSE;
+int fake_write_ret = -1;
+int fake_writev = FALSE;
+int fake_writev_ret = -1;
 
 /* aiofd */
 int fake_aiofd_initialize = FALSE;
@@ -148,8 +156,8 @@ void reset_test_flags( void )
 	fake_bind_ret = -1;
 	fake_connect = FALSE;
 	fake_connect_ret = -1;
-	fake_connect_errno = FALSE;
-	fake_connect_errno_value = 0;
+	fake_errno = FALSE;
+	fake_errno_value = 0;
 	fake_fcntl = FALSE;
 	fake_fcntl_ret = -1;
 	fake_fork = FALSE;
@@ -168,10 +176,14 @@ void reset_test_flags( void )
 	fake_getgroups_ret = -1;
 	fake_getuid = FALSE;
 	fake_getuid_ret = -1;
+	fake_ioctl = FALSE;
+	fake_ioctl_ret = -1;
 	fake_listen = FALSE;
 	fake_listen_ret = -1;
 	fake_pipe = FALSE;
 	fake_pipe_ret = -1;
+	fake_read = FALSE;
+	fake_read_ret = -1;
 	fake_setegid = FALSE;
 	fake_setegid_ret = -1;
 	fake_seteuid = FALSE;
@@ -186,6 +198,10 @@ void reset_test_flags( void )
 	fake_setsockopt_ret = -1;
 	fake_socket = FALSE;
 	fake_socket_ret = -1;
+	fake_write = FALSE;
+	fake_write_ret = -1;
+	fake_writev = FALSE;
+	fake_writev_ret = -1;
 
 	/* aiofd */
 	fake_aiofd_initialize = FALSE;
