@@ -67,10 +67,109 @@ static void test_aiofd_newdel( void )
 		aiofd = NULL;
 		aiofd = aiofd_new( fileno(stdout), fileno(stdin), &ops, el, NULL );
 
-		CU_ASSERT_PTR_NOT_NULL( aiofd );
+		CU_ASSERT_PTR_NOT_NULL_FATAL( aiofd );
+		CU_ASSERT_EQUAL( aiofd->ops.read_fn, read_fn );
+		CU_ASSERT_EQUAL( aiofd->ops.write_fn, write_fn );
+		CU_ASSERT_EQUAL( aiofd->ops.error_fn, error_fn );
 
 		aiofd_delete( aiofd );
 	}
+}
+
+static void test_aiofd_initdeinit( void )
+{
+	int i;
+	aiofd_t aiofd;
+	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+
+	/* make sure there is an event loop */
+	CU_ASSERT_PTR_NOT_NULL( el );
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		CU_ASSERT_TRUE( aiofd_initialize( &aiofd, fileno(stdout), fileno(stdin), &ops, el, NULL ) );
+
+		CU_ASSERT_EQUAL( aiofd.ops.read_fn, read_fn );
+		CU_ASSERT_EQUAL( aiofd.ops.write_fn, write_fn );
+		CU_ASSERT_EQUAL( aiofd.ops.error_fn, error_fn );
+
+		aiofd_deinitialize( &aiofd );
+	}
+}
+
+static void test_aiofd_new_fail_init( void )
+{
+	int i;
+	aiofd_t * aiofd;
+	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+
+	/* make sure there is an event loop */
+	CU_ASSERT_PTR_NOT_NULL( el );
+
+	fake_aiofd_initialize = TRUE;
+	fake_aiofd_initialize_ret = FALSE;
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		aiofd = NULL;
+		aiofd = aiofd_new( fileno(stdout), fileno(stdin), &ops, el, NULL );
+
+		CU_ASSERT_PTR_NULL( aiofd );
+	}
+	fake_aiofd_initialize = FALSE;
+}
+
+static void test_aiofd_init_fail_evt_init( void )
+{
+	int i;
+	aiofd_t aiofd;
+	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+
+	/* make sure there is an event loop */
+	CU_ASSERT_PTR_NOT_NULL( el );
+
+	fake_event_handler_init = TRUE;
+	fake_event_handler_init_ret = FALSE;
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		fake_event_handler_init_count = 1;
+		CU_ASSERT_FALSE( aiofd_initialize( &aiofd, fileno(stdout), fileno(stdin), &ops, el, NULL ) );
+	}
+	fake_event_handler_init_count = 0;
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		CU_ASSERT_FALSE( aiofd_initialize( &aiofd, fileno(stdout), fileno(stdin), &ops, el, NULL ) );
+	}
+	fake_event_handler_init = FALSE;
+}
+
+static void test_aiofd_start_stop_write( void )
+{
+	int i;
+	aiofd_t aiofd;
+	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+
+	/* make sure there is an event loop */
+	CU_ASSERT_PTR_NOT_NULL( el );
+
+	CU_ASSERT_TRUE( aiofd_initialize( &aiofd, fileno(stdout), fileno(stdin), &ops, el, NULL ) );
+	CU_ASSERT_TRUE( aiofd_enable_write_evt( &aiofd, TRUE ) );
+	CU_ASSERT_TRUE( aiofd_enable_write_evt( &aiofd, FALSE ) );
+	aiofd_deinitialize( &aiofd );
+}
+
+static void test_aiofd_start_stop_read( void )
+{
+	int i;
+	aiofd_t aiofd;
+	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+
+	/* make sure there is an event loop */
+	CU_ASSERT_PTR_NOT_NULL( el );
+
+	CU_ASSERT_TRUE( aiofd_initialize( &aiofd, fileno(stdout), fileno(stdin), &ops, el, NULL ) );
+	CU_ASSERT_TRUE( aiofd_enable_read_evt( &aiofd, TRUE ) );
+	CU_ASSERT_TRUE( aiofd_enable_read_evt( &aiofd, FALSE ) );
+	aiofd_deinitialize( &aiofd );
 }
 
 static int init_aiofd_suite( void )
@@ -89,6 +188,11 @@ static int deinit_aiofd_suite( void )
 static CU_pSuite add_aiofd_tests( CU_pSuite pSuite )
 {
 	ADD_TEST( "new/delete of aiofd", test_aiofd_newdel );
+	ADD_TEST( "init/deinit of aiofd", test_aiofd_initdeinit );
+	ADD_TEST( "fail init of aiofd", test_aiofd_new_fail_init );
+	ADD_TEST( "fail aiofd evt init", test_aiofd_init_fail_evt_init );
+	ADD_TEST( "aiofd write start/stop", test_aiofd_start_stop_write );
+	ADD_TEST( "aiofd read start/stop", test_aiofd_start_stop_read );
 
 	ADD_TEST( "test aiofd private functions", test_aiofd_private_functions );
 	return pSuite;

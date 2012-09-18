@@ -100,7 +100,12 @@ extern int fail_buffer_init_alloc;
 extern int fake_ev_default_loop;
 extern void* fake_ev_default_loop_ret;
 extern int fake_event_handler_init;
+extern int fake_event_handler_init_count;
 extern int fake_event_handler_init_ret;
+extern int fake_event_start_handler;
+extern int fake_event_start_handler_ret;
+extern int fake_event_stop_handler;
+extern int fake_event_stop_handler_ret;
 
 /* hashtable */
 extern int fake_ht_init;

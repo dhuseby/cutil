@@ -170,7 +170,12 @@ int evt_initialize_event_handler( evt_t * const evt,
 								  void * user_data )
 {
 #if defined(UNIT_TESTING)
-	CHECK_RET( !fake_event_handler_init, fake_event_handler_init_ret );
+	if ( fake_event_handler_init )
+	{
+		if ( fake_event_handler_init_count == 0 )
+			return fake_event_handler_init_ret;
+		fake_event_handler_init_count--;
+	}
 #endif
 	CHECK_PTR_RET( evt, FALSE );
 	CHECK_RET( VALID_EVENT_TYPE( t ), FALSE );
@@ -262,6 +267,9 @@ void evt_delete_event_handler( void * e )
 evt_ret_t evt_start_event_handler( evt_loop_t * const el,
 								   evt_t * const evt )
 {
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_event_start_handler, fake_event_start_handler_ret );
+#endif
 	CHECK_PTR_RET_MSG( el, EVT_BADPTR, "bad event loop pointer\n" );
 	CHECK_PTR_RET_MSG( evt, EVT_BADPTR, "bad event pointer\n" );
 	CHECK_RET( VALID_EVENT_TYPE( evt->evt_type ), EVT_BADPARAM );
@@ -300,6 +308,9 @@ evt_ret_t evt_start_event_handler( evt_loop_t * const el,
 evt_ret_t evt_stop_event_handler( evt_loop_t * const el,
 								  evt_t * const evt )
 {
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_event_stop_handler, fake_event_stop_handler_ret );
+#endif
 	CHECK_PTR_RET( el, EVT_BADPTR );
 	CHECK_PTR_RET( evt, EVT_BADPTR );
 

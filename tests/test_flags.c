@@ -101,7 +101,12 @@ int fail_buffer_init_alloc = FALSE;
 int fake_ev_default_loop = FALSE;
 void* fake_ev_default_loop_ret = NULL;
 int fake_event_handler_init = FALSE;
+int fake_event_handler_init_count = 0;
 int fake_event_handler_init_ret = FALSE;
+int fake_event_start_handler = FALSE;
+int fake_event_start_handler_ret = FALSE;
+int fake_event_stop_handler = FALSE;
+int fake_event_stop_handler_ret = FALSE;
 
 /* hashtable */
 int fake_ht_init = FALSE;
@@ -230,7 +235,12 @@ void reset_test_flags( void )
 	fake_ev_default_loop = FALSE;
 	fake_ev_default_loop_ret = NULL;
 	fake_event_handler_init = FALSE;
+	fake_event_handler_init_count = 0;
 	fake_event_handler_init_ret = FALSE;
+	fake_event_start_handler = FALSE;
+	fake_event_start_handler_ret = FALSE;
+	fake_event_stop_handler = FALSE;
+	fake_event_stop_handler_ret = FALSE;
 
 	/* hashtable */
 	fake_ht_init = FALSE;

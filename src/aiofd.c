@@ -305,11 +305,11 @@ int aiofd_enable_write_evt( aiofd_t * const aiofd,
 
 	if ( enable )
 	{
-		evt_start_event_handler( aiofd->el, &(aiofd->wevt) );
+		CHECK_RET( evt_start_event_handler( aiofd->el, &(aiofd->wevt) ) == EVT_OK, FALSE );
 	}
 	else
 	{
-		evt_stop_event_handler( aiofd->el, &(aiofd->wevt) );
+		CHECK_RET( evt_stop_event_handler( aiofd->el, &(aiofd->wevt) ) == EVT_OK, FALSE );
 	}
 	return TRUE;
 }
@@ -325,12 +325,12 @@ int aiofd_enable_read_evt( aiofd_t * const aiofd,
 	if ( enable )
 	{
 		DEBUG("starting read event\n");
-		evt_start_event_handler( aiofd->el, &(aiofd->revt) );
+		CHECK_RET( evt_start_event_handler( aiofd->el, &(aiofd->revt) ) == EVT_OK, FALSE );
 	}
 	else
 	{
 		DEBUG("stopping read event\n");
-		evt_stop_event_handler( aiofd->el, &(aiofd->revt) );
+		CHECK_RET( evt_stop_event_handler( aiofd->el, &(aiofd->revt) ) == EVT_OK, FALSE );
 	}
 	return TRUE;
 }
