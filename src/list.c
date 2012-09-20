@@ -123,6 +123,9 @@ int list_deinitialize( list_t * const list )
 
 uint_t list_count( list_t const * const list )
 {
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_list_count, fake_list_count_ret );
+#endif
 	CHECK_PTR_RET( list, 0 );
 	return list->count;
 }

@@ -220,17 +220,54 @@ static void test_child_read( void )
 
 void test_child_process_write( void )
 {
+	int8_t const * const args[] = { "./child_pid.sh", NULL };
+	int8_t const * const env[] = { NULL };
+	child_process_t * child;
+	child_ops_t ops = { &exit_pid_fn, &read_pid_fn, &write_pid_fn };
+
+	child = child_process_new( "./child_pid.sh", args, env, &ops, el, TRUE, NULL );
+	CU_ASSERT_PTR_NOT_NULL_FATAL( child );
+
 	CU_ASSERT_FALSE( child_process_write( NULL, NULL, 0 ) );
+	fake_aiofd_write = TRUE;
+	fake_aiofd_write_ret = FALSE;
+	CU_ASSERT_FALSE( child_process_write( child, NULL, 0 ) );
+	fake_aiofd_write = FALSE;
 }
 
 void test_child_process_writev( void )
 {
+	int8_t const * const args[] = { "./child_pid.sh", NULL };
+	int8_t const * const env[] = { NULL };
+	child_process_t * child;
+	child_ops_t ops = { &exit_pid_fn, &read_pid_fn, &write_pid_fn };
+
+	child = child_process_new( "./child_pid.sh", args, env, &ops, el, TRUE, NULL );
+	CU_ASSERT_PTR_NOT_NULL_FATAL( child );
+
 	CU_ASSERT_FALSE( child_process_writev( NULL, NULL, 0 ) );
+	fake_aiofd_writev = TRUE;
+	fake_aiofd_writev_ret = FALSE;
+	CU_ASSERT_FALSE( child_process_writev( child, NULL, 0 ) );
+	fake_aiofd_writev = FALSE;
 }
 
 void test_child_process_flush( void )
 {
+	int8_t const * const args[] = { "./child_pid.sh", NULL };
+	int8_t const * const env[] = { NULL };
+	child_process_t * child;
+	child_ops_t ops = { &exit_pid_fn, &read_pid_fn, &write_pid_fn };
+
+	child = child_process_new( "./child_pid.sh", args, env, &ops, el, TRUE, NULL );
+	CU_ASSERT_PTR_NOT_NULL_FATAL( child );
+
 	CU_ASSERT_FALSE( child_process_flush( NULL ) );
+	CU_ASSERT_FALSE( child_process_flush( child ) );
+	fake_aiofd_flush = TRUE;
+	fake_aiofd_flush_ret = FALSE;
+	CU_ASSERT_FALSE( child_process_flush( child ) );
+	fake_aiofd_flush = FALSE;
 }
 
 

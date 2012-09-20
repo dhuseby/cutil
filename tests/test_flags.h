@@ -74,6 +74,8 @@ extern int fake_writev;
 extern int fake_writev_ret;
 
 /* aiofd */
+extern int fake_aiofd_flush;
+extern int fake_aiofd_flush_ret;
 extern int fake_aiofd_initialize;
 extern int fake_aiofd_initialize_ret;
 extern int fake_aiofd_read;
@@ -119,6 +121,8 @@ extern int fake_ht_grow_ret;
 extern int fake_ht_find;
 
 /* list */
+extern int fake_list_count;
+extern int fake_list_count_ret;
 extern int fake_list_grow;
 extern int fake_list_grow_ret;
 extern int fake_list_init;

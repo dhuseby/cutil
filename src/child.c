@@ -88,8 +88,7 @@ static int child_aiofd_write_fn( aiofd_t * const aiofd,
 	child_process_t * child = (child_process_t*)user_data;
 	CHECK_PTR_RET( aiofd, FALSE );
 	CHECK_PTR_RET( child, FALSE );
-
-	ASSERT( child->aiofd.rfd != -1 );
+	CHECK_RET( child->aiofd.rfd != -1, FALSE );
 
 	if ( buffer == NULL )
 	{
@@ -427,6 +426,19 @@ static int test_exit_fn( child_process_t * const cp, int rpid, int rstatus, void
 	return TRUE;
 }
 
+static int32_t test_write_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )
+{
+	*((int*)user_data) = TRUE;
+	return TRUE;
+}
+
+static int32_t test_read_fn( child_process_t * const cp, size_t nread, void * user_data )
+{
+	*((int*)user_data) = TRUE;
+	return TRUE;
+}
+
+
 static void test_sigchld_cb( void )
 {
 	child_process_t child;
@@ -454,12 +466,63 @@ static void test_sigchld_cb( void )
 
 static void test_child_aiofd_write_fn( void )
 {
+	aiofd_t aiofd;
+	child_process_t child;
+	uint8_t * buf = "foo";
+	MEMSET( &aiofd, 0, sizeof(aiofd_t));
+	MEMSET( &child, 0, sizeof(child_process_t) );
+
 	CU_ASSERT_FALSE( child_aiofd_write_fn( NULL, NULL, NULL ) );
+	CU_ASSERT_FALSE( child_aiofd_write_fn( &aiofd, NULL, NULL ) );
+	child.aiofd.rfd = -1;
+	CU_ASSERT_FALSE( child_aiofd_write_fn( &aiofd, NULL, &child ) );
+	child.aiofd.rfd = 0;
+	fake_list_count = TRUE;
+	fake_list_count_ret = 0;
+	CU_ASSERT_FALSE( child_aiofd_write_fn( &aiofd, NULL, &child ) );
+	fake_list_count_ret = 1;
+	CU_ASSERT_TRUE( child_aiofd_write_fn( &aiofd, NULL, &child ) );
+	fake_list_count = FALSE;
+
+	CU_ASSERT_TRUE( child_aiofd_write_fn( &aiofd, buf, &child ) );
+	child.ops.write_fn = &test_write_fn;
+	test_flag = FALSE;
+	child.user_data = &test_flag;
+	CU_ASSERT_TRUE( child_aiofd_write_fn( &aiofd, buf, &child ) );
+	CU_ASSERT_TRUE( test_flag );
 }
 
 static void test_child_aiofd_error_fn( void )
 {
+	aiofd_t aiofd;
+	child_process_t child;
+	int err = 0;
+	MEMSET( &aiofd, 0, sizeof(aiofd_t));
+	MEMSET( &child, 0, sizeof(child_process_t) );
+
 	CU_ASSERT_FALSE( child_aiofd_error_fn( NULL, 0, NULL ) );
+	CU_ASSERT_FALSE( child_aiofd_error_fn( &aiofd, 0, NULL ) );
+	CU_ASSERT_TRUE( child_aiofd_error_fn( &aiofd, 0, &child ) );
+}
+
+static void test_child_aiofd_read_fn( void )
+{
+	aiofd_t aiofd;
+	child_process_t child;
+	size_t nread = 0;
+	MEMSET( &aiofd, 0, sizeof(aiofd_t));
+	MEMSET( &child, 0, sizeof(child_process_t) );
+
+	CU_ASSERT_FALSE( child_aiofd_read_fn( NULL, 0, NULL ) );
+	CU_ASSERT_FALSE( child_aiofd_read_fn( &aiofd, 0, NULL ) );
+	CU_ASSERT_FALSE( child_aiofd_read_fn( &aiofd, 0, &child ) );
+	test_flag = FALSE;
+	child.user_data = &test_flag;
+	CU_ASSERT_TRUE( child_aiofd_read_fn( &aiofd, 1, &child ) );
+	CU_ASSERT_FALSE( test_flag );
+	child.ops.read_fn = &test_read_fn;
+	CU_ASSERT_TRUE( child_aiofd_read_fn( &aiofd, 1, &child ) );
+	CU_ASSERT_TRUE( test_flag );
 }
 
 void test_child_private_functions( void )
@@ -467,6 +530,7 @@ void test_child_private_functions( void )
 	test_sigchld_cb();
 	test_child_aiofd_write_fn();
 	test_child_aiofd_error_fn();
+	test_child_aiofd_read_fn();
 }
 
 #endif

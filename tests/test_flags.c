@@ -75,6 +75,8 @@ int fake_writev = FALSE;
 int fake_writev_ret = -1;
 
 /* aiofd */
+int fake_aiofd_flush = FALSE;
+int fake_aiofd_flush_ret = FALSE;
 int fake_aiofd_initialize = FALSE;
 int fake_aiofd_initialize_ret = FALSE;
 int fake_aiofd_read = FALSE;
@@ -120,6 +122,8 @@ int fake_ht_grow_ret = FALSE;
 int fake_ht_find = FALSE;
 
 /* list */
+int fake_list_count = FALSE;
+int fake_list_count_ret = 0;
 int fake_list_grow = FALSE;
 int fake_list_grow_ret = FALSE;
 int fake_list_init = FALSE;
@@ -211,6 +215,8 @@ void reset_test_flags( void )
 	fake_writev_ret = -1;
 
 	/* aiofd */
+	fake_aiofd_flush = FALSE;
+	fake_aiofd_flush_ret = FALSE;
 	fake_aiofd_initialize = FALSE;
 	fake_aiofd_initialize_ret = FALSE;
 	fake_aiofd_read = FALSE;
@@ -256,6 +262,8 @@ void reset_test_flags( void )
 	fake_ht_find = FALSE;
 
 	/* list */
+	fake_list_count = FALSE;
+	fake_list_count_ret = 0;
 	fake_list_grow = FALSE;
 	fake_list_grow_ret = FALSE;
 	fake_list_init = FALSE;

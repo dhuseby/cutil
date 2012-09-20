@@ -448,6 +448,9 @@ int aiofd_writev( aiofd_t * const aiofd,
 
 int aiofd_flush( aiofd_t * const aiofd )
 {
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_aiofd_flush, fake_aiofd_flush_ret );
+#endif
 	CHECK_PTR_RET(aiofd, FALSE);
 	
 	fsync( aiofd->wfd );

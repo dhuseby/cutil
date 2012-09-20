@@ -49,9 +49,9 @@
             <td></td>
             <td></td>
             <td class="headerItem">Branches:</td>
-            <td class="headerCovTableEntry">307</td>
+            <td class="headerCovTableEntry">306</td>
             <td class="headerCovTableEntry">312</td>
-            <td class="headerCovTableEntryHi">98.4 %</td>
+            <td class="headerCovTableEntryHi">98.1 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -315,23 +315,23 @@
 <span class="lineNum">     244 </span>                :            : }
 <a name="245"><span class="lineNum">     245 </span>                :            : </a>
 <span class="lineNum">     246 </span>                :            : 
-<span class="lineNum">     247 </span>                :<span class="lineCov">         19 : static int socket_aiofd_write_fn( aiofd_t * const aiofd,</span>
+<span class="lineNum">     247 </span>                :<span class="lineCov">         15 : static int socket_aiofd_write_fn( aiofd_t * const aiofd,</span>
 <span class="lineNum">     248 </span>                :            :                                   uint8_t const * const buffer,
 <span class="lineNum">     249 </span>                :            :                                   void * user_data )
 <span class="lineNum">     250 </span>                :            : {
-<span class="lineNum">     251 </span>                :<span class="lineCov">         19 :     int errval = 0;</span>
-<span class="lineNum">     252 </span>                :<span class="lineCov">         19 :     socket_t * s = (socket_t*)user_data;</span>
-<span class="lineNum">     253 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 18 times"> + </span>]:<span class="lineCov">         19 :     CHECK_PTR_RET( aiofd, FALSE );</span>
-<span class="lineNum">     254 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 17 times"> + </span>]:<span class="lineCov">         18 :     CHECK_PTR_RET( s, FALSE );</span>
+<span class="lineNum">     251 </span>                :<span class="lineCov">         15 :     int errval = 0;</span>
+<span class="lineNum">     252 </span>                :<span class="lineCov">         15 :     socket_t * s = (socket_t*)user_data;</span>
+<span class="lineNum">     253 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 14 times"> + </span>]:<span class="lineCov">         15 :     CHECK_PTR_RET( aiofd, FALSE );</span>
+<span class="lineNum">     254 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 13 times"> + </span>]:<span class="lineCov">         14 :     CHECK_PTR_RET( s, FALSE );</span>
 <span class="lineNum">     255 </span>                :            : 
-<span class="lineNum">     256 </span>        [<span class="branchCov" title="Branch 0 was taken 8 times"> + </span><span class="branchCov" title="Branch 1 was taken 9 times"> + </span>]:<span class="lineCov">         17 :     if ( s-&gt;connected )</span>
+<span class="lineNum">     256 </span>        [<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchCov" title="Branch 1 was taken 8 times"> + </span>]:<span class="lineCov">         13 :     if ( s-&gt;connected )</span>
 <span class="lineNum">     257 </span>                :            :     {
-<span class="lineNum">     258 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">          8 :         if ( buffer == NULL )</span>
+<span class="lineNum">     258 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          5 :         if ( buffer == NULL )</span>
 <span class="lineNum">     259 </span>                :            :         {
-<span class="lineNum">     260 </span>        [<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          3 :             if ( list_count( &amp;(s-&gt;aiofd.wbuf) ) == 0 )</span>
+<span class="lineNum">     260 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          2 :             if ( list_count( &amp;(s-&gt;aiofd.wbuf) ) == 0 )</span>
 <span class="lineNum">     261 </span>                :            :             {
 <span class="lineNum">     262 </span>                :            :                 /* stop the write event processing until we have data to write */
-<span class="lineNum">     263 </span>                :<span class="lineCov">          2 :                 return FALSE;</span>
+<span class="lineNum">     263 </span>                :<span class="lineCov">          1 :                 return FALSE;</span>
 <span class="lineNum">     264 </span>                :            :             }
 <span class="lineNum">     265 </span>                :            : 
 <span class="lineNum">     266 </span>                :            :             /* this will keep the write event processing going */
@@ -341,16 +341,16 @@
 <span class="lineNum">     270 </span>                :            :         {
 <span class="lineNum">     271 </span>                :            :             /* call the write complete callback to let client know that a particular
 <span class="lineNum">     272 </span>                :            :              * buffer has been written to the socket. */
-<span class="lineNum">     273 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          5 :             if ( s-&gt;ops.write_fn != NULL )</span>
+<span class="lineNum">     273 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          3 :             if ( s-&gt;ops.write_fn != NULL )</span>
 <span class="lineNum">     274 </span>                :            :             {
 <span class="lineNum">     275 </span>                :            :                 DEBUG( &quot;calling socket write complete callback\n&quot; );
-<span class="lineNum">     276 </span>                :<span class="lineCov">          4 :                 (*(s-&gt;ops.write_fn))( s, buffer, s-&gt;user_data );</span>
+<span class="lineNum">     276 </span>                :<span class="lineCov">          2 :                 (*(s-&gt;ops.write_fn))( s, buffer, s-&gt;user_data );</span>
 <span class="lineNum">     277 </span>                :            :             }
 <span class="lineNum">     278 </span>                :            : 
-<span class="lineNum">     279 </span>                :<span class="lineCov">          5 :             return TRUE;</span>
+<span class="lineNum">     279 </span>                :<span class="lineCov">          3 :             return TRUE;</span>
 <span class="lineNum">     280 </span>                :            :         }
 <span class="lineNum">     281 </span>                :            :     }
-<span class="lineNum">     282 </span>        [<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          9 :     else if ( s-&gt;aiofd.rfd != -1 )</span>
+<span class="lineNum">     282 </span>        [<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          8 :     else if ( s-&gt;aiofd.rfd != -1 )</span>
 <span class="lineNum">     283 </span>                :            :     {
 <span class="lineNum">     284 </span>                :            :         /* we're connecting the socket and this write event callback is to signal
 <span class="lineNum">     285 </span>                :            :          * that the connect has completed either successfully or failed */
@@ -408,7 +408,7 @@
 <span class="lineNum">     337 </span>                :            :         }
 <span class="lineNum">     338 </span>                :            :     }
 <span class="lineNum">     339 </span>                :            : 
-<span class="lineNum">     340 </span>                :<span class="lineCov">         19 :     return TRUE;</span>
+<span class="lineNum">     340 </span>                :<span class="lineCov">         15 :     return TRUE;</span>
 <span class="lineNum">     341 </span>                :            : }
 <a name="342"><span class="lineNum">     342 </span>                :            : </a>
 <span class="lineNum">     343 </span>                :            : 
@@ -430,15 +430,15 @@
 <span class="lineNum">     359 </span>                :            : }
 <a name="360"><span class="lineNum">     360 </span>                :            : </a>
 <span class="lineNum">     361 </span>                :            : 
-<span class="lineNum">     362 </span>                :<span class="lineCov">         12 : static int socket_aiofd_read_fn( aiofd_t * const aiofd,</span>
+<span class="lineNum">     362 </span>                :<span class="lineCov">         10 : static int socket_aiofd_read_fn( aiofd_t * const aiofd,</span>
 <span class="lineNum">     363 </span>                :            :                                  size_t const nread,
 <span class="lineNum">     364 </span>                :            :                                  void * user_data )
 <span class="lineNum">     365 </span>                :            : {
-<span class="lineNum">     366 </span>                :<span class="lineCov">         12 :     socket_t * s = (socket_t*)user_data;</span>
-<span class="lineNum">     367 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">         12 :     CHECK_PTR_RET( aiofd, FALSE );</span>
-<span class="lineNum">     368 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 10 times"> + </span>]:<span class="lineCov">         11 :     CHECK_PTR_RET( s, FALSE );</span>
+<span class="lineNum">     366 </span>                :<span class="lineCov">         10 :     socket_t * s = (socket_t*)user_data;</span>
+<span class="lineNum">     367 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 9 times"> + </span>]:<span class="lineCov">         10 :     CHECK_PTR_RET( aiofd, FALSE );</span>
+<span class="lineNum">     368 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 8 times"> + </span>]:<span class="lineCov">          9 :     CHECK_PTR_RET( s, FALSE );</span>
 <span class="lineNum">     369 </span>                :            : 
-<span class="lineNum">     370 </span>        [<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchCov" title="Branch 2 was taken 6 times"> + </span>]:<span class="lineCov">         10 :     if ( socket_is_bound( s ) )</span>
+<span class="lineNum">     370 </span>        [<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchCov" title="Branch 2 was taken 4 times"> + </span>]:<span class="lineCov">          8 :     if ( socket_is_bound( s ) )</span>
 <span class="lineNum">     371 </span>                :            :     {
 <span class="lineNum">     372 </span>                :            :         /* this is a socket accepting incoming connections */
 <span class="lineNum">     373 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          4 :         if ( s-&gt;ops.connect_fn != NULL )</span>
@@ -452,7 +452,7 @@
 <span class="lineNum">     381 </span>                :            :     }
 <span class="lineNum">     382 </span>                :            :     else
 <span class="lineNum">     383 </span>                :            :     {
-<span class="lineNum">     384 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">          6 :         if ( nread == 0 )</span>
+<span class="lineNum">     384 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          4 :         if ( nread == 0 )</span>
 <span class="lineNum">     385 </span>                :            :         {
 <span class="lineNum">     386 </span>                :            :             /* the other side disconnected, so follow suit */
 <span class="lineNum">     387 </span>                :<span class="lineCov">          1 :             socket_disconnect( s );</span>
@@ -462,14 +462,14 @@
 <span class="lineNum">     391 </span>                :            :         }
 <span class="lineNum">     392 </span>                :            : 
 <span class="lineNum">     393 </span>                :            :         /* this is a normal connection socket, so pass the read event along */
-<span class="lineNum">     394 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          5 :         if ( s-&gt;ops.read_fn != NULL )</span>
+<span class="lineNum">     394 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          3 :         if ( s-&gt;ops.read_fn != NULL )</span>
 <span class="lineNum">     395 </span>                :            :         {
 <span class="lineNum">     396 </span>                :            :             DEBUG( &quot;calling socket read callback\n&quot;);
-<span class="lineNum">     397 </span>                :<span class="lineCov">          4 :             (*(s-&gt;ops.read_fn))( s, nread, s-&gt;user_data );</span>
+<span class="lineNum">     397 </span>                :<span class="lineCov">          2 :             (*(s-&gt;ops.read_fn))( s, nread, s-&gt;user_data );</span>
 <span class="lineNum">     398 </span>                :            :         }
 <span class="lineNum">     399 </span>                :            :     }
 <span class="lineNum">     400 </span>                :            : 
-<span class="lineNum">     401 </span>                :<span class="lineCov">         12 :     return TRUE;</span>
+<span class="lineNum">     401 </span>                :<span class="lineCov">         10 :     return TRUE;</span>
 <a name="402"><span class="lineNum">     402 </span>                :            : }</a>
 <span class="lineNum">     403 </span>                :            : 
 <span class="lineNum">     404 </span>                :<span class="lineCov">        148 : static int socket_initialize( socket_t * const s,</span>
@@ -597,8 +597,8 @@
 <span class="lineNum">     526 </span>                :<span class="lineCov">        147 : static void socket_deinitialize( socket_t * const s )</span>
 <span class="lineNum">     527 </span>                :            : {
 <span class="lineNum">     528 </span>                :            :     /* close the socket */
-<span class="lineNum">     529 </span>        [<span class="branchCov" title="Branch 0 was taken 143 times"> + </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">        147 :     if ( s-&gt;aiofd.rfd &gt;= 0 )</span>
-<span class="lineNum">     530 </span>                :<span class="lineCov">        143 :         socket_disconnect( s );</span>
+<span class="lineNum">     529 </span>        [<span class="branchCov" title="Branch 0 was taken 145 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">        147 :     if ( s-&gt;aiofd.rfd &gt;= 0 )</span>
+<span class="lineNum">     530 </span>                :<span class="lineCov">        145 :         socket_disconnect( s );</span>
 <span class="lineNum">     531 </span>                :            : 
 <span class="lineNum">     532 </span>                :            :     /* clean up the host name */
 <span class="lineNum">     533 </span>        [<span class="branchCov" title="Branch 0 was taken 8 times"> + </span><span class="branchCov" title="Branch 1 was taken 139 times"> + </span>]:<span class="lineCov">        147 :     if ( s-&gt;host != NULL )</span>
@@ -683,14 +683,14 @@
 <span class="lineNum">     611 </span>                :            : 
 <a name="612"><span class="lineNum">     612 </span>                :            : </a>
 <span class="lineNum">     613 </span>                :            : /* check to see if bound */
-<span class="lineNum">     614 </span>                :<span class="lineCov">        184 : int socket_is_bound( socket_t* const s )</span>
+<span class="lineNum">     614 </span>                :<span class="lineCov">        182 : int socket_is_bound( socket_t* const s )</span>
 <span class="lineNum">     615 </span>                :            : {
 <span class="lineNum">     616 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     617 </span>        [<span class="branchCov" title="Branch 0 was taken 32 times"> + </span><span class="branchCov" title="Branch 1 was taken 152 times"> + </span>]:<span class="lineCov">        184 :     CHECK_RET( !fake_socket_bound, fake_socket_bound_ret );</span>
+<span class="lineNum">     617 </span>        [<span class="branchCov" title="Branch 0 was taken 32 times"> + </span><span class="branchCov" title="Branch 1 was taken 150 times"> + </span>]:<span class="lineCov">        182 :     CHECK_RET( !fake_socket_bound, fake_socket_bound_ret );</span>
 <span class="lineNum">     618 </span>                :            : #endif
-<span class="lineNum">     619 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 151 times"> + </span>]:<span class="lineCov">        152 :     CHECK_PTR_RET(s, FALSE);</span>
-<span class="lineNum">     620 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 150 times"> + </span>]:<span class="lineCov">        151 :     CHECK_RET( s-&gt;aiofd.rfd &gt;= 0, FALSE );</span>
-<span class="lineNum">     621 </span>                :<span class="lineCov">        184 :     return s-&gt;bound;</span>
+<span class="lineNum">     619 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 149 times"> + </span>]:<span class="lineCov">        150 :     CHECK_PTR_RET(s, FALSE);</span>
+<span class="lineNum">     620 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 148 times"> + </span>]:<span class="lineCov">        149 :     CHECK_RET( s-&gt;aiofd.rfd &gt;= 0, FALSE );</span>
+<span class="lineNum">     621 </span>                :<span class="lineCov">        182 :     return s-&gt;bound;</span>
 <a name="622"><span class="lineNum">     622 </span>                :            : }</a>
 <span class="lineNum">     623 </span>                :            : 
 <span class="lineNum">     624 </span>                :<span class="lineCov">         15 : socket_ret_t socket_bind( socket_t * const s,</span>
@@ -954,23 +954,23 @@
 <span class="lineNum">     882 </span>                :<span class="lineCov">        134 :     return s-&gt;type;</span>
 <a name="883"><span class="lineNum">     883 </span>                :            : }</a>
 <span class="lineNum">     884 </span>                :            : 
-<span class="lineNum">     885 </span>                :<span class="lineCov">          9 : int32_t socket_read( socket_t* const s, </span>
+<span class="lineNum">     885 </span>                :<span class="lineCov">          7 : int32_t socket_read( socket_t* const s, </span>
 <span class="lineNum">     886 </span>                :            :                      uint8_t * const buffer, 
 <span class="lineNum">     887 </span>                :            :                      int32_t const n )
 <span class="lineNum">     888 </span>                :            : {
-<span class="lineNum">     889 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 8 times"> + </span>]:<span class="lineCov">          9 :     CHECK_PTR_RET(s, 0);</span>
-<span class="lineNum">     890 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 7 times"> + </span>]:<span class="lineCov">          8 :     CHECK_PTR_RET(buffer, 0);</span>
-<span class="lineNum">     891 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">          7 :     CHECK_RET(n &gt; 0, 0);</span>
+<span class="lineNum">     889 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">          7 :     CHECK_PTR_RET(s, 0);</span>
+<span class="lineNum">     890 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">          6 :     CHECK_PTR_RET(buffer, 0);</span>
+<span class="lineNum">     891 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">          5 :     CHECK_RET(n &gt; 0, 0);</span>
 <span class="lineNum">     892 </span>                :            : 
-<span class="lineNum">     893 </span>                :<span class="lineCov">          9 :     return aiofd_read( &amp;(s-&gt;aiofd), buffer, n );</span>
+<span class="lineNum">     893 </span>                :<span class="lineCov">          7 :     return aiofd_read( &amp;(s-&gt;aiofd), buffer, n );</span>
 <a name="894"><span class="lineNum">     894 </span>                :            : }</a>
 <span class="lineNum">     895 </span>                :            : 
-<span class="lineNum">     896 </span>                :<span class="lineCov">          8 : socket_ret_t socket_write( socket_t * const s,</span>
+<span class="lineNum">     896 </span>                :<span class="lineCov">          7 : socket_ret_t socket_write( socket_t * const s,</span>
 <span class="lineNum">     897 </span>                :            :                            uint8_t const * const buffer,
 <span class="lineNum">     898 </span>                :            :                            size_t const n )
 <span class="lineNum">     899 </span>                :            : {
-<span class="lineNum">     900 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">          8 :     CHECK_PTR_RET( s, SOCKET_BADPARAM );</span>
-<span class="lineNum">     901 </span>        [<span class="branchCov" title="Branch 1 was taken 5 times"> + </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          8 :     return ( aiofd_write( &amp;(s-&gt;aiofd), buffer, n ) ? SOCKET_OK : SOCKET_ERROR );</span>
+<span class="lineNum">     900 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">          7 :     CHECK_PTR_RET( s, SOCKET_BADPARAM );</span>
+<span class="lineNum">     901 </span>        [<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          7 :     return ( aiofd_write( &amp;(s-&gt;aiofd), buffer, n ) ? SOCKET_OK : SOCKET_ERROR );</span>
 <a name="902"><span class="lineNum">     902 </span>                :            : }</a>
 <span class="lineNum">     903 </span>                :            : 
 <span class="lineNum">     904 </span>                :<span class="lineCov">          4 : socket_ret_t socket_writev( socket_t * const s,</span>
@@ -982,10 +982,10 @@
 <span class="lineNum">     910 </span>                :            : }
 <a name="911"><span class="lineNum">     911 </span>                :            : </a>
 <span class="lineNum">     912 </span>                :            : /* flush the socket output */
-<span class="lineNum">     913 </span>                :<span class="lineCov">          2 : socket_ret_t socket_flush( socket_t* const s )</span>
+<span class="lineNum">     913 </span>                :<span class="lineCov">          1 : socket_ret_t socket_flush( socket_t* const s )</span>
 <span class="lineNum">     914 </span>                :            : {
-<span class="lineNum">     915 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          2 :     CHECK_PTR_RET(s, SOCKET_BADPARAM);</span>
-<span class="lineNum">     916 </span>                :<span class="lineCov">          2 :     return aiofd_flush( &amp;(s-&gt;aiofd) );</span>
+<span class="lineNum">     915 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :     CHECK_PTR_RET(s, SOCKET_BADPARAM);</span>
+<span class="lineNum">     916 </span>                :<span class="lineCov">          1 :     return aiofd_flush( &amp;(s-&gt;aiofd) );</span>
 <span class="lineNum">     917 </span>                :            : }
 <span class="lineNum">     918 </span>                :            : 
 <span class="lineNum">     919 </span>                :            : #if defined(UNIT_TESTING)
