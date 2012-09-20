@@ -83,6 +83,8 @@ int fake_aiofd_write = FALSE;
 int fake_aiofd_write_ret = FALSE;
 int fake_aiofd_writev = FALSE;
 int fake_aiofd_writev_ret = FALSE;
+int fake_aiofd_write_common = FALSE;
+int fake_aiofd_write_common_ret = FALSE;
 int fake_aiofd_enable_read_evt = FALSE;
 int fake_aiofd_enable_read_evt_ret = FALSE;
 
@@ -217,6 +219,8 @@ void reset_test_flags( void )
 	fake_aiofd_write_ret = FALSE;
 	fake_aiofd_writev = FALSE;
 	fake_aiofd_writev_ret = FALSE;
+	fake_aiofd_write_common = FALSE;
+	fake_aiofd_write_common_ret = FALSE;
 	fake_aiofd_enable_read_evt = FALSE;
 	fake_aiofd_enable_read_evt_ret = FALSE;
 

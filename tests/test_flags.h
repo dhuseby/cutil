@@ -82,6 +82,8 @@ extern int fake_aiofd_write;
 extern int fake_aiofd_write_ret;
 extern int fake_aiofd_writev;
 extern int fake_aiofd_writev_ret;
+extern int fake_aiofd_write_common;
+extern int fake_aiofd_write_common_ret;
 extern int fake_aiofd_enable_read_evt;
 extern int fake_aiofd_enable_read_evt_ret;
 

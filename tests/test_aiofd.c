@@ -97,6 +97,22 @@ static void test_aiofd_initdeinit( void )
 	}
 }
 
+static void test_aiofd_new_fail_alloc( void )
+{
+	int i;
+	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+
+	/* make sure there is an event loop */
+	CU_ASSERT_PTR_NOT_NULL( el );
+
+	fail_alloc = TRUE;
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		CU_ASSERT_PTR_NULL( aiofd_new( fileno(stdout), fileno(stdin), &ops, el, NULL ) )
+	}
+	fail_alloc = FALSE;
+}
+
 static void test_aiofd_new_fail_init( void )
 {
 	int i;
@@ -152,8 +168,14 @@ static void test_aiofd_start_stop_write( void )
 	CU_ASSERT_PTR_NOT_NULL( el );
 
 	CU_ASSERT_TRUE( aiofd_initialize( &aiofd, fileno(stdout), fileno(stdin), &ops, el, NULL ) );
+	CU_ASSERT_FALSE( aiofd_enable_write_evt( NULL, TRUE ) );
+	CU_ASSERT_FALSE( aiofd_enable_write_evt( NULL, FALSE ) );
 	CU_ASSERT_TRUE( aiofd_enable_write_evt( &aiofd, TRUE ) );
 	CU_ASSERT_TRUE( aiofd_enable_write_evt( &aiofd, FALSE ) );
+	fake_event_stop_handler = TRUE;
+	fake_event_stop_handler_ret = FALSE;
+	CU_ASSERT_FALSE( aiofd_enable_write_evt( &aiofd, FALSE ) );
+	fake_event_stop_handler = FALSE;
 	aiofd_deinitialize( &aiofd );
 }
 
@@ -167,9 +189,110 @@ static void test_aiofd_start_stop_read( void )
 	CU_ASSERT_PTR_NOT_NULL( el );
 
 	CU_ASSERT_TRUE( aiofd_initialize( &aiofd, fileno(stdout), fileno(stdin), &ops, el, NULL ) );
+	CU_ASSERT_FALSE( aiofd_enable_read_evt( NULL, TRUE ) );
+	CU_ASSERT_FALSE( aiofd_enable_read_evt( NULL, FALSE ) );
 	CU_ASSERT_TRUE( aiofd_enable_read_evt( &aiofd, TRUE ) );
 	CU_ASSERT_TRUE( aiofd_enable_read_evt( &aiofd, FALSE ) );
+	fake_event_stop_handler = TRUE;
+	fake_event_stop_handler_ret = FALSE;
+	CU_ASSERT_FALSE( aiofd_enable_read_evt( &aiofd, FALSE ) );
+	fake_event_stop_handler = FALSE;
 	aiofd_deinitialize( &aiofd );
+}
+
+static void test_aiofd_delete_null( void )
+{
+	aiofd_delete( NULL );
+}
+
+static void test_aiofd_init_prereqs( void )
+{
+	aiofd_t aiofd;
+	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+	MEMSET( &aiofd, 0, sizeof( aiofd_t ) );
+
+	CU_ASSERT_FALSE( aiofd_initialize( NULL, -1, -1, NULL, NULL, NULL ) );
+	CU_ASSERT_FALSE( aiofd_initialize( &aiofd, -1, -1, NULL, NULL, NULL ) );
+	CU_ASSERT_FALSE( aiofd_initialize( &aiofd, STDOUT_FILENO, -1, NULL, NULL, NULL ) );
+	CU_ASSERT_FALSE( aiofd_initialize( &aiofd, STDOUT_FILENO, STDIN_FILENO, NULL, NULL, NULL ) );
+	CU_ASSERT_FALSE( aiofd_initialize( &aiofd, STDOUT_FILENO, STDIN_FILENO, &ops, NULL, NULL ) );
+	CU_ASSERT_TRUE( aiofd_initialize( &aiofd, STDOUT_FILENO, STDIN_FILENO, &ops, el, NULL ) );
+	aiofd_deinitialize( &aiofd );
+}
+
+static void test_aiofd_init_fail_list_init( void )
+{
+	aiofd_t aiofd;
+	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+	MEMSET( &aiofd, 0, sizeof( aiofd_t ) );
+
+	fake_list_init = TRUE;
+	fake_list_init_ret = FALSE;
+	CU_ASSERT_FALSE( aiofd_initialize( &aiofd, STDOUT_FILENO, STDIN_FILENO, &ops, el, NULL ) );
+	fake_list_init = FALSE;
+}
+
+static void test_aiofd_writev( void )
+{
+	aiofd_t aiofd;
+	int8_t * buf = "foo";
+	int const size = 4;
+	struct iovec iov;
+
+	MEMSET( &aiofd, 0, sizeof( aiofd_t ) );
+	MEMSET( &iov, 0, sizeof( struct iovec) );
+
+	iov.iov_base = (void*)buf;
+	iov.iov_len = size;
+
+	fake_aiofd_write_common = TRUE;
+	fake_aiofd_write_common_ret = FALSE;
+	CU_ASSERT_FALSE( aiofd_writev( &aiofd, &iov, 1 ) );
+	fake_aiofd_write_common = FALSE;
+}
+
+static void test_aiofd_read( void )
+{
+	aiofd_t aiofd;
+	uint8_t buf[10];
+	MEMSET( &aiofd, 0, sizeof( aiofd_t ) );
+
+	CU_ASSERT_EQUAL( aiofd_read( NULL, NULL, 0 ), 0 );
+	CU_ASSERT_EQUAL( aiofd_read( &aiofd, NULL, 0 ), 0 );
+	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 0 ), 0 );
+	fake_read = TRUE;
+	fake_read_ret = 10;
+	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), 10 );
+	fake_read = TRUE;
+	fake_read_ret = 0;
+	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), 0 );
+	CU_ASSERT_EQUAL( errno, EPIPE );
+	fake_read = TRUE;
+	fake_read_ret = -1;
+	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), 0 );
+	aiofd.ops.error_fn = &error_fn;
+	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), 0 );
+	fake_errno = TRUE;
+	fake_errno_value = EPIPE;
+	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), 0 );
+	fake_errno_value = 0;
+	fake_errno = FALSE;
+	fake_read = FALSE;
+}
+
+static void test_aiofd_flush_null( void )
+{
+	CU_ASSERT_FALSE( aiofd_flush( NULL ) );
+}
+
+static void test_aiofd_set_listen_null( void )
+{
+	CU_ASSERT_FALSE( aiofd_set_listen( NULL, TRUE ) );
+}
+
+static void test_aiofd_get_listen_null( void )
+{
+	CU_ASSERT_FALSE( aiofd_get_listen( NULL ) );
 }
 
 static int init_aiofd_suite( void )
@@ -189,10 +312,19 @@ static CU_pSuite add_aiofd_tests( CU_pSuite pSuite )
 {
 	ADD_TEST( "new/delete of aiofd", test_aiofd_newdel );
 	ADD_TEST( "init/deinit of aiofd", test_aiofd_initdeinit );
+	ADD_TEST( "new of aiofd fail alloc", test_aiofd_new_fail_alloc );
 	ADD_TEST( "fail init of aiofd", test_aiofd_new_fail_init );
 	ADD_TEST( "fail aiofd evt init", test_aiofd_init_fail_evt_init );
 	ADD_TEST( "aiofd write start/stop", test_aiofd_start_stop_write );
 	ADD_TEST( "aiofd read start/stop", test_aiofd_start_stop_read );
+	ADD_TEST( "aiofd delete NULL", test_aiofd_delete_null );
+	ADD_TEST( "aiofd init prereqs", test_aiofd_init_prereqs );
+	ADD_TEST( "aiofd init fail list init", test_aiofd_init_fail_list_init );
+	ADD_TEST( "aiofd writev", test_aiofd_writev );
+	ADD_TEST( "aiofd read", test_aiofd_read );
+	ADD_TEST( "aiofd flush null", test_aiofd_flush_null );
+	ADD_TEST( "aiofd set listen null", test_aiofd_set_listen_null );
+	ADD_TEST( "aiofd get listen null", test_aiofd_get_listen_null );
 
 	ADD_TEST( "test aiofd private functions", test_aiofd_private_functions );
 	return pSuite;

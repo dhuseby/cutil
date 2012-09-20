@@ -230,10 +230,10 @@ int aiofd_initialize( aiofd_t * const aiofd,
 	CHECK_RET( !fake_aiofd_initialize, fake_aiofd_initialize_ret );
 #endif
 	CHECK_PTR_RET( aiofd, FALSE );
-	CHECK_PTR_RET( ops, FALSE );
-	CHECK_PTR_RET( el, FALSE );
 	CHECK_RET( write_fd >= 0, FALSE );
 	CHECK_RET( read_fd >= 0, FALSE );
+	CHECK_PTR_RET( ops, FALSE );
+	CHECK_PTR_RET( el, FALSE );
 
 	MEMSET( (void*)aiofd, 0, sizeof(aiofd_t) );
 
@@ -377,15 +377,18 @@ static int aiofd_write_common( aiofd_t* const aiofd,
 	int32_t asize = 0;
 	ssize_t res = 0;
 	aiofd_write_t * wb = NULL;
-	
-	CHECK_PTR_RET(aiofd, 0);
-	CHECK_PTR_RET(buffer, 0);
-	CHECK_RET(cnt > 0, 0);
+#if defined(UNIT_TESTING)
+	CHECK_RET( !fake_aiofd_write_common, fake_aiofd_write_common_ret );
+#endif
+	CHECK_PTR_RET( aiofd, FALSE );
+	CHECK_PTR_RET( buffer, FALSE );
+	CHECK_RET( cnt > 0, FALSE );
+	CHECK_RET( total > 0, FALSE );
 
 	wb = CALLOC( 1, sizeof(aiofd_write_t) );
 	if ( wb == NULL )
 	{
-		WARN( "failed to allocate write buffer struct\n" );
+		DEBUG( "failed to allocate write buffer struct\n" );
 		return FALSE;
 	}
 
@@ -396,11 +399,19 @@ static int aiofd_write_common( aiofd_t* const aiofd,
 	wb->nleft = total;
 
 	/* queue the write */
-	list_push_tail( &(aiofd->wbuf), wb );
+	if ( !list_push_tail( &(aiofd->wbuf), wb ) )
+	{
+		FREE( wb );
+		return FALSE;
+	}
 
 	/* just in case it isn't started, start the write event processing so
 	 * the queued data will get written */
-	evt_start_event_handler( aiofd->el, &(aiofd->wevt) );
+	if ( !evt_start_event_handler( aiofd->el, &(aiofd->wevt) ) )
+	{
+		FREE( wb );
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -579,12 +590,30 @@ static void test_aiofd_write_fn( void )
 	/* done with write, moving to writev */
 	fake_write = FALSE;
 	fake_write_ret = -1;
-	fake_writev = TRUE;
-	fake_writev_ret = 2;
 
 	/* queue up a writev */
 	iov.iov_base = (void*)buf;
 	iov.iov_len = size;
+	wb = CALLOC( 1, sizeof( aiofd_write_t ) );
+	wb->data = (void*)&iov;
+	wb->size = 1;
+	wb->iov = TRUE;
+	wb->nleft = size;
+	list_push_tail( &(aiofd.wbuf), wb );
+	aiofd.ops.write_fn = &write_callback_fn;
+	MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
+
+	/* results in 2 write callbacks */
+	CU_ASSERT_EQUAL( aiofd_write_fn( el, &evt, &params, &aiofd ), EVT_OK );
+	CU_ASSERT_EQUAL( cb_counts.r, 0 );
+	CU_ASSERT_EQUAL( cb_counts.w, 2 ); /* NULL callback pointer */
+	CU_ASSERT_EQUAL( cb_counts.e, 0 );
+	CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 0 ); /* queue should be empty */
+
+	fake_writev = TRUE;
+	fake_writev_ret = 2;
+
+	/* queue up a writev */
 	wb = CALLOC( 1, sizeof( aiofd_write_t ) );
 	wb->data = (void*)&iov;
 	wb->size = 1;
@@ -767,10 +796,42 @@ static void test_aiofd_read_fn( void )
 	CU_ASSERT_EQUAL( cb_counts.e, 0 );
 }
 
+void test_aiofd_write_common( void )
+{
+	aiofd_t aiofd;
+	aiofd_write_t * wb = NULL;
+	int8_t * buf = "foo";
+	int const size = 4;
+	struct iovec iov;
+
+	MEMSET( &aiofd, 0, sizeof( aiofd_t ) );
+	MEMSET( &iov, 0, sizeof( struct iovec) );
+
+	CU_ASSERT_FALSE( aiofd_write_common( NULL, NULL, 0, 0, FALSE ) );
+	CU_ASSERT_FALSE( aiofd_write_common( &aiofd, NULL, 0, 0, FALSE ) );
+	CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, 0, 0, FALSE ) );
+	CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, size, 0, FALSE ) );
+
+	fail_alloc = TRUE;
+	CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, size, size, FALSE ) );
+	fail_alloc = FALSE;
+
+	fake_list_push = TRUE;
+	fake_list_push_ret = FALSE;
+	CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, size, size, FALSE ) );
+	fake_list_push = FALSE;
+
+	fake_event_start_handler = TRUE;
+	fake_event_start_handler_ret = FALSE;
+	CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, size, size, FALSE ) );
+	fake_event_start_handler = FALSE;
+}
+
 void test_aiofd_private_functions( void )
 {
 	test_aiofd_write_fn();
 	test_aiofd_read_fn();
+	test_aiofd_write_common();
 }
 
 #endif
