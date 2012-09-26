@@ -209,19 +209,19 @@
 95	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="95"><span class="lineNum">      95 <\/span>                :            : <\/a>$/;"	a
 96	coverage/cutil/src/buffer.c.gcov.html	/^<a name="96"><span class="lineNum">      96 <\/span>                :            : }<\/a>$/;"	a
 96	coverage/cutil/src/privileges.c.gcov.html	/^<a name="96"><span class="lineNum">      96 <\/span>                :            : }<\/a>$/;"	a
-ACCEPT	src/macros.h	185;"	d
-ACCEPT	src/macros.h	73;"	d
+ACCEPT	src/macros.h	186;"	d
+ACCEPT	src/macros.h	74;"	d
 ADD_SUITE	tests/test_macros.h	21;"	d
 ADD_TEST	tests/test_macros.h	22;"	d
 ARRAY_SIZE	src/macros.h	37;"	d
 ASSERT	src/macros.h	40;"	d
-BIND	src/macros.h	186;"	d
-BIND	src/macros.h	77;"	d
+BIND	src/macros.h	187;"	d
+BIND	src/macros.h	78;"	d
 BIT	src/bitset.c	27;"	d	file:
 BUILDDIRS	Makefile	/^BUILDDIRS = $(DIRS:%=build-%)$/;"	m
-C	src/macros.h	219;"	d
-CALLOC	src/macros.h	183;"	d
-CALLOC	src/macros.h	68;"	d
+C	src/macros.h	220;"	d
+CALLOC	src/macros.h	184;"	d
+CALLOC	src/macros.h	69;"	d
 CFLAGS	src/Makefile	/^CFLAGS=-O3 -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
 CFLAGS	src/Makefile	/^coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)\/include -I..\/tests$/;"	m
 CFLAGS	src/Makefile	/^debug: CFLAGS=-O0 -gstabs+ -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
@@ -236,8 +236,8 @@ CHECK_PTR_RET_MSG	src/macros.h	54;"	d
 CHECK_RET	src/macros.h	49;"	d
 CHECK_RET_MSG	src/macros.h	50;"	d
 CLEANDIRS	Makefile	/^CLEANDIRS = $(DIRS:%=clean-%)$/;"	m
-CONNECT	src/macros.h	187;"	d
-CONNECT	src/macros.h	81;"	d
+CONNECT	src/macros.h	188;"	d
+CONNECT	src/macros.h	82;"	d
 COVERAGE	Makefile	/^COVERAGE?=.\/coverage$/;"	m
 COVERAGE	src/Makefile	/^COVERAGE?=..\/coverage$/;"	m
 CUTIL_ROOT	tests/Makefile	/^CUTIL_ROOT=..\/src$/;"	m
@@ -251,8 +251,8 @@ DIRS	Makefile	/^DIRS = $(SRCDIR) $(TESTDIR)$/;"	m
 DWORDS_NEEDED	src/bitset.c	25;"	d	file:
 DWORD_INDEX	src/bitset.c	26;"	d	file:
 EMPTY_ENV	src/child.h	24;"	d
-ERRNO	src/macros.h	188;"	d
-ERRNO	src/macros.h	85;"	d
+ERRNO	src/macros.h	189;"	d
+ERRNO	src/macros.h	86;"	d
 EVT_BADPARAM	src/events.h	/^	EVT_BADPARAM = -3$/;"	e	enum:evt_ret_e
 EVT_BADPTR	src/events.h	/^	EVT_BADPTR = -1,$/;"	e	enum:evt_ret_e
 EVT_CHILD	src/events.h	/^	EVT_CHILD,$/;"	e	enum:evt_type_e
@@ -265,21 +265,21 @@ EVT_SIGNAL	src/events.h	/^	EVT_SIGNAL,$/;"	e	enum:evt_type_e
 EVT_TYPE_COUNT	src/events.h	/^	EVT_TYPE_COUNT = EVT_TYPE_LAST - EVT_TYPE_FIRST$/;"	e	enum:evt_type_e
 EVT_TYPE_FIRST	src/events.h	/^	EVT_TYPE_FIRST = EVT_SIGNAL,$/;"	e	enum:evt_type_e
 EVT_TYPE_LAST	src/events.h	/^	EVT_TYPE_LAST,$/;"	e	enum:evt_type_e
-EV_DEFAULT_LOOP	src/macros.h	178;"	d
-EV_DEFAULT_LOOP	src/macros.h	212;"	d
+EV_DEFAULT_LOOP	src/macros.h	179;"	d
+EV_DEFAULT_LOOP	src/macros.h	213;"	d
 EV_MULTIPLICITY	src/events.c	18;"	d	file:
 EV_STANDALONE	src/events.c	17;"	d	file:
 EXTRA_LIBS_ROOT	src/Makefile	/^EXTRA_LIBS_ROOT?=\/usr\/local$/;"	m
 EXTRA_LIBS_ROOT	tests/Makefile	/^EXTRA_LIBS_ROOT?=\/usr\/local$/;"	m
 FAIL	src/macros.h	44;"	d
 FALSE	src/macros.h	33;"	d
-FCNTL	src/macros.h	189;"	d
-FCNTL	src/macros.h	89;"	d
-FORK	src/macros.h	191;"	d
-FORK	src/macros.h	93;"	d
+FCNTL	src/macros.h	190;"	d
+FCNTL	src/macros.h	90;"	d
+FORK	src/macros.h	192;"	d
+FORK	src/macros.h	94;"	d
 FREE	src/macros.h	57;"	d
-FSTAT	src/macros.h	190;"	d
-FSTAT	src/macros.h	97;"	d
+FSTAT	src/macros.h	191;"	d
+FSTAT	src/macros.h	98;"	d
 GCDA	src/Makefile	/^GCDA=$(SRC:.c=.gcda)$/;"	m
 GCDA	tests/Makefile	/^GCDA=$(SRC:.c=.gcda)$/;"	m
 GCNO	src/Makefile	/^GCNO=$(SRC:.c=.gcno)$/;"	m
@@ -287,18 +287,18 @@ GCNO	tests/Makefile	/^GCNO=$(SRC:.c=.gcno)$/;"	m
 GCOV	src/Makefile	/^GCOV=$(SRC:.c=.c.gcov)$/;"	m
 GCOV	tests/Makefile	/^GCOV=$(SRC:.c=.c.gcov)$/;"	m
 GCOVDIRS	Makefile	/^GCOVDIRS = $(DIRS:%=gcov-%)$/;"	m
-GETDTABLESIZE	src/macros.h	101;"	d
-GETDTABLESIZE	src/macros.h	192;"	d
-GETEGID	src/macros.h	105;"	d
-GETEGID	src/macros.h	193;"	d
-GETEUID	src/macros.h	109;"	d
-GETEUID	src/macros.h	194;"	d
-GETGID	src/macros.h	113;"	d
-GETGID	src/macros.h	195;"	d
-GETGROUPS	src/macros.h	117;"	d
-GETGROUPS	src/macros.h	196;"	d
-GETUID	src/macros.h	121;"	d
-GETUID	src/macros.h	197;"	d
+GETDTABLESIZE	src/macros.h	102;"	d
+GETDTABLESIZE	src/macros.h	193;"	d
+GETEGID	src/macros.h	106;"	d
+GETEGID	src/macros.h	194;"	d
+GETEUID	src/macros.h	110;"	d
+GETEUID	src/macros.h	195;"	d
+GETGID	src/macros.h	114;"	d
+GETGID	src/macros.h	196;"	d
+GETGROUPS	src/macros.h	118;"	d
+GETGROUPS	src/macros.h	197;"	d
+GETUID	src/macros.h	122;"	d
+GETUID	src/macros.h	198;"	d
 HDR	src/Makefile	/^HDR=aiofd.h bitset.h btree.h buffer.h child.h daemon.h debug.h events.h hashtable.h list.h log.h macros.h pair.h privileges.h sanitize.h socket.h$/;"	m
 INSTALL	Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
 INSTALL	src/Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
@@ -307,8 +307,8 @@ INSTALL_DATA	Makefile	/^INSTALL_DATA=$(INSTALL) -m 644$/;"	m
 INSTALL_DATA	src/Makefile	/^INSTALL_DATA=$(INSTALL) -m 644$/;"	m
 INSTALL_PROGRAM	Makefile	/^INSTALL_PROGRAM=$(INSTALL)$/;"	m
 INSTALL_PROGRAM	src/Makefile	/^INSTALL_PROGRAM=$(INSTALL)$/;"	m
-IOCTL	src/macros.h	125;"	d
-IOCTL	src/macros.h	198;"	d
+IOCTL	src/macros.h	126;"	d
+IOCTL	src/macros.h	199;"	d
 IPv4	src/socket.h	/^typedef struct in_addr IPv4;$/;"	t	typeref:struct:in_addr
 IPv6	src/socket.h	/^typedef struct in6_addr IPv6;$/;"	t	typeref:struct:in6_addr
 ITEM_AT	src/hashtable.c	34;"	d	file:
@@ -317,19 +317,19 @@ ITR_EQ	src/hashtable.h	31;"	d
 LDFLAGS	tests/Makefile	/^LDFLAGS=-O0 -gstabs+ -L$(CUTIL_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
 LDFLAGS	tests/Makefile	/^coverage: LDFLAGS=-fprofile-arcs -O0 -gstabs+ -L$(CUTIL_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
 LIBS	tests/Makefile	/^LIBS=-lcutil -lcunit -lev$/;"	m
-LISTEN	src/macros.h	129;"	d
-LISTEN	src/macros.h	199;"	d
+LISTEN	src/macros.h	130;"	d
+LISTEN	src/macros.h	200;"	d
 LIST_AT	src/hashtable.c	33;"	d	file:
 LOG	src/macros.h	43;"	d
 LOG_TYPE_FILE	src/log.h	/^	LOG_TYPE_FILE$/;"	e	enum:log_type_s
 LOG_TYPE_SYSLOG	src/log.h	/^	LOG_TYPE_SYSLOG,$/;"	e	enum:log_type_s
-MALLOC	src/macros.h	182;"	d
-MALLOC	src/macros.h	67;"	d
+MALLOC	src/macros.h	183;"	d
+MALLOC	src/macros.h	68;"	d
 MEMCMP	src/macros.h	59;"	d
 MEMCPY	src/macros.h	58;"	d
 MEMSET	src/macros.h	60;"	d
-MISSING_64BIT_ENDIAN	src/macros.h	235;"	d
-MISSING_STRNLEN	src/macros.h	234;"	d
+MISSING_64BIT_ENDIAN	src/macros.h	236;"	d
+MISSING_STRNLEN	src/macros.h	235;"	d
 MULTIPLE	tests/test_aiofd.c	36;"	d	file:
 MULTIPLE	tests/test_child.c	36;"	d	file:
 MULTIPLE	tests/test_events.c	37;"	d	file:
@@ -346,18 +346,18 @@ OBJ	tests/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
 OPEN_MAX	src/sanitize.c	41;"	d	file:
 OUT	src/Makefile	/^OUT=lib$(NAME).a$/;"	m
 OUT	tests/Makefile	/^OUT=test_all$/;"	m
-PIPE	src/macros.h	133;"	d
-PIPE	src/macros.h	200;"	d
+PIPE	src/macros.h	134;"	d
+PIPE	src/macros.h	201;"	d
 PIPE_READ_FD	src/child.c	188;"	d	file:
 PIPE_WRITE_FD	src/child.c	189;"	d	file:
-PORTABLE_32_BIT	src/macros.h	227;"	d
-PORTABLE_64_BIT	src/macros.h	223;"	d
+PORTABLE_32_BIT	src/macros.h	228;"	d
+PORTABLE_64_BIT	src/macros.h	224;"	d
 PREFIX	src/Makefile	/^PREFIX?=\/usr\/local$/;"	m
 PRIMES	src/hashtable.c	/^uint_t const PRIMES[] =$/;"	v
-READ	src/macros.h	137;"	d
-READ	src/macros.h	201;"	d
-REALLOC	src/macros.h	184;"	d
-REALLOC	src/macros.h	69;"	d
+READ	src/macros.h	138;"	d
+READ	src/macros.h	202;"	d
+REALLOC	src/macros.h	185;"	d
+REALLOC	src/macros.h	70;"	d
 REPEAT	tests/test_aiofd.c	34;"	d	file:
 REPEAT	tests/test_child.c	34;"	d	file:
 REPEAT	tests/test_events.c	35;"	d	file:
@@ -366,18 +366,18 @@ REPEAT	tests/test_list.c	34;"	d	file:
 REPEAT	tests/test_privileges.c	33;"	d	file:
 REPEAT	tests/test_socket.c	34;"	d	file:
 REPORTDIRS	Makefile	/^REPORTDIRS = $(DIRS:%=report-%)$/;"	m
-SETEGID	src/macros.h	141;"	d
-SETEGID	src/macros.h	202;"	d
-SETEUID	src/macros.h	145;"	d
-SETEUID	src/macros.h	203;"	d
-SETGROUPS	src/macros.h	149;"	d
-SETGROUPS	src/macros.h	204;"	d
-SETREGID	src/macros.h	153;"	d
-SETREGID	src/macros.h	205;"	d
-SETREUID	src/macros.h	157;"	d
-SETREUID	src/macros.h	206;"	d
-SETSOCKOPT	src/macros.h	161;"	d
-SETSOCKOPT	src/macros.h	207;"	d
+SETEGID	src/macros.h	142;"	d
+SETEGID	src/macros.h	203;"	d
+SETEUID	src/macros.h	146;"	d
+SETEUID	src/macros.h	204;"	d
+SETGROUPS	src/macros.h	150;"	d
+SETGROUPS	src/macros.h	205;"	d
+SETREGID	src/macros.h	154;"	d
+SETREGID	src/macros.h	206;"	d
+SETREUID	src/macros.h	158;"	d
+SETREUID	src/macros.h	207;"	d
+SETSOCKOPT	src/macros.h	162;"	d
+SETSOCKOPT	src/macros.h	208;"	d
 SHELL	Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	tests/Makefile	/^SHELL=\/bin\/sh$/;"	m
@@ -388,8 +388,8 @@ SIZEMAX	tests/test_hashtable.c	35;"	d	file:
 SIZEMAX	tests/test_list.c	35;"	d	file:
 SIZEMAX	tests/test_privileges.c	34;"	d	file:
 SIZEMAX	tests/test_socket.c	35;"	d	file:
-SOCKET	src/macros.h	165;"	d
-SOCKET	src/macros.h	208;"	d
+SOCKET	src/macros.h	166;"	d
+SOCKET	src/macros.h	209;"	d
 SOCKET_BADHOSTNAME	src/socket.h	/^    SOCKET_BADHOSTNAME  = -3,$/;"	e	enum:socket_ret_e
 SOCKET_BADPARAM	src/socket.h	/^    SOCKET_BADPARAM     = -2,$/;"	e	enum:socket_ret_e
 SOCKET_BOUND	src/socket.h	/^	SOCKET_BOUND		= -8,$/;"	e	enum:socket_ret_e
@@ -411,21 +411,22 @@ SOCKET_UNKNOWN	src/socket.h	/^	SOCKET_UNKNOWN = -1$/;"	e	enum:socket_type_e
 SRC	src/Makefile	/^SRC=aiofd.c bitset.c btree.c buffer.c child.c daemon.c events.c hashtable.c list.c log.c pair.c privileges.c sanitize.c socket.c$/;"	m
 SRC	tests/Makefile	/^SRC=test_all.c test_aiofd.c test_bitset.c test_btree.c test_buffer.c test_child.c test_events.c test_flags.c test_hashtable.c test_list.c test_pair.c test_privileges.c test_sanitize.c test_socket.c$/;"	m
 SRCDIR	Makefile	/^SRCDIR = src$/;"	m
+STRCMP	src/macros.h	62;"	d
 STRDUP	src/macros.h	61;"	d
 SUITE	tests/test_macros.h	20;"	d
-T	src/macros.h	217;"	d
+T	src/macros.h	218;"	d
 TESTDIR	Makefile	/^TESTDIR = tests$/;"	m
 TESTDIRS	Makefile	/^TESTDIRS = $(DIRS:%=test-%)$/;"	m
 TRUE	src/macros.h	34;"	d
 UNINSTALLDIRS	Makefile	/^UNINSTALLDIRS = $(DIRS:%=uninstall-%)$/;"	m
-UT	src/macros.h	218;"	d
+UT	src/macros.h	219;"	d
 VALID_EVENT_TYPE	src/events.h	46;"	d
 VALID_SOCKET_TYPE	src/socket.h	57;"	d
 WARN	src/macros.h	41;"	d
-WRITE	src/macros.h	169;"	d
-WRITE	src/macros.h	209;"	d
-WRITEV	src/macros.h	173;"	d
-WRITEV	src/macros.h	210;"	d
+WRITE	src/macros.h	170;"	d
+WRITE	src/macros.h	210;"	d
+WRITEV	src/macros.h	174;"	d
+WRITEV	src/macros.h	211;"	d
 _GNU_SOURCE	src/log.c	17;"	d	file:
 __AIOFD_H__	src/aiofd.h	18;"	d
 __BITSET_H__	src/bitset.h	18;"	d

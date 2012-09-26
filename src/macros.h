@@ -59,6 +59,7 @@
 #define MEMCMP memcmp
 #define MEMSET memset
 #define STRDUP strdup
+#define STRCMP strcmp
 
 #if defined(UNIT_TESTING)
 
