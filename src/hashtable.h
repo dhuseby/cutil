@@ -49,7 +49,7 @@ typedef struct ht_s
 	uint_t				initial;			/* initial capacity */
 	float				limit;				/* load limit that will trigger resize */
 	uint_t				count;				/* number of items in the hashtable */
-	uint_t				size;;				/* the size of the list array */
+	uint_t				size;				/* the size of the list array */
 	list_t*				lists;				/* pointer to list array */
 } ht_t;
 
@@ -82,14 +82,15 @@ int ht_remove( ht_t * const htable, ht_itr_t const itr );
 void* ht_get( ht_t const * const htable, ht_itr_t const itr );
 
 /* iterator based access to the hashtable */
-#if 0
 ht_itr_t ht_itr_begin( ht_t const * const htable );
 ht_itr_t ht_itr_end( ht_t const * const htable );
-ht_itr_t ht_itr_rbegin( ht_t const * const hatable );
+ht_itr_t ht_itr_rbegin( ht_t const * const htable );
 #define ht_itr_rend(x) ht_itr_end(x)
 ht_itr_t ht_itr_next( ht_t const * const htable, ht_itr_t const itr );
 ht_itr_t ht_itr_rnext( ht_t const * const htable, ht_itr_t const itr );
-#endif
+#define ht_itr_prev(h,i) ht_itr_rnext(h,i)
+#define ht_itr_rprev(h,i) ht_itr_next(h,i)
+
 
 #endif
 

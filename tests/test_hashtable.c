@@ -319,6 +319,71 @@ static void test_hashtable_get( void )
 	CU_ASSERT_TRUE( ht_deinitialize( &ht ) );
 }
 
+static void test_hashtable_empty_iterator( void )
+{
+	int i;
+	uint32_t size;
+	ht_t ht;
+	ht_itr_t itr;
+
+	reset_test_flags();
+
+	for ( i = 0; i < REPEAT; i++ )
+	{
+		MEMSET( &ht, 0, sizeof(ht_t) );
+		size = (rand() % SIZEMAX);
+		CU_ASSERT_TRUE( ht_initialize( &ht, size, &hash_fn, &match_fn, NULL ) );
+
+		itr = ht_itr_begin( &ht );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+		itr = ht_itr_end( &ht );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_begin( &ht ) ) );
+
+		itr = ht_itr_rbegin( &ht );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_rend( &ht ) ) );
+		itr = ht_itr_rend( &ht );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_rbegin( &ht ) ) );
+
+		itr = ht_itr_begin( &ht );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+		itr = ht_itr_next( &ht, itr );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_begin( &ht ) ) );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+		itr = ht_itr_prev( &ht, itr );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_begin( &ht ) ) );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+
+		itr = ht_itr_end( &ht );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+		itr = ht_itr_prev( &ht, itr );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_begin( &ht ) ) );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+		itr = ht_itr_next( &ht, itr );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_begin( &ht ) ) );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+
+		itr = ht_itr_rbegin( &ht );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+		itr = ht_itr_rprev( &ht, itr );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_begin( &ht ) ) );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+		itr = ht_itr_rnext( &ht, itr );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_begin( &ht ) ) );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+
+		itr = ht_itr_rend( &ht );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+		itr = ht_itr_rnext( &ht, itr );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_begin( &ht ) ) );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+		itr = ht_itr_rprev( &ht, itr );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_begin( &ht ) ) );
+		CU_ASSERT_TRUE( ITR_EQ( itr, ht_itr_end( &ht ) ) );
+
+		CU_ASSERT_TRUE( ht_deinitialize( &ht ) );
+	}
+}
+
 static int init_hashtable_suite( void )
 {
 	srand(0xDEADBEEF);
@@ -347,6 +412,7 @@ static CU_pSuite add_hashtable_tests( CU_pSuite pSuite )
 	ADD_TEST( "hashtable find", test_hashtable_find );
 	ADD_TEST( "hashtable remove", test_hashtable_remove );
 	ADD_TEST( "hashtable get", test_hashtable_get );
+	ADD_TEST( "empty hashtable iterator", test_hashtable_empty_iterator );
 
 	ADD_TEST( "hashtable private functions", test_hashtable_private_functions );
 	return pSuite;

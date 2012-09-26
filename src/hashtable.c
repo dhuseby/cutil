@@ -243,6 +243,97 @@ void * ht_get( ht_t const * const htable, ht_itr_t const itr )
 	return list_get( LIST_AT( htable->lists, itr.idx ), itr.itr );
 }
 
+ht_itr_t ht_itr_begin( ht_t const * const htable )
+{
+	int_t i = 0;
+	CHECK_PTR_RET( htable, ht_itr_end_t );
+	CHECK_RET( htable->size > 0, ht_itr_end_t );
+	CHECK_RET( htable->count > 0, ht_itr_end_t );
+
+	/* find the first list that isn't empty */
+	while( (i < htable->size) && (list_count( LIST_AT( htable->lists, i ) ) == 0) )
+		i++;
+
+	/* if we didn't find a non-empty list, return end itr */
+	CHECK_RET( i < htable->size, ht_itr_end_t );
+
+	/* return an iterator to the beginning of that list */
+	return (ht_itr_t){ .idx = i, .itr = list_itr_begin( LIST_AT( htable->lists, i ) ) };
+}
+
+ht_itr_t ht_itr_end( ht_t const * const htable )
+{
+	return ht_itr_end_t;
+}
+
+ht_itr_t ht_itr_rbegin( ht_t const * const htable )
+{
+	int_t i = 0;
+	CHECK_PTR_RET( htable, ht_itr_end_t );
+	CHECK_RET( htable->size > 0, ht_itr_end_t );
+	CHECK_RET( htable->count > 0, ht_itr_end_t );
+	i = htable->size - 1;
+
+	/* scan from the end to the beginging */
+	while( (i >= 0) && (list_count( LIST_AT( htable->lists, i ) ) == 0) )
+		i--;
+
+	/* check to see if we found a list */
+	CHECK_RET( i >= 0, ht_itr_end_t );
+
+	/* return an iterator to the end of the the list we found */
+	return (ht_itr_t){ .idx = i, .itr = list_itr_rbegin( LIST_AT( htable->lists, i ) ) };
+}
+
+ht_itr_t ht_itr_next( ht_t const * const htable, ht_itr_t const itr )
+{
+	ht_itr_t ret = itr;
+	CHECK_PTR_RET( htable, ht_itr_end_t );
+
+	/* advance the iterator */
+	ret.itr = list_itr_next( LIST_AT( htable->lists, ret.idx ), ret.itr );
+
+	if ( ret.itr == list_itr_end( LIST_AT( htable->lists, ret.idx ) ) )
+	{
+		/* we need to scan for the next non-empty list */
+		while( (ret.idx < htable->size) && (list_count( LIST_AT( htable->lists, ret.idx ) ) == 0) )
+			ret.idx++;
+
+		/* if we didn't find a non-empty list, return end itr */
+		CHECK_RET( ret.idx < htable->size, ht_itr_end_t );
+
+		/* re-initialize the list iterator */
+		ret.itr = list_itr_begin( LIST_AT( htable->lists, ret.idx ) );
+	}
+
+	return ret;
+}
+
+ht_itr_t ht_itr_rnext( ht_t const * const htable, ht_itr_t const itr )
+{
+	ht_itr_t ret = itr;
+	CHECK_PTR_RET( htable, ht_itr_end_t );
+
+	/* advance the iterator */
+	ret.itr = list_itr_rnext( LIST_AT( htable->lists, ret.idx ), ret.itr );	
+
+	if ( ret.itr == list_itr_end( LIST_AT( htable->lists, ret.idx ) ) )
+	{
+		/* we need to scan for the next non-empty list */
+		while( (ret.idx >= 0) && (list_count( LIST_AT( htable->lists, ret.idx ) ) == 0) )
+			ret.idx--;
+
+		/* check if we found a list */
+		CHECK_RET( ret.idx >= 0, ht_itr_end_t );
+
+		/* re-initialize the list iterator */
+		ret.itr = list_itr_rbegin( LIST_AT( htable->lists, ret.idx ) );
+	}
+
+	return ret;
+}
+
+
 
 /********** PRIVATE **********/
 
