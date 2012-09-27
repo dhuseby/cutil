@@ -192,13 +192,13 @@
 <span class="lineNum">     121 </span>                :<span class="lineCov">      13832 :     return TRUE;</span>
 <a name="122"><span class="lineNum">     122 </span>                :            : }</a>
 <span class="lineNum">     123 </span>                :            : 
-<span class="lineNum">     124 </span>                :<span class="lineCov">      29970 : uint_t list_count( list_t const * const list )</span>
+<span class="lineNum">     124 </span>                :<span class="lineCov">      46634 : uint_t list_count( list_t const * const list )</span>
 <span class="lineNum">     125 </span>                :            : {
 <span class="lineNum">     126 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     127 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 29968 times"> + </span>]:<span class="lineCov">      29970 :     CHECK_RET( !fake_list_count, fake_list_count_ret );</span>
+<span class="lineNum">     127 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 46632 times"> + </span>]:<span class="lineCov">      46634 :     CHECK_RET( !fake_list_count, fake_list_count_ret );</span>
 <span class="lineNum">     128 </span>                :            : #endif
-<span class="lineNum">     129 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 29966 times"> + </span>]:<span class="lineCov">      29968 :     CHECK_PTR_RET( list, 0 );</span>
-<span class="lineNum">     130 </span>                :<span class="lineCov">      29970 :     return list-&gt;count;</span>
+<span class="lineNum">     129 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 46630 times"> + </span>]:<span class="lineCov">      46632 :     CHECK_PTR_RET( list, 0 );</span>
+<span class="lineNum">     130 </span>                :<span class="lineCov">      46634 :     return list-&gt;count;</span>
 <a name="131"><span class="lineNum">     131 </span>                :            : }</a>
 <span class="lineNum">     132 </span>                :            : 
 <span class="lineNum">     133 </span>                :<span class="lineCov">        131 : int list_reserve( list_t * const list, uint const amount )</span>

@@ -272,11 +272,13 @@ ht_itr_t ht_itr_rbegin( ht_t const * const htable )
 	CHECK_PTR_RET( htable, ht_itr_end_t );
 	CHECK_RET( htable->size > 0, ht_itr_end_t );
 	CHECK_RET( htable->count > 0, ht_itr_end_t );
-	i = htable->size - 1;
+	i = htable->size;
 
 	/* scan from the end to the beginging */
-	while( (i >= 0) && (list_count( LIST_AT( htable->lists, i ) ) == 0) )
+	do
+	{
 		i--;
+	} while( (i >= 0) && (list_count( LIST_AT( htable->lists, i ) ) == 0) );
 
 	/* check to see if we found a list */
 	CHECK_RET( i >= 0, ht_itr_end_t );
@@ -296,8 +298,10 @@ ht_itr_t ht_itr_next( ht_t const * const htable, ht_itr_t const itr )
 	if ( ret.itr == list_itr_end( LIST_AT( htable->lists, ret.idx ) ) )
 	{
 		/* we need to scan for the next non-empty list */
-		while( (ret.idx < htable->size) && (list_count( LIST_AT( htable->lists, ret.idx ) ) == 0) )
+		do 
+		{
 			ret.idx++;
+		} while( (ret.idx < htable->size) && (list_count( LIST_AT( htable->lists, ret.idx ) ) == 0) );
 
 		/* if we didn't find a non-empty list, return end itr */
 		CHECK_RET( ret.idx < htable->size, ht_itr_end_t );
@@ -320,8 +324,10 @@ ht_itr_t ht_itr_rnext( ht_t const * const htable, ht_itr_t const itr )
 	if ( ret.itr == list_itr_end( LIST_AT( htable->lists, ret.idx ) ) )
 	{
 		/* we need to scan for the next non-empty list */
-		while( (ret.idx >= 0) && (list_count( LIST_AT( htable->lists, ret.idx ) ) == 0) )
+		do
+		{
 			ret.idx--;
+		} while( (ret.idx >= 0) && (list_count( LIST_AT( htable->lists, ret.idx ) ) == 0) );
 
 		/* check if we found a list */
 		CHECK_RET( ret.idx >= 0, ht_itr_end_t );

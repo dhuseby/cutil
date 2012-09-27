@@ -31,9 +31,9 @@
             <td class="headerValue">cutil test coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">151</td>
+            <td class="headerCovTableEntry">153</td>
             <td class="headerCovTableEntry">162</td>
-            <td class="headerCovTableEntryHi">93.2 %</td>
+            <td class="headerCovTableEntryHi">94.4 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
@@ -49,9 +49,9 @@
             <td></td>
             <td></td>
             <td class="headerItem">Branches:</td>
-            <td class="headerCovTableEntry">116</td>
+            <td class="headerCovTableEntry">118</td>
             <td class="headerCovTableEntry">146</td>
-            <td class="headerCovTableEntryMed">79.5 %</td>
+            <td class="headerCovTableEntryMed">80.8 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -343,173 +343,179 @@
 <span class="lineNum">     272 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 512 times"> + </span>]:<span class="lineCov">        512 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
 <span class="lineNum">     273 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 512 times"> + </span>]:<span class="lineCov">        512 :     CHECK_RET( htable-&gt;size &gt; 0, ht_itr_end_t );</span>
 <span class="lineNum">     274 </span>        [<span class="branchCov" title="Branch 0 was taken 512 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        512 :     CHECK_RET( htable-&gt;count &gt; 0, ht_itr_end_t );</span>
-<span class="lineNum">     275 </span>                :<span class="lineNoCov">          0 :     i = htable-&gt;size - 1;</span>
+<span class="lineNum">     275 </span>                :<span class="lineNoCov">          0 :     i = htable-&gt;size;</span>
 <span class="lineNum">     276 </span>                :            : 
 <span class="lineNum">     277 </span>                :            :     /* scan from the end to the beginging */
-<span class="lineNum">     278 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :     while( (i &gt;= 0) &amp;&amp; (list_count( LIST_AT( htable-&gt;lists, i ) ) == 0) )</span>
-<span class="lineNum">     279 </span>                :<span class="lineNoCov">          0 :         i--;</span>
-<span class="lineNum">     280 </span>                :            : 
-<span class="lineNum">     281 </span>                :            :     /* check to see if we found a list */
-<span class="lineNum">     282 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( i &gt;= 0, ht_itr_end_t );</span>
-<span class="lineNum">     283 </span>                :            : 
-<span class="lineNum">     284 </span>                :            :     /* return an iterator to the end of the the list we found */
-<span class="lineNum">     285 </span>                :<span class="lineCov">        512 :     return (ht_itr_t){ .idx = i, .itr = list_itr_rbegin( LIST_AT( htable-&gt;lists, i ) ) };</span>
-<a name="286"><span class="lineNum">     286 </span>                :            : }</a>
-<span class="lineNum">     287 </span>                :            : 
-<span class="lineNum">     288 </span>                :<span class="lineCov">        512 : ht_itr_t ht_itr_next( ht_t const * const htable, ht_itr_t const itr )</span>
-<span class="lineNum">     289 </span>                :            : {
-<span class="lineNum">     290 </span>                :<span class="lineCov">        512 :     ht_itr_t ret = itr;</span>
-<span class="lineNum">     291 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 512 times"> + </span>]:<span class="lineCov">        512 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
-<span class="lineNum">     292 </span>                :            : 
-<span class="lineNum">     293 </span>                :            :     /* advance the iterator */
-<span class="lineNum">     294 </span>                :<span class="lineCov">        512 :     ret.itr = list_itr_next( LIST_AT( htable-&gt;lists, ret.idx ), ret.itr );</span>
-<span class="lineNum">     295 </span>                :            : 
-<span class="lineNum">     296 </span>        [<span class="branchCov" title="Branch 1 was taken 512 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">        512 :     if ( ret.itr == list_itr_end( LIST_AT( htable-&gt;lists, ret.idx ) ) )</span>
-<span class="lineNum">     297 </span>                :            :     {
-<span class="lineNum">     298 </span>                :            :         /* we need to scan for the next non-empty list */
-<span class="lineNum">     299 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 512 times"> + </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineCov">        512 :         while( (ret.idx &lt; htable-&gt;size) &amp;&amp; (list_count( LIST_AT( htable-&gt;lists, ret.idx ) ) == 0) )</span>
-<span class="lineNum">     300 </span>                :<span class="lineNoCov">          0 :             ret.idx++;</span>
-<span class="lineNum">     301 </span>                :            : 
-<span class="lineNum">     302 </span>                :            :         /* if we didn't find a non-empty list, return end itr */
-<span class="lineNum">     303 </span>        [<span class="branchCov" title="Branch 0 was taken 512 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        512 :         CHECK_RET( ret.idx &lt; htable-&gt;size, ht_itr_end_t );</span>
-<span class="lineNum">     304 </span>                :            : 
-<span class="lineNum">     305 </span>                :            :         /* re-initialize the list iterator */
-<span class="lineNum">     306 </span>                :<span class="lineNoCov">          0 :         ret.itr = list_itr_begin( LIST_AT( htable-&gt;lists, ret.idx ) );</span>
-<span class="lineNum">     307 </span>                :            :     }
+<span class="lineNum">     278 </span>                :            :     do
+<span class="lineNum">     279 </span>                :            :     {
+<span class="lineNum">     280 </span>                :<span class="lineNoCov">          0 :         i--;</span>
+<span class="lineNum">     281 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :     } while( (i &gt;= 0) &amp;&amp; (list_count( LIST_AT( htable-&gt;lists, i ) ) == 0) );</span>
+<span class="lineNum">     282 </span>                :            : 
+<span class="lineNum">     283 </span>                :            :     /* check to see if we found a list */
+<span class="lineNum">     284 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     CHECK_RET( i &gt;= 0, ht_itr_end_t );</span>
+<span class="lineNum">     285 </span>                :            : 
+<span class="lineNum">     286 </span>                :            :     /* return an iterator to the end of the the list we found */
+<span class="lineNum">     287 </span>                :<span class="lineCov">        512 :     return (ht_itr_t){ .idx = i, .itr = list_itr_rbegin( LIST_AT( htable-&gt;lists, i ) ) };</span>
+<a name="288"><span class="lineNum">     288 </span>                :            : }</a>
+<span class="lineNum">     289 </span>                :            : 
+<span class="lineNum">     290 </span>                :<span class="lineCov">        512 : ht_itr_t ht_itr_next( ht_t const * const htable, ht_itr_t const itr )</span>
+<span class="lineNum">     291 </span>                :            : {
+<span class="lineNum">     292 </span>                :<span class="lineCov">        512 :     ht_itr_t ret = itr;</span>
+<span class="lineNum">     293 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 512 times"> + </span>]:<span class="lineCov">        512 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
+<span class="lineNum">     294 </span>                :            : 
+<span class="lineNum">     295 </span>                :            :     /* advance the iterator */
+<span class="lineNum">     296 </span>                :<span class="lineCov">        512 :     ret.itr = list_itr_next( LIST_AT( htable-&gt;lists, ret.idx ), ret.itr );</span>
+<span class="lineNum">     297 </span>                :            : 
+<span class="lineNum">     298 </span>        [<span class="branchCov" title="Branch 1 was taken 512 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">        512 :     if ( ret.itr == list_itr_end( LIST_AT( htable-&gt;lists, ret.idx ) ) )</span>
+<span class="lineNum">     299 </span>                :            :     {
+<span class="lineNum">     300 </span>                :            :         /* we need to scan for the next non-empty list */
+<span class="lineNum">     301 </span>                :            :         do 
+<span class="lineNum">     302 </span>                :            :         {
+<span class="lineNum">     303 </span>                :<span class="lineCov">      17176 :             ret.idx++;</span>
+<span class="lineNum">     304 </span>[<span class="branchCov" title="Branch 0 was taken 16664 times"> + </span><span class="branchCov" title="Branch 1 was taken 512 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 16664 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">      17176 :         } while( (ret.idx &lt; htable-&gt;size) &amp;&amp; (list_count( LIST_AT( htable-&gt;lists, ret.idx ) ) == 0) );</span>
+<span class="lineNum">     305 </span>                :            : 
+<span class="lineNum">     306 </span>                :            :         /* if we didn't find a non-empty list, return end itr */
+<span class="lineNum">     307 </span>        [<span class="branchCov" title="Branch 0 was taken 512 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        512 :         CHECK_RET( ret.idx &lt; htable-&gt;size, ht_itr_end_t );</span>
 <span class="lineNum">     308 </span>                :            : 
-<span class="lineNum">     309 </span>                :<span class="lineCov">        512 :     return ret;</span>
-<a name="310"><span class="lineNum">     310 </span>                :            : }</a>
-<span class="lineNum">     311 </span>                :            : 
-<span class="lineNum">     312 </span>                :<span class="lineCov">        512 : ht_itr_t ht_itr_rnext( ht_t const * const htable, ht_itr_t const itr )</span>
-<span class="lineNum">     313 </span>                :            : {
-<span class="lineNum">     314 </span>                :<span class="lineCov">        512 :     ht_itr_t ret = itr;</span>
-<span class="lineNum">     315 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 512 times"> + </span>]:<span class="lineCov">        512 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
-<span class="lineNum">     316 </span>                :            : 
-<span class="lineNum">     317 </span>                :            :     /* advance the iterator */
-<span class="lineNum">     318 </span>                :<span class="lineCov">        512 :     ret.itr = list_itr_rnext( LIST_AT( htable-&gt;lists, ret.idx ), ret.itr );  </span>
-<span class="lineNum">     319 </span>                :            : 
-<span class="lineNum">     320 </span>        [<span class="branchCov" title="Branch 1 was taken 512 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">        512 :     if ( ret.itr == list_itr_end( LIST_AT( htable-&gt;lists, ret.idx ) ) )</span>
-<span class="lineNum">     321 </span>                :            :     {
-<span class="lineNum">     322 </span>                :            :         /* we need to scan for the next non-empty list */
-<span class="lineNum">     323 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 512 times"> + </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineCov">        512 :         while( (ret.idx &gt;= 0) &amp;&amp; (list_count( LIST_AT( htable-&gt;lists, ret.idx ) ) == 0) )</span>
-<span class="lineNum">     324 </span>                :<span class="lineNoCov">          0 :             ret.idx--;</span>
-<span class="lineNum">     325 </span>                :            : 
-<span class="lineNum">     326 </span>                :            :         /* check if we found a list */
-<span class="lineNum">     327 </span>        [<span class="branchCov" title="Branch 0 was taken 512 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        512 :         CHECK_RET( ret.idx &gt;= 0, ht_itr_end_t );</span>
-<span class="lineNum">     328 </span>                :            : 
-<span class="lineNum">     329 </span>                :            :         /* re-initialize the list iterator */
-<span class="lineNum">     330 </span>                :<span class="lineNoCov">          0 :         ret.itr = list_itr_rbegin( LIST_AT( htable-&gt;lists, ret.idx ) );</span>
-<span class="lineNum">     331 </span>                :            :     }
-<span class="lineNum">     332 </span>                :            : 
-<span class="lineNum">     333 </span>                :<span class="lineCov">        512 :     return ret;</span>
-<span class="lineNum">     334 </span>                :            : }
-<span class="lineNum">     335 </span>                :            : 
-<span class="lineNum">     336 </span>                :            : 
-<span class="lineNum">     337 </span>                :            : 
-<a name="338"><span class="lineNum">     338 </span>                :            : /********** PRIVATE **********/</a>
-<span class="lineNum">     339 </span>                :            : 
-<span class="lineNum">     340 </span>                :<span class="lineCov">        398 : static uint_t ht_get_new_size( uint_t const count, float const limit )</span>
-<span class="lineNum">     341 </span>                :            : {
-<span class="lineNum">     342 </span>                :<span class="lineCov">        398 :     uint_t index = 0;</span>
+<span class="lineNum">     309 </span>                :            :         /* re-initialize the list iterator */
+<span class="lineNum">     310 </span>                :<span class="lineNoCov">          0 :         ret.itr = list_itr_begin( LIST_AT( htable-&gt;lists, ret.idx ) );</span>
+<span class="lineNum">     311 </span>                :            :     }
+<span class="lineNum">     312 </span>                :            : 
+<span class="lineNum">     313 </span>                :<span class="lineCov">        512 :     return ret;</span>
+<a name="314"><span class="lineNum">     314 </span>                :            : }</a>
+<span class="lineNum">     315 </span>                :            : 
+<span class="lineNum">     316 </span>                :<span class="lineCov">        512 : ht_itr_t ht_itr_rnext( ht_t const * const htable, ht_itr_t const itr )</span>
+<span class="lineNum">     317 </span>                :            : {
+<span class="lineNum">     318 </span>                :<span class="lineCov">        512 :     ht_itr_t ret = itr;</span>
+<span class="lineNum">     319 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 512 times"> + </span>]:<span class="lineCov">        512 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
+<span class="lineNum">     320 </span>                :            : 
+<span class="lineNum">     321 </span>                :            :     /* advance the iterator */
+<span class="lineNum">     322 </span>                :<span class="lineCov">        512 :     ret.itr = list_itr_rnext( LIST_AT( htable-&gt;lists, ret.idx ), ret.itr );  </span>
+<span class="lineNum">     323 </span>                :            : 
+<span class="lineNum">     324 </span>        [<span class="branchCov" title="Branch 1 was taken 512 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">        512 :     if ( ret.itr == list_itr_end( LIST_AT( htable-&gt;lists, ret.idx ) ) )</span>
+<span class="lineNum">     325 </span>                :            :     {
+<span class="lineNum">     326 </span>                :            :         /* we need to scan for the next non-empty list */
+<span class="lineNum">     327 </span>                :            :         do
+<span class="lineNum">     328 </span>                :            :         {
+<span class="lineNum">     329 </span>                :<span class="lineCov">        512 :             ret.idx--;</span>
+<span class="lineNum">     330 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 512 times"> + </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineCov">        512 :         } while( (ret.idx &gt;= 0) &amp;&amp; (list_count( LIST_AT( htable-&gt;lists, ret.idx ) ) == 0) );</span>
+<span class="lineNum">     331 </span>                :            : 
+<span class="lineNum">     332 </span>                :            :         /* check if we found a list */
+<span class="lineNum">     333 </span>        [<span class="branchCov" title="Branch 0 was taken 512 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        512 :         CHECK_RET( ret.idx &gt;= 0, ht_itr_end_t );</span>
+<span class="lineNum">     334 </span>                :            : 
+<span class="lineNum">     335 </span>                :            :         /* re-initialize the list iterator */
+<span class="lineNum">     336 </span>                :<span class="lineNoCov">          0 :         ret.itr = list_itr_rbegin( LIST_AT( htable-&gt;lists, ret.idx ) );</span>
+<span class="lineNum">     337 </span>                :            :     }
+<span class="lineNum">     338 </span>                :            : 
+<span class="lineNum">     339 </span>                :<span class="lineCov">        512 :     return ret;</span>
+<span class="lineNum">     340 </span>                :            : }
+<span class="lineNum">     341 </span>                :            : 
+<span class="lineNum">     342 </span>                :            : 
 <span class="lineNum">     343 </span>                :            : 
-<span class="lineNum">     344 </span>                :            :     /* find the first prime that results in a load less than the limit */
-<span class="lineNum">     345 </span>[<span class="branchCov" title="Branch 0 was taken 1506 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1109 times"> + </span><span class="branchCov" title="Branch 3 was taken 397 times"> + </span>]:<span class="lineCov">       1507 :     while( ( index &lt; (NUM_PRIMES - 1) ) &amp;&amp; ( ((float)count / (float)PRIMES[index]) &gt; limit ) )</span>
-<span class="lineNum">     346 </span>                :            :     {
-<span class="lineNum">     347 </span>                :            :         DEBUG( &quot;%f / %f = %f &gt; %f\n&quot;, (float)count, (float)PRIMES[index], ((float)count / (float)PRIMES[index]), limit );
-<span class="lineNum">     348 </span>                :<span class="lineCov">       1109 :         index++;</span>
-<span class="lineNum">     349 </span>                :            :     }
-<span class="lineNum">     350 </span>                :            :     
-<span class="lineNum">     351 </span>                :            :     DEBUG( &quot;%f / %f = %f &gt; %f\n&quot;, (float)count, (float)PRIMES[index], ((float)count / (float)PRIMES[index]), limit );
-<span class="lineNum">     352 </span>                :            : 
-<span class="lineNum">     353 </span>                :<span class="lineCov">        398 :     return PRIMES[index];</span>
-<a name="354"><span class="lineNum">     354 </span>                :            : }</a>
-<span class="lineNum">     355 </span>                :            : 
-<span class="lineNum">     356 </span>                :<span class="lineCov">        486 : static int ht_grow( ht_t * const htable )</span>
-<span class="lineNum">     357 </span>                :            : {
-<span class="lineNum">     358 </span>                :            :     uint_t i, count, new_size, old_size;
-<span class="lineNum">     359 </span>                :            :     list_t *new_lists, *old_lists;
-<span class="lineNum">     360 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     361 </span>        [<span class="branchCov" title="Branch 0 was taken 88 times"> + </span><span class="branchCov" title="Branch 1 was taken 398 times"> + </span>]:<span class="lineCov">        486 :     CHECK_RET( !fake_ht_grow, fake_ht_grow_ret );</span>
-<span class="lineNum">     362 </span>                :            : #endif
-<span class="lineNum">     363 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 397 times"> + </span>]:<span class="lineCov">        398 :     CHECK_PTR_RET( htable, FALSE );</span>
-<span class="lineNum">     364 </span>                :            : 
-<span class="lineNum">     365 </span>                :            :     /* if it's empty, then use the initial capacity */
-<span class="lineNum">     366 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 394 times"> + </span>]:<span class="lineCov">        397 :     count = htable-&gt;count ? htable-&gt;count : htable-&gt;initial;</span>
-<span class="lineNum">     367 </span>                :            : 
-<span class="lineNum">     368 </span>                :            :     /* figure out the new size from the count */
-<span class="lineNum">     369 </span>                :<span class="lineCov">        397 :     new_size = ht_get_new_size( count, htable-&gt;limit );</span>
+<a name="344"><span class="lineNum">     344 </span>                :            : /********** PRIVATE **********/</a>
+<span class="lineNum">     345 </span>                :            : 
+<span class="lineNum">     346 </span>                :<span class="lineCov">        398 : static uint_t ht_get_new_size( uint_t const count, float const limit )</span>
+<span class="lineNum">     347 </span>                :            : {
+<span class="lineNum">     348 </span>                :<span class="lineCov">        398 :     uint_t index = 0;</span>
+<span class="lineNum">     349 </span>                :            : 
+<span class="lineNum">     350 </span>                :            :     /* find the first prime that results in a load less than the limit */
+<span class="lineNum">     351 </span>[<span class="branchCov" title="Branch 0 was taken 1506 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1109 times"> + </span><span class="branchCov" title="Branch 3 was taken 397 times"> + </span>]:<span class="lineCov">       1507 :     while( ( index &lt; (NUM_PRIMES - 1) ) &amp;&amp; ( ((float)count / (float)PRIMES[index]) &gt; limit ) )</span>
+<span class="lineNum">     352 </span>                :            :     {
+<span class="lineNum">     353 </span>                :            :         DEBUG( &quot;%f / %f = %f &gt; %f\n&quot;, (float)count, (float)PRIMES[index], ((float)count / (float)PRIMES[index]), limit );
+<span class="lineNum">     354 </span>                :<span class="lineCov">       1109 :         index++;</span>
+<span class="lineNum">     355 </span>                :            :     }
+<span class="lineNum">     356 </span>                :            :     
+<span class="lineNum">     357 </span>                :            :     DEBUG( &quot;%f / %f = %f &gt; %f\n&quot;, (float)count, (float)PRIMES[index], ((float)count / (float)PRIMES[index]), limit );
+<span class="lineNum">     358 </span>                :            : 
+<span class="lineNum">     359 </span>                :<span class="lineCov">        398 :     return PRIMES[index];</span>
+<a name="360"><span class="lineNum">     360 </span>                :            : }</a>
+<span class="lineNum">     361 </span>                :            : 
+<span class="lineNum">     362 </span>                :<span class="lineCov">        486 : static int ht_grow( ht_t * const htable )</span>
+<span class="lineNum">     363 </span>                :            : {
+<span class="lineNum">     364 </span>                :            :     uint_t i, count, new_size, old_size;
+<span class="lineNum">     365 </span>                :            :     list_t *new_lists, *old_lists;
+<span class="lineNum">     366 </span>                :            : #if defined(UNIT_TESTING)
+<span class="lineNum">     367 </span>        [<span class="branchCov" title="Branch 0 was taken 88 times"> + </span><span class="branchCov" title="Branch 1 was taken 398 times"> + </span>]:<span class="lineCov">        486 :     CHECK_RET( !fake_ht_grow, fake_ht_grow_ret );</span>
+<span class="lineNum">     368 </span>                :            : #endif
+<span class="lineNum">     369 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 397 times"> + </span>]:<span class="lineCov">        398 :     CHECK_PTR_RET( htable, FALSE );</span>
 <span class="lineNum">     370 </span>                :            : 
-<span class="lineNum">     371 </span>                :            :     /* remember some stuff */
-<span class="lineNum">     372 </span>                :<span class="lineCov">        397 :     old_size = htable-&gt;size;</span>
-<span class="lineNum">     373 </span>                :<span class="lineCov">        397 :     old_lists = htable-&gt;lists;</span>
-<span class="lineNum">     374 </span>                :            : 
-<span class="lineNum">     375 </span>                :            :     /* allocate the new list array */
-<span class="lineNum">     376 </span>        [<span class="branchCov" title="Branch 0 was taken 396 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        397 :     new_lists = CALLOC( new_size, sizeof(list_t) );</span>
-<span class="lineNum">     377 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 396 times"> + </span>]:<span class="lineCov">        397 :     CHECK_PTR_RET( new_lists, FALSE );</span>
-<span class="lineNum">     378 </span>                :            : 
-<span class="lineNum">     379 </span>                :            :     /* initialize the lists */
-<span class="lineNum">     380 </span>        [<span class="branchCov" title="Branch 0 was taken 11728 times"> + </span><span class="branchCov" title="Branch 1 was taken 395 times"> + </span>]:<span class="lineCov">      12123 :     for ( i = 0; i &lt; new_size; i++ )</span>
-<span class="lineNum">     381 </span>                :            :     {
-<span class="lineNum">     382 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 11727 times"> + </span>]:<span class="lineCov">      11728 :         if ( !list_initialize( LIST_AT( new_lists, i ), 0, htable-&gt;dfn ) )</span>
-<span class="lineNum">     383 </span>                :            :         {
-<span class="lineNum">     384 </span>                :<span class="lineCov">          1 :             FREE( new_lists );</span>
-<span class="lineNum">     385 </span>                :<span class="lineCov">          1 :             return FALSE;</span>
-<span class="lineNum">     386 </span>                :            :         }
-<span class="lineNum">     387 </span>                :            :     }
-<span class="lineNum">     388 </span>                :            : 
-<span class="lineNum">     389 </span>                :            :     /* set up the hash table with the empty lists */
-<span class="lineNum">     390 </span>                :<span class="lineCov">        395 :     htable-&gt;count = 0;</span>
-<span class="lineNum">     391 </span>                :<span class="lineCov">        395 :     htable-&gt;size = new_size;</span>
-<span class="lineNum">     392 </span>                :<span class="lineCov">        395 :     htable-&gt;lists = new_lists;</span>
-<span class="lineNum">     393 </span>                :            :     
-<span class="lineNum">     394 </span>                :            :     /* hash the old data into the new table */
-<span class="lineNum">     395 </span>        [<span class="branchCov" title="Branch 0 was taken 23 times"> + </span><span class="branchCov" title="Branch 1 was taken 395 times"> + </span>]:<span class="lineCov">        418 :     for ( i = 0; i &lt; old_size; i++ )</span>
-<span class="lineNum">     396 </span>                :            :     {
-<span class="lineNum">     397 </span>        [<span class="branchCov" title="Branch 1 was taken 92 times"> + </span><span class="branchCov" title="Branch 2 was taken 23 times"> + </span>]:<span class="lineCov">        115 :         while( list_count( LIST_AT( old_lists, i ) ) )</span>
-<span class="lineNum">     398 </span>                :            :         {
-<span class="lineNum">     399 </span>                :            :             /* hash the data item into the new table */
-<span class="lineNum">     400 </span>                :<span class="lineCov">         92 :             ht_insert( htable, list_get_head( LIST_AT( old_lists, i ) ) );</span>
-<span class="lineNum">     401 </span>                :            : 
-<span class="lineNum">     402 </span>                :            :             /* remove the data item from the old list */
-<span class="lineNum">     403 </span>                :<span class="lineCov">         92 :             list_pop_head( LIST_AT( old_lists, i ) );</span>
-<span class="lineNum">     404 </span>                :            :         }
-<span class="lineNum">     405 </span>                :            : 
-<span class="lineNum">     406 </span>                :            :         /* free up the list memory */
-<span class="lineNum">     407 </span>                :<span class="lineCov">         23 :         list_deinitialize( LIST_AT( old_lists, i ) );</span>
-<span class="lineNum">     408 </span>                :            :     }
-<span class="lineNum">     409 </span>                :            : 
-<span class="lineNum">     410 </span>                :            :     /* free up the old lists array */
-<span class="lineNum">     411 </span>                :<span class="lineCov">        395 :     FREE( old_lists );</span>
-<span class="lineNum">     412 </span>                :            : 
-<span class="lineNum">     413 </span>                :<span class="lineCov">        486 :     return TRUE;</span>
-<span class="lineNum">     414 </span>                :            : }
+<span class="lineNum">     371 </span>                :            :     /* if it's empty, then use the initial capacity */
+<span class="lineNum">     372 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 394 times"> + </span>]:<span class="lineCov">        397 :     count = htable-&gt;count ? htable-&gt;count : htable-&gt;initial;</span>
+<span class="lineNum">     373 </span>                :            : 
+<span class="lineNum">     374 </span>                :            :     /* figure out the new size from the count */
+<span class="lineNum">     375 </span>                :<span class="lineCov">        397 :     new_size = ht_get_new_size( count, htable-&gt;limit );</span>
+<span class="lineNum">     376 </span>                :            : 
+<span class="lineNum">     377 </span>                :            :     /* remember some stuff */
+<span class="lineNum">     378 </span>                :<span class="lineCov">        397 :     old_size = htable-&gt;size;</span>
+<span class="lineNum">     379 </span>                :<span class="lineCov">        397 :     old_lists = htable-&gt;lists;</span>
+<span class="lineNum">     380 </span>                :            : 
+<span class="lineNum">     381 </span>                :            :     /* allocate the new list array */
+<span class="lineNum">     382 </span>        [<span class="branchCov" title="Branch 0 was taken 396 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        397 :     new_lists = CALLOC( new_size, sizeof(list_t) );</span>
+<span class="lineNum">     383 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 396 times"> + </span>]:<span class="lineCov">        397 :     CHECK_PTR_RET( new_lists, FALSE );</span>
+<span class="lineNum">     384 </span>                :            : 
+<span class="lineNum">     385 </span>                :            :     /* initialize the lists */
+<span class="lineNum">     386 </span>        [<span class="branchCov" title="Branch 0 was taken 11728 times"> + </span><span class="branchCov" title="Branch 1 was taken 395 times"> + </span>]:<span class="lineCov">      12123 :     for ( i = 0; i &lt; new_size; i++ )</span>
+<span class="lineNum">     387 </span>                :            :     {
+<span class="lineNum">     388 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 11727 times"> + </span>]:<span class="lineCov">      11728 :         if ( !list_initialize( LIST_AT( new_lists, i ), 0, htable-&gt;dfn ) )</span>
+<span class="lineNum">     389 </span>                :            :         {
+<span class="lineNum">     390 </span>                :<span class="lineCov">          1 :             FREE( new_lists );</span>
+<span class="lineNum">     391 </span>                :<span class="lineCov">          1 :             return FALSE;</span>
+<span class="lineNum">     392 </span>                :            :         }
+<span class="lineNum">     393 </span>                :            :     }
+<span class="lineNum">     394 </span>                :            : 
+<span class="lineNum">     395 </span>                :            :     /* set up the hash table with the empty lists */
+<span class="lineNum">     396 </span>                :<span class="lineCov">        395 :     htable-&gt;count = 0;</span>
+<span class="lineNum">     397 </span>                :<span class="lineCov">        395 :     htable-&gt;size = new_size;</span>
+<span class="lineNum">     398 </span>                :<span class="lineCov">        395 :     htable-&gt;lists = new_lists;</span>
+<span class="lineNum">     399 </span>                :            :     
+<span class="lineNum">     400 </span>                :            :     /* hash the old data into the new table */
+<span class="lineNum">     401 </span>        [<span class="branchCov" title="Branch 0 was taken 23 times"> + </span><span class="branchCov" title="Branch 1 was taken 395 times"> + </span>]:<span class="lineCov">        418 :     for ( i = 0; i &lt; old_size; i++ )</span>
+<span class="lineNum">     402 </span>                :            :     {
+<span class="lineNum">     403 </span>        [<span class="branchCov" title="Branch 1 was taken 92 times"> + </span><span class="branchCov" title="Branch 2 was taken 23 times"> + </span>]:<span class="lineCov">        115 :         while( list_count( LIST_AT( old_lists, i ) ) )</span>
+<span class="lineNum">     404 </span>                :            :         {
+<span class="lineNum">     405 </span>                :            :             /* hash the data item into the new table */
+<span class="lineNum">     406 </span>                :<span class="lineCov">         92 :             ht_insert( htable, list_get_head( LIST_AT( old_lists, i ) ) );</span>
+<span class="lineNum">     407 </span>                :            : 
+<span class="lineNum">     408 </span>                :            :             /* remove the data item from the old list */
+<span class="lineNum">     409 </span>                :<span class="lineCov">         92 :             list_pop_head( LIST_AT( old_lists, i ) );</span>
+<span class="lineNum">     410 </span>                :            :         }
+<span class="lineNum">     411 </span>                :            : 
+<span class="lineNum">     412 </span>                :            :         /* free up the list memory */
+<span class="lineNum">     413 </span>                :<span class="lineCov">         23 :         list_deinitialize( LIST_AT( old_lists, i ) );</span>
+<span class="lineNum">     414 </span>                :            :     }
 <span class="lineNum">     415 </span>                :            : 
-<span class="lineNum">     416 </span>                :            : 
-<span class="lineNum">     417 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     416 </span>                :            :     /* free up the old lists array */
+<span class="lineNum">     417 </span>                :<span class="lineCov">        395 :     FREE( old_lists );</span>
 <span class="lineNum">     418 </span>                :            : 
-<a name="419"><span class="lineNum">     419 </span>                :            : #include &lt;CUnit/Basic.h&gt;</a>
-<span class="lineNum">     420 </span>                :            : 
-<span class="lineNum">     421 </span>                :<span class="lineCov">          1 : void test_hashtable_private_functions( void )</span>
-<span class="lineNum">     422 </span>                :            : {
-<span class="lineNum">     423 </span>                :            :     ht_t ht;
-<span class="lineNum">     424 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ht, 0, sizeof(ht_t) );</span>
-<span class="lineNum">     425 </span>                :            : 
-<span class="lineNum">     426 </span>                :            :     /* ht_get_new_size */
-<span class="lineNum">     427 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( ht_get_new_size( (uint_t)-1, 0.1 ), 1610612741 );</span>
-<span class="lineNum">     428 </span>                :            : 
-<span class="lineNum">     429 </span>                :            :     /* ht_grow */
-<span class="lineNum">     430 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( ht_grow( NULL ) );</span>
-<span class="lineNum">     431 </span>                :<span class="lineCov">          1 :     fail_alloc = TRUE;</span>
-<span class="lineNum">     432 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( ht_grow( &amp;ht ) );</span>
-<span class="lineNum">     433 </span>                :<span class="lineCov">          1 :     fail_alloc = FALSE;</span>
-<span class="lineNum">     434 </span>                :<span class="lineCov">          1 :     fake_list_init = TRUE;</span>
-<span class="lineNum">     435 </span>                :<span class="lineCov">          1 :     fake_list_init_ret = FALSE;</span>
-<span class="lineNum">     436 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( ht_grow( &amp;ht ) );</span>
-<span class="lineNum">     437 </span>                :<span class="lineCov">          1 :     fake_list_init = FALSE;</span>
-<span class="lineNum">     438 </span>                :<span class="lineCov">          1 : }</span>
-<span class="lineNum">     439 </span>                :            : 
-<span class="lineNum">     440 </span>                :            : #endif
-<span class="lineNum">     441 </span>                :            : 
+<span class="lineNum">     419 </span>                :<span class="lineCov">        486 :     return TRUE;</span>
+<span class="lineNum">     420 </span>                :            : }
+<span class="lineNum">     421 </span>                :            : 
+<span class="lineNum">     422 </span>                :            : 
+<span class="lineNum">     423 </span>                :            : #ifdef UNIT_TESTING
+<span class="lineNum">     424 </span>                :            : 
+<a name="425"><span class="lineNum">     425 </span>                :            : #include &lt;CUnit/Basic.h&gt;</a>
+<span class="lineNum">     426 </span>                :            : 
+<span class="lineNum">     427 </span>                :<span class="lineCov">          1 : void test_hashtable_private_functions( void )</span>
+<span class="lineNum">     428 </span>                :            : {
+<span class="lineNum">     429 </span>                :            :     ht_t ht;
+<span class="lineNum">     430 </span>                :<span class="lineCov">          1 :     MEMSET( &amp;ht, 0, sizeof(ht_t) );</span>
+<span class="lineNum">     431 </span>                :            : 
+<span class="lineNum">     432 </span>                :            :     /* ht_get_new_size */
+<span class="lineNum">     433 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( ht_get_new_size( (uint_t)-1, 0.1 ), 1610612741 );</span>
+<span class="lineNum">     434 </span>                :            : 
+<span class="lineNum">     435 </span>                :            :     /* ht_grow */
+<span class="lineNum">     436 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( ht_grow( NULL ) );</span>
+<span class="lineNum">     437 </span>                :<span class="lineCov">          1 :     fail_alloc = TRUE;</span>
+<span class="lineNum">     438 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( ht_grow( &amp;ht ) );</span>
+<span class="lineNum">     439 </span>                :<span class="lineCov">          1 :     fail_alloc = FALSE;</span>
+<span class="lineNum">     440 </span>                :<span class="lineCov">          1 :     fake_list_init = TRUE;</span>
+<span class="lineNum">     441 </span>                :<span class="lineCov">          1 :     fake_list_init_ret = FALSE;</span>
+<span class="lineNum">     442 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( ht_grow( &amp;ht ) );</span>
+<span class="lineNum">     443 </span>                :<span class="lineCov">          1 :     fake_list_init = FALSE;</span>
+<span class="lineNum">     444 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">     445 </span>                :            : 
+<span class="lineNum">     446 </span>                :            : #endif
+<span class="lineNum">     447 </span>                :            : 
 </pre>
       </td>
     </tr>
