@@ -203,7 +203,7 @@
 <span class="lineNum">     132 </span>                :            :     /* free up all of the memory in the lists */
 <span class="lineNum">     133 </span>        [<span class="branchCov" title="Branch 0 was taken 11704 times"> + </span><span class="branchCov" title="Branch 1 was taken 393 times"> + </span>]:<span class="lineCov">      12097 :     for( i = 0; i &lt; htable-&gt;size; i++ )</span>
 <span class="lineNum">     134 </span>                :            :     {
-<span class="lineNum">     135 </span>                :<span class="lineCov">      11704 :         list_clear( LIST_AT( htable-&gt;lists, i ) );</span>
+<span class="lineNum">     135 </span>                :<span class="lineCov">      11704 :         list_deinitialize( LIST_AT( htable-&gt;lists, i ) );</span>
 <span class="lineNum">     136 </span>                :            :     }
 <span class="lineNum">     137 </span>                :            : 
 <span class="lineNum">     138 </span>                :            :     /* free up the lists */

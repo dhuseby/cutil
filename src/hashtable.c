@@ -132,7 +132,7 @@ int ht_deinitialize( ht_t * const htable )
 	/* free up all of the memory in the lists */
 	for( i = 0; i < htable->size; i++ )
 	{
-		list_clear( LIST_AT( htable->lists, i ) );
+		list_deinitialize( LIST_AT( htable->lists, i ) );
 	}
 
 	/* free up the lists */
