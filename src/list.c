@@ -116,7 +116,11 @@ int list_deinitialize( list_t * const list )
 	}
 
 	/* free the items array */
-	FREE( list->items );
+	if ( list->items != NULL )
+	{
+		FREE( list->items );
+		list->items = NULL;
+	}
 
 	return TRUE;
 }

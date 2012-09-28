@@ -31,13 +31,13 @@
             <td class="headerValue">cutil test coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">187</td>
-            <td class="headerCovTableEntry">187</td>
+            <td class="headerCovTableEntry">189</td>
+            <td class="headerCovTableEntry">189</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-09-26</td>
+            <td class="headerValue">2012-09-28</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">19</td>
@@ -49,9 +49,9 @@
             <td></td>
             <td></td>
             <td class="headerItem">Branches:</td>
-            <td class="headerCovTableEntry">133</td>
             <td class="headerCovTableEntry">134</td>
-            <td class="headerCovTableEntryHi">99.3 %</td>
+            <td class="headerCovTableEntry">136</td>
+            <td class="headerCovTableEntryHi">98.5 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -187,352 +187,356 @@
 <span class="lineNum">     116 </span>                :            :     }
 <span class="lineNum">     117 </span>                :            : 
 <span class="lineNum">     118 </span>                :            :     /* free the items array */
-<span class="lineNum">     119 </span>                :<span class="lineCov">       2012 :     FREE( list-&gt;items );</span>
-<span class="lineNum">     120 </span>                :            : 
-<span class="lineNum">     121 </span>                :<span class="lineCov">      13832 :     return TRUE;</span>
-<a name="122"><span class="lineNum">     122 </span>                :            : }</a>
-<span class="lineNum">     123 </span>                :            : 
-<span class="lineNum">     124 </span>                :<span class="lineCov">      46634 : uint_t list_count( list_t const * const list )</span>
-<span class="lineNum">     125 </span>                :            : {
-<span class="lineNum">     126 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     127 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 46632 times"> + </span>]:<span class="lineCov">      46634 :     CHECK_RET( !fake_list_count, fake_list_count_ret );</span>
-<span class="lineNum">     128 </span>                :            : #endif
-<span class="lineNum">     129 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 46630 times"> + </span>]:<span class="lineCov">      46632 :     CHECK_PTR_RET( list, 0 );</span>
-<span class="lineNum">     130 </span>                :<span class="lineCov">      46634 :     return list-&gt;count;</span>
-<a name="131"><span class="lineNum">     131 </span>                :            : }</a>
-<span class="lineNum">     132 </span>                :            : 
-<span class="lineNum">     133 </span>                :<span class="lineCov">        131 : int list_reserve( list_t * const list, uint const amount )</span>
-<span class="lineNum">     134 </span>                :            : {
-<span class="lineNum">     135 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 130 times"> + </span>]:<span class="lineCov">        131 :     CHECK_PTR_RET( list, FALSE );</span>
+<span class="lineNum">     119 </span>        [<span class="branchCov" title="Branch 0 was taken 2012 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       2012 :     if ( list-&gt;items != NULL )</span>
+<span class="lineNum">     120 </span>                :            :     {
+<span class="lineNum">     121 </span>                :<span class="lineCov">       2012 :         FREE( list-&gt;items );</span>
+<span class="lineNum">     122 </span>                :<span class="lineCov">       2012 :         list-&gt;items = NULL;</span>
+<span class="lineNum">     123 </span>                :            :     }
+<span class="lineNum">     124 </span>                :            : 
+<span class="lineNum">     125 </span>                :<span class="lineCov">      13832 :     return TRUE;</span>
+<a name="126"><span class="lineNum">     126 </span>                :            : }</a>
+<span class="lineNum">     127 </span>                :            : 
+<span class="lineNum">     128 </span>                :<span class="lineCov">      46634 : uint_t list_count( list_t const * const list )</span>
+<span class="lineNum">     129 </span>                :            : {
+<span class="lineNum">     130 </span>                :            : #if defined(UNIT_TESTING)
+<span class="lineNum">     131 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 46632 times"> + </span>]:<span class="lineCov">      46634 :     CHECK_RET( !fake_list_count, fake_list_count_ret );</span>
+<span class="lineNum">     132 </span>                :            : #endif
+<span class="lineNum">     133 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 46630 times"> + </span>]:<span class="lineCov">      46632 :     CHECK_PTR_RET( list, 0 );</span>
+<span class="lineNum">     134 </span>                :<span class="lineCov">      46634 :     return list-&gt;count;</span>
+<a name="135"><span class="lineNum">     135 </span>                :            : }</a>
 <span class="lineNum">     136 </span>                :            : 
-<span class="lineNum">     137 </span>        [<span class="branchCov" title="Branch 0 was taken 50 times"> + </span><span class="branchCov" title="Branch 1 was taken 80 times"> + </span>]:<span class="lineCov">        130 :     if ( amount &gt; list-&gt;size )</span>
-<span class="lineNum">     138 </span>                :            :     {
-<span class="lineNum">     139 </span>                :<span class="lineCov">         50 :         return list_grow( list, (amount - list-&gt;size) );</span>
-<span class="lineNum">     140 </span>                :            :     }
-<span class="lineNum">     141 </span>                :            : 
-<span class="lineNum">     142 </span>                :<span class="lineCov">        131 :     return TRUE;</span>
-<a name="143"><span class="lineNum">     143 </span>                :            : }</a>
-<span class="lineNum">     144 </span>                :            : 
-<span class="lineNum">     145 </span>                :<span class="lineCov">      11837 : int list_clear( list_t * const list )</span>
-<span class="lineNum">     146 </span>                :            : {
-<span class="lineNum">     147 </span>                :<span class="lineCov">      11837 :     list_delete_fn dfn = NULL;</span>
-<span class="lineNum">     148 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 11836 times"> + </span>]:<span class="lineCov">      11837 :     CHECK_PTR_RET( list, FALSE );</span>
-<span class="lineNum">     149 </span>                :            : 
-<span class="lineNum">     150 </span>                :            :     /* remember the delete function pointer */
-<span class="lineNum">     151 </span>                :<span class="lineCov">      11836 :     dfn = list-&gt;dfn;</span>
-<span class="lineNum">     152 </span>                :            : 
-<span class="lineNum">     153 </span>                :            :     /* deinit, then init the list */
-<span class="lineNum">     154 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 11835 times"> + </span>]:<span class="lineCov">      11836 :     CHECK_RET( list_deinitialize( list ), FALSE );</span>
-<span class="lineNum">     155 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 11834 times"> + </span>]:<span class="lineCov">      11835 :     CHECK_RET( list_initialize( list, 0, dfn ), FALSE );</span>
+<span class="lineNum">     137 </span>                :<span class="lineCov">        131 : int list_reserve( list_t * const list, uint const amount )</span>
+<span class="lineNum">     138 </span>                :            : {
+<span class="lineNum">     139 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 130 times"> + </span>]:<span class="lineCov">        131 :     CHECK_PTR_RET( list, FALSE );</span>
+<span class="lineNum">     140 </span>                :            : 
+<span class="lineNum">     141 </span>        [<span class="branchCov" title="Branch 0 was taken 50 times"> + </span><span class="branchCov" title="Branch 1 was taken 80 times"> + </span>]:<span class="lineCov">        130 :     if ( amount &gt; list-&gt;size )</span>
+<span class="lineNum">     142 </span>                :            :     {
+<span class="lineNum">     143 </span>                :<span class="lineCov">         50 :         return list_grow( list, (amount - list-&gt;size) );</span>
+<span class="lineNum">     144 </span>                :            :     }
+<span class="lineNum">     145 </span>                :            : 
+<span class="lineNum">     146 </span>                :<span class="lineCov">        131 :     return TRUE;</span>
+<a name="147"><span class="lineNum">     147 </span>                :            : }</a>
+<span class="lineNum">     148 </span>                :            : 
+<span class="lineNum">     149 </span>                :<span class="lineCov">      11837 : int list_clear( list_t * const list )</span>
+<span class="lineNum">     150 </span>                :            : {
+<span class="lineNum">     151 </span>                :<span class="lineCov">      11837 :     list_delete_fn dfn = NULL;</span>
+<span class="lineNum">     152 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 11836 times"> + </span>]:<span class="lineCov">      11837 :     CHECK_PTR_RET( list, FALSE );</span>
+<span class="lineNum">     153 </span>                :            : 
+<span class="lineNum">     154 </span>                :            :     /* remember the delete function pointer */
+<span class="lineNum">     155 </span>                :<span class="lineCov">      11836 :     dfn = list-&gt;dfn;</span>
 <span class="lineNum">     156 </span>                :            : 
-<span class="lineNum">     157 </span>                :<span class="lineCov">      11837 :     return TRUE;</span>
-<a name="158"><span class="lineNum">     158 </span>                :            : }</a>
-<span class="lineNum">     159 </span>                :            : 
-<span class="lineNum">     160 </span>                :<span class="lineCov">      99733 : list_itr_t list_itr_begin( list_t const * const list )</span>
-<span class="lineNum">     161 </span>                :            : {
-<span class="lineNum">     162 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 99732 times"> + </span>]:<span class="lineCov">      99733 :     CHECK_PTR_RET( list, list_itr_end_t );</span>
-<span class="lineNum">     163 </span>        [<span class="branchCov" title="Branch 0 was taken 4938 times"> + </span><span class="branchCov" title="Branch 1 was taken 94794 times"> + </span>]:<span class="lineCov">      99732 :     CHECK_RET( list-&gt;count, list_itr_end_t );</span>
-<span class="lineNum">     164 </span>                :<span class="lineCov">      99733 :     return list-&gt;used_head;</span>
-<a name="165"><span class="lineNum">     165 </span>                :            : }</a>
-<span class="lineNum">     166 </span>                :            : 
-<span class="lineNum">     167 </span>                :<span class="lineCov">      94274 : list_itr_t list_itr_end( list_t const * const list )</span>
-<span class="lineNum">     168 </span>                :            : {
-<span class="lineNum">     169 </span>                :<span class="lineCov">      94274 :     return list_itr_end_t;</span>
-<a name="170"><span class="lineNum">     170 </span>                :            : }</a>
-<span class="lineNum">     171 </span>                :            : 
-<span class="lineNum">     172 </span>                :<span class="lineCov">        644 : list_itr_t list_itr_tail( list_t const * const list )</span>
-<span class="lineNum">     173 </span>                :            : {
-<span class="lineNum">     174 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 643 times"> + </span>]:<span class="lineCov">        644 :     CHECK_PTR_RET( list, list_itr_end_t );</span>
-<span class="lineNum">     175 </span>        [<span class="branchCov" title="Branch 0 was taken 641 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">        643 :     CHECK_RET( list-&gt;count, list_itr_end_t );</span>
-<span class="lineNum">     176 </span>                :            : 
-<span class="lineNum">     177 </span>                :            :     /* the list is circular so just return the head's prev item index */
-<span class="lineNum">     178 </span>                :<span class="lineCov">        644 :     return ITEM_AT( list-&gt;items, list-&gt;used_head )-&gt;prev;</span>
-<a name="179"><span class="lineNum">     179 </span>                :            : }</a>
+<span class="lineNum">     157 </span>                :            :     /* deinit, then init the list */
+<span class="lineNum">     158 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 11835 times"> + </span>]:<span class="lineCov">      11836 :     CHECK_RET( list_deinitialize( list ), FALSE );</span>
+<span class="lineNum">     159 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 11834 times"> + </span>]:<span class="lineCov">      11835 :     CHECK_RET( list_initialize( list, 0, dfn ), FALSE );</span>
+<span class="lineNum">     160 </span>                :            : 
+<span class="lineNum">     161 </span>                :<span class="lineCov">      11837 :     return TRUE;</span>
+<a name="162"><span class="lineNum">     162 </span>                :            : }</a>
+<span class="lineNum">     163 </span>                :            : 
+<span class="lineNum">     164 </span>                :<span class="lineCov">      99733 : list_itr_t list_itr_begin( list_t const * const list )</span>
+<span class="lineNum">     165 </span>                :            : {
+<span class="lineNum">     166 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 99732 times"> + </span>]:<span class="lineCov">      99733 :     CHECK_PTR_RET( list, list_itr_end_t );</span>
+<span class="lineNum">     167 </span>        [<span class="branchCov" title="Branch 0 was taken 4938 times"> + </span><span class="branchCov" title="Branch 1 was taken 94794 times"> + </span>]:<span class="lineCov">      99732 :     CHECK_RET( list-&gt;count, list_itr_end_t );</span>
+<span class="lineNum">     168 </span>                :<span class="lineCov">      99733 :     return list-&gt;used_head;</span>
+<a name="169"><span class="lineNum">     169 </span>                :            : }</a>
+<span class="lineNum">     170 </span>                :            : 
+<span class="lineNum">     171 </span>                :<span class="lineCov">      94274 : list_itr_t list_itr_end( list_t const * const list )</span>
+<span class="lineNum">     172 </span>                :            : {
+<span class="lineNum">     173 </span>                :<span class="lineCov">      94274 :     return list_itr_end_t;</span>
+<a name="174"><span class="lineNum">     174 </span>                :            : }</a>
+<span class="lineNum">     175 </span>                :            : 
+<span class="lineNum">     176 </span>                :<span class="lineCov">        644 : list_itr_t list_itr_tail( list_t const * const list )</span>
+<span class="lineNum">     177 </span>                :            : {
+<span class="lineNum">     178 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 643 times"> + </span>]:<span class="lineCov">        644 :     CHECK_PTR_RET( list, list_itr_end_t );</span>
+<span class="lineNum">     179 </span>        [<span class="branchCov" title="Branch 0 was taken 641 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">        643 :     CHECK_RET( list-&gt;count, list_itr_end_t );</span>
 <span class="lineNum">     180 </span>                :            : 
-<span class="lineNum">     181 </span>                :<span class="lineCov">     410499 : list_itr_t list_itr_next( list_t const * const list, list_itr_t const itr )</span>
-<span class="lineNum">     182 </span>                :            : {
-<span class="lineNum">     183 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 410498 times"> + </span>]:<span class="lineCov">     410499 :     CHECK_PTR_RET( list, list_itr_end_t );</span>
-<span class="lineNum">     184 </span>        [<span class="branchCov" title="Branch 0 was taken 1025 times"> + </span><span class="branchCov" title="Branch 1 was taken 409473 times"> + </span>]:<span class="lineCov">     410498 :     CHECK_RET( itr != list_itr_end_t, list_itr_end_t );</span>
-<span class="lineNum">     185 </span>                :            : 
-<span class="lineNum">     186 </span>                :            :     /* if the next item in the list isn't the head, return its index.
-<span class="lineNum">     187 </span>                :            :      * otherwise we're at the end of the list, return the end itr */
-<span class="lineNum">     188 </span>                :<span class="lineCov">     410499 :     return ( ITEM_AT( list-&gt;items, itr )-&gt;next != list-&gt;used_head ) ?</span>
-<span class="lineNum">     189 </span>        [<span class="branchCov" title="Branch 0 was taken 406889 times"> + </span><span class="branchCov" title="Branch 1 was taken 2584 times"> + </span>]:<span class="lineCov">     409473 :              ITEM_AT( list-&gt;items, itr )-&gt;next :</span>
-<span class="lineNum">     190 </span>                :            :              list_itr_end_t;
-<a name="191"><span class="lineNum">     191 </span>                :            : }</a>
-<span class="lineNum">     192 </span>                :            : 
-<span class="lineNum">     193 </span>                :<span class="lineCov">       1621 : list_itr_t list_itr_rnext( list_t const * const list, list_itr_t const itr )</span>
-<span class="lineNum">     194 </span>                :            : {
-<span class="lineNum">     195 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1620 times"> + </span>]:<span class="lineCov">       1621 :     CHECK_PTR_RET( list, list_itr_end_t );</span>
-<span class="lineNum">     196 </span>        [<span class="branchCov" title="Branch 0 was taken 1025 times"> + </span><span class="branchCov" title="Branch 1 was taken 595 times"> + </span>]:<span class="lineCov">       1620 :     CHECK_RET( itr != list_itr_end_t, list_itr_end_t );</span>
-<span class="lineNum">     197 </span>                :            : 
-<span class="lineNum">     198 </span>                :            :     /* if the iterator isn't the head, return the previous item index.
-<span class="lineNum">     199 </span>                :            :      * otherwise we're at the reverse end of the list, return the end itr */
-<span class="lineNum">     200 </span>                :<span class="lineCov">       1621 :     return ( itr != list-&gt;used_head ) ?</span>
-<span class="lineNum">     201 </span>        [<span class="branchCov" title="Branch 0 was taken 594 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        595 :              ITEM_AT( list-&gt;items, itr )-&gt;prev :</span>
-<span class="lineNum">     202 </span>                :            :              list_itr_end_t;
-<a name="203"><span class="lineNum">     203 </span>                :            : }</a>
-<span class="lineNum">     204 </span>                :            : 
-<span class="lineNum">     205 </span>                :<span class="lineCov">     206249 : int list_push( list_t * const list, void * const data, list_itr_t const itr )</span>
-<span class="lineNum">     206 </span>                :            : {
-<span class="lineNum">     207 </span>                :<span class="lineCov">     206249 :     list_itr_t item = list_itr_end_t;</span>
-<span class="lineNum">     208 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     209 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 206247 times"> + </span>]:<span class="lineCov">     206249 :     CHECK_RET( !fake_list_push, fake_list_push_ret );</span>
-<span class="lineNum">     210 </span>                :            : #endif
-<span class="lineNum">     211 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 206246 times"> + </span>]:<span class="lineCov">     206247 :     CHECK_PTR_RET( list, FALSE );</span>
-<span class="lineNum">     212 </span>                :            : 
-<span class="lineNum">     213 </span>                :            :     /* do we need to resize to accomodate this node? */
-<span class="lineNum">     214 </span>        [<span class="branchCov" title="Branch 0 was taken 1727 times"> + </span><span class="branchCov" title="Branch 1 was taken 204519 times"> + </span>]:<span class="lineCov">     206246 :     if ( list-&gt;count == list-&gt;size )</span>
-<span class="lineNum">     215 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 1726 times"> + </span>]:<span class="lineCov">       1727 :         CHECK_RET( list_grow( list, 1 ), FALSE );</span>
+<span class="lineNum">     181 </span>                :            :     /* the list is circular so just return the head's prev item index */
+<span class="lineNum">     182 </span>                :<span class="lineCov">        644 :     return ITEM_AT( list-&gt;items, list-&gt;used_head )-&gt;prev;</span>
+<a name="183"><span class="lineNum">     183 </span>                :            : }</a>
+<span class="lineNum">     184 </span>                :            : 
+<span class="lineNum">     185 </span>                :<span class="lineCov">     410499 : list_itr_t list_itr_next( list_t const * const list, list_itr_t const itr )</span>
+<span class="lineNum">     186 </span>                :            : {
+<span class="lineNum">     187 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 410498 times"> + </span>]:<span class="lineCov">     410499 :     CHECK_PTR_RET( list, list_itr_end_t );</span>
+<span class="lineNum">     188 </span>        [<span class="branchCov" title="Branch 0 was taken 1025 times"> + </span><span class="branchCov" title="Branch 1 was taken 409473 times"> + </span>]:<span class="lineCov">     410498 :     CHECK_RET( itr != list_itr_end_t, list_itr_end_t );</span>
+<span class="lineNum">     189 </span>                :            : 
+<span class="lineNum">     190 </span>                :            :     /* if the next item in the list isn't the head, return its index.
+<span class="lineNum">     191 </span>                :            :      * otherwise we're at the end of the list, return the end itr */
+<span class="lineNum">     192 </span>                :<span class="lineCov">     410499 :     return ( ITEM_AT( list-&gt;items, itr )-&gt;next != list-&gt;used_head ) ?</span>
+<span class="lineNum">     193 </span>        [<span class="branchCov" title="Branch 0 was taken 406889 times"> + </span><span class="branchCov" title="Branch 1 was taken 2584 times"> + </span>]:<span class="lineCov">     409473 :              ITEM_AT( list-&gt;items, itr )-&gt;next :</span>
+<span class="lineNum">     194 </span>                :            :              list_itr_end_t;
+<a name="195"><span class="lineNum">     195 </span>                :            : }</a>
+<span class="lineNum">     196 </span>                :            : 
+<span class="lineNum">     197 </span>                :<span class="lineCov">       1621 : list_itr_t list_itr_rnext( list_t const * const list, list_itr_t const itr )</span>
+<span class="lineNum">     198 </span>                :            : {
+<span class="lineNum">     199 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1620 times"> + </span>]:<span class="lineCov">       1621 :     CHECK_PTR_RET( list, list_itr_end_t );</span>
+<span class="lineNum">     200 </span>        [<span class="branchCov" title="Branch 0 was taken 1025 times"> + </span><span class="branchCov" title="Branch 1 was taken 595 times"> + </span>]:<span class="lineCov">       1620 :     CHECK_RET( itr != list_itr_end_t, list_itr_end_t );</span>
+<span class="lineNum">     201 </span>                :            : 
+<span class="lineNum">     202 </span>                :            :     /* if the iterator isn't the head, return the previous item index.
+<span class="lineNum">     203 </span>                :            :      * otherwise we're at the reverse end of the list, return the end itr */
+<span class="lineNum">     204 </span>                :<span class="lineCov">       1621 :     return ( itr != list-&gt;used_head ) ?</span>
+<span class="lineNum">     205 </span>        [<span class="branchCov" title="Branch 0 was taken 594 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">        595 :              ITEM_AT( list-&gt;items, itr )-&gt;prev :</span>
+<span class="lineNum">     206 </span>                :            :              list_itr_end_t;
+<a name="207"><span class="lineNum">     207 </span>                :            : }</a>
+<span class="lineNum">     208 </span>                :            : 
+<span class="lineNum">     209 </span>                :<span class="lineCov">     206249 : int list_push( list_t * const list, void * const data, list_itr_t const itr )</span>
+<span class="lineNum">     210 </span>                :            : {
+<span class="lineNum">     211 </span>                :<span class="lineCov">     206249 :     list_itr_t item = list_itr_end_t;</span>
+<span class="lineNum">     212 </span>                :            : #if defined(UNIT_TESTING)
+<span class="lineNum">     213 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 206247 times"> + </span>]:<span class="lineCov">     206249 :     CHECK_RET( !fake_list_push, fake_list_push_ret );</span>
+<span class="lineNum">     214 </span>                :            : #endif
+<span class="lineNum">     215 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 206246 times"> + </span>]:<span class="lineCov">     206247 :     CHECK_PTR_RET( list, FALSE );</span>
 <span class="lineNum">     216 </span>                :            : 
-<span class="lineNum">     217 </span>                :            :     /* get an item from the free list */
-<span class="lineNum">     218 </span>                :<span class="lineCov">     206245 :     item = list-&gt;free_head;</span>
-<span class="lineNum">     219 </span>                :<span class="lineCov">     206245 :     list-&gt;free_head = remove_item( list-&gt;items, list-&gt;free_head );</span>
+<span class="lineNum">     217 </span>                :            :     /* do we need to resize to accomodate this node? */
+<span class="lineNum">     218 </span>        [<span class="branchCov" title="Branch 0 was taken 1727 times"> + </span><span class="branchCov" title="Branch 1 was taken 204519 times"> + </span>]:<span class="lineCov">     206246 :     if ( list-&gt;count == list-&gt;size )</span>
+<span class="lineNum">     219 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 1726 times"> + </span>]:<span class="lineCov">       1727 :         CHECK_RET( list_grow( list, 1 ), FALSE );</span>
 <span class="lineNum">     220 </span>                :            : 
-<span class="lineNum">     221 </span>                :            :     /* store the data pointer over */
-<span class="lineNum">     222 </span>                :<span class="lineCov">     206245 :     ITEM_AT( list-&gt;items, item )-&gt;data = data;</span>
-<span class="lineNum">     223 </span>                :<span class="lineCov">     206245 :     ITEM_AT( list-&gt;items, item )-&gt;used = TRUE;</span>
+<span class="lineNum">     221 </span>                :            :     /* get an item from the free list */
+<span class="lineNum">     222 </span>                :<span class="lineCov">     206245 :     item = list-&gt;free_head;</span>
+<span class="lineNum">     223 </span>                :<span class="lineCov">     206245 :     list-&gt;free_head = remove_item( list-&gt;items, list-&gt;free_head );</span>
 <span class="lineNum">     224 </span>                :            : 
-<span class="lineNum">     225 </span>                :            :     /* insert the item into the used list */
-<span class="lineNum">     226 </span>                :<span class="lineCov">     206245 :     list-&gt;used_head = insert_item( list-&gt;items, list-&gt;used_head, item );</span>
-<span class="lineNum">     227 </span>                :            : 
-<span class="lineNum">     228 </span>                :            :     /* update the count */
-<span class="lineNum">     229 </span>                :<span class="lineCov">     206245 :     list-&gt;count++;</span>
-<span class="lineNum">     230 </span>                :            : 
-<span class="lineNum">     231 </span>                :<span class="lineCov">     206249 :     return TRUE;</span>
-<a name="232"><span class="lineNum">     232 </span>                :            : }</a>
-<span class="lineNum">     233 </span>                :            : 
-<span class="lineNum">     234 </span>                :<span class="lineCov">      15164 : list_itr_t list_pop( list_t * const list, list_itr_t const itr )</span>
-<span class="lineNum">     235 </span>                :            : {
-<span class="lineNum">     236 </span>                :            :     /* itr can be either a valid index or list_itr_end_t.  if it is list_itr_end_t
-<span class="lineNum">     237 </span>                :            :      * they are asking to pop the tail item of the list.  the return value from
-<span class="lineNum">     238 </span>                :            :      * this function is the index of the item after the popped item or
-<span class="lineNum">     239 </span>                :            :      * list_itr_end_t if the list is empty or we popped the tail. */
-<span class="lineNum">     240 </span>                :<span class="lineCov">      15164 :     list_itr_t item = list_itr_end_t;</span>
-<span class="lineNum">     241 </span>                :<span class="lineCov">      15164 :     list_itr_t next = list_itr_end_t;</span>
-<span class="lineNum">     242 </span>                :            : 
-<span class="lineNum">     243 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 15163 times"> + </span>]:<span class="lineCov">      15164 :     CHECK_PTR_RET( list, list_itr_end_t );</span>
-<span class="lineNum">     244 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 15162 times"> + </span>]:<span class="lineCov">      15163 :     CHECK_RET( list-&gt;size, list_itr_end_t );</span>
-<span class="lineNum">     245 </span>[<span class="branchCov" title="Branch 0 was taken 15161 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 15160 times"> + </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">      15162 :     CHECK_RET( ((itr == list_itr_end_t) || ((itr &gt;= 0) &amp;&amp; (itr &lt; list-&gt;size))), list_itr_end_t );</span>
-<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 1 time"> + </span><span class="branchCov" title="Branch 5 was taken 15159 times"> + </span>]
+<span class="lineNum">     225 </span>                :            :     /* store the data pointer over */
+<span class="lineNum">     226 </span>                :<span class="lineCov">     206245 :     ITEM_AT( list-&gt;items, item )-&gt;data = data;</span>
+<span class="lineNum">     227 </span>                :<span class="lineCov">     206245 :     ITEM_AT( list-&gt;items, item )-&gt;used = TRUE;</span>
+<span class="lineNum">     228 </span>                :            : 
+<span class="lineNum">     229 </span>                :            :     /* insert the item into the used list */
+<span class="lineNum">     230 </span>                :<span class="lineCov">     206245 :     list-&gt;used_head = insert_item( list-&gt;items, list-&gt;used_head, item );</span>
+<span class="lineNum">     231 </span>                :            : 
+<span class="lineNum">     232 </span>                :            :     /* update the count */
+<span class="lineNum">     233 </span>                :<span class="lineCov">     206245 :     list-&gt;count++;</span>
+<span class="lineNum">     234 </span>                :            : 
+<span class="lineNum">     235 </span>                :<span class="lineCov">     206249 :     return TRUE;</span>
+<a name="236"><span class="lineNum">     236 </span>                :            : }</a>
+<span class="lineNum">     237 </span>                :            : 
+<span class="lineNum">     238 </span>                :<span class="lineCov">      15164 : list_itr_t list_pop( list_t * const list, list_itr_t const itr )</span>
+<span class="lineNum">     239 </span>                :            : {
+<span class="lineNum">     240 </span>                :            :     /* itr can be either a valid index or list_itr_end_t.  if it is list_itr_end_t
+<span class="lineNum">     241 </span>                :            :      * they are asking to pop the tail item of the list.  the return value from
+<span class="lineNum">     242 </span>                :            :      * this function is the index of the item after the popped item or
+<span class="lineNum">     243 </span>                :            :      * list_itr_end_t if the list is empty or we popped the tail. */
+<span class="lineNum">     244 </span>                :<span class="lineCov">      15164 :     list_itr_t item = list_itr_end_t;</span>
+<span class="lineNum">     245 </span>                :<span class="lineCov">      15164 :     list_itr_t next = list_itr_end_t;</span>
 <span class="lineNum">     246 </span>                :            : 
-<span class="lineNum">     247 </span>                :            :     /* if they pass in list_itr_end_t, they want to remove the tail item */
-<span class="lineNum">     248 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 15159 times"> + </span>]:<span class="lineCov">      15160 :     item = (itr == list_itr_end_t) ? list_itr_tail( list ) : itr;</span>
-<span class="lineNum">     249 </span>                :            : 
-<span class="lineNum">     250 </span>                :            :     /* make sure their iterator references an item in the used list */
-<span class="lineNum">     251 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 15159 times"> + </span>]:<span class="lineCov">      15160 :     CHECK_RET( ITEM_AT( list-&gt;items, item )-&gt;used, list_itr_end_t );</span>
-<span class="lineNum">     252 </span>                :            : 
-<span class="lineNum">     253 </span>                :            :     /* remove the item from the used list */
-<span class="lineNum">     254 </span>                :<span class="lineCov">      15159 :     next = remove_item( list-&gt;items, item );</span>
-<span class="lineNum">     255 </span>                :            : 
-<span class="lineNum">     256 </span>                :            :     /* if we removed the head, update the used_head iterator */
-<span class="lineNum">     257 </span>        [<span class="branchCov" title="Branch 0 was taken 697 times"> + </span><span class="branchCov" title="Branch 1 was taken 14462 times"> + </span>]:<span class="lineCov">      15159 :     if ( item == list-&gt;used_head )</span>
-<span class="lineNum">     258 </span>                :<span class="lineCov">        697 :         list-&gt;used_head = next;</span>
+<span class="lineNum">     247 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 15163 times"> + </span>]:<span class="lineCov">      15164 :     CHECK_PTR_RET( list, list_itr_end_t );</span>
+<span class="lineNum">     248 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 15162 times"> + </span>]:<span class="lineCov">      15163 :     CHECK_RET( list-&gt;size, list_itr_end_t );</span>
+<span class="lineNum">     249 </span>[<span class="branchCov" title="Branch 0 was taken 15161 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 15160 times"> + </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">      15162 :     CHECK_RET( ((itr == list_itr_end_t) || ((itr &gt;= 0) &amp;&amp; (itr &lt; list-&gt;size))), list_itr_end_t );</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 1 time"> + </span><span class="branchCov" title="Branch 5 was taken 15159 times"> + </span>]
+<span class="lineNum">     250 </span>                :            : 
+<span class="lineNum">     251 </span>                :            :     /* if they pass in list_itr_end_t, they want to remove the tail item */
+<span class="lineNum">     252 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 15159 times"> + </span>]:<span class="lineCov">      15160 :     item = (itr == list_itr_end_t) ? list_itr_tail( list ) : itr;</span>
+<span class="lineNum">     253 </span>                :            : 
+<span class="lineNum">     254 </span>                :            :     /* make sure their iterator references an item in the used list */
+<span class="lineNum">     255 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 15159 times"> + </span>]:<span class="lineCov">      15160 :     CHECK_RET( ITEM_AT( list-&gt;items, item )-&gt;used, list_itr_end_t );</span>
+<span class="lineNum">     256 </span>                :            : 
+<span class="lineNum">     257 </span>                :            :     /* remove the item from the used list */
+<span class="lineNum">     258 </span>                :<span class="lineCov">      15159 :     next = remove_item( list-&gt;items, item );</span>
 <span class="lineNum">     259 </span>                :            : 
-<span class="lineNum">     260 </span>                :            :     /* reset the item and put it onto the free list */
-<span class="lineNum">     261 </span>                :<span class="lineCov">      15159 :     ITEM_AT( list-&gt;items, item )-&gt;data = NULL;</span>
-<span class="lineNum">     262 </span>                :<span class="lineCov">      15159 :     ITEM_AT( list-&gt;items, item )-&gt;used = FALSE;</span>
-<span class="lineNum">     263 </span>                :<span class="lineCov">      15159 :     list-&gt;free_head = insert_item( list-&gt;items, list-&gt;free_head, item );</span>
-<span class="lineNum">     264 </span>                :            : 
-<span class="lineNum">     265 </span>                :            :     /* update the count */
-<span class="lineNum">     266 </span>                :<span class="lineCov">      15159 :     list-&gt;count--;</span>
-<span class="lineNum">     267 </span>                :            : 
-<span class="lineNum">     268 </span>                :            :     /* if we popped the tail, then we need to return list_itr_end_t, otherwise
-<span class="lineNum">     269 </span>                :            :      * we return the iterator of the next item in the list */
-<span class="lineNum">     270 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 15158 times"> + </span>]:<span class="lineCov">      15164 :     return (itr == list_itr_end_t) ? list_itr_end_t : next;</span>
-<a name="271"><span class="lineNum">     271 </span>                :            : }</a>
-<span class="lineNum">     272 </span>                :            : 
-<span class="lineNum">     273 </span>                :<span class="lineCov">      75858 : void * list_get( list_t const * const list, list_itr_t const itr )</span>
-<span class="lineNum">     274 </span>                :            : {
-<span class="lineNum">     275 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     276 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75857 times"> + </span>]:<span class="lineCov">      75858 :     CHECK_RET( !fake_list_get, fake_list_get_ret );</span>
-<span class="lineNum">     277 </span>                :            : #endif
-<span class="lineNum">     278 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75856 times"> + </span>]:<span class="lineCov">      75857 :     CHECK_PTR_RET( list, NULL );</span>
-<span class="lineNum">     279 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75855 times"> + </span>]:<span class="lineCov">      75856 :     CHECK_RET( itr != list_itr_end_t, NULL );</span>
-<span class="lineNum">     280 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75854 times"> + </span>]:<span class="lineCov">      75855 :     CHECK_RET( list-&gt;size, NULL );                           /* empty list? */</span>
-<span class="lineNum">     281 </span>[<span class="branchCov" title="Branch 0 was taken 75853 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchCov" title="Branch 3 was taken 75852 times"> + </span>]:<span class="lineCov">      75854 :     CHECK_RET( ((itr &gt;= 0) &amp;&amp; (itr &lt; list-&gt;size)), NULL ); /* valid index? */</span>
-<span class="lineNum">     282 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75851 times"> + </span>]:<span class="lineCov">      75852 :     CHECK_RET( ITEM_AT( list-&gt;items, itr )-&gt;used, NULL ); /* in used list? */</span>
-<span class="lineNum">     283 </span>                :            : 
-<span class="lineNum">     284 </span>                :<span class="lineCov">      75858 :     return ITEM_AT( list-&gt;items, itr )-&gt;data;</span>
-<span class="lineNum">     285 </span>                :            : }
-<span class="lineNum">     286 </span>                :            : 
+<span class="lineNum">     260 </span>                :            :     /* if we removed the head, update the used_head iterator */
+<span class="lineNum">     261 </span>        [<span class="branchCov" title="Branch 0 was taken 697 times"> + </span><span class="branchCov" title="Branch 1 was taken 14462 times"> + </span>]:<span class="lineCov">      15159 :     if ( item == list-&gt;used_head )</span>
+<span class="lineNum">     262 </span>                :<span class="lineCov">        697 :         list-&gt;used_head = next;</span>
+<span class="lineNum">     263 </span>                :            : 
+<span class="lineNum">     264 </span>                :            :     /* reset the item and put it onto the free list */
+<span class="lineNum">     265 </span>                :<span class="lineCov">      15159 :     ITEM_AT( list-&gt;items, item )-&gt;data = NULL;</span>
+<span class="lineNum">     266 </span>                :<span class="lineCov">      15159 :     ITEM_AT( list-&gt;items, item )-&gt;used = FALSE;</span>
+<span class="lineNum">     267 </span>                :<span class="lineCov">      15159 :     list-&gt;free_head = insert_item( list-&gt;items, list-&gt;free_head, item );</span>
+<span class="lineNum">     268 </span>                :            : 
+<span class="lineNum">     269 </span>                :            :     /* update the count */
+<span class="lineNum">     270 </span>                :<span class="lineCov">      15159 :     list-&gt;count--;</span>
+<span class="lineNum">     271 </span>                :            : 
+<span class="lineNum">     272 </span>                :            :     /* if we popped the tail, then we need to return list_itr_end_t, otherwise
+<span class="lineNum">     273 </span>                :            :      * we return the iterator of the next item in the list */
+<span class="lineNum">     274 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 15158 times"> + </span>]:<span class="lineCov">      15164 :     return (itr == list_itr_end_t) ? list_itr_end_t : next;</span>
+<a name="275"><span class="lineNum">     275 </span>                :            : }</a>
+<span class="lineNum">     276 </span>                :            : 
+<span class="lineNum">     277 </span>                :<span class="lineCov">      75858 : void * list_get( list_t const * const list, list_itr_t const itr )</span>
+<span class="lineNum">     278 </span>                :            : {
+<span class="lineNum">     279 </span>                :            : #if defined(UNIT_TESTING)
+<span class="lineNum">     280 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75857 times"> + </span>]:<span class="lineCov">      75858 :     CHECK_RET( !fake_list_get, fake_list_get_ret );</span>
+<span class="lineNum">     281 </span>                :            : #endif
+<span class="lineNum">     282 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75856 times"> + </span>]:<span class="lineCov">      75857 :     CHECK_PTR_RET( list, NULL );</span>
+<span class="lineNum">     283 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75855 times"> + </span>]:<span class="lineCov">      75856 :     CHECK_RET( itr != list_itr_end_t, NULL );</span>
+<span class="lineNum">     284 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75854 times"> + </span>]:<span class="lineCov">      75855 :     CHECK_RET( list-&gt;size, NULL );                           /* empty list? */</span>
+<span class="lineNum">     285 </span>[<span class="branchCov" title="Branch 0 was taken 75853 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchCov" title="Branch 3 was taken 75852 times"> + </span>]:<span class="lineCov">      75854 :     CHECK_RET( ((itr &gt;= 0) &amp;&amp; (itr &lt; list-&gt;size)), NULL ); /* valid index? */</span>
+<span class="lineNum">     286 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75851 times"> + </span>]:<span class="lineCov">      75852 :     CHECK_RET( ITEM_AT( list-&gt;items, itr )-&gt;used, NULL ); /* in used list? */</span>
 <span class="lineNum">     287 </span>                :            : 
-<span class="lineNum">     288 </span>                :            : /********** PRIVATE **********/
-<span class="lineNum">     289 </span>                :            : 
-<a name="290"><span class="lineNum">     290 </span>                :            : /* removes the item at index &quot;itr&quot; and returns the iterator of the</a>
-<span class="lineNum">     291 </span>                :            :  * item after the item that was removed. */
-<span class="lineNum">     292 </span>                :<span class="lineCov">     455879 : static list_itr_t remove_item( list_item_t * const items, list_itr_t const itr )</span>
-<span class="lineNum">     293 </span>                :            : {
-<span class="lineNum">     294 </span>                :<span class="lineCov">     455879 :     list_itr_t next = list_itr_end_t;</span>
-<span class="lineNum">     295 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 455878 times"> + </span>]:<span class="lineCov">     455879 :     CHECK_PTR_RET( items, list_itr_end_t );</span>
-<span class="lineNum">     296 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 455877 times"> + </span>]:<span class="lineCov">     455878 :     CHECK_RET( itr != list_itr_end_t, list_itr_end_t );</span>
-<span class="lineNum">     297 </span>                :            : 
-<span class="lineNum">     298 </span>                :            :     /* remove the item from the list if there is more than 1 item */
-<span class="lineNum">     299 </span>[<span class="branchCov" title="Branch 0 was taken 453931 times"> + </span><span class="branchCov" title="Branch 1 was taken 1946 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 453931 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     455877 :     if ( (ITEM_AT( items, itr )-&gt;next != itr) &amp;&amp;</span>
-<span class="lineNum">     300 </span>                :<span class="lineCov">     453931 :          (ITEM_AT( items, itr )-&gt;prev != itr) )</span>
-<span class="lineNum">     301 </span>                :            :     {
-<span class="lineNum">     302 </span>                :<span class="lineCov">     453931 :         next = ITEM_AT( items, itr )-&gt;next;</span>
-<span class="lineNum">     303 </span>                :<span class="lineCov">     453931 :         ITEM_AT( items, ITEM_AT( items, itr )-&gt;prev )-&gt;next = ITEM_AT( items, itr )-&gt;next;</span>
-<span class="lineNum">     304 </span>                :<span class="lineCov">     453931 :         ITEM_AT( items, ITEM_AT( items, itr )-&gt;next )-&gt;prev = ITEM_AT( items, itr )-&gt;prev;</span>
-<span class="lineNum">     305 </span>                :            :     }
-<span class="lineNum">     306 </span>                :            : 
-<span class="lineNum">     307 </span>                :            :     /* clear out the item's next/prev links */
-<span class="lineNum">     308 </span>                :<span class="lineCov">     455877 :     ITEM_AT( items, itr )-&gt;next = list_itr_end_t;</span>
-<span class="lineNum">     309 </span>                :<span class="lineCov">     455877 :     ITEM_AT( items, itr )-&gt;prev = list_itr_end_t;</span>
+<span class="lineNum">     288 </span>                :<span class="lineCov">      75858 :     return ITEM_AT( list-&gt;items, itr )-&gt;data;</span>
+<span class="lineNum">     289 </span>                :            : }
+<span class="lineNum">     290 </span>                :            : 
+<span class="lineNum">     291 </span>                :            : 
+<span class="lineNum">     292 </span>                :            : /********** PRIVATE **********/
+<span class="lineNum">     293 </span>                :            : 
+<a name="294"><span class="lineNum">     294 </span>                :            : /* removes the item at index &quot;itr&quot; and returns the iterator of the</a>
+<span class="lineNum">     295 </span>                :            :  * item after the item that was removed. */
+<span class="lineNum">     296 </span>                :<span class="lineCov">     455879 : static list_itr_t remove_item( list_item_t * const items, list_itr_t const itr )</span>
+<span class="lineNum">     297 </span>                :            : {
+<span class="lineNum">     298 </span>                :<span class="lineCov">     455879 :     list_itr_t next = list_itr_end_t;</span>
+<span class="lineNum">     299 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 455878 times"> + </span>]:<span class="lineCov">     455879 :     CHECK_PTR_RET( items, list_itr_end_t );</span>
+<span class="lineNum">     300 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 455877 times"> + </span>]:<span class="lineCov">     455878 :     CHECK_RET( itr != list_itr_end_t, list_itr_end_t );</span>
+<span class="lineNum">     301 </span>                :            : 
+<span class="lineNum">     302 </span>                :            :     /* remove the item from the list if there is more than 1 item */
+<span class="lineNum">     303 </span>[<span class="branchCov" title="Branch 0 was taken 453931 times"> + </span><span class="branchCov" title="Branch 1 was taken 1946 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 453931 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     455877 :     if ( (ITEM_AT( items, itr )-&gt;next != itr) &amp;&amp;</span>
+<span class="lineNum">     304 </span>                :<span class="lineCov">     453931 :          (ITEM_AT( items, itr )-&gt;prev != itr) )</span>
+<span class="lineNum">     305 </span>                :            :     {
+<span class="lineNum">     306 </span>                :<span class="lineCov">     453931 :         next = ITEM_AT( items, itr )-&gt;next;</span>
+<span class="lineNum">     307 </span>                :<span class="lineCov">     453931 :         ITEM_AT( items, ITEM_AT( items, itr )-&gt;prev )-&gt;next = ITEM_AT( items, itr )-&gt;next;</span>
+<span class="lineNum">     308 </span>                :<span class="lineCov">     453931 :         ITEM_AT( items, ITEM_AT( items, itr )-&gt;next )-&gt;prev = ITEM_AT( items, itr )-&gt;prev;</span>
+<span class="lineNum">     309 </span>                :            :     }
 <span class="lineNum">     310 </span>                :            : 
-<span class="lineNum">     311 </span>                :<span class="lineCov">     455879 :     return next;</span>
-<span class="lineNum">     312 </span>                :            : }
-<a name="313"><span class="lineNum">     313 </span>                :            : </a>
-<span class="lineNum">     314 </span>                :            : /* inserts the item at index &quot;item&quot; before the item at &quot;itr&quot; */
-<span class="lineNum">     315 </span>                :<span class="lineCov">    1031393 : static list_itr_t insert_item( list_item_t * const items, </span>
-<span class="lineNum">     316 </span>                :            :                                list_itr_t const itr, 
-<span class="lineNum">     317 </span>                :            :                                list_itr_t const item )
-<span class="lineNum">     318 </span>                :            : {
-<span class="lineNum">     319 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1031392 times"> + </span>]:<span class="lineCov">    1031393 :     CHECK_PTR_RET( items, list_itr_end_t );</span>
-<span class="lineNum">     320 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1031391 times"> + </span>]:<span class="lineCov">    1031392 :     CHECK_RET( item != list_itr_end_t, list_itr_end_t );</span>
-<span class="lineNum">     321 </span>                :            : 
-<span class="lineNum">     322 </span>                :            :     /* if itr is list_itr_end_t, the list is empty, so make the
-<span class="lineNum">     323 </span>                :            :      * item the only node in the list */
-<span class="lineNum">     324 </span>        [<span class="branchCov" title="Branch 0 was taken 6175 times"> + </span><span class="branchCov" title="Branch 1 was taken 1025216 times"> + </span>]:<span class="lineCov">    1031391 :     if ( itr == list_itr_end_t )</span>
-<span class="lineNum">     325 </span>                :            :     {
-<span class="lineNum">     326 </span>                :<span class="lineCov">       6175 :         ITEM_AT( items, item )-&gt;prev = item;</span>
-<span class="lineNum">     327 </span>                :<span class="lineCov">       6175 :         ITEM_AT( items, item )-&gt;next = item;</span>
-<span class="lineNum">     328 </span>                :<span class="lineCov">       6175 :         return item;</span>
-<span class="lineNum">     329 </span>                :            :     }
-<span class="lineNum">     330 </span>                :            : 
-<span class="lineNum">     331 </span>                :<span class="lineCov">    1025216 :     ITEM_AT( items, item )-&gt;next = itr;</span>
-<span class="lineNum">     332 </span>                :<span class="lineCov">    1025216 :     ITEM_AT( items, ITEM_AT( items, itr )-&gt;prev )-&gt;next = item;</span>
-<span class="lineNum">     333 </span>                :<span class="lineCov">    1025216 :     ITEM_AT( items, item )-&gt;prev = ITEM_AT( items, itr )-&gt;prev;</span>
-<span class="lineNum">     334 </span>                :<span class="lineCov">    1025216 :     ITEM_AT( items, itr )-&gt;prev = item;</span>
-<span class="lineNum">     335 </span>                :            : 
-<span class="lineNum">     336 </span>                :<span class="lineCov">    1031393 :     return itr;</span>
-<a name="337"><span class="lineNum">     337 </span>                :            : }</a>
-<span class="lineNum">     338 </span>                :            : 
-<span class="lineNum">     339 </span>                :<span class="lineCov">      27308 : static int list_grow( list_t * const list, uint_t amount )</span>
-<span class="lineNum">     340 </span>                :            : {
-<span class="lineNum">     341 </span>                :<span class="lineCov">      27308 :     uint_t i = 0;</span>
-<span class="lineNum">     342 </span>                :<span class="lineCov">      27308 :     uint_t new_size = 0;</span>
-<span class="lineNum">     343 </span>                :<span class="lineCov">      27308 :     list_item_t * items = NULL;</span>
-<span class="lineNum">     344 </span>                :<span class="lineCov">      27308 :     list_item_t * old = NULL;</span>
-<span class="lineNum">     345 </span>                :<span class="lineCov">      27308 :     list_itr_t itr = list_itr_end_t;</span>
-<span class="lineNum">     346 </span>                :<span class="lineCov">      27308 :     list_itr_t end = list_itr_end_t;</span>
-<span class="lineNum">     347 </span>                :<span class="lineCov">      27308 :     list_itr_t free_head = list_itr_end_t;</span>
-<span class="lineNum">     348 </span>                :<span class="lineCov">      27308 :     list_itr_t used_head = list_itr_end_t;</span>
-<span class="lineNum">     349 </span>                :<span class="lineCov">      27308 :     list_itr_t free_item = list_itr_end_t;</span>
-<span class="lineNum">     350 </span>                :            : 
-<span class="lineNum">     351 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 27307 times"> + </span>]:<span class="lineCov">      27308 :     CHECK_PTR_RET( list, FALSE );</span>
-<span class="lineNum">     352 </span>        [<span class="branchCov" title="Branch 0 was taken 23573 times"> + </span><span class="branchCov" title="Branch 1 was taken 3734 times"> + </span>]:<span class="lineCov">      27307 :     CHECK_RET( amount, TRUE ); /* do nothing if grow amount is 0 */</span>
-<span class="lineNum">     353 </span>                :            : 
-<span class="lineNum">     354 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     355 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 3731 times"> + </span>]:<span class="lineCov">       3734 :     CHECK_RET( !fake_list_grow, fake_list_grow_ret );</span>
-<span class="lineNum">     356 </span>                :            : #endif
+<span class="lineNum">     311 </span>                :            :     /* clear out the item's next/prev links */
+<span class="lineNum">     312 </span>                :<span class="lineCov">     455877 :     ITEM_AT( items, itr )-&gt;next = list_itr_end_t;</span>
+<span class="lineNum">     313 </span>                :<span class="lineCov">     455877 :     ITEM_AT( items, itr )-&gt;prev = list_itr_end_t;</span>
+<span class="lineNum">     314 </span>                :            : 
+<span class="lineNum">     315 </span>                :<span class="lineCov">     455879 :     return next;</span>
+<span class="lineNum">     316 </span>                :            : }
+<a name="317"><span class="lineNum">     317 </span>                :            : </a>
+<span class="lineNum">     318 </span>                :            : /* inserts the item at index &quot;item&quot; before the item at &quot;itr&quot; */
+<span class="lineNum">     319 </span>                :<span class="lineCov">    1031393 : static list_itr_t insert_item( list_item_t * const items, </span>
+<span class="lineNum">     320 </span>                :            :                                list_itr_t const itr, 
+<span class="lineNum">     321 </span>                :            :                                list_itr_t const item )
+<span class="lineNum">     322 </span>                :            : {
+<span class="lineNum">     323 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1031392 times"> + </span>]:<span class="lineCov">    1031393 :     CHECK_PTR_RET( items, list_itr_end_t );</span>
+<span class="lineNum">     324 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1031391 times"> + </span>]:<span class="lineCov">    1031392 :     CHECK_RET( item != list_itr_end_t, list_itr_end_t );</span>
+<span class="lineNum">     325 </span>                :            : 
+<span class="lineNum">     326 </span>                :            :     /* if itr is list_itr_end_t, the list is empty, so make the
+<span class="lineNum">     327 </span>                :            :      * item the only node in the list */
+<span class="lineNum">     328 </span>        [<span class="branchCov" title="Branch 0 was taken 6175 times"> + </span><span class="branchCov" title="Branch 1 was taken 1025216 times"> + </span>]:<span class="lineCov">    1031391 :     if ( itr == list_itr_end_t )</span>
+<span class="lineNum">     329 </span>                :            :     {
+<span class="lineNum">     330 </span>                :<span class="lineCov">       6175 :         ITEM_AT( items, item )-&gt;prev = item;</span>
+<span class="lineNum">     331 </span>                :<span class="lineCov">       6175 :         ITEM_AT( items, item )-&gt;next = item;</span>
+<span class="lineNum">     332 </span>                :<span class="lineCov">       6175 :         return item;</span>
+<span class="lineNum">     333 </span>                :            :     }
+<span class="lineNum">     334 </span>                :            : 
+<span class="lineNum">     335 </span>                :<span class="lineCov">    1025216 :     ITEM_AT( items, item )-&gt;next = itr;</span>
+<span class="lineNum">     336 </span>                :<span class="lineCov">    1025216 :     ITEM_AT( items, ITEM_AT( items, itr )-&gt;prev )-&gt;next = item;</span>
+<span class="lineNum">     337 </span>                :<span class="lineCov">    1025216 :     ITEM_AT( items, item )-&gt;prev = ITEM_AT( items, itr )-&gt;prev;</span>
+<span class="lineNum">     338 </span>                :<span class="lineCov">    1025216 :     ITEM_AT( items, itr )-&gt;prev = item;</span>
+<span class="lineNum">     339 </span>                :            : 
+<span class="lineNum">     340 </span>                :<span class="lineCov">    1031393 :     return itr;</span>
+<a name="341"><span class="lineNum">     341 </span>                :            : }</a>
+<span class="lineNum">     342 </span>                :            : 
+<span class="lineNum">     343 </span>                :<span class="lineCov">      27308 : static int list_grow( list_t * const list, uint_t amount )</span>
+<span class="lineNum">     344 </span>                :            : {
+<span class="lineNum">     345 </span>                :<span class="lineCov">      27308 :     uint_t i = 0;</span>
+<span class="lineNum">     346 </span>                :<span class="lineCov">      27308 :     uint_t new_size = 0;</span>
+<span class="lineNum">     347 </span>                :<span class="lineCov">      27308 :     list_item_t * items = NULL;</span>
+<span class="lineNum">     348 </span>                :<span class="lineCov">      27308 :     list_item_t * old = NULL;</span>
+<span class="lineNum">     349 </span>                :<span class="lineCov">      27308 :     list_itr_t itr = list_itr_end_t;</span>
+<span class="lineNum">     350 </span>                :<span class="lineCov">      27308 :     list_itr_t end = list_itr_end_t;</span>
+<span class="lineNum">     351 </span>                :<span class="lineCov">      27308 :     list_itr_t free_head = list_itr_end_t;</span>
+<span class="lineNum">     352 </span>                :<span class="lineCov">      27308 :     list_itr_t used_head = list_itr_end_t;</span>
+<span class="lineNum">     353 </span>                :<span class="lineCov">      27308 :     list_itr_t free_item = list_itr_end_t;</span>
+<span class="lineNum">     354 </span>                :            : 
+<span class="lineNum">     355 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 27307 times"> + </span>]:<span class="lineCov">      27308 :     CHECK_PTR_RET( list, FALSE );</span>
+<span class="lineNum">     356 </span>        [<span class="branchCov" title="Branch 0 was taken 23573 times"> + </span><span class="branchCov" title="Branch 1 was taken 3734 times"> + </span>]:<span class="lineCov">      27307 :     CHECK_RET( amount, TRUE ); /* do nothing if grow amount is 0 */</span>
 <span class="lineNum">     357 </span>                :            : 
-<span class="lineNum">     358 </span>                :            :     /* figure out how big the new item array should be */
-<span class="lineNum">     359 </span>        [<span class="branchCov" title="Branch 0 was taken 1713 times"> + </span><span class="branchCov" title="Branch 1 was taken 2018 times"> + </span>]:<span class="lineCov">       3731 :     if ( list-&gt;size )</span>
-<span class="lineNum">     360 </span>                :            :     {
-<span class="lineNum">     361 </span>                :<span class="lineCov">       1713 :         new_size = list-&gt;size;</span>
-<span class="lineNum">     362 </span>                :            :         do
-<span class="lineNum">     363 </span>                :            :         {
-<span class="lineNum">     364 </span>                :            :             /* double the size until we have enough room */
-<span class="lineNum">     365 </span>                :<span class="lineCov">       1716 :             new_size &lt;&lt;= 1;</span>
-<span class="lineNum">     366 </span>                :            : 
-<span class="lineNum">     367 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 1713 times"> + </span>]:<span class="lineCov">       1716 :         } while( new_size &lt; (list-&gt;size + amount) );</span>
-<span class="lineNum">     368 </span>                :            :     }
-<span class="lineNum">     369 </span>                :            :     else
-<span class="lineNum">     370 </span>                :<span class="lineCov">       2018 :         new_size = amount;</span>
-<span class="lineNum">     371 </span>                :            : 
-<span class="lineNum">     372 </span>                :            :     /* try to allocate a new item array */
-<span class="lineNum">     373 </span>        [<span class="branchCov" title="Branch 0 was taken 3730 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">       3731 :     items = CALLOC( new_size, sizeof( list_item_t ) );</span>
-<span class="lineNum">     374 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 3730 times"> + </span>]:<span class="lineCov">       3731 :     CHECK_PTR_RET( items, FALSE );</span>
+<span class="lineNum">     358 </span>                :            : #if defined(UNIT_TESTING)
+<span class="lineNum">     359 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 3731 times"> + </span>]:<span class="lineCov">       3734 :     CHECK_RET( !fake_list_grow, fake_list_grow_ret );</span>
+<span class="lineNum">     360 </span>                :            : #endif
+<span class="lineNum">     361 </span>                :            : 
+<span class="lineNum">     362 </span>                :            :     /* figure out how big the new item array should be */
+<span class="lineNum">     363 </span>        [<span class="branchCov" title="Branch 0 was taken 1713 times"> + </span><span class="branchCov" title="Branch 1 was taken 2018 times"> + </span>]:<span class="lineCov">       3731 :     if ( list-&gt;size )</span>
+<span class="lineNum">     364 </span>                :            :     {
+<span class="lineNum">     365 </span>                :<span class="lineCov">       1713 :         new_size = list-&gt;size;</span>
+<span class="lineNum">     366 </span>                :            :         do
+<span class="lineNum">     367 </span>                :            :         {
+<span class="lineNum">     368 </span>                :            :             /* double the size until we have enough room */
+<span class="lineNum">     369 </span>                :<span class="lineCov">       1716 :             new_size &lt;&lt;= 1;</span>
+<span class="lineNum">     370 </span>                :            : 
+<span class="lineNum">     371 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 1713 times"> + </span>]:<span class="lineCov">       1716 :         } while( new_size &lt; (list-&gt;size + amount) );</span>
+<span class="lineNum">     372 </span>                :            :     }
+<span class="lineNum">     373 </span>                :            :     else
+<span class="lineNum">     374 </span>                :<span class="lineCov">       2018 :         new_size = amount;</span>
 <span class="lineNum">     375 </span>                :            : 
-<span class="lineNum">     376 </span>                :            :     /* initialize the new array as a free list */
-<span class="lineNum">     377 </span>        [<span class="branchCov" title="Branch 0 was taken 575514 times"> + </span><span class="branchCov" title="Branch 1 was taken 3730 times"> + </span>]:<span class="lineCov">     579244 :     for ( i = 0; i &lt; new_size; i++ )</span>
-<span class="lineNum">     378 </span>                :            :     {
-<span class="lineNum">     379 </span>                :<span class="lineCov">     575514 :         free_head = insert_item( items, free_head, i );</span>
-<span class="lineNum">     380 </span>                :            :     }
-<span class="lineNum">     381 </span>                :            : 
-<span class="lineNum">     382 </span>                :            :     /* move items from old array to new array */
-<span class="lineNum">     383 </span>                :<span class="lineCov">       3730 :     end = list_itr_end( list );</span>
-<span class="lineNum">     384 </span>        [<span class="branchCov" title="Branch 2 was taken 234465 times"> + </span><span class="branchCov" title="Branch 3 was taken 3730 times"> + </span>]:<span class="lineCov">     238195 :     for ( itr = list_itr_begin( list ); itr != end; itr = list_itr_next( list, itr ) )</span>
-<span class="lineNum">     385 </span>                :            :     {
-<span class="lineNum">     386 </span>                :            :         /* get an item from the free list */
-<span class="lineNum">     387 </span>                :<span class="lineCov">     234465 :         free_item = free_head;</span>
-<span class="lineNum">     388 </span>                :<span class="lineCov">     234465 :         free_head = remove_item( items, free_head );</span>
-<span class="lineNum">     389 </span>                :            : 
-<span class="lineNum">     390 </span>                :            :         /* copy the data pointer over */
-<span class="lineNum">     391 </span>                :<span class="lineCov">     234465 :         ITEM_AT( items, free_item )-&gt;data = ITEM_AT( list-&gt;items, itr )-&gt;data;</span>
-<span class="lineNum">     392 </span>                :<span class="lineCov">     234465 :         ITEM_AT( items, free_item )-&gt;used = ITEM_AT( list-&gt;items, itr )-&gt;used;</span>
+<span class="lineNum">     376 </span>                :            :     /* try to allocate a new item array */
+<span class="lineNum">     377 </span>        [<span class="branchCov" title="Branch 0 was taken 3730 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">       3731 :     items = CALLOC( new_size, sizeof( list_item_t ) );</span>
+<span class="lineNum">     378 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 3730 times"> + </span>]:<span class="lineCov">       3731 :     CHECK_PTR_RET( items, FALSE );</span>
+<span class="lineNum">     379 </span>                :            : 
+<span class="lineNum">     380 </span>                :            :     /* initialize the new array as a free list */
+<span class="lineNum">     381 </span>        [<span class="branchCov" title="Branch 0 was taken 575514 times"> + </span><span class="branchCov" title="Branch 1 was taken 3730 times"> + </span>]:<span class="lineCov">     579244 :     for ( i = 0; i &lt; new_size; i++ )</span>
+<span class="lineNum">     382 </span>                :            :     {
+<span class="lineNum">     383 </span>                :<span class="lineCov">     575514 :         free_head = insert_item( items, free_head, i );</span>
+<span class="lineNum">     384 </span>                :            :     }
+<span class="lineNum">     385 </span>                :            : 
+<span class="lineNum">     386 </span>                :            :     /* move items from old array to new array */
+<span class="lineNum">     387 </span>                :<span class="lineCov">       3730 :     end = list_itr_end( list );</span>
+<span class="lineNum">     388 </span>        [<span class="branchCov" title="Branch 2 was taken 234465 times"> + </span><span class="branchCov" title="Branch 3 was taken 3730 times"> + </span>]:<span class="lineCov">     238195 :     for ( itr = list_itr_begin( list ); itr != end; itr = list_itr_next( list, itr ) )</span>
+<span class="lineNum">     389 </span>                :            :     {
+<span class="lineNum">     390 </span>                :            :         /* get an item from the free list */
+<span class="lineNum">     391 </span>                :<span class="lineCov">     234465 :         free_item = free_head;</span>
+<span class="lineNum">     392 </span>                :<span class="lineCov">     234465 :         free_head = remove_item( items, free_head );</span>
 <span class="lineNum">     393 </span>                :            : 
-<span class="lineNum">     394 </span>                :            :         /* insert the item into the data list */
-<span class="lineNum">     395 </span>                :<span class="lineCov">     234465 :         used_head = insert_item( items, used_head, free_item );</span>
-<span class="lineNum">     396 </span>                :            :     }
+<span class="lineNum">     394 </span>                :            :         /* copy the data pointer over */
+<span class="lineNum">     395 </span>                :<span class="lineCov">     234465 :         ITEM_AT( items, free_item )-&gt;data = ITEM_AT( list-&gt;items, itr )-&gt;data;</span>
+<span class="lineNum">     396 </span>                :<span class="lineCov">     234465 :         ITEM_AT( items, free_item )-&gt;used = ITEM_AT( list-&gt;items, itr )-&gt;used;</span>
 <span class="lineNum">     397 </span>                :            : 
-<span class="lineNum">     398 </span>                :            :     /* if we get here, we can update the list struct */
-<span class="lineNum">     399 </span>                :<span class="lineCov">       3730 :     old = list-&gt;items;</span>
-<span class="lineNum">     400 </span>                :<span class="lineCov">       3730 :     list-&gt;items = items;</span>
-<span class="lineNum">     401 </span>                :<span class="lineCov">       3730 :     list-&gt;size = new_size;</span>
-<span class="lineNum">     402 </span>                :<span class="lineCov">       3730 :     list-&gt;used_head = used_head;</span>
-<span class="lineNum">     403 </span>                :<span class="lineCov">       3730 :     list-&gt;free_head = free_head;</span>
-<span class="lineNum">     404 </span>                :            : 
-<span class="lineNum">     405 </span>                :            :     /* free up the old items array */
-<span class="lineNum">     406 </span>                :<span class="lineCov">       3730 :     FREE( old );</span>
-<span class="lineNum">     407 </span>                :            : 
-<span class="lineNum">     408 </span>                :<span class="lineCov">      27308 :     return TRUE;</span>
-<span class="lineNum">     409 </span>                :            : }
-<span class="lineNum">     410 </span>                :            : 
-<span class="lineNum">     411 </span>                :            : #if defined(UNIT_TESTING)
-<span class="lineNum">     412 </span>                :            : 
-<a name="413"><span class="lineNum">     413 </span>                :            : #include &lt;CUnit/Basic.h&gt;</a>
+<span class="lineNum">     398 </span>                :            :         /* insert the item into the data list */
+<span class="lineNum">     399 </span>                :<span class="lineCov">     234465 :         used_head = insert_item( items, used_head, free_item );</span>
+<span class="lineNum">     400 </span>                :            :     }
+<span class="lineNum">     401 </span>                :            : 
+<span class="lineNum">     402 </span>                :            :     /* if we get here, we can update the list struct */
+<span class="lineNum">     403 </span>                :<span class="lineCov">       3730 :     old = list-&gt;items;</span>
+<span class="lineNum">     404 </span>                :<span class="lineCov">       3730 :     list-&gt;items = items;</span>
+<span class="lineNum">     405 </span>                :<span class="lineCov">       3730 :     list-&gt;size = new_size;</span>
+<span class="lineNum">     406 </span>                :<span class="lineCov">       3730 :     list-&gt;used_head = used_head;</span>
+<span class="lineNum">     407 </span>                :<span class="lineCov">       3730 :     list-&gt;free_head = free_head;</span>
+<span class="lineNum">     408 </span>                :            : 
+<span class="lineNum">     409 </span>                :            :     /* free up the old items array */
+<span class="lineNum">     410 </span>                :<span class="lineCov">       3730 :     FREE( old );</span>
+<span class="lineNum">     411 </span>                :            : 
+<span class="lineNum">     412 </span>                :<span class="lineCov">      27308 :     return TRUE;</span>
+<span class="lineNum">     413 </span>                :            : }
 <span class="lineNum">     414 </span>                :            : 
-<span class="lineNum">     415 </span>                :<span class="lineCov">          1 : void test_list_private_functions( void )</span>
-<span class="lineNum">     416 </span>                :            : {
-<span class="lineNum">     417 </span>                :            :     int i;
-<span class="lineNum">     418 </span>                :            :     list_item_t items[4];
-<span class="lineNum">     419 </span>                :<span class="lineCov">          1 :     list_itr_t head = list_itr_end_t;</span>
-<span class="lineNum">     420 </span>                :<span class="lineCov">          1 :     MEMSET( items, 0, 4 * sizeof(list_item_t) );</span>
-<span class="lineNum">     421 </span>                :            : 
-<span class="lineNum">     422 </span>                :            :     /* REMOVE_ITEM TESTS */
-<span class="lineNum">     423 </span>                :            : 
-<span class="lineNum">     424 </span>                :            :     /* test remove_item pre-reqs */
-<span class="lineNum">     425 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( NULL, list_itr_end_t ), list_itr_end_t );</span>
-<span class="lineNum">     426 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, list_itr_end_t ), list_itr_end_t );</span>
+<span class="lineNum">     415 </span>                :            : #if defined(UNIT_TESTING)
+<span class="lineNum">     416 </span>                :            : 
+<a name="417"><span class="lineNum">     417 </span>                :            : #include &lt;CUnit/Basic.h&gt;</a>
+<span class="lineNum">     418 </span>                :            : 
+<span class="lineNum">     419 </span>                :<span class="lineCov">          1 : void test_list_private_functions( void )</span>
+<span class="lineNum">     420 </span>                :            : {
+<span class="lineNum">     421 </span>                :            :     int i;
+<span class="lineNum">     422 </span>                :            :     list_item_t items[4];
+<span class="lineNum">     423 </span>                :<span class="lineCov">          1 :     list_itr_t head = list_itr_end_t;</span>
+<span class="lineNum">     424 </span>                :<span class="lineCov">          1 :     MEMSET( items, 0, 4 * sizeof(list_item_t) );</span>
+<span class="lineNum">     425 </span>                :            : 
+<span class="lineNum">     426 </span>                :            :     /* REMOVE_ITEM TESTS */
 <span class="lineNum">     427 </span>                :            : 
-<span class="lineNum">     428 </span>                :            :     /* add some items */
-<span class="lineNum">     429 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          5 :     for( i = 0; i &lt; 4; i++ )</span>
-<span class="lineNum">     430 </span>                :            :     {
-<span class="lineNum">     431 </span>                :<span class="lineCov">          4 :         head = insert_item( items, head, i );</span>
-<span class="lineNum">     432 </span>                :            :     }
-<span class="lineNum">     433 </span>                :            : 
-<span class="lineNum">     434 </span>                :            :     /* remove items from the back */
-<span class="lineNum">     435 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 3 ), 0 );</span>
-<span class="lineNum">     436 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 2 ), 0 );</span>
-<span class="lineNum">     437 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 1 ), 0 );</span>
-<span class="lineNum">     438 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 0 ), list_itr_end_t );</span>
-<span class="lineNum">     439 </span>                :            : 
-<span class="lineNum">     440 </span>                :            :     /* add some items */
-<span class="lineNum">     441 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          5 :     for( i = 0; i &lt; 4; i++ )</span>
-<span class="lineNum">     442 </span>                :            :     {
-<span class="lineNum">     443 </span>                :<span class="lineCov">          4 :         head = insert_item( items, head, i );</span>
-<span class="lineNum">     444 </span>                :            :     }
-<span class="lineNum">     445 </span>                :            : 
-<span class="lineNum">     446 </span>                :            :     /* remove items from the front */
-<span class="lineNum">     447 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 0 ), 1 );</span>
-<span class="lineNum">     448 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 1 ), 2 );</span>
-<span class="lineNum">     449 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 2 ), 3 );</span>
-<span class="lineNum">     450 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 3 ), list_itr_end_t );</span>
-<span class="lineNum">     451 </span>                :            : 
-<span class="lineNum">     452 </span>                :            :     /* INSERT_ITEM TESTS */
-<span class="lineNum">     453 </span>                :            : 
-<span class="lineNum">     454 </span>                :            :     /* test insert_item pre-reqs */
-<span class="lineNum">     455 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( insert_item( NULL, list_itr_end_t, list_itr_end_t ), list_itr_end_t );</span>
-<span class="lineNum">     456 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( insert_item( items, list_itr_end_t, list_itr_end_t ), list_itr_end_t );</span>
+<span class="lineNum">     428 </span>                :            :     /* test remove_item pre-reqs */
+<span class="lineNum">     429 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( NULL, list_itr_end_t ), list_itr_end_t );</span>
+<span class="lineNum">     430 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, list_itr_end_t ), list_itr_end_t );</span>
+<span class="lineNum">     431 </span>                :            : 
+<span class="lineNum">     432 </span>                :            :     /* add some items */
+<span class="lineNum">     433 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          5 :     for( i = 0; i &lt; 4; i++ )</span>
+<span class="lineNum">     434 </span>                :            :     {
+<span class="lineNum">     435 </span>                :<span class="lineCov">          4 :         head = insert_item( items, head, i );</span>
+<span class="lineNum">     436 </span>                :            :     }
+<span class="lineNum">     437 </span>                :            : 
+<span class="lineNum">     438 </span>                :            :     /* remove items from the back */
+<span class="lineNum">     439 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 3 ), 0 );</span>
+<span class="lineNum">     440 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 2 ), 0 );</span>
+<span class="lineNum">     441 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 1 ), 0 );</span>
+<span class="lineNum">     442 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 0 ), list_itr_end_t );</span>
+<span class="lineNum">     443 </span>                :            : 
+<span class="lineNum">     444 </span>                :            :     /* add some items */
+<span class="lineNum">     445 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          5 :     for( i = 0; i &lt; 4; i++ )</span>
+<span class="lineNum">     446 </span>                :            :     {
+<span class="lineNum">     447 </span>                :<span class="lineCov">          4 :         head = insert_item( items, head, i );</span>
+<span class="lineNum">     448 </span>                :            :     }
+<span class="lineNum">     449 </span>                :            : 
+<span class="lineNum">     450 </span>                :            :     /* remove items from the front */
+<span class="lineNum">     451 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 0 ), 1 );</span>
+<span class="lineNum">     452 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 1 ), 2 );</span>
+<span class="lineNum">     453 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 2 ), 3 );</span>
+<span class="lineNum">     454 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 3 ), list_itr_end_t );</span>
+<span class="lineNum">     455 </span>                :            : 
+<span class="lineNum">     456 </span>                :            :     /* INSERT_ITEM TESTS */
 <span class="lineNum">     457 </span>                :            : 
-<span class="lineNum">     458 </span>                :            :     /* LIST_GROW TESTS */
-<span class="lineNum">     459 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( list_grow( NULL, 0 ) );</span>
-<span class="lineNum">     460 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">     458 </span>                :            :     /* test insert_item pre-reqs */
+<span class="lineNum">     459 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( insert_item( NULL, list_itr_end_t, list_itr_end_t ), list_itr_end_t );</span>
+<span class="lineNum">     460 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( insert_item( items, list_itr_end_t, list_itr_end_t ), list_itr_end_t );</span>
 <span class="lineNum">     461 </span>                :            : 
-<span class="lineNum">     462 </span>                :            : #endif
-<span class="lineNum">     463 </span>                :            : 
+<span class="lineNum">     462 </span>                :            :     /* LIST_GROW TESTS */
+<span class="lineNum">     463 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( list_grow( NULL, 0 ) );</span>
+<span class="lineNum">     464 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">     465 </span>                :            : 
+<span class="lineNum">     466 </span>                :            : #endif
+<span class="lineNum">     467 </span>                :            : 
 </pre>
       </td>
     </tr>
