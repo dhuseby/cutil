@@ -199,9 +199,13 @@ static void test_list_empty_iterator( void )
 	}
 }
 
+
+
 static void test_list_push_head_1( void )
 {
+	int i;
 	list_t list;
+	list_itr_t itr, end;
 	MEMSET(&list, 0, sizeof(list_t));
 	CU_ASSERT_TRUE( list_initialize( &list, 1, NULL ) );
 	list_push_head( &list, (void*)1 );
@@ -214,6 +218,14 @@ static void test_list_push_head_1( void )
 	CU_ASSERT_EQUAL( list_count( &list ), 4 );
 	list_push_head( &list, (void*)5 );
 	CU_ASSERT_EQUAL( list_count( &list ), 5 );
+
+	end = list_itr_end( &list );
+	itr = list_itr_begin( &list );
+	for ( i = 5; itr != end; itr = list_itr_next( &list, itr ), i-- )
+	{
+		CU_ASSERT_EQUAL( i, (int)list_get( &list, itr ) );
+	}
+
 	CU_ASSERT_TRUE( list_deinitialize( &list ) );
 }
 
@@ -246,8 +258,11 @@ static void test_list_push_head( void )
 
 static void test_list_push_tail_1( void )
 {
+	int i;
 	list_t list;
-	list_initialize( &list, 1, NULL );
+	list_itr_t itr, end;
+	
+	CU_ASSERT_TRUE( list_initialize( &list, 1, NULL ) );
 	list_push_tail( &list, (void*)1 );
 	CU_ASSERT_EQUAL( list_count( &list ), 1 );
 	list_push_tail( &list, (void*)2 );
@@ -258,7 +273,14 @@ static void test_list_push_tail_1( void )
 	CU_ASSERT_EQUAL( list_count( &list ), 4 );
 	list_push_tail( &list, (void*)5 );
 	CU_ASSERT_EQUAL( list_count( &list ), 5 );
-	list_deinitialize( &list );
+
+	end = list_itr_end( &list );
+	itr = list_itr_begin( &list );
+	for ( i = 1; itr != end; itr = list_itr_next( &list, itr ), i++ )
+	{
+		CU_ASSERT_EQUAL( i, (int)list_get( &list, itr ) );
+	}
+	CU_ASSERT_TRUE( list_deinitialize( &list ) );
 }
 
 static void test_list_push_tail_small( void )
@@ -635,6 +657,47 @@ static void test_list_push_fail( void )
 	fake_list_grow = FALSE;
 }
 
+static void test_list_push_middle_1( void )
+{
+	int i;
+	list_t list;
+	list_itr_t itr, end;
+
+	MEMSET(&list, 0, sizeof(list_t));
+	CU_ASSERT_TRUE( list_initialize( &list, 1, NULL ) );
+
+	CU_ASSERT_TRUE( list_push_tail( &list, (void*)1 ) );
+	CU_ASSERT_EQUAL( list_count( &list ), 1 );
+	CU_ASSERT_TRUE( list_push_tail( &list, (void*)2 ) );
+	CU_ASSERT_EQUAL( list_count( &list ), 2 );
+	CU_ASSERT_TRUE( list_push_tail( &list, (void*)3 ) );
+	CU_ASSERT_EQUAL( list_count( &list ), 3 );
+	CU_ASSERT_TRUE( list_push_tail( &list, (void*)6 ) );
+	CU_ASSERT_EQUAL( list_count( &list ), 4 );
+	CU_ASSERT_TRUE( list_push_tail( &list, (void*)7 ) );
+	CU_ASSERT_EQUAL( list_count( &list ), 5 );
+
+	itr = list_itr_begin( &list );
+	itr = list_itr_next( &list, itr );
+	itr = list_itr_next( &list, itr );
+	itr = list_itr_next( &list, itr );
+
+	CU_ASSERT_TRUE( list_push( &list, (void*)4, itr ) );
+	CU_ASSERT_EQUAL( list_count( &list ), 6 );
+	CU_ASSERT_TRUE( list_push( &list, (void*)5, itr ) );
+	CU_ASSERT_EQUAL( list_count( &list ), 7 );
+
+	end = list_itr_end( &list );
+	itr = list_itr_begin( &list );
+	for ( i = 1; itr != end; itr = list_itr_next( &list, itr ), i++ )
+	{
+		CU_ASSERT_EQUAL( i, (int)list_get( &list, itr ) );
+	}
+
+	CU_ASSERT_TRUE( list_deinitialize( &list ) );
+}
+
+
 static void test_list_push_middle( void )
 {
 	int_t i, j;
@@ -921,6 +984,7 @@ static CU_pSuite add_list_tests( CU_pSuite pSuite )
 	ADD_TEST("grow of static list",			test_list_static_grow);
 	ADD_TEST("grow of dynamic list",		test_list_dynamic_grow);
 	ADD_TEST("empty list itr tests",		test_list_empty_iterator);
+	ADD_TEST("push one middle tests",		test_list_push_middle_1);
 	ADD_TEST("push one head tests",			test_list_push_head_1);
 	ADD_TEST("push head tests",				test_list_push_head);
 	ADD_TEST("push one tail tests",			test_list_push_tail_1);

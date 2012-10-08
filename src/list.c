@@ -208,15 +208,49 @@ list_itr_t list_itr_rnext( list_t const * const list, list_itr_t const itr )
 
 int list_push( list_t * const list, void * const data, list_itr_t const itr )
 {
+	int i = 0;
+	list_itr_t tmp = list_itr_end_t;
 	list_itr_t item = list_itr_end_t;
+	list_itr_t before = itr;
+	list_itr_t the_head = list_itr_end_t;
 #if defined(UNIT_TESTING)
 	CHECK_RET( !fake_list_push, fake_list_push_ret );
 #endif
 	CHECK_PTR_RET( list, FALSE );
 
+	/* remember what the list head currently is */
+	the_head = list->used_head;
+
 	/* do we need to resize to accomodate this node? */
 	if ( list->count == list->size )
+	{
+		/* if there already items in the list, we need to figure out where
+		 * in the list the item at itr is so that we can adjust itr to be correct
+		 * after the list is grown since list_grow moves items around in memory. */
+		if ( (list->count > 0) && (itr != list_itr_end_t) )
+		{
+			tmp = list->used_head;
+			while( (tmp != itr) && (i < list->count) )
+			{
+				i++;
+				tmp = list->items[tmp].next;
+			}
+			CHECK_RET( i != list->count, FALSE );
+		}
+
 		CHECK_RET( list_grow( list, 1 ), FALSE );
+
+		/* now set the before iterator to the correct location */
+		if ( (list->count > 0) && (itr != list_itr_end_t) )
+		{
+			before = list->used_head;
+			while( i > 0 )
+			{
+				before = list->items[before].next;
+				i--;
+			}
+		}
+	}
 
 	/* get an item from the free list */
 	item = list->free_head;
@@ -226,8 +260,37 @@ int list_push( list_t * const list, void * const data, list_itr_t const itr )
 	ITEM_AT( list->items, item )->data = data;
 	ITEM_AT( list->items, item )->used = TRUE;
 
-	/* insert the item into the used list */
-	list->used_head = insert_item( list->items, list->used_head, item );
+	/* if itr is list_itr_end_t, then we want to insert at the end of the list
+	 * which is just before the head... but if the list is empty, we need to
+	 * make sure that list_itr_end_t passes through */
+	if ( list->count > 0 ) 
+	{
+		if ( itr == list_itr_end_t )
+		{
+			/* insert before the head but don't update the used_head, this puts
+			 * the item at the tail of the list */
+			before = list->used_head;
+			insert_item( list->items, before, item );
+		}
+		else
+		{
+			/* if we are inserting before the head, then update used_head so that
+			 * the item is now the head of the list...otherwise, insert it into the
+			 * list and don't update the used_head. */
+			if ( itr == the_head )
+			{
+				insert_item( list->items, list->used_head, item );
+				list->used_head = item;
+			}
+			else
+				insert_item( list->items, before, item );
+		}
+	}
+	else
+	{
+		/* insert into an empty list, update the used_head */
+		list->used_head = insert_item( list->items, before, item );
+	}
 
 	/* update the count */
 	list->count++;
@@ -315,7 +378,8 @@ static list_itr_t remove_item( list_item_t * const items, list_itr_t const itr )
 	return next;
 }
 
-/* inserts the item at index "item" before the item at "itr" */
+/* inserts the item at index "item" before the item at "itr" and returns
+ * the iterator of the newly inserted item. */
 static list_itr_t insert_item( list_item_t * const items, 
 							   list_itr_t const itr, 
 							   list_itr_t const item )
