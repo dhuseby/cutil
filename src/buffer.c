@@ -73,16 +73,19 @@ int buffer_initialize( buffer_t * const b, void * p, size_t len )
 #endif
 		/* allocating a new buffer, so allocate the buffer struct and
 		 * the data area just after it */
-		b->iov_base = CALLOC( len, sizeof(uint8_t) );
+		if ( len > 0 )
+		{
+			b->iov_base = CALLOC( len, sizeof(uint8_t) );
 
 #if defined(UNIT_TESTING)
-		if ( fail_buffer_init_alloc )
-		{
-			fail_alloc = fail_alloc_bak;
-		}
+			if ( fail_buffer_init_alloc )
+			{
+				fail_alloc = fail_alloc_bak;
+			}
 #endif
 
-		CHECK_PTR_RET( b->iov_base, FALSE );
+			CHECK_PTR_RET( b->iov_base, FALSE );
+		}
 	}
 	else
 	{

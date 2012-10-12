@@ -41,7 +41,14 @@ static void test_buffer_newdel( void )
 		b = buffer_new( NULL, (size_t)size );
 
 		CU_ASSERT_PTR_NOT_NULL( b );
-		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
+		if ( size > 0 )
+		{
+			CU_ASSERT_PTR_NOT_NULL( b->iov_base );
+		}
+		else
+		{
+			CU_ASSERT_PTR_NULL( b->iov_base );
+		}
 		CU_ASSERT_EQUAL( b->iov_len, (size_t)size );
 
 		buffer_delete( (void*)b );
@@ -56,7 +63,7 @@ static void test_buffer_newdel_pwned( void )
 
 	for ( i = 0; i < 1024; i++ )
 	{
-		size = rand() % 1024;
+		size = (rand() % 1024) + 1;
 		p = CALLOC( size, sizeof(uint8_t) );
 		b = buffer_new( p, (size_t)size );
 
@@ -79,7 +86,14 @@ static void test_buffer_initdeinit( void )
 		size = rand() % 1024;
 		CU_ASSERT_TRUE( buffer_initialize( &b, NULL, (size_t)size ) );
 
-		CU_ASSERT_PTR_NOT_NULL( b.iov_base );
+		if ( size > 0 )
+		{
+			CU_ASSERT_PTR_NOT_NULL( b.iov_base );
+		}
+		else
+		{
+			CU_ASSERT_PTR_NULL( b.iov_base );
+		}
 		CU_ASSERT_EQUAL( b.iov_len, (size_t)size );
 
 		CU_ASSERT_TRUE( buffer_deinitialize( &b ) );
@@ -94,7 +108,7 @@ static void test_buffer_initdeinit_pwned( void )
 
 	for ( i = 0; i < 1024; i++ )
 	{
-		size = rand() % 1024;
+		size = (rand() % 1024) + 1;
 		p = CALLOC( size, sizeof(uint8_t) );
 		CU_ASSERT_TRUE( buffer_initialize( &b, p, (size_t)size ) );
 
@@ -118,7 +132,14 @@ static void test_buffer_append( void )
 		b = buffer_new( NULL, (size_t)size1 );
 
 		CU_ASSERT_PTR_NOT_NULL( b );
-		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
+		if ( size1 > 0 )
+		{
+			CU_ASSERT_PTR_NOT_NULL( b->iov_base );
+		}
+		else
+		{
+			CU_ASSERT_PTR_NULL( b->iov_base );
+		}
 		CU_ASSERT_EQUAL( b->iov_len, (size_t)size1 );
 
 		CU_ASSERT_PTR_NOT_NULL( buffer_append( b, NULL, size2 ) );
@@ -143,7 +164,14 @@ static void test_buffer_append_pwned( void )
 		b = buffer_new( NULL, (size_t)size1 );
 
 		CU_ASSERT_PTR_NOT_NULL( b );
-		CU_ASSERT_PTR_NOT_NULL( b->iov_base );
+		if ( size1 > 0 )
+		{
+			CU_ASSERT_PTR_NOT_NULL( b->iov_base );
+		}
+		else
+		{
+			CU_ASSERT_PTR_NULL( b->iov_base );
+		}
 		CU_ASSERT_EQUAL( b->iov_len, (size_t)size1 );
 
 		CU_ASSERT_PTR_NOT_NULL( buffer_append( b, p, size2 ) );
