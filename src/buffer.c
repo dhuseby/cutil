@@ -110,7 +110,7 @@ int buffer_deinitialize( buffer_t * const b )
 	return TRUE;
 }
 
-void* buffer_append( buffer_t * const b, void * const p, size_t len )
+void* buffer_append( buffer_t * const b, void const * const p, size_t len )
 {
 	void * new_memory = NULL;
 	CHECK_PTR_RET( b, NULL );

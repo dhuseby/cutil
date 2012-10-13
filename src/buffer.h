@@ -29,7 +29,7 @@ int buffer_initialize( buffer_t * const b, void * p, size_t len );
 int buffer_deinitialize( buffer_t * const b );
 
 /* grow a buffer, return the pointer to the new part of the buffer */
-void* buffer_append( buffer_t * const b, void * const p, size_t len );
+void* buffer_append( buffer_t * const b, void const * const p, size_t len );
 
 #endif/*__BUFFER_H__*/
 
