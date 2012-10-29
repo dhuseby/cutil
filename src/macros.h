@@ -52,7 +52,7 @@ uint8_t * check_err_str_;
 #define CHECK_MSG(x, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return; } } while(0)
 #define CHECK_RET(x, y) do { if(!(x)) return (y); } while(0)
 #define CHECK_RET_MSG(x, y, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return (y); } } while(0)
-#define CHECK_GOTO(x, y) do { if(!(x)) { check_err = #x; goto y; } } while(0)
+#define CHECK_GOTO(x, y) do { if(!(x)) { check_err_str_ = #x; goto y; } } while(0)
 #define CHECK_PTR(x) do { if(!(x)) return; } while(0)
 #define CHECK_PTR_MSG(x, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return; } } while(0)
 #define CHECK_PTR_RET(x, y) do { if(!(x)) return (y); } while(0)
