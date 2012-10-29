@@ -44,16 +44,20 @@
 #define FAIL(fmt, ...) do { fprintf(stderr, "ERR:%16s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); assert(0); } while(0)
 
 /* runtime check macros */
+#ifndef CHECK_ERR_STR
+#define CHECK_ERR_STR
+uint8_t * check_err_str_;
+#endif
 #define CHECK(x) do { if(!(x)) return; } while(0)
 #define CHECK_MSG(x, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return; } } while(0)
 #define CHECK_RET(x, y) do { if(!(x)) return (y); } while(0)
 #define CHECK_RET_MSG(x, y, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return (y); } } while(0)
-#define CHECK_GOTO(x, y) do { if(!(x)) goto y; } while(0)
+#define CHECK_GOTO(x, y) do { if(!(x)) { check_err = #x; goto y; } } while(0)
 #define CHECK_PTR(x) do { if(!(x)) return; } while(0)
 #define CHECK_PTR_MSG(x, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return; } } while(0)
 #define CHECK_PTR_RET(x, y) do { if(!(x)) return (y); } while(0)
 #define CHECK_PTR_RET_MSG(x, y, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return (y); } } while(0)
-#define CHECK_PTR_GOTO(x, y) do { if(!(x)) goto y; } while(0)
+#define CHECK_PTR_GOTO(x, y) do { if(!(x)) { check_err_str_ = #x; goto y; } } while(0)
 
 /* abstractions of the memory allocator */
 #define FREE free
