@@ -74,5 +74,5 @@ clean:
 	rm -rf $(GCOV)
 	rm -rf ev.h.gcov
 
-.PHONY: all install uninstall clean test coverage report
+.PHONY: all install uninstall clean test debug coverage report
 
