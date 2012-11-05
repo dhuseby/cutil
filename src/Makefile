@@ -20,6 +20,7 @@ GCOV=$(SRC:.c=.c.gcov)
 CFLAGS=-O3 -I$(EXTRA_LIBS_ROOT)/include
 coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)/include -I../tests
 test: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)/include -I../tests
+testnr: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)/include -I../tests
 debug: CFLAGS=-O0 -gstabs+ -I$(EXTRA_LIBS_ROOT)/include
 
 # install utility
@@ -52,6 +53,8 @@ uninstall:
 	rm -rf $(PREFIX)/lib/$(OUT)
 
 test: all
+
+testnr: all
 
 coverage: all
 

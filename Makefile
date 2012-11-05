@@ -14,6 +14,7 @@ INSTALLDIRS = $(DIRS:%=install-%)
 UNINSTALLDIRS = $(DIRS:%=uninstall-%)
 CLEANDIRS = $(DIRS:%=clean-%)
 TESTDIRS = $(DIRS:%=test-%)
+TESTNRDIRS = $(DIRS:%=testnr-%)
 DEBUGDIRS = $(SRCDIR:%=debug-%)
 GCOVDIRS = $(DIRS:%=gcov-%)
 REPORTDIRS = $(DIRS:%=report-%)
@@ -40,6 +41,11 @@ test: $(TESTDIRS)
 $(TESTDIRS):
 	$(MAKE) -C $(@:test-%=%) test
 
+testnr: $(TESTNRDIRS)
+
+$(TESTNRDIRS):
+	$(MAKE) -C $(@:testnr-%=%) testnr
+
 debug: $(DEBUGDIRS)
 
 $(DEBUGDIRS):
@@ -65,9 +71,10 @@ $(CLEANDIRS):
 .PHONY: subdirs $(INSTALLDIRS)
 .PHONY: subdirs $(UNINSTALL)
 .PHONY: subdirs $(TESTDIRS)
+.PHONY: subdirs $(TESTNRDIRS)
 .PHONY: subdirs $(DEBUGDIRS)
 .PHONY: subdirs $(GCOVDIRS)
 .PHONY: subdirs $(REPORTDIRS)
 .PHONY: subdirs $(CLEANDIRS)
-.PHONY: all install uninstall clean test debug coverage report
+.PHONY: all install uninstall clean test testnr debug coverage report
 
