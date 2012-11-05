@@ -78,7 +78,7 @@ static ssize_t filelog_writer( void * cookie, char const * data, size_t leng )
 
 static int noop( void ) { return 0; }
 
-#ifdef __GNU__
+#ifdef linux
 static cookie_io_functions_t syslog_fns =
 {
 	(void*) noop,
@@ -111,7 +111,7 @@ log_t * start_logging( log_type_t type, int8_t const * const param, int append )
 			/* most systems route the LOG_DAEMON facility to /var/log/daemon.log */
 			openlog( param, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_DAEMON );
 
-#if defined __GNU__
+#if defined linux
 			/* redirect stderr writes to our custom writer function that outputs to syslog */
 			setvbuf(stderr = fopencookie(NULL, "w", syslog_fns), NULL, _IOLBF, 0);
 #elif defined __APPLE__
@@ -132,7 +132,7 @@ log_t * start_logging( log_type_t type, int8_t const * const param, int append )
 				return NULL;
 			}
 
-#if defined __GNU__
+#if defined linux
 			/* redirect stderr writes to our custom writer function that outputs to syslog */
 			setvbuf(stderr = fopencookie( log->cookie, "w", filelog_fns), NULL, _IOLBF, 0);
 #elif defined __APPLE__
