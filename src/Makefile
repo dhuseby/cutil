@@ -62,6 +62,7 @@ debug: all
 
 report:
 	lcov --base-directory . --directory . -c -o $(NAME).info
+	lcov --remove $(NAME).info "/usr*" -o $(NAME).info
 	rm -rf $(COVERAGE)
 	genhtml -o $(COVERAGE) -t "$(NAME) test coverage" --num-spaces 4 $(NAME).info
 
