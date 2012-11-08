@@ -40,7 +40,7 @@
 #define ASSERT(x) assert(x)
 #define WARN(fmt, ...) do { fprintf(stderr, "WARNING:%12s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); } while(0)
 #define NOTICE(fmt, ...) do { fprintf(stderr, "NOTICE:%13s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); } while(0)
-#define LOG(...) do { fprintf(stderr, __VA_ARGS__); fflush(stderr); } while(0)
+#define LOG(fmt, ...) do { fprintf(stderr, "INFO:%15s:%-5d -(%-5d)- " fmt, __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); } while(0)
 #define FAIL(fmt, ...) do { fprintf(stderr, "ERR:%16s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); assert(0); } while(0)
 
 /* runtime check macros */

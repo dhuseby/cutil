@@ -17,7 +17,7 @@
 #undef DEBUG
 
 #ifdef DEBUG_ON
-#define DEBUG(fmt, ...) { fprintf(stderr, "%20s:%-5d -- " fmt, __FILE__, __LINE__, ##__VA_ARGS__); fflush(stderr); }
+#define DEBUG(fmt, ...) { fprintf(stderr, "DEBUG:%14s:%-5d -(%-15d)- " fmt, __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); }
 #else
 #define DEBUG(fmt, ...) {;}
 #endif
