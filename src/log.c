@@ -141,6 +141,10 @@ log_t * start_logging( log_type_t type, int8_t const * const param, int append )
 #endif
 			break;
 
+		case LOG_TYPE_STDERR:
+			/* do nothing */
+			break;
+
 		/* case ZEROMQ_LOG: */
 		/* case UDP_LOG: */
 	}
@@ -160,6 +164,10 @@ void stop_logging( log_t * log )
 
 		case LOG_TYPE_FILE:
 			fclose( (FILE*)log->cookie );
+			break;
+
+		case LOG_TYPE_STDERR:
+			/* do nothing */
 			break;
 	}
 	FREE( log );

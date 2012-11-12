@@ -20,7 +20,8 @@
 typedef enum log_type_s
 {
 	LOG_TYPE_SYSLOG,
-	LOG_TYPE_FILE
+	LOG_TYPE_FILE,
+	LOG_TYPE_STDERR
 
 } log_type_t;
 

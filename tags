@@ -325,7 +325,8 @@ LISTEN	src/macros.h	136;"	d
 LISTEN	src/macros.h	206;"	d
 LIST_AT	src/hashtable.c	33;"	d	file:
 LOG	src/macros.h	43;"	d
-LOG_TYPE_FILE	src/log.h	/^	LOG_TYPE_FILE$/;"	e	enum:log_type_s
+LOG_TYPE_FILE	src/log.h	/^	LOG_TYPE_FILE,$/;"	e	enum:log_type_s
+LOG_TYPE_STDERR	src/log.h	/^	LOG_TYPE_STDERR$/;"	e	enum:log_type_s
 LOG_TYPE_SYSLOG	src/log.h	/^	LOG_TYPE_SYSLOG,$/;"	e	enum:log_type_s
 MALLOC	src/macros.h	189;"	d
 MALLOC	src/macros.h	74;"	d
