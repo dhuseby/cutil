@@ -29,9 +29,31 @@
  * local definitions for porting purposes
  */
 
+/* casting macro for string constants */
+#define T(x)    (int8_t*)(x)
+#define UT(x)	(uint8_t*)(x)
+#define C(x)	(char*)(x)
+
+/* are we on a 64-bit platform? */
+#if defined(_WIN64) || defined(__amd64__) || defined(__x86_64__)
+#define PORTABLE_64_BIT
+typedef uint64_t uint_t;
+typedef int64_t int_t;
+#else
+#define PORTABLE_32_BIT
+typedef uint32_t uint_t;
+typedef int32_t int_t;
+#endif
+
 /* BOOLEANS */
-#define FALSE ((int)0)
-#define TRUE  ((int)1)
+#define FALSE ((int_t)0)
+#define TRUE  ((int_t)1)
+
+/* does the platform have strnlen? */
+#if defined(__APPLE__)
+#define MISSING_STRNLEN
+#define MISSING_64BIT_ENDIAN
+#endif
 
 /* array size */
 #define ARRAY_SIZE( x ) (sizeof(x) / sizeof(x[0]))
@@ -218,28 +240,6 @@ extern void* fake_ev_default_loop_ret;
 
 #define EV_DEFAULT_LOOP ev_default_loop
 
-#endif
-
-/* casting macro for string constants */
-#define T(x)    (int8_t*)(x)
-#define UT(x)	(uint8_t*)(x)
-#define C(x)	(char*)(x)
-
-/* are we on a 64-bit platform? */
-#if defined(_WIN64) || defined(__amd64__) || defined(__x86_64__)
-#define PORTABLE_64_BIT
-typedef uint64_t uint_t;
-typedef int64_t int_t;
-#else
-#define PORTABLE_32_BIT
-typedef uint32_t uint_t;
-typedef int32_t int_t;
-#endif
-
-/* does the platform have strnlen? */
-#if defined(__APPLE__)
-#define MISSING_STRNLEN
-#define MISSING_64BIT_ENDIAN
 #endif
 
 #endif/*__MACROS_H__*/

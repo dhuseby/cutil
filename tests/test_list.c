@@ -223,7 +223,7 @@ static void test_list_push_head_1( void )
 	itr = list_itr_begin( &list );
 	for ( i = 5; itr != end; itr = list_itr_next( &list, itr ), i-- )
 	{
-		CU_ASSERT_EQUAL( i, (int)list_get( &list, itr ) );
+		CU_ASSERT_EQUAL( i, (int_t)list_get( &list, itr ) );
 	}
 
 	CU_ASSERT_TRUE( list_deinitialize( &list ) );
@@ -306,7 +306,11 @@ static void test_list_push_tail_small( void )
 	{
 		if ( (int_t)list_get( &list, itr ) != j )
 		{
+#if defined(PORTABLE_64_BIT)
+			NOTICE("[%ld] %ld != %ld\n", (int_t)itr, (int_t)list_get( &list, itr ), j );
+#else
 			NOTICE("[%d] %d != %d\n", (int_t)itr, (int_t)list_get( &list, itr ), j );
+#endif
 		}
 		CU_ASSERT_EQUAL( (int_t)list_get( &list, itr ), j );
 		j++;
@@ -348,7 +352,11 @@ static void test_list_push_tail( void )
 		{
 			if ( (int_t)list_get( &list, itr ) != j )
 			{
+#if defined(PORTABLE_64_BIT)
+				NOTICE("[%ld] %ld != %ld\n", (int_t)itr, (int_t)list_get( &list, itr ), j );
+#else
 				NOTICE("[%d] %d != %d\n", (int_t)itr, (int_t)list_get( &list, itr ), j );
+#endif
 			}
 			CU_ASSERT_EQUAL( (int_t)list_get( &list, itr ), j );
 			j++;
@@ -450,7 +458,11 @@ static void test_list_pop_head_static( void )
 
 	if ( list_count( &list ) != 0 )
 	{
-		NOTICE( "%d\n", list_count( &list ) );
+#if defined(PORTABLE_64_BIT)
+		NOTICE( "%lu\n", list_count( &list ) );
+#else
+		NOTICE( "%u\n", list_count( &list ) );
+#endif
 	}
 
 	CU_ASSERT_EQUAL( list_count( &list ), 0 );
@@ -777,7 +789,11 @@ static void test_list_pop_middle( void )
 
 		if ( list_count( &list ) != (size * multiple) )
 		{
-			NOTICE( "%d != %d\n", (int_t)list_count( &list ), (size * multiple) );
+#if defined(PORTABLE_64_BIT)
+			NOTICE( "%lu != %u\n", list_count( &list ), (size * multiple) );
+#else
+			NOTICE( "%d != %u\n", list_count( &list ), (size * multiple) );
+#endif
 		}
 
 		CU_ASSERT_EQUAL( list_count( &list ), (size * multiple) );
