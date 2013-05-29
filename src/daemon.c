@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "debug.h"
@@ -111,7 +112,7 @@ int create_start_file( int8_t const * const fpath )
 
 	/* write the process ID to the file */
 	t = time( NULL );
-	fprintf( fstart, "%s", C(asctime( localtime( &t ) )) );
+	fprintf( fstart, "%s", asctime( localtime( &t ) ) );
 
 	/* close the file and return */
 	fclose( fstart );

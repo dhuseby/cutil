@@ -203,7 +203,7 @@ static void test_list_empty_iterator( void )
 
 static void test_list_push_head_1( void )
 {
-	int i;
+	int_t i;
 	list_t list;
 	list_itr_t itr, end;
 	MEMSET(&list, 0, sizeof(list_t));
@@ -258,7 +258,7 @@ static void test_list_push_head( void )
 
 static void test_list_push_tail_1( void )
 {
-	int i;
+	int_t i;
 	list_t list;
 	list_itr_t itr, end;
 	
@@ -278,7 +278,7 @@ static void test_list_push_tail_1( void )
 	itr = list_itr_begin( &list );
 	for ( i = 1; itr != end; itr = list_itr_next( &list, itr ), i++ )
 	{
-		CU_ASSERT_EQUAL( i, (int)list_get( &list, itr ) );
+		CU_ASSERT_EQUAL( i, (int_t)list_get( &list, itr ) );
 	}
 	CU_ASSERT_TRUE( list_deinitialize( &list ) );
 }
@@ -659,7 +659,7 @@ static void test_list_push_fail( void )
 
 static void test_list_push_middle_1( void )
 {
-	int i;
+	int_t i;
 	list_t list;
 	list_itr_t itr, end;
 
@@ -691,7 +691,7 @@ static void test_list_push_middle_1( void )
 	itr = list_itr_begin( &list );
 	for ( i = 1; itr != end; itr = list_itr_next( &list, itr ), i++ )
 	{
-		CU_ASSERT_EQUAL( i, (int)list_get( &list, itr ) );
+		CU_ASSERT_EQUAL( i, (int_t)list_get( &list, itr ) );
 	}
 
 	CU_ASSERT_TRUE( list_deinitialize( &list ) );
@@ -777,7 +777,7 @@ static void test_list_pop_middle( void )
 
 		if ( list_count( &list ) != (size * multiple) )
 		{
-			NOTICE( "%d != %d\n", list_count( &list ), (size * multiple) );
+			NOTICE( "%d != %d\n", (int_t)list_count( &list ), (size * multiple) );
 		}
 
 		CU_ASSERT_EQUAL( list_count( &list ), (size * multiple) );

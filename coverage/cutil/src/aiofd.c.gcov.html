@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-11-12</td>
+            <td class="headerValue">2013-05-29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">22</td>
@@ -142,11 +142,11 @@
 <span class="lineNum">      71 </span>                :            : 
 <span class="lineNum">      72 </span>        [<span class="branchCov" title="Branch 0 was taken 9 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">         14 :         if ( wb-&gt;iov )</span>
 <span class="lineNum">      73 </span>                :            :         {
-<span class="lineNum">      74 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 8 times"> + </span>]:<span class="lineCov">          9 :             written = WRITEV( aiofd-&gt;wfd, (struct iovec *)wb-&gt;data, (int)wb-&gt;size );</span>
+<span class="lineNum">      74 </span>        [<span class="branchCov" title="Branch 0 was taken 8 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          9 :             written = WRITEV( aiofd-&gt;wfd, (struct iovec *)wb-&gt;data, (int)wb-&gt;size );</span>
 <span class="lineNum">      75 </span>                :            :         }
 <span class="lineNum">      76 </span>                :            :         else
 <span class="lineNum">      77 </span>                :            :         {
-<span class="lineNum">      78 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          5 :             written = WRITE( aiofd-&gt;wfd, wb-&gt;data, wb-&gt;size );</span>
+<span class="lineNum">      78 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          5 :             written = WRITE( aiofd-&gt;wfd, wb-&gt;data, wb-&gt;size );</span>
 <span class="lineNum">      79 </span>                :            :         }
 <span class="lineNum">      80 </span>                :            : 
 <span class="lineNum">      81 </span>                :            :         /* try to write the data to the socket */
@@ -424,7 +424,7 @@
 <span class="lineNum">     350 </span>                :            : 
 <span class="lineNum">     351 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">         12 :     CHECK_RET(n &gt; 0, 0);</span>
 <span class="lineNum">     352 </span>                :            : 
-<span class="lineNum">     353 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">         11 :     res = READ( aiofd-&gt;rfd, buffer, n );</span>
+<span class="lineNum">     353 </span>        [<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">         11 :     res = READ( aiofd-&gt;rfd, buffer, n );</span>
 <span class="lineNum">     354 </span>     [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span><span class="branchCov" title="Branch 2 was taken 7 times"> + </span>]:<span class="lineCov">         11 :     switch ( (int)res )</span>
 <span class="lineNum">     355 </span>                :            :     {
 <span class="lineNum">     356 </span>                :            :         case 0:

@@ -158,7 +158,7 @@ static void test_hashtable_count( void )
 
 static void test_hashtable_insert( void )
 {
-	int i;
+	int_t i;
 	ht_t ht;
 	MEMSET( &ht, 0, sizeof(ht_t) );
 	CU_ASSERT_TRUE( ht_initialize( &ht, 5, &hash_fn, &match_fn, NULL ) );

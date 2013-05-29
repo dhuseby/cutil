@@ -31,13 +31,13 @@
             <td class="headerValue">cutil test coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">213</td>
-            <td class="headerCovTableEntry">213</td>
+            <td class="headerCovTableEntry">214</td>
+            <td class="headerCovTableEntry">214</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-11-12</td>
+            <td class="headerValue">2013-05-29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">19</td>
@@ -461,17 +461,17 @@
 <span class="lineNum">     389 </span>                :            : 
 <span class="lineNum">     390 </span>                :            :     /* if itr is list_itr_end_t, the list is empty, so make the
 <span class="lineNum">     391 </span>                :            :      * item the only node in the list */
-<span class="lineNum">     392 </span>        [<span class="branchCov" title="Branch 0 was taken 6183 times"> + </span><span class="branchCov" title="Branch 1 was taken 1025237 times"> + </span>]:<span class="lineCov">    1031420 :     if ( itr == list_itr_end_t )</span>
+<span class="lineNum">     392 </span>        [<span class="branchCov" title="Branch 0 was taken 6184 times"> + </span><span class="branchCov" title="Branch 1 was taken 1025236 times"> + </span>]:<span class="lineCov">    1031420 :     if ( itr == list_itr_end_t )</span>
 <span class="lineNum">     393 </span>                :            :     {
-<span class="lineNum">     394 </span>                :<span class="lineCov">       6183 :         ITEM_AT( items, item )-&gt;prev = item;</span>
-<span class="lineNum">     395 </span>                :<span class="lineCov">       6183 :         ITEM_AT( items, item )-&gt;next = item;</span>
-<span class="lineNum">     396 </span>                :<span class="lineCov">       6183 :         return item;</span>
+<span class="lineNum">     394 </span>                :<span class="lineCov">       6184 :         ITEM_AT( items, item )-&gt;prev = item;</span>
+<span class="lineNum">     395 </span>                :<span class="lineCov">       6184 :         ITEM_AT( items, item )-&gt;next = item;</span>
+<span class="lineNum">     396 </span>                :<span class="lineCov">       6184 :         return item;</span>
 <span class="lineNum">     397 </span>                :            :     }
 <span class="lineNum">     398 </span>                :            : 
-<span class="lineNum">     399 </span>                :<span class="lineCov">    1025237 :     ITEM_AT( items, item )-&gt;next = itr;</span>
-<span class="lineNum">     400 </span>                :<span class="lineCov">    1025237 :     ITEM_AT( items, ITEM_AT( items, itr )-&gt;prev )-&gt;next = item;</span>
-<span class="lineNum">     401 </span>                :<span class="lineCov">    1025237 :     ITEM_AT( items, item )-&gt;prev = ITEM_AT( items, itr )-&gt;prev;</span>
-<span class="lineNum">     402 </span>                :<span class="lineCov">    1025237 :     ITEM_AT( items, itr )-&gt;prev = item;</span>
+<span class="lineNum">     399 </span>                :<span class="lineCov">    1025236 :     ITEM_AT( items, item )-&gt;next = itr;</span>
+<span class="lineNum">     400 </span>                :<span class="lineCov">    1025236 :     ITEM_AT( items, ITEM_AT( items, itr )-&gt;prev )-&gt;next = item;</span>
+<span class="lineNum">     401 </span>                :<span class="lineCov">    1025236 :     ITEM_AT( items, item )-&gt;prev = ITEM_AT( items, itr )-&gt;prev;</span>
+<span class="lineNum">     402 </span>                :<span class="lineCov">    1025236 :     ITEM_AT( items, itr )-&gt;prev = item;</span>
 <span class="lineNum">     403 </span>                :            : 
 <span class="lineNum">     404 </span>                :<span class="lineCov">    1031422 :     return itr;</span>
 <a name="405"><span class="lineNum">     405 </span>                :            : }</a>
@@ -577,30 +577,33 @@
 <span class="lineNum">     505 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 1 ), 0 );</span>
 <span class="lineNum">     506 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 0 ), list_itr_end_t );</span>
 <span class="lineNum">     507 </span>                :            : 
-<span class="lineNum">     508 </span>                :            :     /* add some items */
-<span class="lineNum">     509 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          5 :     for( i = 0; i &lt; 4; i++ )</span>
-<span class="lineNum">     510 </span>                :            :     {
-<span class="lineNum">     511 </span>                :<span class="lineCov">          4 :         head = insert_item( items, head, i );</span>
-<span class="lineNum">     512 </span>                :            :     }
-<span class="lineNum">     513 </span>                :            : 
-<span class="lineNum">     514 </span>                :            :     /* remove items from the front */
-<span class="lineNum">     515 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 0 ), 1 );</span>
-<span class="lineNum">     516 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 1 ), 2 );</span>
-<span class="lineNum">     517 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 2 ), 3 );</span>
-<span class="lineNum">     518 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 3 ), list_itr_end_t );</span>
-<span class="lineNum">     519 </span>                :            : 
-<span class="lineNum">     520 </span>                :            :     /* INSERT_ITEM TESTS */
-<span class="lineNum">     521 </span>                :            : 
-<span class="lineNum">     522 </span>                :            :     /* test insert_item pre-reqs */
-<span class="lineNum">     523 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( insert_item( NULL, list_itr_end_t, list_itr_end_t ), list_itr_end_t );</span>
-<span class="lineNum">     524 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( insert_item( items, list_itr_end_t, list_itr_end_t ), list_itr_end_t );</span>
-<span class="lineNum">     525 </span>                :            : 
-<span class="lineNum">     526 </span>                :            :     /* LIST_GROW TESTS */
-<span class="lineNum">     527 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( list_grow( NULL, 0 ) );</span>
-<span class="lineNum">     528 </span>                :<span class="lineCov">          1 : }</span>
-<span class="lineNum">     529 </span>                :            : 
-<span class="lineNum">     530 </span>                :            : #endif
-<span class="lineNum">     531 </span>                :            : 
+<span class="lineNum">     508 </span>                :            :     /* reset head itr */
+<span class="lineNum">     509 </span>                :<span class="lineCov">          1 :     head = list_itr_end_t;</span>
+<span class="lineNum">     510 </span>                :            :     
+<span class="lineNum">     511 </span>                :            :     /* add some items */
+<span class="lineNum">     512 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          5 :     for( i = 0; i &lt; 4; i++ )</span>
+<span class="lineNum">     513 </span>                :            :     {
+<span class="lineNum">     514 </span>                :<span class="lineCov">          4 :         head = insert_item( items, head, i );</span>
+<span class="lineNum">     515 </span>                :            :     }
+<span class="lineNum">     516 </span>                :            : 
+<span class="lineNum">     517 </span>                :            :     /* remove items from the front */
+<span class="lineNum">     518 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 0 ), 1 );</span>
+<span class="lineNum">     519 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 1 ), 2 );</span>
+<span class="lineNum">     520 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 2 ), 3 );</span>
+<span class="lineNum">     521 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( remove_item( items, 3 ), list_itr_end_t );</span>
+<span class="lineNum">     522 </span>                :            : 
+<span class="lineNum">     523 </span>                :            :     /* INSERT_ITEM TESTS */
+<span class="lineNum">     524 </span>                :            : 
+<span class="lineNum">     525 </span>                :            :     /* test insert_item pre-reqs */
+<span class="lineNum">     526 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( insert_item( NULL, list_itr_end_t, list_itr_end_t ), list_itr_end_t );</span>
+<span class="lineNum">     527 </span>                :<span class="lineCov">          1 :     CU_ASSERT_EQUAL( insert_item( items, list_itr_end_t, list_itr_end_t ), list_itr_end_t );</span>
+<span class="lineNum">     528 </span>                :            : 
+<span class="lineNum">     529 </span>                :            :     /* LIST_GROW TESTS */
+<span class="lineNum">     530 </span>                :<span class="lineCov">          1 :     CU_ASSERT_FALSE( list_grow( NULL, 0 ) );</span>
+<span class="lineNum">     531 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">     532 </span>                :            : 
+<span class="lineNum">     533 </span>                :            : #endif
+<span class="lineNum">     534 </span>                :            : 
 </pre>
       </td>
     </tr>

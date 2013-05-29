@@ -505,6 +505,9 @@ void test_list_private_functions( void )
 	CU_ASSERT_EQUAL( remove_item( items, 1 ), 0 );
 	CU_ASSERT_EQUAL( remove_item( items, 0 ), list_itr_end_t );
 
+	/* reset head itr */
+	head = list_itr_end_t;
+	
 	/* add some items */
 	for( i = 0; i < 4; i++ )
 	{

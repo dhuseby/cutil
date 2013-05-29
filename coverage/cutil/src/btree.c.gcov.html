@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2012-11-12</td>
+            <td class="headerValue">2013-05-29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">34</td>
@@ -832,7 +832,7 @@
 <span class="lineNum">     759 </span>                :            : 
 <span class="lineNum">     760 </span>                :            :     /* get a node from the free list */
 <span class="lineNum">     761 </span>                :<span class="lineCov">       3259 :     n = bt_get_node( &amp;(btree-&gt;free_list) );</span>
-<span class="lineNum">     762 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3259 times"> + </span>]:<span class="lineCov">       3259 :     CHECK_PTR_MSG( n, &quot;failed to get a node to store a new value\n&quot; );</span>
+<span class="lineNum">     762 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3259 times"> + </span>]:<span class="lineCov">       8533 :     CHECK_PTR_MSG( n, &quot;failed to get a node to store a new value\n&quot; );</span>
 <span class="lineNum">     763 </span>                :            : 
 <span class="lineNum">     764 </span>                :            :     /* initialize it */
 <span class="lineNum">     765 </span>                :<span class="lineCov">       3259 :     n-&gt;parent = parent;</span>
@@ -858,7 +858,7 @@
 <span class="lineNum">     785 </span>                :            :     /* re-balance the tree */
 <span class="lineNum">     786 </span>                :<span class="lineCov">       3259 :     bt_balance_tree( btree, n );</span>
 <span class="lineNum">     787 </span>                :            : 
-<span class="lineNum">     788 </span>                :<span class="lineCov">       5274 :     return TRUE;</span>
+<span class="lineNum">     788 </span>                :<span class="lineCov">       3259 :     return TRUE;</span>
 <span class="lineNum">     789 </span>                :            : }
 <span class="lineNum">     790 </span>                :            : 
 <span class="lineNum">     791 </span>                :            : 
