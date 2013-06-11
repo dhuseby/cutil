@@ -226,9 +226,9 @@ int aiofd_initialize( aiofd_t * const aiofd,
                       void * user_data )
 {
     evt_params_t params;
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_aiofd_initialize, fake_aiofd_initialize_ret );
-#endif
+
+    UNIT_TEST_RET( aiofd_initialize );
+
     CHECK_PTR_RET( aiofd, FALSE );
     CHECK_RET( write_fd >= 0, FALSE );
     CHECK_RET( read_fd >= 0, FALSE );
@@ -317,9 +317,8 @@ int aiofd_enable_write_evt( aiofd_t * const aiofd,
 int aiofd_enable_read_evt( aiofd_t * const aiofd,
                            int enable )
 {
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_aiofd_enable_read_evt, fake_aiofd_enable_read_evt_ret );
-#endif
+    UNIT_TEST_RET( aiofd_enable_read_evt );
+
     CHECK_RET( aiofd, FALSE );
 
     if ( enable )
@@ -340,9 +339,9 @@ int32_t aiofd_read( aiofd_t * const aiofd,
                     int32_t const n )
 {
     ssize_t res = 0;
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_aiofd_read, fake_aiofd_read_ret );
-#endif
+
+    UNIT_TEST_RET( aiofd_read );
+
     CHECK_PTR_RET(aiofd, 0);
     
     /* if they pass a NULL buffer pointer return -1 */
@@ -377,9 +376,9 @@ static int aiofd_write_common( aiofd_t* const aiofd,
     int32_t asize = 0;
     ssize_t res = 0;
     aiofd_write_t * wb = NULL;
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_aiofd_write_common, fake_aiofd_write_common_ret );
-#endif
+
+    UNIT_TEST_RET( aiofd_write_common );
+
     CHECK_PTR_RET( aiofd, FALSE );
     CHECK_PTR_RET( buffer, FALSE );
     CHECK_RET( cnt > 0, FALSE );
@@ -420,9 +419,7 @@ int aiofd_write( aiofd_t * const aiofd,
                  uint8_t const * const buffer, 
                  size_t const n )
 {
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_aiofd_write, fake_aiofd_write_ret );
-#endif
+    UNIT_TEST_RET( aiofd_write );
     return aiofd_write_common( aiofd, (void*)buffer, n, n, FALSE );
 }
 
@@ -433,9 +430,7 @@ int aiofd_writev( aiofd_t * const aiofd,
     int i;
     size_t total = 0;
 
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_aiofd_writev, fake_aiofd_writev_ret );
-#endif
+    UNIT_TEST_RET( aiofd_writev );
 
     /* calculate how many bytes are in the iovec */
     for ( i = 0; i < iovcnt; i++ )
@@ -448,9 +443,8 @@ int aiofd_writev( aiofd_t * const aiofd,
 
 int aiofd_flush( aiofd_t * const aiofd )
 {
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_aiofd_flush, fake_aiofd_flush_ret );
-#endif
+    UNIT_TEST_RET( aiofd_flush );
+
     CHECK_PTR_RET(aiofd, FALSE);
     
     fsync( aiofd->wfd );

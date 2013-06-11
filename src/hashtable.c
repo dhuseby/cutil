@@ -98,9 +98,9 @@ int ht_initialize( ht_t * const htable, uint_t const initial_capacity,
                    ht_hash_fn hfn, ht_match_fn mfn, ht_delete_fn dfn )
 {
     uint_t i = 0;
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_ht_init, fake_ht_init_ret );
-#endif
+
+    UNIT_TEST_RET( ht_init );
+
     CHECK_PTR_RET( htable, FALSE );
     CHECK_PTR_RET( hfn, FALSE );
     CHECK_PTR_RET( mfn, FALSE );
@@ -124,9 +124,9 @@ int ht_initialize( ht_t * const htable, uint_t const initial_capacity,
 int ht_deinitialize( ht_t * const htable )
 {
     int i;
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_ht_deinit, fake_ht_deinit_ret );
-#endif
+
+    UNIT_TEST_RET( ht_deinit );
+
     CHECK_PTR_RET( htable, FALSE );
 
     /* free up all of the memory in the lists */
@@ -193,9 +193,9 @@ ht_itr_t ht_find( ht_t const * const htable, void * const data )
     uint_t index;
     ht_itr_t ret;
     list_itr_t itr, end;
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_ht_find, fake_ht_find_ret );
-#endif
+
+    UNIT_TEST_RET( ht_find );
+
     CHECK_PTR_RET( htable, ht_itr_end_t );
     CHECK_PTR_RET( data, ht_itr_end_t );
 
@@ -363,9 +363,9 @@ static int ht_grow( ht_t * const htable )
 {
     uint_t i, count, new_size, old_size;
     list_t *new_lists, *old_lists;
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_ht_grow, fake_ht_grow_ret );
-#endif
+    
+    UNIT_TEST_RET( ht_grow );
+
     CHECK_PTR_RET( htable, FALSE );
 
     /* if it's empty, then use the initial capacity */

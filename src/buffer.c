@@ -57,9 +57,8 @@ void buffer_delete( void * b )
 
 int buffer_initialize( buffer_t * const b, void * p, size_t len )
 {
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fail_buffer_init, FALSE );
-#endif
+    UNIT_TEST_FAIL( buffer_init );
+
     CHECK_PTR_RET( b, FALSE );
 
     if ( p == NULL )
@@ -100,9 +99,8 @@ int buffer_initialize( buffer_t * const b, void * p, size_t len )
 
 int buffer_deinitialize( buffer_t * const b )
 {
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fail_buffer_deinit, FALSE );
-#endif
+    UNIT_TEST_FAIL( buffer_deinit );
+
     CHECK_PTR_RET( b, FALSE );
     FREE( b->iov_base );
     b->iov_base = NULL;

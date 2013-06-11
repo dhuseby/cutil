@@ -53,9 +53,7 @@ void bset_delete( void * bset )
 
 int bset_initialize( bitset_t * const bset, size_t const num_bits )
 {
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fail_bitset_init, FALSE );
-#endif
+    UNIT_TEST_FAIL( bitset_init );
     CHECK_PTR_RET( bset, FALSE );
 
     bset->bits = NULL;
@@ -70,9 +68,7 @@ int bset_initialize( bitset_t * const bset, size_t const num_bits )
 
 int bset_deinitialize( bitset_t * const bset )
 {
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fail_bitset_deinit, FALSE );
-#endif
+    UNIT_TEST_FAIL( bitset_deinit );
     CHECK_PTR_RET( bset, FALSE );
     CHECK_RET( bset->num_bits > 0, FALSE );
     CHECK_PTR_RET( bset->bits, FALSE );

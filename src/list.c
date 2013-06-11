@@ -75,9 +75,8 @@ int list_initialize( list_t * const list, uint_t const initial_capacity, list_de
 {
     uint_t i;
     CHECK_PTR_RET( list, FALSE );
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_list_init, fake_list_init_ret );
-#endif
+    
+    UNIT_TEST_RET( list_init );
 
     /* intialize the members */
     list->dfn = (dfn ? dfn : NULL );
@@ -96,9 +95,9 @@ int list_initialize( list_t * const list, uint_t const initial_capacity, list_de
 int list_deinitialize( list_t * const list )
 {
     list_itr_t itr, end;
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_list_deinit, fake_list_deinit_ret );
-#endif
+
+    UNIT_TEST_RET( list_deinit );
+
     CHECK_PTR_RET( list, FALSE );
 
     /* empty lists need no work */
@@ -127,9 +126,8 @@ int list_deinitialize( list_t * const list )
 
 uint_t list_count( list_t const * const list )
 {
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_list_count, fake_list_count_ret );
-#endif
+    UNIT_TEST_RET( list_count );
+
     CHECK_PTR_RET( list, 0 );
     return list->count;
 }
@@ -213,9 +211,9 @@ int list_push( list_t * const list, void * const data, list_itr_t const itr )
     list_itr_t item = list_itr_end_t;
     list_itr_t before = itr;
     list_itr_t the_head = list_itr_end_t;
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_list_push, fake_list_push_ret );
-#endif
+    
+    UNIT_TEST_RET( list_push );
+
     CHECK_PTR_RET( list, FALSE );
 
     /* remember what the list head currently is */
@@ -339,9 +337,8 @@ list_itr_t list_pop( list_t * const list, list_itr_t const itr )
 
 void * list_get( list_t const * const list, list_itr_t const itr )
 {
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_list_get, fake_list_get_ret );
-#endif
+    UNIT_TEST_RET( list_get );
+
     CHECK_PTR_RET( list, NULL );
     CHECK_RET( itr != list_itr_end_t, NULL );
     CHECK_RET( list->size, NULL );                          /* empty list? */
@@ -419,9 +416,7 @@ static int list_grow( list_t * const list, uint_t amount )
     CHECK_PTR_RET( list, FALSE );
     CHECK_RET( amount, TRUE ); /* do nothing if grow amount is 0 */
 
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_list_grow, fake_list_grow_ret );
-#endif
+    UNIT_TEST_RET( list_grow );
 
     /* figure out how big the new item array should be */
     if ( list->size )

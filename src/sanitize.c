@@ -45,9 +45,7 @@ static int open_devnull( int fd )
 {
     FILE *f = 0;
 
-#if defined(UNIT_TESTING)
-    CHECK_RET( !fake_open_devnull, fake_open_devnull_ret );
-#endif
+    UNIT_TEST_RET( open_devnull );
 
     if ( fd == STDIN_FILENO )
     {
