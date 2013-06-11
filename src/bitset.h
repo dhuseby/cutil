@@ -21,8 +21,8 @@
 
 typedef struct bitset_s
 {
-	size_t num_bits;
-	uint32_t * bits;
+    size_t num_bits;
+    uint32_t * bits;
 } bitset_t;
 
 

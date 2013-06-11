@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2013-05-29</td>
+            <td class="headerValue">2013-06-11</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">19</td>
@@ -416,9 +416,9 @@
 <span class="lineNum">     344 </span>                :            : #endif
 <span class="lineNum">     345 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75873 times"> + </span>]:<span class="lineCov">      75874 :     CHECK_PTR_RET( list, NULL );</span>
 <span class="lineNum">     346 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75872 times"> + </span>]:<span class="lineCov">      75873 :     CHECK_RET( itr != list_itr_end_t, NULL );</span>
-<span class="lineNum">     347 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75871 times"> + </span>]:<span class="lineCov">      75872 :     CHECK_RET( list-&gt;size, NULL );                           /* empty list? */</span>
-<span class="lineNum">     348 </span>[<span class="branchCov" title="Branch 0 was taken 75870 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchCov" title="Branch 3 was taken 75869 times"> + </span>]:<span class="lineCov">      75871 :     CHECK_RET( ((itr &gt;= 0) &amp;&amp; (itr &lt; list-&gt;size)), NULL ); /* valid index? */</span>
-<span class="lineNum">     349 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75868 times"> + </span>]:<span class="lineCov">      75869 :     CHECK_RET( ITEM_AT( list-&gt;items, itr )-&gt;used, NULL ); /* in used list? */</span>
+<span class="lineNum">     347 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75871 times"> + </span>]:<span class="lineCov">      75872 :     CHECK_RET( list-&gt;size, NULL );                          /* empty list? */</span>
+<span class="lineNum">     348 </span>[<span class="branchCov" title="Branch 0 was taken 75870 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchCov" title="Branch 3 was taken 75869 times"> + </span>]:<span class="lineCov">      75871 :     CHECK_RET( ((itr &gt;= 0) &amp;&amp; (itr &lt; list-&gt;size)), NULL );  /* valid index? */</span>
+<span class="lineNum">     349 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 75868 times"> + </span>]:<span class="lineCov">      75869 :     CHECK_RET( ITEM_AT( list-&gt;items, itr )-&gt;used, NULL );   /* in used list? */</span>
 <span class="lineNum">     350 </span>                :            : 
 <span class="lineNum">     351 </span>                :<span class="lineCov">      75875 :     return ITEM_AT( list-&gt;items, itr )-&gt;data;</span>
 <span class="lineNum">     352 </span>                :            : }

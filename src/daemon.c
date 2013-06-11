@@ -62,60 +62,60 @@ void daemonize( int8_t const * const root_dir )
     }
     
     /* change the current working directory to a safe place */
-	if ( root_dir == NULL )
-	{
-		if ( chdir( "/" ) < 0 )
-			exit( EXIT_FAILURE );
-	}
-	else
-	{
-		if ( chdir( root_dir ) < 0 )
-			exit( EXIT_FAILURE );
-	}
+    if ( root_dir == NULL )
+    {
+        if ( chdir( "/" ) < 0 )
+            exit( EXIT_FAILURE );
+    }
+    else
+    {
+        if ( chdir( root_dir ) < 0 )
+            exit( EXIT_FAILURE );
+    }
     
     /* close standard file descriptors */
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
 
-	/* NOTE: don't close STDERR because we hook that up to the logging
-	 * facility to make logging brain-dead simple.
+    /* NOTE: don't close STDERR because we hook that up to the logging
+     * facility to make logging brain-dead simple.
      * close(STDERR_FILENO);
-	 */
+     */
 }
 
 int create_pid_file( int8_t const * const fpath )
 {
-	FILE * fpid = NULL;
-	CHECK_PTR_RET( fpath, FALSE );
+    FILE * fpid = NULL;
+    CHECK_PTR_RET( fpath, FALSE );
 
-	fpid = fopen( fpath, "w+" );
+    fpid = fopen( fpath, "w+" );
 
-	CHECK_PTR_RET( fpid, FALSE );
+    CHECK_PTR_RET( fpid, FALSE );
 
-	/* write the process ID to the file */
-	fprintf( fpid, "%d", getpid() );
+    /* write the process ID to the file */
+    fprintf( fpid, "%d", getpid() );
 
-	/* close the file and return */
-	fclose( fpid );
-	return TRUE;
+    /* close the file and return */
+    fclose( fpid );
+    return TRUE;
 }
 
 int create_start_file( int8_t const * const fpath )
 {
-	time_t t;
-	FILE * fstart = NULL;
-	CHECK_PTR_RET( fpath, FALSE );
+    time_t t;
+    FILE * fstart = NULL;
+    CHECK_PTR_RET( fpath, FALSE );
 
-	fstart = fopen( fpath, "w+" );
+    fstart = fopen( fpath, "w+" );
 
-	CHECK_PTR_RET( fstart, FALSE );
+    CHECK_PTR_RET( fstart, FALSE );
 
-	/* write the process ID to the file */
-	t = time( NULL );
-	fprintf( fstart, "%s", asctime( localtime( &t ) ) );
+    /* write the process ID to the file */
+    t = time( NULL );
+    fprintf( fstart, "%s", asctime( localtime( &t ) ) );
 
-	/* close the file and return */
-	fclose( fstart );
-	return TRUE;
+    /* close the file and return */
+    fclose( fstart );
+    return TRUE;
 }
 

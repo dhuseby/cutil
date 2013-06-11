@@ -43,7 +43,7 @@ typedef void (*bt_delete_fn)(void * value);
  * bt_delete is called. */
 bt_t* bt_new(
     uint_t initial_capacity, 
-	bt_key_cmp_fn kcfn,
+    bt_key_cmp_fn kcfn,
     bt_delete_fn vdfn, 
     bt_delete_fn kdfn);
 
@@ -78,8 +78,8 @@ bt_itr_t bt_itr_end( bt_t const * const btree );
 /* in-order, reverse, iterator based access to the btree */
 bt_itr_t bt_itr_rbegin( bt_t const * const btree );
 bt_itr_t bt_itr_rnext(
-	bt_t const * const btree,
-	bt_itr_t const itr );
+    bt_t const * const btree,
+    bt_itr_t const itr );
 bt_itr_t bt_itr_rend( bt_t const * const btree );
 
 void* bt_itr_get(
@@ -87,7 +87,7 @@ void* bt_itr_get(
     bt_itr_t const itr);
 
 void* bt_itr_get_key(
-	bt_t const * const btree,
-	bt_itr_t const itr);
+    bt_t const * const btree,
+    bt_itr_t const itr);
 
 #endif

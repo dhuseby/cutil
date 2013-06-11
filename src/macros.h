@@ -31,8 +31,8 @@
 
 /* casting macro for string constants */
 #define T(x)    (int8_t*)(x)
-#define UT(x)	(uint8_t*)(x)
-#define C(x)	(char*)(x)
+#define UT(x)   (uint8_t*)(x)
+#define C(x)    (char*)(x)
 
 /* are we on a 64-bit platform? */
 #if defined(_WIN64) || defined(__amd64__) || defined(__x86_64__)
@@ -60,10 +60,10 @@ typedef int32_t int_t;
 
 /* used for debugging purposes */
 #define ASSERT(x) assert(x)
-#define WARN(fmt, ...)	 do { fprintf(stderr, "WARNING:%12s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); } while(0)
+#define WARN(fmt, ...)   do { fprintf(stderr, "WARNING:%12s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); } while(0)
 #define NOTICE(fmt, ...) do { fprintf(stderr, "NOTICE:%13s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); } while(0)
-#define LOG(fmt, ...)	 do { fprintf(stderr, "INFO:%15s:%-5d -(%-5d)- " fmt, __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); } while(0)
-#define FAIL(fmt, ...)	 do { fprintf(stderr, "ERR:%16s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); assert(0); } while(0)
+#define LOG(fmt, ...)    do { fprintf(stderr, "INFO:%15s:%-5d -(%-5d)- " fmt, __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); } while(0)
+#define FAIL(fmt, ...)   do { fprintf(stderr, "ERR:%16s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); assert(0); } while(0)
 
 /* runtime check macros */
 #ifndef CHECK_ERR_STR
@@ -90,6 +90,9 @@ uint8_t * check_err_str_;
 #define STRCMP strcmp
 
 #if defined(UNIT_TESTING)
+
+#define UNIT_TEST_RET(x) do { if( fake_##x ) return ( fake_##x##_ret ); } while(0)
+#define UNIT_TEST_FAIL(x) do { if( fail_##x ) return FALSE; } while(0)
 
 /* system calls */
 extern int fail_alloc;
@@ -207,6 +210,9 @@ extern void* fake_ev_default_loop_ret;
 #define EV_DEFAULT_LOOP(...) (fake_ev_default_loop ? fake_ev_default_loop_ret : ev_default_loop(__VA_ARGS__))
 
 #else
+
+#define UNIT_TEST_RET
+#define UNIT_TEST_FAIL
 
 #define MALLOC malloc
 #define CALLOC calloc

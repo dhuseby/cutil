@@ -24,8 +24,8 @@
 /* iterator type */
 typedef struct ht_itr_s
 {
-	int_t				idx;				/* index of the list */
-	list_itr_t			itr;				/* list iterator */
+    int_t               idx;                /* index of the list */
+    list_itr_t          itr;                /* list iterator */
 } ht_itr_t;
 
 #define ITR_EQ( i, j ) ((i.idx == j.idx) && (i.itr == j.itr))
@@ -43,24 +43,24 @@ typedef void (*ht_delete_fn)(void * value);
 /* the hash table structure */
 typedef struct ht_s
 {
-	ht_hash_fn			hfn;				/* hash function */
-	ht_match_fn			mfn;				/* match function */
-	ht_delete_fn		dfn;				/* key delete function */
-	uint_t				initial;			/* initial capacity */
-	float				limit;				/* load limit that will trigger resize */
-	uint_t				count;				/* number of items in the hashtable */
-	uint_t				size;				/* the size of the list array */
-	list_t*				lists;				/* pointer to list array */
+    ht_hash_fn          hfn;                /* hash function */
+    ht_match_fn         mfn;                /* match function */
+    ht_delete_fn        dfn;                /* key delete function */
+    uint_t              initial;            /* initial capacity */
+    float               limit;              /* load limit that will trigger resize */
+    uint_t              count;              /* number of items in the hashtable */
+    uint_t              size;               /* the size of the list array */
+    list_t*             lists;              /* pointer to list array */
 } ht_t;
 
 /* heap allocated hash table */
 ht_t* ht_new( uint_t const initial_capacity, ht_hash_fn hfn, 
-			  ht_match_fn mfn, ht_delete_fn dfn );
+              ht_match_fn mfn, ht_delete_fn dfn );
 void ht_delete( void * ht );
 
 /* stack allocated hash table */
 int ht_initialize( ht_t * const htable, uint_t const initial_capacity, 
-				   ht_hash_fn hfn, ht_match_fn mfn, ht_delete_fn dfn );
+                   ht_hash_fn hfn, ht_match_fn mfn, ht_delete_fn dfn );
 int ht_deinitialize( ht_t * const htable );
 
 /* returns the number of items stored in the hashtable */

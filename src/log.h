@@ -19,16 +19,16 @@
 
 typedef enum log_type_s
 {
-	LOG_TYPE_SYSLOG,
-	LOG_TYPE_FILE,
-	LOG_TYPE_STDERR
+    LOG_TYPE_SYSLOG,
+    LOG_TYPE_FILE,
+    LOG_TYPE_STDERR
 
 } log_type_t;
 
 typedef struct log_s
 {
-	log_type_t type;
-	void * cookie;
+    log_type_t type;
+    void * cookie;
 
 } log_t;
 

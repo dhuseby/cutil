@@ -23,10 +23,10 @@
 
 typedef struct priv_state_s
 {
-	gid_t	gid;
-	uid_t	uid;
-	int		ngroups;
-	gid_t	groups[NGROUPS_MAX];
+    gid_t   gid;
+    uid_t   uid;
+    int     ngroups;
+    gid_t   groups[NGROUPS_MAX];
 
 } priv_state_t;
 

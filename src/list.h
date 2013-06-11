@@ -32,12 +32,12 @@ typedef struct list_item_s list_item_t;
 /* dynamic list struct */
 typedef struct list_s
 {
-	list_delete_fn	dfn;					/* destruction function for each node */
-	uint_t			size;					/* total number of allocated slots in list */
-	uint_t			count;					/* number of items in the list */
-	list_itr_t		used_head;				/* head node of the used circular list */
-	list_itr_t		free_head;				/* head node of the free circular list */
-	list_item_t*	items;					/* array of list items */
+    list_delete_fn  dfn;                    /* destruction function for each node */
+    uint_t          size;                   /* total number of allocated slots in list */
+    uint_t          count;                  /* number of items in the list */
+    list_itr_t      used_head;              /* head node of the used circular list */
+    list_itr_t      free_head;              /* head node of the free circular list */
+    list_item_t*    items;                  /* array of list items */
 
 } list_t;
 

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2013-05-29</td>
+            <td class="headerValue">2013-06-11</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">18</td>
@@ -390,7 +390,7 @@
 <span class="lineNum">     319 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 512 times"> + </span>]:<span class="lineCov">        512 :     CHECK_PTR_RET( htable, ht_itr_end_t );</span>
 <span class="lineNum">     320 </span>                :            : 
 <span class="lineNum">     321 </span>                :            :     /* advance the iterator */
-<span class="lineNum">     322 </span>                :<span class="lineCov">        512 :     ret.itr = list_itr_rnext( LIST_AT( htable-&gt;lists, ret.idx ), ret.itr );  </span>
+<span class="lineNum">     322 </span>                :<span class="lineCov">        512 :     ret.itr = list_itr_rnext( LIST_AT( htable-&gt;lists, ret.idx ), ret.itr ); </span>
 <span class="lineNum">     323 </span>                :            : 
 <span class="lineNum">     324 </span>        [<span class="branchCov" title="Branch 1 was taken 512 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">        512 :     if ( ret.itr == list_itr_end( LIST_AT( htable-&gt;lists, ret.idx ) ) )</span>
 <span class="lineNum">     325 </span>                :            :     {

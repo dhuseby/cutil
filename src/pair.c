@@ -24,38 +24,38 @@
 
 struct pair_s
 {
-	void * first;
-	void * second;
+    void * first;
+    void * second;
 };
 
 pair_t * pair_new( void * first, void * second )
 {
-	pair_t * pair = CALLOC( 1, sizeof(pair_t) );
-	CHECK_PTR_RET( pair, NULL );
+    pair_t * pair = CALLOC( 1, sizeof(pair_t) );
+    CHECK_PTR_RET( pair, NULL );
 
-	pair->first = first;
-	pair->second = second;
-	return pair;
+    pair->first = first;
+    pair->second = second;
+    return pair;
 }
 
 void pair_delete( void * p )
 {
-	pair_t * pair = (pair_t*)p;
-	CHECK_PTR( pair );
+    pair_t * pair = (pair_t*)p;
+    CHECK_PTR( pair );
 
-	FREE( pair );
+    FREE( pair );
 }
 
 void * pair_first( pair_t const * const pair )
 {
-	CHECK_PTR_RET( pair, NULL );
-	return pair->first;
+    CHECK_PTR_RET( pair, NULL );
+    return pair->first;
 }
 
 void * pair_second( pair_t const * const pair )
 {
-	CHECK_PTR_RET( pair, NULL );
-	return pair->second;
+    CHECK_PTR_RET( pair, NULL );
+    return pair->second;
 }
 
 #if defined(UNIT_TESTING)
