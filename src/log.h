@@ -21,7 +21,8 @@ typedef enum log_type_s
 {
     LOG_TYPE_SYSLOG,
     LOG_TYPE_FILE,
-    LOG_TYPE_STDERR
+    LOG_TYPE_STDERR,
+    LOG_TYPE_LIST
 
 } log_type_t;
 
@@ -32,7 +33,7 @@ typedef struct log_s
 
 } log_t;
 
-log_t * start_logging( log_type_t type, int8_t const * const param, int append );
+log_t * start_logging( log_type_t type, void * param, int append );
 void stop_logging( log_t * log );
 
 #endif/*__LOG_H__*/

@@ -20,6 +20,7 @@
 #include <syslog.h>
 
 #include "macros.h"
+#include "list.h"
 #include "log.h"
 
 #if defined(__APPLE__)
@@ -76,6 +77,17 @@ static ssize_t filelog_writer( void * cookie, char const * data, size_t leng )
     return fprintf( flog, "%.*s", (int)leng, data );
 }
 
+/* write log messages out to a list_t log */
+static ssize_t listlog_writer( void * cookie, char const * data, size_t leng )
+{
+    list_t * list = (list_t*)cookie;
+    uint8_t * str = CALLOC( 1, leng + 1 );
+    MEMCPY( str, data, leng );
+    list_push_tail( list, str );
+    return leng;
+}
+
+
 static int noop( void ) { return 0; }
 
 #ifdef linux
@@ -93,9 +105,16 @@ static cookie_io_functions_t filelog_fns =
     (void*) noop,
     (void*) noop
 };
+static cookie_io_functions_t listlog_fns =
+{
+    (void*) noop,
+    (void*) listlog_writer,
+    (void*) noop,
+    (void*) noop
+};
 #endif
 
-log_t * start_logging( log_type_t type, int8_t const * const param, int append )
+log_t * start_logging( log_type_t type, void * param, int append )
 {
     char const * const mode[2] = { "w+", "a+" };
     log_t * log = (log_t*)CALLOC( 1, sizeof(log_t) );
@@ -109,7 +128,7 @@ log_t * start_logging( log_type_t type, int8_t const * const param, int append )
             setlogmask( LOG_UPTO( LOG_INFO ) );
 
             /* most systems route the LOG_DAEMON facility to /var/log/daemon.log */
-            openlog( param, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_DAEMON );
+            openlog( (uint8_t const * const)param, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_DAEMON );
 
 #if defined linux
             /* redirect stderr writes to our custom writer function that outputs to syslog */
@@ -121,16 +140,11 @@ log_t * start_logging( log_type_t type, int8_t const * const param, int append )
             break;
 
         case LOG_TYPE_FILE:
+            CHECK_PTR_GOTO( param, _start_logging_fail );
 
             /* open the file */
-            log->cookie = (void*)fopen( param, mode[append] );
-
-            if ( log->cookie == NULL )
-            {
-                WARN( "failed to open log file\n" );
-                FREE(log);
-                return NULL;
-            }
+            log->cookie = (void*)fopen( (uint8_t const * const)param, mode[append] );
+            CHECK_PTR_GOTO( log->cookie, _start_logging_fail );
 
 #if defined linux
             /* redirect stderr writes to our custom writer function that outputs to syslog */
@@ -145,11 +159,35 @@ log_t * start_logging( log_type_t type, int8_t const * const param, int append )
             /* do nothing */
             break;
 
+        case LOG_TYPE_LIST:
+            CHECK_PTR_GOTO( param, _start_logging_fail );
+
+            /* clear the list if not appending */
+            if ( !append )
+                list_clear( (list_t*)param );
+
+            /* remember the list pointer */
+            log->cookie = param;
+
+#if defined linux
+            /* redirect stderr writes to our custom writer function that outputs to syslog */
+            setvbuf(stderr = fopencookie( log->cookie, "w", listlog_fns), NULL, _IOLBF, 0);
+#elif defined __APPLE__
+            /* redirect stderr writes to our custom writer function that outputs to syslog */
+            setvbuf(stderr = fwopen( log->cookie, (writefn)listlog_writer ), NULL, _IOLBF, 0);
+#endif
+            break;
+ 
+
         /* case ZEROMQ_LOG: */
         /* case UDP_LOG: */
     }
 
     return log;
+
+_start_logging_fail:
+    FREE( log );
+    return NULL;
 }
 
 void stop_logging( log_t * log )
@@ -167,6 +205,10 @@ void stop_logging( log_t * log )
             break;
 
         case LOG_TYPE_STDERR:
+            /* do nothing */
+            break;
+
+        case LOG_TYPE_LIST:
             /* do nothing */
             break;
     }
