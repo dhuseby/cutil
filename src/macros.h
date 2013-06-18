@@ -66,7 +66,7 @@ typedef int32_t int_t;
 #define FAIL(fmt, ...)   do { fprintf(stderr, "ERR:%16s:%-5d -(%-5d)- " fmt,  __FILE__, __LINE__, getpid(), ##__VA_ARGS__); fflush(stderr); assert(0); } while(0)
 
 /* runtime check macros */
-#ifndef CHECK_ERR_STR
+#if !defined(CHECK_ERR_STR)
 #define CHECK_ERR_STR
 uint8_t * check_err_str_;
 #endif
@@ -81,15 +81,158 @@ uint8_t * check_err_str_;
 #define CHECK_PTR_RET_MSG(x, y, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return (y); } } while(0)
 #define CHECK_PTR_GOTO(x, y) do { if(!(x)) { check_err_str_ = #x; goto y; } } while(0)
 
-/* abstractions of the memory allocator */
-#define FREE free
-#define MEMCPY memcpy
-#define MEMCMP memcmp
-#define MEMSET memset
-#define STRDUP strdup
-#define STRCMP strcmp
 
-#if defined(UNIT_TESTING)
+#if !defined(UNIT_TESTING)
+
+/* abstractions of the memory allocator */
+#if !defined(MALLOC)
+#define MALLOC malloc
+#endif
+
+#if !defined(CALLOC)
+#define CALLOC calloc
+#endif
+
+#if !defined(REALLOC)
+#define REALLOC realloc
+#endif
+
+#if !defined(FREE)
+#define FREE free
+#endif
+
+/* abstractions of other system functions */
+#if !defined(MEMCPY)
+#define MEMCPY memcpy
+#endif
+
+#if !defined(MEMCMP)
+#define MEMCMP memcmp
+#endif
+
+#if !defined(MEMSET)
+#define MEMSET memset
+#endif
+
+#if !defined(STRDUP)
+#define STRDUP strdup
+#endif
+
+#if !defined(STRCMP)
+#define STRCMP strcmp
+#endif
+
+#if !defined(ACCEPT)
+#define ACCEPT accept
+#endif
+
+#if !defined(BIND)
+#define BIND bind
+#endif
+
+#if !defined(CONNECT)
+#define CONNECT connect
+#endif
+
+#if !defined(ERRNO)
+#define ERRNO errno
+#endif
+
+#if !defined(FCNTL)
+#define FCNTL fcntl
+#endif
+
+#if !defined(FSTAT)
+#define FSTAT fstat
+#endif
+
+#if !defined(FORK)
+#define FORK fork
+#endif
+
+#if !defined(GETDTABLESIZE)
+#define GETDTABLESIZE getdtablesize
+#endif
+
+#if !defined(GETEGID)
+#define GETEGID getegid
+#endif
+
+#if !defined(GETEUID)
+#define GETEUID geteuid
+#endif
+
+#if !defined(GETGID)
+#define GETGID getgid
+#endif
+
+#if !defined(GETGROUPS)
+#define GETGROUPS getgroups
+#endif
+
+#if !defined(GETUID)
+#define GETUID getuid
+#endif
+
+#if !defined(IOCTL)
+#define IOCTL ioctl
+#endif
+
+#if !defined(LISTEN)
+#define LISTEN listen
+#endif
+
+#if !defined(PIPE)
+#define PIPE pipe
+#endif
+
+#if !defined(READ)
+#define READ read
+#endif
+
+#if !defined(SETEGID)
+#define SETEGID setegid
+#endif
+
+#if !defined(SETEUID)
+#define SETEUID seteuid
+#endif
+
+#if !defined(SETGROUPS)
+#define SETGROUPS setgroups
+#endif
+
+#if !defined(SETREGID)
+#define SETREGID setregid
+#endif
+
+#if !defined(SETREUID)
+#define SETREUID setreuid
+#endif
+
+#if !defined(SETSOCKOPT)
+#define SETSOCKOPT setsockopt
+#endif
+
+#if !defined(SOCKET)
+#define SOCKET socket
+#endif
+
+#if !defined(WRITE)
+#define WRITE write
+#endif
+
+#if !defined(WRITEV)
+#define WRITEV writev
+#endif
+
+#define EV_DEFAULT_LOOP ev_default_loop
+
+/* define these to be nothing when not unit testing */
+#define UNIT_TEST_RET
+#define UNIT_TEST_FAIL
+
+#else /* UNIT_TESTING */
 
 #define UNIT_TEST_RET(x) do { if( fake_##x ) return ( fake_##x##_ret ); } while(0)
 #define UNIT_TEST_FAIL(x) do { if( fail_##x ) return FALSE; } while(0)
@@ -99,6 +242,10 @@ extern int fail_alloc;
 #define MALLOC(...) (fail_alloc ? NULL : malloc(__VA_ARGS__))
 #define CALLOC(...) (fail_alloc ? NULL : calloc(__VA_ARGS__))
 #define REALLOC(...) (fail_alloc ? NULL : realloc(__VA_ARGS__))
+#define FREE free
+#define MEMSET memset
+#define MEMCMP memcmp
+#define MEMCPY memcpy
 
 extern int fake_accept;
 extern int fake_accept_ret;
@@ -209,44 +356,7 @@ extern int fake_ev_default_loop;
 extern void* fake_ev_default_loop_ret;
 #define EV_DEFAULT_LOOP(...) (fake_ev_default_loop ? fake_ev_default_loop_ret : ev_default_loop(__VA_ARGS__))
 
-#else
-
-#define UNIT_TEST_RET
-#define UNIT_TEST_FAIL
-
-#define MALLOC malloc
-#define CALLOC calloc
-#define REALLOC realloc
-#define ACCEPT accept
-#define BIND bind
-#define CONNECT connect
-#define ERRNO errno
-#define FCNTL fcntl
-#define FSTAT fstat
-#define FORK fork
-#define GETDTABLESIZE getdtablesize
-#define GETEGID getegid
-#define GETEUID geteuid
-#define GETGID getgid
-#define GETGROUPS getgroups
-#define GETUID getuid
-#define IOCTL ioctl
-#define LISTEN listen
-#define PIPE pipe
-#define READ read
-#define SETEGID setegid
-#define SETEUID seteuid
-#define SETGROUPS setgroups
-#define SETREGID setregid
-#define SETREUID setreuid
-#define SETSOCKOPT setsockopt
-#define SOCKET socket
-#define WRITE write
-#define WRITEV writev
-
-#define EV_DEFAULT_LOOP ev_default_loop
-
-#endif
+#endif /* UNIT_TESTING */
 
 #endif/*__MACROS_H__*/
  
