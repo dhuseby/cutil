@@ -315,6 +315,10 @@ extern int fake_read;
 extern int fake_read_ret;
 #define READ(...) (fake_read ? fake_read_ret : read(__VA_ARGS__))
 
+extern int fake_readv;
+extern int fake_readv_ret;
+#define READV(...) (fake_readv ? fake_readv_ret : readv(__VA_ARGS__))
+
 extern int fake_setegid;
 extern int fake_setegid_ret;
 #define SETEGID(...) (fake_setegid ? fake_setegid_ret : setegid(__VA_ARGS__))

@@ -37,9 +37,15 @@ struct aiofd_s
 
     struct aiofd_ops_s
     {
-        int (*read_fn)( aiofd_t * const aiofd, size_t nread, void * user_data );
-        int (*write_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data );
-        int (*error_fn)( aiofd_t * const aiofd, int err, void * user_data );
+        int (*read_evt_fn)( aiofd_t * const aiofd, size_t nread, void * user_data );
+        int (*write_evt_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data );
+        int (*error_evt_fn)( aiofd_t * const aiofd, int err, void * user_data );
+
+        /* user definable low-level read/write/readv/writev functions to use */
+        ssize_t (*read_fn)(int fd, void *buf, size_t count, void * user_data);
+        ssize_t (*write_fn)(int fd, const void *buf, size_t count, void * user_data);
+        ssize_t (*readv_fn)(int fd, const struct iovec *iov, int iovcnt, void * user_data);
+        ssize_t (*writev_fn)(int fd, const struct iovec *iov, int iovcnt, void * user_data);
     }           ops;
 };
 
@@ -64,16 +70,21 @@ int aiofd_enable_write_evt( aiofd_t * const aiofd, int enable );
 int aiofd_enable_read_evt( aiofd_t * const aiofd, int enable );
 
 /* read data from the fd */
-int32_t aiofd_read( aiofd_t * const aiofd, 
+ssize_t aiofd_read( aiofd_t * const aiofd, 
                     uint8_t * const buffer, 
                     int32_t const n );
+
+/* read from fd into iovec (scatter input) */
+ssize_t aiofd_readv( aiofd_t * const aiofd,
+                     struct iovec * iov,
+                     size_t iovcnt );
 
 /* write data to the fd */
 int aiofd_write( aiofd_t * const aiofd, 
                  uint8_t const * const buffer, 
                  size_t const n );
 
-/* write iovec to the fd */
+/* write iovec to the fd (gather output) */
 int aiofd_writev( aiofd_t * const aiofd,
                   struct iovec * iov,
                   size_t iovcnt );

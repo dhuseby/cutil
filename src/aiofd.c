@@ -40,6 +40,26 @@ typedef struct aiofd_write_s
 
 } aiofd_write_t;
 
+static ssize_t aiofd_do_read( int fd, void * buf, size_t count, void * user_data )
+{
+    return READ( fd, buf, count );
+}
+
+static ssize_t aiofd_do_write( int fd, void * buf, size_t count, void * user_data )
+{
+    return WRITE( fd, buf, count );
+}
+
+static ssize_t aiofd_do_readv( int fd, const struct iovec * iov, int iovcnt, void * user_data )
+{
+    return READV( fd, iov, iovcnt );
+}
+
+static ssize_t aiofd_do_writev( int fd, const struct iovec * iov, int iovcnt, void * user_data )
+{
+    return WRITEV( fd, iov, iovcnt );
+}
+
 
 static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
                                  evt_t * const evt,
@@ -71,11 +91,13 @@ static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
 
         if ( wb->iov )
         {
-            written = WRITEV( aiofd->wfd, (struct iovec *)wb->data, (int)wb->size );
+            /* call the low-level writev function */
+            written = (*(aiofd->ops.writev_fn))( aiofd->wfd, (struct iovec *)wb->data, (int)wb->size, aiofd->user_data );
         }
         else
         {
-            written = WRITE( aiofd->wfd, wb->data, wb->size );
+            /* call the low-level write function */
+            written = (*(aiofd->ops.write_fn))( aiofd->wfd, wb->data, wb->size, aiofd->user_data );
         }
 
         /* try to write the data to the socket */
@@ -89,10 +111,10 @@ static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
             else
             {
                 DEBUG( "write error: %d\n", ERRNO );
-                if ( aiofd->ops.error_fn != NULL )
+                if ( aiofd->ops.error_evt_fn != NULL )
                 {
                     DEBUG( "calling error callback\n" );
-                    (*(aiofd->ops.error_fn))( aiofd, ERRNO, aiofd->user_data );
+                    (*(aiofd->ops.error_evt_fn))( aiofd, ERRNO, aiofd->user_data );
                 }
                 return EVT_OK;
             }
@@ -110,10 +132,10 @@ static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
 
                 /* call the write complete callback to let client know that a particular
                  * buffer has been written to the fd. */
-                if ( aiofd->ops.write_fn != NULL )
+                if ( aiofd->ops.write_evt_fn != NULL )
                 {
                     DEBUG( "calling write complete callback\n" );
-                    keep_evt_on = (*(aiofd->ops.write_fn))( aiofd, wb->data, aiofd->user_data );
+                    keep_evt_on = (*(aiofd->ops.write_evt_fn))( aiofd, wb->data, aiofd->user_data );
                 }
 
                 /* free it */
@@ -123,10 +145,10 @@ static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
     }
 
     /* call the write complete callback with NULL buffer to signal completion */
-    if ( aiofd->ops.write_fn != NULL )
+    if ( aiofd->ops.write_evt_fn != NULL )
     {
         DEBUG( "calling write complete callback with null buffer\n" );
-        keep_evt_on = (*(aiofd->ops.write_fn))( aiofd, NULL, aiofd->user_data );
+        keep_evt_on = (*(aiofd->ops.write_evt_fn))( aiofd, NULL, aiofd->user_data );
     }
     
     if ( ! keep_evt_on )
@@ -158,19 +180,19 @@ static evt_ret_t aiofd_read_fn( evt_loop_t * const el,
     /* get how much data is available to read */
     if ( (IOCTL( aiofd->rfd, FIONREAD, &nread ) < 0) && (aiofd->listen == FALSE) )
     {
-        if ( aiofd->ops.error_fn != NULL )
+        if ( aiofd->ops.error_evt_fn != NULL )
         {
             DEBUG( "calling error callback\n" );
-            (*(aiofd->ops.error_fn))( aiofd, ERRNO, aiofd->user_data );
+            (*(aiofd->ops.error_evt_fn))( aiofd, ERRNO, aiofd->user_data );
         }
         return EVT_OK;
     }
 
     /* callback to tell client that there is data to read */
-    if ( aiofd->ops.read_fn != NULL )
+    if ( aiofd->ops.read_evt_fn != NULL )
     {
         DEBUG( "calling read callback (nread = %d)\n", nread );
-        keep_going  = (*(aiofd->ops.read_fn))( aiofd, nread, aiofd->user_data );
+        keep_going  = (*(aiofd->ops.read_evt_fn))( aiofd, nread, aiofd->user_data );
         DEBUG( "keep_going = %s\n", keep_going ? "TRUE" : "FALSE" );
     }
 
@@ -283,6 +305,16 @@ int aiofd_initialize( aiofd_t * const aiofd,
     /* copy the ops into place */
     MEMCPY( (void*)&(aiofd->ops), ops, sizeof(aiofd_ops_t) );
 
+    /* make sure there are low-level read/write/readv/writev pointers */
+    if ( aiofd->ops.read_fn == NULL )
+        aiofd->ops.read_fn = aiofd_do_read;
+    if ( aiofd->ops.write_fn == NULL )
+        aiofd->ops.write_fn = aiofd_do_write;
+    if ( aiofd->ops.readv_fn == NULL )
+        aiofd->ops.readv_fn = aiofd_do_readv;
+    if ( aiofd->ops.writev_fn == NULL )
+        aiofd->ops.writev_fn = aiofd_do_writev;
+
     return TRUE;
 }
 
@@ -334,7 +366,7 @@ int aiofd_enable_read_evt( aiofd_t * const aiofd,
     return TRUE;
 }
 
-int32_t aiofd_read( aiofd_t * const aiofd,
+ssize_t aiofd_read( aiofd_t * const aiofd,
                     uint8_t * const buffer,
                     int32_t const n )
 {
@@ -349,19 +381,51 @@ int32_t aiofd_read( aiofd_t * const aiofd,
 
     CHECK_RET(n > 0, 0);
 
-    res = READ( aiofd->rfd, buffer, n );
+    /* call the low level read function */
+    res = (*(aiofd->ops.read_fn))( aiofd->rfd, buffer, n, aiofd->user_data );
+
     switch ( (int)res )
     {
         case 0:
             errno = EPIPE;
         case -1:
-            if ( aiofd->ops.error_fn != NULL )
+            if ( aiofd->ops.error_evt_fn != NULL )
             {
-                (*(aiofd->ops.error_fn))( aiofd, ERRNO, aiofd->user_data );
+                (*(aiofd->ops.error_evt_fn))( aiofd, ERRNO, aiofd->user_data );
             }
             return 0;
         default:
-            return (int32_t)res;
+            return res;
+    }
+}
+
+ssize_t aiofd_readv( aiofd_t * const aiofd,
+                     struct iovec * iov,
+                     size_t iovcnt )
+{
+    ssize_t res = 0;
+
+    UNIT_TEST_RET( aiofd_readv );
+
+    CHECK_PTR_RET( aiofd, 0 );
+    CHECK_PTR_RET( iov, 0 );
+    CHECK_RET( (iovcnt > 0), 0 );
+   
+    /* call the low-level readv function */
+    res = (*(aiofd->ops.readv_fn))( aiofd->rfd, iov, iovcnt, aiofd->user_data );
+
+    switch ( (int)res )
+    {
+        case 0:
+            errno = EPIPE;
+        case -1:
+            if ( aiofd->ops.error_evt_fn != NULL )
+            {
+                (*(aiofd->ops.error_evt_fn))( aiofd, ERRNO, aiofd->user_data );
+            }
+            return 0;
+        default:
+            return res;
     }
 }
 
@@ -528,7 +592,7 @@ static void test_aiofd_write_fn( void )
     /* set user data to the callback counter */
     aiofd.user_data = &cb_counts;
 
-    aiofd.ops.write_fn = &write_callback_fn;
+    aiofd.ops.write_evt_fn = &write_callback_fn;
     MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
 
     /* w callback should be called once, queue should be empty */
@@ -573,7 +637,7 @@ static void test_aiofd_write_fn( void )
     wb->iov = FALSE;
     wb->nleft = size;
     list_push_tail( &(aiofd.wbuf), wb );
-    aiofd.ops.write_fn = NULL;
+    aiofd.ops.write_evt_fn = NULL;
     MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
     fake_write_ret = 4;
 
@@ -597,7 +661,7 @@ static void test_aiofd_write_fn( void )
     wb->iov = TRUE;
     wb->nleft = size;
     list_push_tail( &(aiofd.wbuf), wb );
-    aiofd.ops.write_fn = &write_callback_fn;
+    aiofd.ops.write_evt_fn = &write_callback_fn;
     MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
 
     /* results in 2 write callbacks */
@@ -617,7 +681,7 @@ static void test_aiofd_write_fn( void )
     wb->iov = TRUE;
     wb->nleft = size;
     list_push_tail( &(aiofd.wbuf), wb );
-    aiofd.ops.write_fn = &write_callback_fn;
+    aiofd.ops.write_evt_fn = &write_callback_fn;
     MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
 
     /* results in 2 calls to write callback and an empty wbuf queue */
@@ -634,7 +698,7 @@ static void test_aiofd_write_fn( void )
     wb->iov = TRUE;
     wb->nleft = size;
     list_push_tail( &(aiofd.wbuf), wb );
-    aiofd.ops.write_fn = NULL;
+    aiofd.ops.write_evt_fn = NULL;
     MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
     fake_writev_ret = 4;
 
@@ -651,7 +715,7 @@ static void test_aiofd_write_fn( void )
     wb->iov = TRUE;
     wb->nleft = size;
     list_push_tail( &(aiofd.wbuf), wb );
-    aiofd.ops.write_fn = &write_callback_fn;
+    aiofd.ops.write_evt_fn = &write_callback_fn;
     MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
     fake_writev_ret = -1;
     fake_errno = TRUE;
@@ -664,7 +728,7 @@ static void test_aiofd_write_fn( void )
     CU_ASSERT_EQUAL( cb_counts.e, 0 );
     CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 1 ); /* queue should be empty */
 
-    aiofd.ops.write_fn = NULL;
+    aiofd.ops.write_evt_fn = NULL;
     MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
     fake_errno_value = EWOULDBLOCK;
 
@@ -686,7 +750,7 @@ static void test_aiofd_write_fn( void )
     CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 1 ); /* queue should be empty */
 
     MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
-    aiofd.ops.write_fn = &write_callback_fn;
+    aiofd.ops.write_evt_fn = &write_callback_fn;
     fake_errno_value = EBADF;
 
     /* results in no callback, queue should not be empty */
@@ -697,7 +761,7 @@ static void test_aiofd_write_fn( void )
     CU_ASSERT_EQUAL( list_count( &(aiofd.wbuf) ), 1 ); /* queue should be empty */
 
     MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
-    aiofd.ops.error_fn = &error_callback_fn;
+    aiofd.ops.error_evt_fn = &error_callback_fn;
     fake_errno_value = EBADF;
 
     /* results in 1 write and 1 error callback, queue should not be empty */
@@ -744,7 +808,7 @@ static void test_aiofd_read_fn( void )
     CU_ASSERT_EQUAL( cb_counts.w, 0 );
     CU_ASSERT_EQUAL( cb_counts.e, 0 );
 
-    aiofd.ops.error_fn = &error_callback_fn;
+    aiofd.ops.error_evt_fn = &error_callback_fn;
     MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
 
     /* should receive an error callback */
@@ -774,7 +838,7 @@ static void test_aiofd_read_fn( void )
     CU_ASSERT_EQUAL( cb_counts.w, 0 );
     CU_ASSERT_EQUAL( cb_counts.e, 0 );
 
-    aiofd.ops.read_fn = &read_callback_fn;
+    aiofd.ops.read_evt_fn = &read_callback_fn;
     MEMSET( &cb_counts, 0, sizeof( cb_count_t ) );
 
     /* should receive one read callback */

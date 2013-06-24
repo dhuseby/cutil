@@ -44,6 +44,33 @@
 extern evt_loop_t * el;
 #endif
 
+/* UDP NOTES: since there is no need for listen and accept with UDP sockets,
+ * there is a trick to emulating them.  A UDP socket is created and bound to
+ * get a socket for accepting incoming data.  When socket_listen is called,
+ * the read events are enabled so that incoming packets will trigger read
+ * event callbacks.  
+ *
+ * Incoming read events on a bound TCP socket triggers a connect event 
+ * callback on the socket so that the incoming connection can be accepted. 
+ * For UDP however, the incoming read event on the bound socket will cause
+ * a MSG_PEEK recvfrom call to get the addr info for the incoming data.  The
+ * address will then be used to look up the socket_t struct associated with
+ * the addr info.  If no socket_t exists already, a connect callback will be
+ * made to trigger a socket_accept call.  If a socket_t does exists, the data
+ * will be read using recvfrom and then written to the fd in the associated
+ * socket_t to trigger normal async I/O handling.
+ *
+ * The socket_accept will setup up a new socket_t that has a pipe between it
+ * and the bound socket_t.  This allows the bound socket_t to call recvmsg
+ * and process all incoming UDP data while mimicing separate UDP data channels
+ * for each client sending data to this host. A new pipe_t needs to be created
+ * that uses the pipe call to encapsulate a bi-directional pipe with async I/O
+ * callbacks.
+ */
+
+
+
+
 struct socket_s
 {
     socket_type_t   type;           /* type of socket */
@@ -51,7 +78,6 @@ struct socket_s
     int32_t         bound;          /* is the socket bound? */
     int8_t*         host;           /* host name */
     uint16_t        port;           /* port number */
-    IPv4            addr;           /* IPv4 struct from host string */
     void *          user_data;      /* passed to ops callbacks */
     socket_ops_t    ops;            /* socket callbacks */
     aiofd_t         aiofd;          /* the fd management state */
@@ -74,70 +100,12 @@ static int socket_get_error( socket_t * const s, int * errval )
     return FALSE;
 }
 
-static int socket_do_tcp_bind( socket_t * const s )
-{
-    int len = 0;
-    struct sockaddr_in in_addr;
-
-    UNIT_TEST_RET( socket_bind );
-
-    CHECK_PTR_RET( s, FALSE );
-    CHECK_RET( s->type == SOCKET_TCP, FALSE );
-    CHECK_RET( s->port > 0, FALSE );
-
-    /* initialize the socket address struct */
-    MEMSET( &in_addr, 0, sizeof(struct sockaddr_in) );
-    in_addr.sin_family = AF_INET;
-    in_addr.sin_addr.s_addr = s->addr.s_addr;
-    in_addr.sin_port = htons(s->port);
-
-    len = sizeof( in_addr );
-
-    if ( BIND( s->aiofd.rfd, (struct sockaddr*)&in_addr, len) < 0 )
-    {
-        DEBUG( "failed to bind (errno: %d)\n", errno );
-        return FALSE;
-    }
-
-    return TRUE;
-}
-
-static int socket_do_unix_bind( socket_t * const s )
-{
-    int len = 0;
-    struct sockaddr_un un_addr;
-
-    UNIT_TEST_RET( socket_bind );
-
-    CHECK_PTR_RET( s, FALSE );
-    CHECK_RET( s->type == SOCKET_UNIX, FALSE );
-    CHECK_PTR_RET( s->host, FALSE );
-
-    /* initialize the socket address struct */
-    MEMSET( &un_addr, 0, sizeof(struct sockaddr_un) );
-    un_addr.sun_family = AF_UNIX;
-    strncpy( un_addr.sun_path, s->host, 100 );
-
-    /* try to delete the socket inode */
-    unlink( un_addr.sun_path );
-
-    /* calculate the length of the address struct */
-    len = strlen( un_addr.sun_path ) + sizeof( un_addr.sun_family );
-
-    if ( BIND( s->aiofd.rfd, (struct sockaddr*)&un_addr, len) < 0 )
-    {
-        DEBUG( "failed to bind (errno: %d)\n", errno );
-        return FALSE;
-    }
-
-    return TRUE;
-}
-
 
 static int socket_do_tcp_connect( socket_t * const s )
 {
     int len = 0;
-    struct sockaddr_in in_addr;
+    struct sockaddr_in addr;
+    struct sockaddr_in6 addr6;
 
     UNIT_TEST_RET( socket_connect );
     
@@ -145,27 +113,52 @@ static int socket_do_tcp_connect( socket_t * const s )
     CHECK_RET( s->type == SOCKET_TCP, FALSE );
     CHECK_RET( s->port > 0, FALSE );
 
-    /* initialize the socket address struct */
-    MEMSET( &in_addr, 0, sizeof(struct sockaddr_in) );
-    in_addr.sin_family = AF_INET;
-    in_addr.sin_addr.s_addr = s->addr.s_addr;
-    in_addr.sin_port = htons(s->port);
-    
-    len = sizeof( in_addr );
-
-    /* try to make the connection */
-    if ( CONNECT(s->aiofd.rfd, (struct sockaddr*)&in_addr, len) < 0 )
+    if ( s->addr_type == AF_INET )
     {
-        if ( ERRNO == EINPROGRESS )
+        /* initialize the socket address struct */
+        MEMSET( &addr, 0, sizeof(struct sockaddr_in) );
+        addr.sin_family = AF_INET;
+        MEMCPY( &(addr.sin_addr), &(s->v4), sizeof(IPv4) );
+        addr.sin_port = htons(s->port);
+        
+        /* try to make the connection */
+        if ( CONNECT(s->aiofd.rfd, (struct sockaddr*)&addr, sizeof(addr)) < 0 )
         {
-            DEBUG( "connection in progress\n" );
-        }
-        else
-        {
-            DEBUG("failed to initiate connect to the server\n");
-            return FALSE;
+            if ( ERRNO == EINPROGRESS )
+            {
+                DEBUG( "connection in progress\n" );
+            }
+            else
+            {
+                DEBUG("failed to initiate connect to the server\n");
+                return FALSE;
+            }
         }
     }
+    else if ( s->addr_type = AF_INET6 )
+    {
+        /* initialize the socket address struct */
+        MEMSET( &addr6, 0, sizeof(struct sockaddr_in6) );
+        addr6.sin6_family = AF_INET6;
+        MEMCPY( &(addr6.sin6_addr), &(s->v6), sizeof(IPv6) );
+        addr6.sin6_port = htons(s->port);
+        
+        /* try to make the connection */
+        if ( CONNECT(s->aiofd.rfd, (struct sockaddr*)&addr6, sizeof(addr6)) < 0 )
+        {
+            if ( ERRNO == EINPROGRESS )
+            {
+                DEBUG( "connection in progress\n" );
+            }
+            else
+            {
+                DEBUG("failed to initiate connect to the server\n");
+                return FALSE;
+            }
+        }
+    }
+    else
+        return FALSE;
 
     return TRUE;
 }
@@ -206,44 +199,49 @@ static int socket_do_unix_connect( socket_t * const s )
     return TRUE;
 }
 
-static socket_ret_t socket_lookup_host( socket_t * const s, 
-                                        int8_t const * const hostname)
+static int socket_aiofd_read_evt_fn( aiofd_t * const aiofd,
+                                 size_t const nread,
+                                 void * user_data )
 {
-    struct hostent *host;
+    socket_t * s = (socket_t*)user_data;
+    CHECK_PTR_RET( aiofd, FALSE );
+    CHECK_PTR_RET( s, FALSE );
 
-    UNIT_TEST_RET( socket_lookup_host );
-    
-    CHECK_PTR_RET(s, SOCKET_BADPARAM);
-    CHECK_RET((hostname != NULL) || (s->host != NULL), SOCKET_BADHOSTNAME);
-    
-    /* store the hostname if needed */
-    if( hostname != NULL )
+    if ( socket_is_bound( s ) )
     {
-        /* free the existing host if any */
-        FREE(s->host);
-        
-        /* copy the hostname into the server struct */
-        s->host = T(strdup((char const * const)hostname));
-    }
-
-    if ( s->type != SOCKET_UNIX )
-    {
-        /* try to look up the host name */
-        if( (host = gethostbyname((char const * const)hostname)) == NULL )
+        /* this is a socket accepting incoming connections */
+        if ( s->ops.connect_fn != NULL )
         {
-            DEBUG("look up of %s failed\n", hostname);
-            return SOCKET_BADHOSTNAME;
+            DEBUG( "calling socket connect callback for incoming connection\n" );
+            if ( (*(s->ops.connect_fn))( s, s->user_data ) != SOCKET_OK )
+            {
+                DEBUG( "failed to accept incoming connection!\n" );
+            }
         }
-        
-        /* store the IP address */
-        s->addr.s_addr = *((uint32_t*)host->h_addr_list[0]);
     }
-    
-    return SOCKET_OK;
+    else
+    {
+        if ( nread == 0 )
+        {
+            /* the other side disconnected, so follow suit */
+            socket_disconnect( s );
+
+            /* return FALSE to turn off the read event processing */
+            return FALSE;
+        }
+
+        /* this is a normal connection socket, so pass the read event along */
+        if ( s->ops.read_fn != NULL )
+        {
+            DEBUG( "calling socket read callback\n");
+            (*(s->ops.read_fn))( s, nread, s->user_data );
+        }
+    }
+
+    return TRUE;
 }
 
-
-static int socket_aiofd_write_fn( aiofd_t * const aiofd,
+static int socket_aiofd_write_evt_fn( aiofd_t * const aiofd,
                                   uint8_t const * const buffer,
                                   void * user_data )
 {
@@ -339,8 +337,7 @@ static int socket_aiofd_write_fn( aiofd_t * const aiofd,
     return TRUE;
 }
 
-
-static int socket_aiofd_error_fn( aiofd_t * const aiofd,
+static int socket_aiofd_error_evt_fn( aiofd_t * const aiofd,
                                   int err,
                                   void * user_data )
 {
@@ -357,152 +354,53 @@ static int socket_aiofd_error_fn( aiofd_t * const aiofd,
     return TRUE;
 }
 
-
-static int socket_aiofd_read_fn( aiofd_t * const aiofd,
-                                 size_t const nread,
-                                 void * user_data )
+static ssize_t socket_udp_read_fn( int fd, void *buf, size_t count, void * user_data )
 {
-    socket_t * s = (socket_t*)user_data;
-    CHECK_PTR_RET( aiofd, FALSE );
-    CHECK_PTR_RET( s, FALSE );
+    return -1;
+}
 
-    if ( socket_is_bound( s ) )
-    {
-        /* this is a socket accepting incoming connections */
-        if ( s->ops.connect_fn != NULL )
-        {
-            DEBUG( "calling socket connect callback for incoming connection\n" );
-            if ( (*(s->ops.connect_fn))( s, s->user_data ) != SOCKET_OK )
-            {
-                DEBUG( "failed to accept incoming connection!\n" );
-            }
-        }
-    }
-    else
-    {
-        if ( nread == 0 )
-        {
-            /* the other side disconnected, so follow suit */
-            socket_disconnect( s );
+static ssize_t socket_udp_readv_fn( int fd, struct iovec *iov, int iovcnt, void * user_data )
+{
+    return -1;
+}
 
-            /* return FALSE to turn off the read event processing */
-            return FALSE;
-        }
+static ssize_t socket_udp_write_fn( int fd, const void *buf, size_t count, void * user_data )
+{
+    return -1;
+}
 
-        /* this is a normal connection socket, so pass the read event along */
-        if ( s->ops.read_fn != NULL )
-        {
-            DEBUG( "calling socket read callback\n");
-            (*(s->ops.read_fn))( s, nread, s->user_data );
-        }
-    }
-
-    return TRUE;
+static ssize_t socket_udp_writev_fn( int fd, const struct iovec *iov, int iovcnt, void * user_data )
+{
+    return -1;
 }
 
 static int socket_initialize( socket_t * const s,
                         socket_type_t const type, 
                         socket_ops_t * const ops,
-                        evt_loop_t * const el,
                         void * user_data )
 {
-    int fd;
-    int32_t flags;
-    static aiofd_ops_t aiofd_ops =
-    {
-        &socket_aiofd_read_fn,
-        &socket_aiofd_write_fn,
-        &socket_aiofd_error_fn
-    };
-
     UNIT_TEST_FAIL( socket_initialize );
 
     CHECK_PTR_RET( s, FALSE );
     CHECK_RET( VALID_SOCKET_TYPE( type ), FALSE );
     CHECK_PTR_RET( ops, FALSE );
-    CHECK_PTR_RET( el, FALSE );
 
     MEMSET( (void*)s, 0, sizeof(socket_t) );
 
     /* store the type */
     s->type = type;
 
-    /* store the user_data pointer */
-    s->user_data = user_data;
-
     /* copy the ops into place */
     MEMCPY( (void*)&(s->ops), ops, sizeof(socket_ops_t) );
 
-    /* do the connect based on the type */
-    switch(s->type)
-    {
-        case SOCKET_TCP:
-
-            /* try to open a socket */
-            if ( (fd = SOCKET( PF_INET, SOCK_STREAM, IPPROTO_TCP )) < 0 )
-            {
-                DEBUG("failed to open socket\n");
-                return FALSE;
-            }
-            else
-            {
-                DEBUG("created socket\n");
-            }
-
-            /* turn off TCP naggle algorithm */
-            flags = 1;
-            if ( SETSOCKOPT( fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags) ) )
-            {
-                DEBUG( "failed to turn on TCP no delay\n" );
-                return FALSE;
-            }
-            else
-            {
-                DEBUG("turned on TCP no delay\n");
-            }
-
-            break;
-    
-        case SOCKET_UNIX:
-
-            /* try to open a socket */
-            if ( (fd = SOCKET( PF_UNIX, SOCK_STREAM, 0 )) < 0 )
-            {
-                DEBUG("failed to open socket\n");
-                return FALSE;
-            }
-            else
-            {
-                DEBUG("created socket\n");
-            }
-
-            break;
-    }
-
-    /* set the socket to non blocking mode */
-    flags = FCNTL( fd, F_GETFL );
-    if( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
-    {
-        DEBUG("failed to set socket to non-blocking\n");
-    }
-    else
-    {
-        DEBUG("socket is now non-blocking\n");
-    }
-
-    /* initialize the aiofd to manage the socket */
-    if ( aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s ) == FALSE )
-    {
-        DEBUG( "failed to initialzie the aiofd\n" );
-        return FALSE;
-    }
+    /* store the user_data pointer */
+    s->user_data = user_data;
 
     return TRUE;
 }
 
 socket_t* socket_new( socket_type_t const type, 
                       socket_ops_t * const ops,
-                      evt_loop_t * const el,
                       void * user_data )
 {
     socket_ret_t ret = SOCKET_OK;
@@ -513,7 +411,7 @@ socket_t* socket_new( socket_type_t const type,
     CHECK_PTR_RET(s, NULL);
 
     /* initlialize the socket */
-    if ( socket_initialize( s, type, ops, el, user_data ) == FALSE )
+    if ( socket_initialize( s, type, ops, user_data ) == FALSE )
     {
         socket_delete( s );
         return NULL;
@@ -575,8 +473,11 @@ socket_ret_t socket_connect( socket_t* const s,
     /* look up and store the hostname if provided */
     if( hostname != NULL )
     {
-        if ( (ret = socket_lookup_host(s, hostname)) != SOCKET_OK )
-            return ret;
+        /* free the existing host if any */
+        FREE(s->host);
+        
+        /* copy the hostname into the server struct */
+        s->host = T(strdup((char const * const)hostname));
     }
 
     /* do the connect based on the type */
@@ -617,15 +518,27 @@ int socket_is_bound( socket_t* const s )
     return s->bound;
 }
 
+
 socket_ret_t socket_bind( socket_t * const s,
                           int8_t const * const host,
-                          uint16_t const port )
+                          uint16_t const port, 
+                          evt_loop_t * const el )
 {
-    int len;
+    int len, fd, rv;
     int on = 1;
+    int32_t flags;
     socket_ret_t ret;
-    struct sockaddr_in in_addr;
+    struct addrinfo hints, *servinfo, *p;
     struct sockaddr_un un_addr;
+
+    static uint8_t port_buf[6];
+    static aiofd_ops_t aiofd_ops =
+    {
+        &socket_aiofd_read_evt_fn,
+        &socket_aiofd_write_evt_fn,
+        &socket_aiofd_error_evt_fn,
+        NULL, NULL, NULL, NULL
+    };
 
     CHECK_PTR_RET( s, SOCKET_BADPARAM );
     CHECK_RET( !socket_is_bound( s ), SOCKET_BOUND );
@@ -638,30 +551,257 @@ socket_ret_t socket_bind( socket_t * const s,
     /* look up and store the hostname if provided */
     if( host != NULL )
     {
-        if ( (ret = socket_lookup_host(s, host)) != SOCKET_OK )
-            return ret;
+        /* free the existing host if any */
+        FREE(s->host);
+        
+        /* copy the hostname into the server struct */
+        s->host = T(strdup((char const * const)hostname));
     }
+
+    /* covert port number to string */
+    sprintf( port_buf, "%hu", port );
 
     switch ( s->type )
     {
         case SOCKET_TCP:
-            if ( SETSOCKOPT( s->aiofd.rfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0 )
+
+            /* get addr info */
+            MEMSET( &hints, 0, sizeof(struct addrinfo) );
+            hints.ai_family = AF_UNSPEC;
+            hints.ai_socktype = SOCK_STREAM;
+            hints.ai_flags = AI_PASSIVE;  /* use my IP addr */
+
+            /* try to look up our info */
+            if ( (rv = getaddrinfo( NULL, port_buf, &hints, &servinfo ) ) != 0 )
             {
-                DEBUG( "failed to set the socket to reuse addr\n" );
+                LOG( "getaddrinfo: %s\n", gai_strerror(rv) );
+                return SOCKET_ERROR;
             }
 
-            /* try to bind the tcp socket */
-            CHECK_RET( socket_do_tcp_bind( s ), SOCKET_ERROR );
+            /* loop through our info trying to bind */
+            for ( p = servinfo; (p != NULL) && (s->bound != TRUE); p = p->ai_next )
+            {
+                /* try to open a socket */
+                if ( (fd = SOCKET( p->ai_family, p->ai_socktype, p->ai_protocol )) < 0 )
+                {
+                    DEBUG( "failed to open TCP socket\n" );
+                    continue;
+                }
+                else
+                {
+                    DEBUG( "created TCP socket\n" );
+                }
 
-            /* flag the socket as bound */
-            s->bound = TRUE;
+
+                /* turn off TCP naggle algorithm */
+                flags = 1;
+                if ( SETSOCKOPT( fd, p->ai_protocol, TCP_NODELAY, &on, sizeof(on) ) < 0 )
+                {
+                    DEBUG( "failed to turn on TCP no delay\n" );
+                    close(fd);
+                    continue;
+                }
+                else
+                {
+                    DEBUG( "turned on TCP no delay\n" );
+                }
+
+
+                if ( SETSOCKOPT( fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on) ) < 0 )
+                {
+                    DEBUG( "failed to set the TCP socket to reuse addr\n" );
+                    close(fd);
+                    continue;
+                }
+                else
+                {
+                    DEBUG( "turned on TCP socket address reuse\n" );
+                }
+
+                /* set the socket to non blocking mode */
+                flags = FCNTL( fd, F_GETFL );
+                if( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
+                {
+                    DEBUG( "failed to set TCP socket to non-blocking\n" );
+                    close(fd);
+                    continue;
+                }
+                else
+                {
+                    DEBUG( "TCP socket is now non-blocking\n" );
+                }
+
+                /* initialize the aiofd to manage the socket */
+                if ( aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s ) == FALSE )
+                {
+                    DEBUG( "failed to initialzie the aiofd\n" );
+                    close(fd);
+                    continue;
+                }
+                else
+                {
+                    DEBUG( "aiofd initialized\n" );
+                }
+
+                if ( BIND( fd, p->ai_addr, p->ai_addrlen ) < 0 )
+                {
+                    DEBUG( "failed to bind TCP socket\n" );
+                    aiofd_deinitialize( &(s->aiofd) );
+                    close(fd);
+                    continue;
+                }
+                else
+                {
+                    DEBUG( "TCP socket is bound\n" );
+                }
+
+                /* flag the socket as bound */
+                s->bound = TRUE;
+            }
+
+            /* release the addr info data */
+            freeaddrinfo( servinfo );
+
+            break;
+
+        case SOCKET_UDP:
+
+            /* get addr info */
+            MEMSET( &hints, 0, sizeof(struct addrinfo) );
+            hints.ai_family = AF_UNSPEC;
+            hints.ai_socktype = SOCK_DGRAM;
+            hints.ai_flags = AI_PASSIVE;  /* use my IP addr */
+
+            /* try to look up our info */
+            if ( (rv = getaddrinfo( NULL, port_buf, &hints, &servinfo ) ) != 0 )
+            {
+                LOG( "getaddrinfo: %s\n", gai_strerror(rv) );
+                return SOCKET_ERROR;
+            }
+
+            /* loop through our info trying to bind */
+            for ( p = servinfo; (p != NULL) && (s->bound != TRUE); p = p->ai_next )
+            {
+                /* try to open a socket */
+                if ( (fd = SOCKET( p->ai_family, p->ai_socktype, p->ai_protocol )) < 0 )
+                {
+                    DEBUG( "failed to open UDP socket\n" );
+                    continue;
+                }
+                else
+                {
+                    DEBUG( "UDP created socket\n" );
+                }
+
+                /* set the socket to non blocking mode */
+                flags = FCNTL( fd, F_GETFL );
+                if( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
+                {
+                    DEBUG( "failed to set UDP socket to non-blocking\n" );
+                    close(fd);
+                    continue;
+                }
+                else
+                {
+                    DEBUG( "UDP socket is now non-blocking\n" );
+                }
+
+                /* override the low-level read/write/writev functions for UDP specific ones */
+                aiofd_ops.read_fn = socket_udp_read_fn;
+                aiofd_ops.write_fn = socket_udp_write_fn;
+                aiofd_ops.readv_fn = socket_udp_readv_fn;
+                aiofd_ops.writev_fn = socket_udp_writev_fn;
+
+                /* initialize the aiofd to manage the UDP socket */
+                if ( aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s ) == FALSE )
+                {
+                    DEBUG( "failed to initialzie the aiofd\n" );
+                    close(fd);
+                    continue;
+                }
+                else
+                {
+                    DEBUG( "aiofd initialized\n" );
+                }
+
+                if ( BIND( fd, p->ai_addr, p->ai_addrlen ) < 0 )
+                {
+                    DEBUG( "failed to bind UDP socket\n" );
+                    aiofd_deinitialize( &(s->aiofd) );
+                    close(fd);
+                    continue;
+                }
+                else
+                {
+                    DEBUG( "UDP socket is bound\n" );
+                }
+
+                /* flag the socket as bound */
+                s->bound = TRUE;
+            }
+
+            /* release the addr info data */
+            freeaddrinfo( servinfo );
 
             break;
 
         case SOCKET_UNIX:
         
-            /* try to bind the unix socket */
-            CHECK_RET( socket_do_unix_bind( s ), SOCKET_ERROR );
+            /* try to open a socket */
+            if ( (fd = SOCKET( PF_UNIX, SOCK_STREAM, 0 )) < 0 )
+            {
+                DEBUG("failed to open UNIX socket\n");
+                return FALSE;
+            }
+            else
+            {
+                DEBUG("created UNIX socket\n");
+            }
+
+            /* set the socket to non blocking mode */
+            flags = FCNTL( fd, F_GETFL );
+            if( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
+            {
+                DEBUG( "failed to set UNIX socket to non-blocking\n" );
+                close(fd);
+                continue;
+            }
+            else
+            {
+                DEBUG( "UNIX socket is now non-blocking\n" );
+            }
+
+            /* initialize the aiofd to manage the socket */
+            if ( aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s ) == FALSE )
+            {
+                DEBUG( "failed to initialzie the aiofd\n" );
+                close(fd);
+                continue;
+            }
+            else
+            {
+                DEBUG( "aiofd initialized\n" );
+            }
+
+            /* initialize the socket address struct */
+            MEMSET( &un_addr, 0, sizeof(struct sockaddr_un) );
+            un_addr.sun_family = AF_UNIX;
+            strncpy( un_addr.sun_path, s->host, 100 );
+
+            /* try to delete the socket inode */
+            unlink( un_addr.sun_path );
+
+            /* calculate the length of the address struct */
+            len = strlen( un_addr.sun_path ) + sizeof( un_addr.sun_family );
+
+            if ( BIND( s->aiofd.rfd, (struct sockaddr*)&un_addr, len) < 0 )
+            {
+                DEBUG( "failed to bind UNIX socket\n" );
+            }
+            else
+            {
+                DEBUG( "UNIX socket is bound\n" );
+            }
 
             /* flag the socket as bound */
             s->bound = TRUE;
@@ -669,8 +809,8 @@ socket_ret_t socket_bind( socket_t * const s,
             break;
     }
 
-    /* start the socket read even processing to catch incoming connections */
-    CHECK_RET( aiofd_enable_read_evt( &(s->aiofd), TRUE ), SOCKET_ERROR );
+    /* make sure we successfuly bound the socket */
+    CHECK_RET( s->bound, SOCKET_ERROR );
 
     return SOCKET_OK;
 }
@@ -680,6 +820,9 @@ socket_ret_t socket_listen( socket_t * const s, int const backlog )
     CHECK_PTR_RET( s, SOCKET_BADPARAM );
     CHECK_RET( socket_is_bound( s ), SOCKET_BOUND );
     CHECK_RET( !socket_is_connected( s ), SOCKET_CONNECTED );
+
+    /* start the socket read event processing to catch incoming connections */
+    CHECK_RET( aiofd_enable_read_evt( &(s->aiofd), TRUE ), SOCKET_ERROR );
 
     /* now begin listening for incoming connections */
     if ( LISTEN( s->aiofd.rfd, backlog ) < 0 )
@@ -707,16 +850,17 @@ socket_t * socket_accept( socket_t * const s,
                           void * user_data )
 {
     int fd;
-    int len;
+    socklen_t len = 0;
     int32_t flags;
     socket_t * client;
-    struct sockaddr_in in_addr;
+    struct sockaddr_in addr;
+    struct sockaddr_in6 addr6;
     struct sockaddr_un un_addr;
     static aiofd_ops_t aiofd_ops =
     {
-        &socket_aiofd_read_fn,
-        &socket_aiofd_write_fn,
-        &socket_aiofd_error_fn
+        &socket_aiofd_read_evt_fn,
+        &socket_aiofd_write_evt_fn,
+        &socket_aiofd_error_evt_fn
     };
 
     CHECK_PTR_RET( s, NULL );
@@ -743,25 +887,27 @@ socket_t * socket_accept( socket_t * const s,
     {
         case SOCKET_TCP:
 
-            MEMSET( (void*)&in_addr, 0, sizeof( struct sockaddr_in ) );
-
-            len = sizeof(in_addr);
-
-            /* try to open a socket */
-            if ( (fd = ACCEPT( s->aiofd.rfd, (struct sockaddr *)&in_addr, &len )) < 0 )
+            if ( s->addr_type == AF_INET )
             {
-                DEBUG("failed to accept incoming connection\n");
-                socket_delete( (void*)client );
-                return NULL;
-            }
-            else
-            {
-                DEBUG("accepted socket\n");
-            }
+                MEMSET( &addr, 0, sizeof( struct sockaddr_in ) );
 
-            /* store the connection information */
-            client->addr.s_addr = in_addr.sin_addr.s_addr;
-            client->port = ntohs( in_addr.sin_port );
+                /* try to open a socket */
+                len = sizeof( addr );
+                if ( (fd = ACCEPT( s->aiofd.rfd, (struct sockaddr *)&addr, &len )) < 0 )
+                {
+                    DEBUG("failed to accept incoming connection\n");
+                    socket_delete( (void*)client );
+                    return NULL;
+                }
+                else
+                {
+                    DEBUG("accepted socket\n");
+                }
+
+                /* store the connection information */
+                client->addr.s_addr = in_addr.sin_addr.s_addr;
+                client->port = ntohs( in_addr.sin_port );
+            }
 
             /* turn off TCP naggle algorithm */
             flags = 1;
@@ -996,73 +1142,61 @@ void test_socket_private_functions( void )
     
     reset_test_flags();
 
-    /* test socket_lookup_host */
-    MEMSET( &s, 0, sizeof( socket_t ) );
-    CU_ASSERT_EQUAL( socket_lookup_host( NULL, NULL ), SOCKET_BADPARAM );
-    CU_ASSERT_EQUAL( socket_lookup_host( &s, NULL ), SOCKET_BADHOSTNAME );
-    CU_ASSERT_EQUAL( socket_lookup_host( &s, "foo.com" ), SOCKET_OK ); /* strdup's the hostname */
-    FREE( s.host );
-    s.type = SOCKET_UNIX;
-    s.host = host;
-    CU_ASSERT_EQUAL( socket_lookup_host( &s, NULL ), SOCKET_OK );
-    
-    reset_test_flags();
-
-    /* test socket_aiofd_write_fn */
-    CU_ASSERT_FALSE( socket_aiofd_write_fn( NULL, NULL, NULL ) );
-    CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), NULL, NULL ) );
+    /* test socket_aiofd_write_evt_fn */
+    CU_ASSERT_FALSE( socket_aiofd_write_evt_fn( NULL, NULL, NULL ) );
+    CU_ASSERT_FALSE( socket_aiofd_write_evt_fn( &(s.aiofd), NULL, NULL ) );
     s.connected = TRUE;
     CU_ASSERT_TRUE( list_initialize( &(s.aiofd.wbuf), 2, NULL ) );
     CU_ASSERT_TRUE( list_push_tail( &(s.aiofd.wbuf), (void*)host ) );
-    CU_ASSERT_TRUE( socket_aiofd_write_fn( &(s.aiofd), NULL, (void*)(&s) ) );
-    CU_ASSERT_TRUE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
+    CU_ASSERT_TRUE( socket_aiofd_write_evt_fn( &(s.aiofd), NULL, (void*)(&s) ) );
+    CU_ASSERT_TRUE( socket_aiofd_write_evt_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
     s.connected = FALSE;
     s.aiofd.rfd = STDIN_FILENO;
-    CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
+    CU_ASSERT_FALSE( socket_aiofd_write_evt_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
     s.ops.error_fn = &test_error_fn;
     test_flag = FALSE;
     s.user_data = &test_flag;
-    CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
+    CU_ASSERT_FALSE( socket_aiofd_write_evt_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
     CU_ASSERT_TRUE( test_flag );
     fake_socket_getsockopt = TRUE;
     fake_socket_errval = 0;
     fake_socket_get_error_ret = TRUE;
     list_clear( &(s.aiofd.wbuf) );
-    CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
+    CU_ASSERT_FALSE( socket_aiofd_write_evt_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
     fake_socket_errval = -1;
     s.ops.error_fn = NULL;
     s.connected = FALSE;
-    CU_ASSERT_FALSE( socket_aiofd_write_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
+    CU_ASSERT_FALSE( socket_aiofd_write_evt_fn( &(s.aiofd), (uint8_t const * const)&host, (void*)(&s) ) );
     fake_socket_errval = 0;
     fake_socket_getsockopt = FALSE;
 
     reset_test_flags();
 
-    /* test socket_aiofd_error_fn */
-    CU_ASSERT_FALSE( socket_aiofd_error_fn( NULL, 0, NULL ) );
-    CU_ASSERT_FALSE( socket_aiofd_error_fn( &(s.aiofd), 0, NULL ) );
-    CU_ASSERT_TRUE( socket_aiofd_error_fn( &(s.aiofd), 0, (void*)(&s) ) );
+    /* test socket_aiofd_error_evt_fn */
+    CU_ASSERT_FALSE( socket_aiofd_error_evt_fn( NULL, 0, NULL ) );
+    CU_ASSERT_FALSE( socket_aiofd_error_evt_fn( &(s.aiofd), 0, NULL ) );
+    CU_ASSERT_TRUE( socket_aiofd_error_evt_fn( &(s.aiofd), 0, (void*)(&s) ) );
     test_flag = FALSE;
     s.ops.error_fn = &test_error_fn;
-    CU_ASSERT_TRUE( socket_aiofd_error_fn( &(s.aiofd), 0, (void*)(&s) ) );
+    CU_ASSERT_TRUE( socket_aiofd_error_evt_fn( &(s.aiofd), 0, (void*)(&s) ) );
     CU_ASSERT_TRUE( test_flag );
 
     reset_test_flags();
 
-    /* test socket_aiofd_read_fn */
-    CU_ASSERT_FALSE( socket_aiofd_read_fn( NULL, 0, NULL ) );
-    CU_ASSERT_FALSE( socket_aiofd_read_fn( &(s.aiofd), 0, NULL ) );
+    /* test socket_aiofd_read_evt_fn */
+    CU_ASSERT_FALSE( socket_aiofd_read_evt_fn( NULL, 0, NULL ) );
+    CU_ASSERT_FALSE( socket_aiofd_read_evt_fn( &(s.aiofd), 0, NULL ) );
     s.aiofd.rfd = 0;
-    CU_ASSERT_FALSE( socket_aiofd_read_fn( &(s.aiofd), 0, (void*)(&s) ) );
-    CU_ASSERT_TRUE( socket_aiofd_read_fn( &(s.aiofd), 1, (void*)(&s) ) );
+    CU_ASSERT_FALSE( socket_aiofd_read_evt_fn( &(s.aiofd), 0, (void*)(&s) ) );
+    CU_ASSERT_TRUE( socket_aiofd_read_evt_fn( &(s.aiofd), 1, (void*)(&s) ) );
     s.bound = TRUE;
     test_flag = FALSE;
-    CU_ASSERT_TRUE( socket_aiofd_read_fn( &(s.aiofd), 0, (void*)(&s) ) );
+    CU_ASSERT_TRUE( socket_aiofd_read_evt_fn( &(s.aiofd), 0, (void*)(&s) ) );
     CU_ASSERT_FALSE( test_flag );
     s.ops.connect_fn = &test_connect_fn;
     test_connect_fn_ret = SOCKET_ERROR;
     test_flag = FALSE;
-    CU_ASSERT_TRUE( socket_aiofd_read_fn( &(s.aiofd), 0, (void*)(&s) ) );
+    CU_ASSERT_TRUE( socket_aiofd_read_evt_fn( &(s.aiofd), 0, (void*)(&s) ) );
     CU_ASSERT_TRUE( test_flag );
 
     reset_test_flags();
@@ -1168,7 +1302,6 @@ void test_socket_private_functions( void )
     fake_setsockopt = TRUE;
     fake_aiofd_enable_read_evt = TRUE;
     fake_socket_bound = TRUE;
-    fake_socket_lookup_host = TRUE;
     fake_socket_bind = TRUE;
     MEMSET( &s, 0, sizeof( socket_t ) );
     CU_ASSERT_EQUAL( socket_bind( NULL, NULL, 0 ), SOCKET_BADPARAM );
@@ -1180,7 +1313,6 @@ void test_socket_private_functions( void )
     s.type = SOCKET_UNKNOWN;
     CU_ASSERT_EQUAL( socket_bind( &s, host, 0 ), SOCKET_ERROR );
     s.type = SOCKET_TCP;
-    fake_socket_lookup_host_ret = SOCKET_ERROR;
     CU_ASSERT_EQUAL( socket_bind( &s, host, 0 ), SOCKET_ERROR );
     CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
     s.type = SOCKET_TCP;

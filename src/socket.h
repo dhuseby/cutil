@@ -44,6 +44,7 @@ typedef enum socket_ret_e
 typedef enum socket_type_e
 {
     SOCKET_TCP,
+    SOCKET_UDP,
     SOCKET_UNIX,
 
     SOCKET_LAST,
@@ -73,7 +74,6 @@ typedef struct socket_ops_s
 /* create/destroy a socket */
 socket_t* socket_new( socket_type_t const type,
                       socket_ops_t * const ops,
-                      evt_loop_t * const el,
                       void * user_data );
 
 void socket_delete( void * s );
@@ -92,7 +92,8 @@ int socket_is_bound( socket_t * const s );
 /* bind a socket to a specified IP/port or inode */
 socket_ret_t socket_bind( socket_t * const s,
                           int8_t const * const host,
-                          uint16_t const port );
+                          uint16_t const port,
+                          evt_loop_t * const el );
 
 /* listen for incoming connections */
 socket_ret_t socket_listen( socket_t * const s,
@@ -112,7 +113,7 @@ socket_ret_t socket_disconnect( socket_t * const s );
 socket_type_t socket_get_type( socket_t * const s );
 
 /* read data from the socket */
-int32_t socket_read( socket_t * const s, 
+ssize_t socket_read( socket_t * const s, 
                      uint8_t * const buffer, 
                      int32_t const n );
 
