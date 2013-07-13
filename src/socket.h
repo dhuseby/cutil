@@ -37,7 +37,9 @@ typedef enum socket_ret_e
     SOCKET_POLLERR      = -6,
     SOCKET_CONNECTED    = -7,
     SOCKET_BOUND        = -8,
-    SOCKET_CONNECT_FAIL = -9
+    SOCKET_OPEN_FAIL    = -9
+    SOCKET_CONNECT_FAIL = -10,
+    SOCKET_BIND_FAIL    = -11
 
 } socket_ret_t;
 
@@ -56,9 +58,9 @@ typedef enum socket_type_e
 } socket_type_t;
 
 #define VALID_SOCKET_TYPE( t ) ((t >= SOCKET_FIRST) && (t < SOCKET_LAST))
+#define HOSTNAME_BUFFER_LEN (128)
+#define PORT_BUFFER_LEN (8)
 
-typedef struct in_addr IPv4;
-typedef struct in6_addr IPv6;
 typedef struct socket_s socket_t;
 
 typedef struct socket_ops_s 
@@ -79,26 +81,27 @@ socket_t* socket_new( socket_type_t const type,
 void socket_delete( void * s );
 
 /* check to see if connected */
-int socket_is_connected( socket_t * const s );
+int_t socket_is_connected( socket_t * const s );
 
 /* connect a socket as a client*/
 socket_ret_t socket_connect( socket_t * const s, 
-                             int8_t const * const host, 
-                             uint16_t const port );
+                             uint8_t const * const host, 
+                             uint8_t const * const port,
+                             evt_loop_t * const el );
 
 /* check to see if bound */
-int socket_is_bound( socket_t * const s );
+int_t socket_is_bound( socket_t * const s );
 
 /* bind a socket to a specified IP/port or inode */
 socket_ret_t socket_bind( socket_t * const s,
-                          int8_t const * const host,
-                          uint16_t const port,
+                          uint8_t const * const host,
+                          uint8_t const * const port,
                           evt_loop_t * const el );
 
 /* listen for incoming connections */
 socket_ret_t socket_listen( socket_t * const s,
                             int const backlog );
-int socket_is_listening( socket_t * const s );
+int_t socket_is_listening( socket_t * const s );
 
 /* accept an incoming connection */
 socket_t* socket_accept( socket_t * const s,
@@ -115,7 +118,7 @@ socket_type_t socket_get_type( socket_t * const s );
 /* read data from the socket */
 ssize_t socket_read( socket_t * const s, 
                      uint8_t * const buffer, 
-                     int32_t const n );
+                     size_t const n );
 
 /* write data to the socket */
 socket_ret_t socket_write( socket_t * const s, 

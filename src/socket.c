@@ -29,6 +29,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/uio.h>
 #include <sys/un.h>
 #include <netinet/tcp.h>
@@ -67,23 +68,70 @@ extern evt_loop_t * el;
  * that uses the pipe call to encapsulate a bi-directional pipe with async I/O
  * callbacks.
  */
-
-
-
+struct sockaddr_storage sockaddr_t;
 
 struct socket_s
 {
     socket_type_t   type;           /* type of socket */
-    int32_t         connected;      /* is the socket connected? */
-    int32_t         bound;          /* is the socket bound? */
-    int8_t*         host;           /* host name */
-    uint16_t        port;           /* port number */
+    int_t           connected;      /* is the socket connected? */
+    int_t           bound;          /* is the socket bound? */
+    uint8_t*        host;           /* host name */
+    uint8_t*        port;           /* port number as string */
     void *          user_data;      /* passed to ops callbacks */
     socket_ops_t    ops;            /* socket callbacks */
     aiofd_t         aiofd;          /* the fd management state */
+    sockaddr_t      addr;           /* place to stash the sockaddr_storage data */
+    socklen_t       addrlen;        /* length of addr */
 };
 
-static int socket_get_error( socket_t * const s, int * errval )
+static inline void * socket_in_addr( sockaddr_t * const addr )
+{
+    CHECK_PTR_RET( addr, NULL );
+    if ( addr->ss_family == AF_INET )
+    {
+        return &(((struct sockaddr_in*)addr)->sin_addr);
+    }
+    else
+    {
+        return &(((struct sockadr_in6*)addr)->sin6_addr);
+    }
+}
+
+static inline in_port_t socket_in_port( sockaddr_t * const addr )
+{
+    CHECK_PTR_RET( addr, 0 );
+    if ( addr->ss_family == AF_INET )
+    {
+        return ((struct sockaddr_in*)addr)->sin_port;
+    }
+    else
+    {
+        return ((struct sockadr_in6*)addr)->sin6_port;
+    }
+}
+
+
+
+static inline int_t socket_validate_port( uint8_t const * const port )
+{
+    uint8_t * endp = NULL;
+    uint32_t pnum = 0;
+
+    CHECK_PTR_RET( port, FALSE );
+
+    /* convert port string to number */
+    pnum = STRTOL( port, &endp, 10 );
+
+    /* make sure we parsed something */
+    CHECK_RET( endp > port, FALSE );
+
+    /* make sure there wasn't any garbage */
+    CHECK_RET( *endp == '\0', FALSE );
+
+    return TRUE;
+}
+
+static int_t socket_get_error( socket_t * const s, int * errval )
 {
     socklen_t len = sizeof(int);
     CHECK_PTR_RET( s, FALSE );
@@ -100,104 +148,299 @@ static int socket_get_error( socket_t * const s, int * errval )
     return FALSE;
 }
 
-
-static int socket_do_tcp_connect( socket_t * const s )
+static int_t socket_open_tcp_socket( socket_t * const s,
+                                     evt_loop_t * const el,
+                                     int ai_flags )
 {
-    int len = 0;
-    struct sockaddr_in addr;
-    struct sockaddr_in6 addr6;
+    struct addrinfo hints, *servinfo, *p;
+    int n, fd = 0, on = 1;
+    int_t success = FALSE;
+    int32_t flags;
+    static aiofd_ops_t aiofd_ops =
+    {
+        &socket_aiofd_read_evt_fn,
+        &socket_aiofd_write_evt_fn,
+        &socket_aiofd_error_evt_fn,
+        NULL, NULL, NULL, NULL
+    };
 
-    UNIT_TEST_RET( socket_connect );
+    UNIT_TEST_RET( socket_create_tcp_socket );
     
     CHECK_PTR_RET( s, FALSE );
     CHECK_RET( s->type == SOCKET_TCP, FALSE );
-    CHECK_RET( s->port > 0, FALSE );
+    CHECK_RET( s->port != NULL, FALSE );
 
-    if ( s->addr_type == AF_INET )
+    /* zero out the hints */
+    MEMSET( &hints, 0, sizeof(struct addrinfo) );
+
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = ai_flags;
+
+    if ( (n = GETADDRINFO( s->host, s->port, &hints, &serverinfo ) ) != 0 )
     {
-        /* initialize the socket address struct */
-        MEMSET( &addr, 0, sizeof(struct sockaddr_in) );
-        addr.sin_family = AF_INET;
-        MEMCPY( &(addr.sin_addr), &(s->v4), sizeof(IPv4) );
-        addr.sin_port = htons(s->port);
-        
-        /* try to make the connection */
-        if ( CONNECT(s->aiofd.rfd, (struct sockaddr*)&addr, sizeof(addr)) < 0 )
-        {
-            if ( ERRNO == EINPROGRESS )
-            {
-                DEBUG( "connection in progress\n" );
-            }
-            else
-            {
-                DEBUG("failed to initiate connect to the server\n");
-                return FALSE;
-            }
-        }
+        LOG( "GETADDRINFO: %s\n", gai_strerror(n) );
+        return FALSE;
     }
-    else if ( s->addr_type = AF_INET6 )
+
+    for( p = servinfo; (p != NULL) && (success != TRUE); p = p->ai_next )
     {
-        /* initialize the socket address struct */
-        MEMSET( &addr6, 0, sizeof(struct sockaddr_in6) );
-        addr6.sin6_family = AF_INET6;
-        MEMCPY( &(addr6.sin6_addr), &(s->v6), sizeof(IPv6) );
-        addr6.sin6_port = htons(s->port);
-        
-        /* try to make the connection */
-        if ( CONNECT(s->aiofd.rfd, (struct sockaddr*)&addr6, sizeof(addr6)) < 0 )
+        /* try to open a socket */
+        if ( (fd = SOCKET( info->ai_family, info->ai_socktype, info->ai_protocol )) < 0 )
         {
-            if ( ERRNO == EINPROGRESS )
-            {
-                DEBUG( "connection in progress\n" );
-            }
-            else
-            {
-                DEBUG("failed to initiate connect to the server\n");
-                return FALSE;
-            }
+            DEBUG( "failed to open TCP socket\n" );
+            continue;
+        }
+        
+        DEBUG( "created TCP socket\n" );
+
+        /* turn off TCP naggle algorithm */
+        flags = 1;
+        if ( SETSOCKOPT( fd, info->ai_protocol, TCP_NODELAY, &on, sizeof(on) ) < 0 )
+        {
+            DEBUG( "failed to turn on TCP no delay\n" );
+            close(fd);
+            continue;
+        }
+        
+        DEBUG( "turned on TCP no delay\n" );
+
+        /* set the socket to non blocking mode */
+        flags = FCNTL( fd, F_GETFL );
+        if( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
+        {
+            DEBUG( "failed to set TCP socket to non-blocking\n" );
+            close(fd);
+            continue;
+        }
+        
+        DEBUG( "TCP socket is now non-blocking\n" );
+
+        /* initialize the aiofd to manage the socket */
+        if ( aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s ) == FALSE )
+        {
+            DEBUG( "failed to initialzie the aiofd\n" );
+            close(fd);
+            continue;
+        }
+        
+        DEBUG( "aiofd initialized\n" );
+
+        /* store the address info */
+        MEMSET( &(s->addr), 0, sizeof(sockaddr_t) );
+        MEMCPY( &(s->addr), p->ai_addr, p->ai_addrlen );
+        s->addrlen = p->ai_addrlen;
+
+        /* if we get here, we've got a good socket */
+        success = TRUE;
+    }
+
+    /* release the addr info data */
+    freeaddrinfo( servinfo );
+
+    return success;
+}
+
+static int_t socket_open_udp_socket( socket_t * const s,
+                                     evt_loop_t * const el,
+                                     int ai_flags )
+{
+    struct addrinfo hints, *servinfo, *p;
+    int n, fd = 0, on = 1;
+    int_t success = FALSE;
+    int32_t flags;
+    static aiofd_ops_t aiofd_ops =
+    {
+        &socket_aiofd_read_evt_fn,
+        &socket_aiofd_write_evt_fn,
+        &socket_aiofd_error_evt_fn,
+        &socket_udp_read_fn,
+        &socket_udp_write_fn,
+        &socket_udp_readv_fn,
+        &socket_udp_writev_fn
+    };
+
+    UNIT_TEST_RET( socket_create_udp_socket );
+    
+    CHECK_PTR_RET( s, FALSE );
+    CHECK_RET( s->type == SOCKET_UDP, FALSE );
+    CHECK_RET( s->port != NULL, FALSE );
+
+    /* zero out the hints */
+    MEMSET( &hints, 0, sizeof(struct addrinfo) );
+
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = ai_flags;
+
+    if ( (n = GETADDRINFO( s->host, s->port, &hints, &serverinfo ) ) != 0 )
+    {
+        LOG( "GETADDRINFO: %s\n", gai_strerror(n) );
+        return FALSE;
+    }
+
+    for( p = servinfo; (p != NULL) && (success != TRUE); p = p->ai_next )
+    {
+        /* try to open a socket */
+        if ( (fd = SOCKET( info->ai_family, info->ai_socktype, info->ai_protocol )) < 0 )
+        {
+            DEBUG( "failed to open UDP socket\n" );
+            continue;
+        }
+        
+        DEBUG( "created UDP socket\n" );
+
+        /* set the socket to non blocking mode */
+        flags = FCNTL( fd, F_GETFL );
+        if( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
+        {
+            DEBUG( "failed to set UDP socket to non-blocking\n" );
+            close(fd);
+            continue;
+        }
+        
+        DEBUG( "UDP socket is now non-blocking\n" );
+
+        /* initialize the aiofd to manage the socket */
+        if ( aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s ) == FALSE )
+        {
+            DEBUG( "failed to initialzie the aiofd\n" );
+            close(fd);
+            continue;
+        }
+        
+        DEBUG( "aiofd initialized\n" );
+
+        /* store the address info */
+        MEMSET( &(s->addr), 0, sizeof(sockaddr_t) );
+        MEMCPY( &(s->addr), p->ai_addr, p->ai_addrlen );
+        s->addrlen = p->ai_addrlen;
+
+        /* if we get here, we've got a good socket */
+        success = TRUE;
+    }
+
+    /* release the addr info data */
+    freeaddrinfo( servinfo );
+
+    return success;
+}
+
+static int_t socket_open_unix_socket( socket_t * const s,
+                                      evt_loop_t * const el,
+                                      int ai_flags )
+{
+    int fd = 0, status = 0;
+    int32_t flags;
+    struct stat st;
+    static aiofd_ops_t aiofd_ops =
+    {
+        &socket_aiofd_read_evt_fn,
+        &socket_aiofd_write_evt_fn,
+        &socket_aiofd_error_evt_fn,
+        NULL, NULL, NULL, NULL
+    };
+
+    UNIT_TEST_RET( socket_create_unix_socket );
+    
+    CHECK_PTR_RET( s, FALSE );
+    CHECK_RET( s->type == SOCKET_UNIX, FALSE );
+    CHECK_RET( s->host != NULL, FALSE );
+    CHECK_RET( s->port == NULL, FALSE );
+
+    /* try to open a socket */
+    if ( (fd = SOCKET( PF_UNIX, SOCK_STREAM, 0 )) < 0 )
+    {
+        DEBUG("failed to open UNIX socket\n");
+        return FALSE;
+    }
+    
+    DEBUG("created UNIX socket\n");
+
+    /* set the socket to non blocking mode */
+    flags = FCNTL( fd, F_GETFL );
+    if ( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
+    {
+        DEBUG( "failed to set UNIX socket to non-blocking\n" );
+        close(fd);
+        return FALSE;
+    }
+    
+    DEBUG( "UNIX socket is now non-blocking\n" );
+
+    /* initialize the aiofd to manage the socket */
+    if ( aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s ) == FALSE )
+    {
+        DEBUG( "failed to initialzie the aiofd\n" );
+        close(fd);
+        return FALSE;
+    }
+    
+    DEBUG( "aiofd initialized\n" );
+
+    /* initialize the socket address struct */
+    MEMSET( &(s->addr), 0, sizeof(sockaddr_t) );
+    s->addr.ss_family = AF_UNIX;
+   
+    /* copy the path to the socket to the sockaddr_t */
+    strncpy( ((struct sockaddr_un)s->addr).sun_path, s->host, 107 );
+
+    /* calculate the length of the address struct */
+    s->addrlen = strnlen( s->host, 108 ) + sizeof( s->addr.ss_family );
+
+    /* do not unlink without checking first */
+    MEMSET( &st, 0, sizeof( struct stat ) );
+    if ( (status = STAT( s->host, &st )) == 0 )
+    {
+        /* we will only unlink a socket node, all other node types
+         * are an error */
+        if ( (st.st_mode & S_IFMT) != S_IFSOCK )
+        {
+            DEBUG( "can't create unix socket, existing node is not a socket\n" );
+            return FALSE;
+        }
+
+        /* unlink the socket node that is already there */
+        if ( UNLINK( s->host ) != 0 )
+        {
+            LOG( "failed to unlink existing socket node\n" );
+            return FALSE;
         }
     }
     else
-        return FALSE;
-
-    return TRUE;
-}
-
-static int socket_do_unix_connect( socket_t * const s )
-{
-    int len = 0;
-    struct sockaddr_un un_addr;
-
-    UNIT_TEST_RET( socket_connect );
-
-    CHECK_PTR_RET( s, FALSE );
-    CHECK_RET( s->type == SOCKET_UNIX, FALSE );
-    CHECK_PTR_RET( s->host, FALSE );
-
-    /* initialize the socket address struct */
-    MEMSET( &un_addr, 0, sizeof(struct sockaddr_un) );
-    un_addr.sun_family = AF_UNIX;
-    strncpy( un_addr.sun_path, s->host, 100 );
-
-    /* calculate the length of the address struct */
-    len = strlen( un_addr.sun_path ) + sizeof( un_addr.sun_family );
-
-    /* try to make the connection */
-    if ( CONNECT(s->aiofd.rfd, (struct sockaddr*)&un_addr, len) < 0 )
     {
-        if ( ERRNO == EINPROGRESS )
+        /* if stat doesn't return 0, only ENOENT is valid since
+         * it indicates that there isn't a node at that path */
+        if ( ERRNO != ENOENT )
         {
-            DEBUG( "connection in progress\n" );
-        }
-        else
-        {
-            DEBUG("failed to initiate connect to the server\n");
+            DEBUG( "can't create unix socket, can't stat node\n" );
             return FALSE;
         }
     }
 
+
     return TRUE;
 }
+
+static int_t socket_open_socket( socket_t * const s, evt_loop_t * const el, int ai_flags )
+{
+    CHECK_PTR_RET( s, FALSE );
+    CHECK_PTR_RET( el, FALSE );
+    CHECK_RET( VALID_SOCKET_TYPE( s->type ), FALSE );
+
+    switch ( s->type )
+    {
+        case SOCKET_TCP:
+            return socket_open_tcp_socket( s, el, flags );
+        case SOCKET_UDP:
+            return socket_open_udp_socket( s, el, flags );
+        case SOCKET_UNIX:
+            return socket_open_unix_socket( s, el, flags );
+    }
+
+    return FALSE;
+}
+
 
 static int socket_aiofd_read_evt_fn( aiofd_t * const aiofd,
                                  size_t const nread,
@@ -209,13 +452,28 @@ static int socket_aiofd_read_evt_fn( aiofd_t * const aiofd,
 
     if ( socket_is_bound( s ) )
     {
-        /* this is a socket accepting incoming connections */
-        if ( s->ops.connect_fn != NULL )
+        if ( s->type == SOCKET_UDP )
         {
-            DEBUG( "calling socket connect callback for incoming connection\n" );
-            if ( (*(s->ops.connect_fn))( s, s->user_data ) != SOCKET_OK )
+            /* TODO: call UDP packet router...
+             * 1. do a MSG_PEEK recvfrom to get the addr of the data coming in.
+             * 2. look up the addr in hash table to get pipe to UDP socket_t
+             * 3. if addr isn't in hash table, call connect_fn callback so that they
+             *    will call accept and a new UDP socket_t with a pipe will get set up.
+             * 4. if addr is in the hash table, read the data and write it to the
+             *    pipe which will cause a read event on the UDP socket_t which
+             *    will then read the data from the socket.
+             */
+        }
+        else
+        {
+            /* this is a socket accepting incoming connections */
+            if ( s->ops.connect_fn != NULL )
             {
-                DEBUG( "failed to accept incoming connection!\n" );
+                DEBUG( "calling socket connect callback for incoming connection\n" );
+                if ( (*(s->ops.connect_fn))( s, s->user_data ) != SOCKET_OK )
+                {
+                    DEBUG( "failed to accept incoming connection!\n" );
+                }
             }
         }
     }
@@ -442,7 +700,7 @@ void socket_delete( void * s )
 }
 
 /* check to see if connected */
-int socket_is_connected( socket_t* const s )
+int_t socket_is_connected( socket_t* const s )
 {
     UNIT_TEST_RET( socket_connected );
 
@@ -452,23 +710,31 @@ int socket_is_connected( socket_t* const s )
 }
 
 socket_ret_t socket_connect( socket_t* const s, 
-                             int8_t const * const hostname, 
-                             uint16_t const port )
+                             uint8_t const * const host,
+                             uint8_t const * const port,
+                             evt_loop_t * const el )
 {
     int len = 0;
     socket_ret_t ret = SOCKET_OK;
     struct sockaddr_in in_addr;
     struct sockaddr_un un_addr;
     
-    CHECK_PTR_RET(s, SOCKET_BADPARAM);
-    CHECK_RET((hostname != NULL) || (s->host != NULL), SOCKET_BADHOSTNAME);
-    CHECK_RET( VALID_SOCKET_TYPE( s->type ), SOCKET_ERROR );
-    CHECK_RET(((s->type != SOCKET_UNIX) && ((port > 0) || (s->port > 0))) || (s->type == SOCKET_UNIX), SOCKET_INVALIDPORT);
+    CHECK_PTR_RET( s, SOCKET_BADPARAM );
     CHECK_RET( !socket_is_connected( s ), SOCKET_CONNECTED );
-    
+    CHECK_RET( VALID_SOCKET_TYPE( s->type ), SOCKET_ERROR );
+    CHECK_RET( (host != NULL) || (s->host != NULL), SOCKET_BADHOSTNAME );
+    CHECK_RET( (port != NULL) || (s->port != NULL), SOCKET_INVALIDPORT );
+    CHECK_RET( socket_validate_port( port ), SOCKET_INVALIDPORT );
+
     /* store port number if provided */
-    if( port > 0 )
-        s->port = port;
+    if ( port != NULL )
+    {
+        /* free the existing port number if any */
+        FREE( s->port );
+
+        /* copy the port num into the socket struct */
+        s->port = UT(STRDUP(port));
+    }
     
     /* look up and store the hostname if provided */
     if( hostname != NULL )
@@ -477,39 +743,37 @@ socket_ret_t socket_connect( socket_t* const s,
         FREE(s->host);
         
         /* copy the hostname into the server struct */
-        s->host = T(strdup((char const * const)hostname));
+        s->host = UT(STRDUP(hostname));
     }
 
-    /* do the connect based on the type */
-    switch(s->type)
+    /* open the socket and initialize everything */
+    CHECK_RET( socket_open_socket( s, el, 0 ), SOCKET_OPEN_FAIL );
+
+    /* start the socket write event processing so we can catch connection */
+    aiofd_enable_write_evt( &(s->aiofd), TRUE );
+
+    /* try to make the connection */
+    if ( CONNECT( s->aiofd.rfd, (struct sockaddr*)&s->addr, s->addrlen) < 0 )
     {
-        case SOCKET_TCP:
-
-            /* start the socket write event processing so we can catch connection */
-            aiofd_enable_write_evt( &(s->aiofd), TRUE );
-
-            /* try to make the TCP connection */
-            CHECK_RET( socket_do_tcp_connect( s ), SOCKET_CONNECT_FAIL );
-
-            break;
-        
-        case SOCKET_UNIX:
-            
-            /* start the socket write event processing so we can catch connection */
-            aiofd_enable_write_evt( &(s->aiofd), TRUE );
-
-            /* try to make the UNIX connection */
-            CHECK_RET( socket_do_unix_connect( s ), SOCKET_CONNECT_FAIL );
-        
-            break;
+        if ( ERRNO == EINPROGRESS )
+        {
+            DEBUG( "connection in progress\n" );
+        }
+        else
+        {
+            DEBUG("failed to initiate connect to the server\n");
+            return SOCKET_CONNECT_FAIL;
+        }
     }
+    else
+        return SOCKET_CONNECT_FAIL;
 
-    return SOCKET_OK;
+     return SOCKET_OK;
 }
 
 
 /* check to see if bound */
-int socket_is_bound( socket_t* const s )
+int_t socket_is_bound( socket_t* const s )
 {
     UNIT_TEST_RET( socket_bound );
 
@@ -520,297 +784,76 @@ int socket_is_bound( socket_t* const s )
 
 
 socket_ret_t socket_bind( socket_t * const s,
-                          int8_t const * const host,
-                          uint16_t const port, 
+                          uint8_t const * const host,
+                          uint8_t const * const port,
                           evt_loop_t * const el )
 {
-    int len, fd, rv;
-    int on = 1;
-    int32_t flags;
-    socket_ret_t ret;
-    struct addrinfo hints, *servinfo, *p;
-    struct sockaddr_un un_addr;
-
-    static uint8_t port_buf[6];
-    static aiofd_ops_t aiofd_ops =
-    {
-        &socket_aiofd_read_evt_fn,
-        &socket_aiofd_write_evt_fn,
-        &socket_aiofd_error_evt_fn,
-        NULL, NULL, NULL, NULL
-    };
-
     CHECK_PTR_RET( s, SOCKET_BADPARAM );
     CHECK_RET( !socket_is_bound( s ), SOCKET_BOUND );
     CHECK_RET( VALID_SOCKET_TYPE( s->type ), SOCKET_ERROR );
+    CHECK_RET( (host != NULL) || (s->host != NULL), SOCKET_BADHOSTNAME );
+    CHECK_RET( (port != NULL) || (s->port != NULL), SOCKET_INVALIDPORT );
+    CHECK_RET( socket_validate_port( port ), SOCKET_INVALIDPORT );
 
     /* store port number if provided */
-    if( port > 0 )
-        s->port = port;
+    if ( port != NULL )
+    {
+        /* free the existing port number if any */
+        FREE( s->port );
+
+        /* copy the port num into the socket struct */
+        s->port = UT(STRDUP(port));
+    }
     
     /* look up and store the hostname if provided */
-    if( host != NULL )
+    if( hostname != NULL )
     {
         /* free the existing host if any */
         FREE(s->host);
         
         /* copy the hostname into the server struct */
-        s->host = T(strdup((char const * const)hostname));
+        s->host = UT(STRDUP(hostname));
     }
-
-    /* covert port number to string */
-    sprintf( port_buf, "%hu", port );
 
     switch ( s->type )
     {
         case SOCKET_TCP:
-
-            /* get addr info */
-            MEMSET( &hints, 0, sizeof(struct addrinfo) );
-            hints.ai_family = AF_UNSPEC;
-            hints.ai_socktype = SOCK_STREAM;
-            hints.ai_flags = AI_PASSIVE;  /* use my IP addr */
-
-            /* try to look up our info */
-            if ( (rv = getaddrinfo( NULL, port_buf, &hints, &servinfo ) ) != 0 )
-            {
-                LOG( "getaddrinfo: %s\n", gai_strerror(rv) );
-                return SOCKET_ERROR;
-            }
-
-            /* loop through our info trying to bind */
-            for ( p = servinfo; (p != NULL) && (s->bound != TRUE); p = p->ai_next )
-            {
-                /* try to open a socket */
-                if ( (fd = SOCKET( p->ai_family, p->ai_socktype, p->ai_protocol )) < 0 )
-                {
-                    DEBUG( "failed to open TCP socket\n" );
-                    continue;
-                }
-                else
-                {
-                    DEBUG( "created TCP socket\n" );
-                }
-
-
-                /* turn off TCP naggle algorithm */
-                flags = 1;
-                if ( SETSOCKOPT( fd, p->ai_protocol, TCP_NODELAY, &on, sizeof(on) ) < 0 )
-                {
-                    DEBUG( "failed to turn on TCP no delay\n" );
-                    close(fd);
-                    continue;
-                }
-                else
-                {
-                    DEBUG( "turned on TCP no delay\n" );
-                }
-
-
-                if ( SETSOCKOPT( fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on) ) < 0 )
-                {
-                    DEBUG( "failed to set the TCP socket to reuse addr\n" );
-                    close(fd);
-                    continue;
-                }
-                else
-                {
-                    DEBUG( "turned on TCP socket address reuse\n" );
-                }
-
-                /* set the socket to non blocking mode */
-                flags = FCNTL( fd, F_GETFL );
-                if( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
-                {
-                    DEBUG( "failed to set TCP socket to non-blocking\n" );
-                    close(fd);
-                    continue;
-                }
-                else
-                {
-                    DEBUG( "TCP socket is now non-blocking\n" );
-                }
-
-                /* initialize the aiofd to manage the socket */
-                if ( aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s ) == FALSE )
-                {
-                    DEBUG( "failed to initialzie the aiofd\n" );
-                    close(fd);
-                    continue;
-                }
-                else
-                {
-                    DEBUG( "aiofd initialized\n" );
-                }
-
-                if ( BIND( fd, p->ai_addr, p->ai_addrlen ) < 0 )
-                {
-                    DEBUG( "failed to bind TCP socket\n" );
-                    aiofd_deinitialize( &(s->aiofd) );
-                    close(fd);
-                    continue;
-                }
-                else
-                {
-                    DEBUG( "TCP socket is bound\n" );
-                }
-
-                /* flag the socket as bound */
-                s->bound = TRUE;
-            }
-
-            /* release the addr info data */
-            freeaddrinfo( servinfo );
-
-            break;
-
         case SOCKET_UDP:
 
-            /* get addr info */
-            MEMSET( &hints, 0, sizeof(struct addrinfo) );
-            hints.ai_family = AF_UNSPEC;
-            hints.ai_socktype = SOCK_DGRAM;
-            hints.ai_flags = AI_PASSIVE;  /* use my IP addr */
+            CHECK_RET( socket_open_socket( s, el, AI_PASSIVE ), SOCKET_OPEN_FAIL );
 
-            /* try to look up our info */
-            if ( (rv = getaddrinfo( NULL, port_buf, &hints, &servinfo ) ) != 0 )
+            /* turn on address reuse */
+            if ( SETSOCKOPT( s->aiofd.rfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on) ) < 0 )
             {
-                LOG( "getaddrinfo: %s\n", gai_strerror(rv) );
-                return SOCKET_ERROR;
+                DEBUG( "failed to set the IP socket to reuse addr\n" );
+                close(fd);
+                continue;
             }
-
-            /* loop through our info trying to bind */
-            for ( p = servinfo; (p != NULL) && (s->bound != TRUE); p = p->ai_next )
-            {
-                /* try to open a socket */
-                if ( (fd = SOCKET( p->ai_family, p->ai_socktype, p->ai_protocol )) < 0 )
-                {
-                    DEBUG( "failed to open UDP socket\n" );
-                    continue;
-                }
-                else
-                {
-                    DEBUG( "UDP created socket\n" );
-                }
-
-                /* set the socket to non blocking mode */
-                flags = FCNTL( fd, F_GETFL );
-                if( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
-                {
-                    DEBUG( "failed to set UDP socket to non-blocking\n" );
-                    close(fd);
-                    continue;
-                }
-                else
-                {
-                    DEBUG( "UDP socket is now non-blocking\n" );
-                }
-
-                /* override the low-level read/write/writev functions for UDP specific ones */
-                aiofd_ops.read_fn = socket_udp_read_fn;
-                aiofd_ops.write_fn = socket_udp_write_fn;
-                aiofd_ops.readv_fn = socket_udp_readv_fn;
-                aiofd_ops.writev_fn = socket_udp_writev_fn;
-
-                /* initialize the aiofd to manage the UDP socket */
-                if ( aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s ) == FALSE )
-                {
-                    DEBUG( "failed to initialzie the aiofd\n" );
-                    close(fd);
-                    continue;
-                }
-                else
-                {
-                    DEBUG( "aiofd initialized\n" );
-                }
-
-                if ( BIND( fd, p->ai_addr, p->ai_addrlen ) < 0 )
-                {
-                    DEBUG( "failed to bind UDP socket\n" );
-                    aiofd_deinitialize( &(s->aiofd) );
-                    close(fd);
-                    continue;
-                }
-                else
-                {
-                    DEBUG( "UDP socket is bound\n" );
-                }
-
-                /* flag the socket as bound */
-                s->bound = TRUE;
-            }
-
-            /* release the addr info data */
-            freeaddrinfo( servinfo );
+            
+            DEBUG( "turned on IP socket address reuse\n" );
 
             break;
 
         case SOCKET_UNIX:
+
+            CHECK_RET( socket_open_socket( s, el, 0 ), SOCKET_OPEN_FAIL );
         
-            /* try to open a socket */
-            if ( (fd = SOCKET( PF_UNIX, SOCK_STREAM, 0 )) < 0 )
-            {
-                DEBUG("failed to open UNIX socket\n");
-                return FALSE;
-            }
-            else
-            {
-                DEBUG("created UNIX socket\n");
-            }
-
-            /* set the socket to non blocking mode */
-            flags = FCNTL( fd, F_GETFL );
-            if( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
-            {
-                DEBUG( "failed to set UNIX socket to non-blocking\n" );
-                close(fd);
-                continue;
-            }
-            else
-            {
-                DEBUG( "UNIX socket is now non-blocking\n" );
-            }
-
-            /* initialize the aiofd to manage the socket */
-            if ( aiofd_initialize( &(s->aiofd), fd, fd, &aiofd_ops, el, (void*)s ) == FALSE )
-            {
-                DEBUG( "failed to initialzie the aiofd\n" );
-                close(fd);
-                continue;
-            }
-            else
-            {
-                DEBUG( "aiofd initialized\n" );
-            }
-
-            /* initialize the socket address struct */
-            MEMSET( &un_addr, 0, sizeof(struct sockaddr_un) );
-            un_addr.sun_family = AF_UNIX;
-            strncpy( un_addr.sun_path, s->host, 100 );
-
-            /* try to delete the socket inode */
-            unlink( un_addr.sun_path );
-
-            /* calculate the length of the address struct */
-            len = strlen( un_addr.sun_path ) + sizeof( un_addr.sun_family );
-
-            if ( BIND( s->aiofd.rfd, (struct sockaddr*)&un_addr, len) < 0 )
-            {
-                DEBUG( "failed to bind UNIX socket\n" );
-            }
-            else
-            {
-                DEBUG( "UNIX socket is bound\n" );
-            }
-
-            /* flag the socket as bound */
-            s->bound = TRUE;
-
             break;
     }
 
-    /* make sure we successfuly bound the socket */
-    CHECK_RET( s->bound, SOCKET_ERROR );
+    /* bind the socket */
+    if ( BIND( s->aiofd.rfd, (struct sockaddr const *)&(s->addr), s->addrlen ) < 0 )
+    {
+        DEBUG( "failed to bind IP socket\n" );
+        aiofd_deinitialize( &(s->aiofd) );
+        close(s->aiofd.rfd);
+        return SOCKET_ERROR;
+    }
+    
+    DEBUG( "IP socket is bound\n" );
+
+    /* flag the socket as bound */
+    s->bound = TRUE;
 
     return SOCKET_OK;
 }
@@ -838,7 +881,7 @@ socket_ret_t socket_listen( socket_t * const s, int const backlog )
     return SOCKET_OK;
 }
 
-int socket_is_listening( socket_t * const s )
+int_t socket_is_listening( socket_t * const s )
 {
     CHECK_PTR_RET( s, FALSE );
     return aiofd_get_listen( &(s->aiofd) );
@@ -869,45 +912,22 @@ socket_t * socket_accept( socket_t * const s,
     CHECK_RET( socket_is_bound( s ), NULL );
     CHECK_RET( VALID_SOCKET_TYPE( s->type ), NULL );
 
-    client = CALLOC( 1, sizeof( socket_t ) );
+    /* create a new socket for the incoming connection */
+    client = socket_new( s->type, ops, user_data );
 
     CHECK_PTR_RET_MSG( client, NULL, "failed to allocate new socket struct\n" );
 
-    /* store the type */
-    client->type = s->type;
-
-    /* store the user_data pointer */
-    client->user_data = user_data;
-
-    /* copy the ops into place */
-    MEMCPY( (void*)&(client->ops), ops, sizeof(socket_ops_t) );
+    if ( (fd = ACCEPT( s->aiofd.rfd, (struct sockaddr *)&(client->addr), &client->addrlen ) ) < 0 )
+    {
+        DEBUG( "failed to accept incoming connection\n" );
+        socket_delete( client );
+        return NULL;
+    }
 
     /* do the connect based on the type */
     switch(s->type)
     {
         case SOCKET_TCP:
-
-            if ( s->addr_type == AF_INET )
-            {
-                MEMSET( &addr, 0, sizeof( struct sockaddr_in ) );
-
-                /* try to open a socket */
-                len = sizeof( addr );
-                if ( (fd = ACCEPT( s->aiofd.rfd, (struct sockaddr *)&addr, &len )) < 0 )
-                {
-                    DEBUG("failed to accept incoming connection\n");
-                    socket_delete( (void*)client );
-                    return NULL;
-                }
-                else
-                {
-                    DEBUG("accepted socket\n");
-                }
-
-                /* store the connection information */
-                client->addr.s_addr = in_addr.sin_addr.s_addr;
-                client->port = ntohs( in_addr.sin_port );
-            }
 
             /* turn off TCP naggle algorithm */
             flags = 1;
@@ -920,28 +940,49 @@ socket_t * socket_accept( socket_t * const s,
                 DEBUG("turned on TCP no delay\n");
             }
 
+            /* FALL THROUGH */
+
+        case SOCKET_UDP:
+
+            /* fill in the host string */
+            if ( client->host != NULL )
+            {
+                FREE( client->host );
+            }
+            client->host = CALLOC( HOSTNAME_BUFFER_LEN, sizeof(uint8_t) );
+            if ( client->host == NULL )
+            {
+                DEBUG("failed to allocate host buffer for incoming connection\n");
+            }
+            else
+            {
+                inet_ntop( client->addr.ss_family,
+                           socket_in_addr( &client->addr ),
+                           client->host,
+                           HOSTNAME_BUFFER_LEN );
+            }
+
+            /* fill in the port string */
+            if ( client->port != NULL )
+            {
+                FREE( client->port );
+            }
+            client->port = CALLOC( PORT_BUFFER_LEN, sizeof(uint8_t) );
+            if ( client->port == NULL )
+            {
+                DEBUG("failed to allocate port buffer for incoming connection\n");
+            }
+            else
+            {
+                snprintf( client->port, PORT_BUFFER_LEN, "%hu", socket_in_port( &client->addr ) );
+            }
+
             break;
     
         case SOCKET_UNIX:
 
-            MEMSET( (void*)&un_addr, 0, sizeof( struct sockaddr_un ) );
-
-            len = sizeof(un_addr);
-
-            /* try to open a socket */
-            if ( (fd = ACCEPT( s->aiofd.rfd, (struct sockaddr *)&un_addr, &len )) < 0 )
-            {
-                DEBUG("failed to open socket\n");
-                socket_delete( (void*)client );
-                return NULL;
-            }
-            else
-            {
-                DEBUG("accepted socket\n");
-            }
-
             /* store the connection information */
-            client->host = T(strdup((char const * const)un_addr.sun_path));
+            client->host = UT(strdup(((struct sockaddr_un)client->addr).sun_path));
 
             break;
     }
@@ -952,10 +993,8 @@ socket_t * socket_accept( socket_t * const s,
     {
         DEBUG("failed to set socket to non-blocking\n");
     }
-    else
-    {
-        DEBUG("socket is now non-blocking\n");
-    }
+    
+    DEBUG("socket is now non-blocking\n");
 
     /* initialize the aiofd to manage the socket */
     if ( !aiofd_initialize( &(client->aiofd), fd, fd, &aiofd_ops, el, (void*)client ) )
@@ -964,10 +1003,8 @@ socket_t * socket_accept( socket_t * const s,
         socket_delete( (void*)client );
         return NULL;
     }
-    else
-    {
-        DEBUG("aiofd initialized\n");
-    }
+    
+    DEBUG("aiofd initialized\n");
     
     DEBUG( "socket connected\n" );
     client->connected = TRUE;
@@ -1024,9 +1061,9 @@ socket_type_t socket_get_type( socket_t * const s )
     return s->type;
 }
 
-int32_t socket_read( socket_t* const s, 
+ssize_t socket_read( socket_t* const s, 
                      uint8_t * const buffer, 
-                     int32_t const n )
+                     size_t const n )
 {
     CHECK_PTR_RET(s, 0);
     CHECK_PTR_RET(buffer, 0);

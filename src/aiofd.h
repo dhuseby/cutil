@@ -72,7 +72,7 @@ int aiofd_enable_read_evt( aiofd_t * const aiofd, int enable );
 /* read data from the fd */
 ssize_t aiofd_read( aiofd_t * const aiofd, 
                     uint8_t * const buffer, 
-                    int32_t const n );
+                    size_t const n );
 
 /* read from fd into iovec (scatter input) */
 ssize_t aiofd_readv( aiofd_t * const aiofd,

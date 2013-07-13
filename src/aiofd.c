@@ -45,7 +45,7 @@ static ssize_t aiofd_do_read( int fd, void * buf, size_t count, void * user_data
     return READ( fd, buf, count );
 }
 
-static ssize_t aiofd_do_write( int fd, void * buf, size_t count, void * user_data )
+static ssize_t aiofd_do_write( int fd, const void * buf, size_t count, void * user_data )
 {
     return WRITE( fd, buf, count );
 }
@@ -368,7 +368,7 @@ int aiofd_enable_read_evt( aiofd_t * const aiofd,
 
 ssize_t aiofd_read( aiofd_t * const aiofd,
                     uint8_t * const buffer,
-                    int32_t const n )
+                    size_t const n )
 {
     ssize_t res = 0;
 

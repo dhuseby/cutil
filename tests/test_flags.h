@@ -68,10 +68,16 @@ extern int fake_setsockopt;
 extern int fake_setsockopt_ret;
 extern int fake_socket;
 extern int fake_socket_ret;
+extern int fake_getaddrinfo;
+extern int fake_getaddrinfo_ret;
 extern int fake_write;
 extern int fake_write_ret;
 extern int fake_writev;
 extern int fake_writev_ret;
+extern int fake_strtol;
+extern int fake_strtol_ret;
+extern int fake_unlink;
+extern int fake_unlink_ret;
 
 /* aiofd */
 extern int fake_aiofd_flush;
@@ -82,6 +88,8 @@ extern int fake_aiofd_read;
 extern int fake_aiofd_read_ret;
 extern int fake_aiofd_write;
 extern int fake_aiofd_write_ret;
+extern int fake_aiofd_readv;
+extern int fake_aiofd_readv_ret;
 extern int fake_aiofd_writev;
 extern int fake_aiofd_writev_ret;
 extern int fake_aiofd_write_common;

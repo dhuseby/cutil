@@ -69,10 +69,16 @@ int fake_setsockopt = FALSE;
 int fake_setsockopt_ret = -1;
 int fake_socket = FALSE;
 int fake_socket_ret = -1;
+int fake_getaddrinfo = FALSE;
+int fake_getaddrinfo_ret = -1;
 int fake_write = FALSE;
 int fake_write_ret = -1;
 int fake_writev = FALSE;
 int fake_writev_ret = -1;
+int fake_strtol = FALSE;
+int fake_strtol_ret = 0;
+int fake_unlink = FALSE;
+int fake_unlink_ret = -1;
 
 /* aiofd */
 int fake_aiofd_flush = FALSE;
@@ -83,6 +89,8 @@ int fake_aiofd_read = FALSE;
 int fake_aiofd_read_ret = 0;
 int fake_aiofd_write = FALSE;
 int fake_aiofd_write_ret = FALSE;
+int fake_aiofd_readv = FALSE;
+int fake_aiofd_readv_ret = 0;
 int fake_aiofd_writev = FALSE;
 int fake_aiofd_writev_ret = FALSE;
 int fake_aiofd_write_common = FALSE;

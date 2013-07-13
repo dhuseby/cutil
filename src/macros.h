@@ -218,12 +218,24 @@ uint8_t * check_err_str_;
 #define SOCKET socket
 #endif
 
+#if !defined(GETADDRINFO)
+#define GETADDRINFO getaddrinfo
+#endif
+
 #if !defined(WRITE)
 #define WRITE write
 #endif
 
 #if !defined(WRITEV)
 #define WRITEV writev
+#endif
+
+#if !defined(STRTOL)
+#define STRTOL strtol
+#endif
+
+#if !defined(UNLINK)
+#define UNLINK unlink
 #endif
 
 #define EV_DEFAULT_LOOP ev_default_loop
@@ -347,6 +359,10 @@ extern int fake_socket;
 extern int fake_socket_ret;
 #define SOCKET(...) (fake_socket ? fake_socket_ret : socket(__VA_ARGS__))
 
+extern int fake_getaddrinfo;
+extern int fake_getaddrinfo_ret;
+#define GETADDRINFO(...) (fake_getaddrinfo ? fake_getaddrinfo_ret : getaddrinfo(__VA_ARGS__))
+
 extern int fake_write;
 extern int fake_write_ret;
 #define WRITE(...) (fake_write ? fake_write_ret : write(__VA_ARGS__))
@@ -354,6 +370,14 @@ extern int fake_write_ret;
 extern int fake_writev;
 extern int fake_writev_ret;
 #define WRITEV(...) (fake_writev ? fake_writev_ret : writev(__VA_ARGS__))
+
+extern int fake_strtol;
+extern int fake_strtol_ret;
+#define STRTOL(...) (fake_strtol ? fake_strtol_ret : strtol(__VA_ARGS__))
+
+extern int fake_unlink;
+extern int fake_unlink_ret;
+#define UNLINK(...) (fake_unlink ? fake_unlink_ret : unlink(__VA_ARGS__))
 
 /* event */
 extern int fake_ev_default_loop;

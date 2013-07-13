@@ -270,7 +270,7 @@ EVT_TYPE_COUNT	src/events.h	/^    EVT_TYPE_COUNT = EVT_TYPE_LAST - EVT_TYPE_FIRS
 EVT_TYPE_FIRST	src/events.h	/^    EVT_TYPE_FIRST = EVT_SIGNAL,$/;"	e	enum:evt_type_e
 EVT_TYPE_LAST	src/events.h	/^    EVT_TYPE_LAST,$/;"	e	enum:evt_type_e
 EV_DEFAULT_LOOP	src/macros.h	229;"	d
-EV_DEFAULT_LOOP	src/macros.h	357;"	d
+EV_DEFAULT_LOOP	src/macros.h	361;"	d
 EV_MULTIPLICITY	src/events.c	18;"	d	file:
 EV_STANDALONE	src/events.c	17;"	d	file:
 EXTRA_LIBS_ROOT	src/Makefile	/^EXTRA_LIBS_ROOT?=\/usr\/local$/;"	m
@@ -366,6 +366,7 @@ PREFIX	src/Makefile	/^PREFIX?=\/usr\/local$/;"	m
 PRIMES	src/hashtable.c	/^uint_t const PRIMES[] =$/;"	v
 READ	src/macros.h	190;"	d
 READ	src/macros.h	316;"	d
+READV	src/macros.h	320;"	d
 REALLOC	src/macros.h	244;"	d
 REALLOC	src/macros.h	97;"	d
 REPEAT	tests/test_aiofd.c	34;"	d	file:
@@ -377,17 +378,17 @@ REPEAT	tests/test_privileges.c	33;"	d	file:
 REPEAT	tests/test_socket.c	34;"	d	file:
 REPORTDIRS	Makefile	/^REPORTDIRS = $(DIRS:%=report-%)$/;"	m
 SETEGID	src/macros.h	194;"	d
-SETEGID	src/macros.h	320;"	d
+SETEGID	src/macros.h	324;"	d
 SETEUID	src/macros.h	198;"	d
-SETEUID	src/macros.h	324;"	d
+SETEUID	src/macros.h	328;"	d
 SETGROUPS	src/macros.h	202;"	d
-SETGROUPS	src/macros.h	328;"	d
+SETGROUPS	src/macros.h	332;"	d
 SETREGID	src/macros.h	206;"	d
-SETREGID	src/macros.h	332;"	d
+SETREGID	src/macros.h	336;"	d
 SETREUID	src/macros.h	210;"	d
-SETREUID	src/macros.h	336;"	d
+SETREUID	src/macros.h	340;"	d
 SETSOCKOPT	src/macros.h	214;"	d
-SETSOCKOPT	src/macros.h	340;"	d
+SETSOCKOPT	src/macros.h	344;"	d
 SHELL	Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	tests/Makefile	/^SHELL=\/bin\/sh$/;"	m
@@ -399,7 +400,7 @@ SIZEMAX	tests/test_list.c	35;"	d	file:
 SIZEMAX	tests/test_privileges.c	34;"	d	file:
 SIZEMAX	tests/test_socket.c	35;"	d	file:
 SOCKET	src/macros.h	218;"	d
-SOCKET	src/macros.h	344;"	d
+SOCKET	src/macros.h	348;"	d
 SOCKET_BADHOSTNAME	src/socket.h	/^    SOCKET_BADHOSTNAME  = -3,$/;"	e	enum:socket_ret_e
 SOCKET_BADPARAM	src/socket.h	/^    SOCKET_BADPARAM     = -2,$/;"	e	enum:socket_ret_e
 SOCKET_BOUND	src/socket.h	/^    SOCKET_BOUND        = -8,$/;"	e	enum:socket_ret_e
@@ -416,6 +417,7 @@ SOCKET_OUTPUT	src/socket.h	/^    SOCKET_OUTPUT       = 3,$/;"	e	enum:socket_ret_
 SOCKET_POLLERR	src/socket.h	/^    SOCKET_POLLERR      = -6,$/;"	e	enum:socket_ret_e
 SOCKET_TCP	src/socket.h	/^    SOCKET_TCP,$/;"	e	enum:socket_type_e
 SOCKET_TIMEOUT	src/socket.h	/^    SOCKET_TIMEOUT      = -5,$/;"	e	enum:socket_ret_e
+SOCKET_UDP	src/socket.h	/^    SOCKET_UDP,$/;"	e	enum:socket_type_e
 SOCKET_UNIX	src/socket.h	/^    SOCKET_UNIX,$/;"	e	enum:socket_type_e
 SOCKET_UNKNOWN	src/socket.h	/^    SOCKET_UNKNOWN = -1$/;"	e	enum:socket_type_e
 SRC	src/Makefile	/^SRC=aiofd.c bitset.c btree.c buffer.c child.c daemon.c events.c hashtable.c list.c log.c pair.c privileges.c sanitize.c socket.c$/;"	m
@@ -436,12 +438,12 @@ UNIT_TEST_RET	src/macros.h	232;"	d
 UNIT_TEST_RET	src/macros.h	237;"	d
 UT	src/macros.h	34;"	d
 VALID_EVENT_TYPE	src/events.h	46;"	d
-VALID_SOCKET_TYPE	src/socket.h	57;"	d
+VALID_SOCKET_TYPE	src/socket.h	58;"	d
 WARN	src/macros.h	63;"	d
 WRITE	src/macros.h	222;"	d
-WRITE	src/macros.h	348;"	d
+WRITE	src/macros.h	352;"	d
 WRITEV	src/macros.h	226;"	d
-WRITEV	src/macros.h	352;"	d
+WRITEV	src/macros.h	356;"	d
 _GNU_SOURCE	src/log.c	17;"	d	file:
 __AIOFD_H__	src/aiofd.h	18;"	d
 __BITSET_H__	src/bitset.h	18;"	d
@@ -485,12 +487,15 @@ add_sanitize_tests	tests/test_sanitize.c	/^static CU_pSuite add_sanitize_tests( 
 add_socket_test_suite	tests/test_socket.c	/^CU_pSuite add_socket_test_suite()$/;"	f
 add_socket_tests	tests/test_socket.c	/^static CU_pSuite add_socket_tests( CU_pSuite pSuite )$/;"	f	file:
 added_tz	tests/test_sanitize.c	/^static int added_tz = FALSE;$/;"	v	file:
-addr	src/socket.c	/^    IPv4            addr;           \/* IPv4 struct from host string *\/$/;"	m	struct:socket_s	file:
 aiofd	src/child.c	/^    aiofd_t         aiofd;          \/* the fd management state *\/$/;"	m	struct:child_process_s	file:
 aiofd	src/socket.c	/^    aiofd_t         aiofd;          \/* the fd management state *\/$/;"	m	struct:socket_s	file:
 aiofd	tests/test_all.c	/^SUITE( aiofd );$/;"	v
 aiofd_deinitialize	src/aiofd.c	/^void aiofd_deinitialize( aiofd_t * const aiofd )$/;"	f
 aiofd_delete	src/aiofd.c	/^void aiofd_delete( void * aio )$/;"	f
+aiofd_do_read	src/aiofd.c	/^static ssize_t aiofd_do_read( int fd, void * buf, size_t count, void * user_data )$/;"	f	file:
+aiofd_do_readv	src/aiofd.c	/^static ssize_t aiofd_do_readv( int fd, const struct iovec * iov, int iovcnt, void * user_data )$/;"	f	file:
+aiofd_do_write	src/aiofd.c	/^static ssize_t aiofd_do_write( int fd, const void * buf, size_t count, void * user_data )$/;"	f	file:
+aiofd_do_writev	src/aiofd.c	/^static ssize_t aiofd_do_writev( int fd, const struct iovec * iov, int iovcnt, void * user_data )$/;"	f	file:
 aiofd_enable_read_evt	src/aiofd.c	/^int aiofd_enable_read_evt( aiofd_t * const aiofd,$/;"	f
 aiofd_enable_write_evt	src/aiofd.c	/^int aiofd_enable_write_evt( aiofd_t * const aiofd,$/;"	f
 aiofd_flush	src/aiofd.c	/^int aiofd_flush( aiofd_t * const aiofd )$/;"	f
@@ -499,8 +504,9 @@ aiofd_initialize	src/aiofd.c	/^int aiofd_initialize( aiofd_t * const aiofd, $/;"
 aiofd_new	src/aiofd.c	/^aiofd_t * aiofd_new( int const write_fd,$/;"	f
 aiofd_ops_s	src/aiofd.h	/^    struct aiofd_ops_s$/;"	s	struct:aiofd_s
 aiofd_ops_t	src/aiofd.h	/^typedef struct aiofd_ops_s aiofd_ops_t;$/;"	t	typeref:struct:aiofd_ops_s
-aiofd_read	src/aiofd.c	/^int32_t aiofd_read( aiofd_t * const aiofd,$/;"	f
+aiofd_read	src/aiofd.c	/^ssize_t aiofd_read( aiofd_t * const aiofd,$/;"	f
 aiofd_read_fn	src/aiofd.c	/^static evt_ret_t aiofd_read_fn( evt_loop_t * const el,$/;"	f	file:
+aiofd_readv	src/aiofd.c	/^ssize_t aiofd_readv( aiofd_t * const aiofd,$/;"	f
 aiofd_s	src/aiofd.h	/^struct aiofd_s$/;"	s
 aiofd_set_listen	src/aiofd.c	/^int aiofd_set_listen( aiofd_t * const aiofd, int listen )$/;"	f
 aiofd_t	src/aiofd.h	/^typedef struct aiofd_s aiofd_t;$/;"	t	typeref:struct:aiofd_s
@@ -639,7 +645,7 @@ el	tests/test_all.c	/^evt_loop_t * el = NULL;$/;"	v
 error	tests/test_socket.c	/^	int error;$/;"	m	struct:sock_state_s	file:
 error_callback_fn	src/aiofd.c	/^static int error_callback_fn( aiofd_t * const aiofd, int err, void * user_data )$/;"	f	file:
 error_callback_ret	src/aiofd.c	/^static int error_callback_ret = TRUE;$/;"	v	file:
-error_fn	src/aiofd.h	/^        int (*error_fn)( aiofd_t * const aiofd, int err, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
+error_evt_fn	src/aiofd.h	/^        int (*error_evt_fn)( aiofd_t * const aiofd, int err, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
 error_fn	src/socket.h	/^    socket_ret_t (*error_fn)( socket_t * const s, int err, void * user_data );$/;"	m	struct:socket_ops_s
 error_fn	tests/test_aiofd.c	/^static int error_fn( aiofd_t * const aiofd, int err, void * user_data )$/;"	f	file:
 error_fn	tests/test_socket.c	/^static socket_ret_t error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
@@ -697,6 +703,8 @@ fake_aiofd_initialize	tests/test_flags.c	/^int fake_aiofd_initialize = FALSE;$/;
 fake_aiofd_initialize_ret	tests/test_flags.c	/^int fake_aiofd_initialize_ret = FALSE;$/;"	v
 fake_aiofd_read	tests/test_flags.c	/^int fake_aiofd_read = FALSE;$/;"	v
 fake_aiofd_read_ret	tests/test_flags.c	/^int fake_aiofd_read_ret = 0;$/;"	v
+fake_aiofd_readv	tests/test_flags.c	/^int fake_aiofd_readv = FALSE;$/;"	v
+fake_aiofd_readv_ret	tests/test_flags.c	/^int fake_aiofd_readv_ret = 0;$/;"	v
 fake_aiofd_write	tests/test_flags.c	/^int fake_aiofd_write = FALSE;$/;"	v
 fake_aiofd_write_common	tests/test_flags.c	/^int fake_aiofd_write_common = FALSE;$/;"	v
 fake_aiofd_write_common_ret	tests/test_flags.c	/^int fake_aiofd_write_common_ret = FALSE;$/;"	v
@@ -954,13 +962,15 @@ privileges	tests/test_all.c	/^SUITE( privileges );$/;"	v
 r	src/aiofd.c	/^    int r, w, e;$/;"	m	struct:cb_count_s	file:
 read_callback_fn	src/aiofd.c	/^static int read_callback_fn( aiofd_t * const aiofd, size_t nread, void * user_data )$/;"	f	file:
 read_callback_ret	src/aiofd.c	/^static int read_callback_ret = TRUE;$/;"	v	file:
-read_fn	src/aiofd.h	/^        int (*read_fn)( aiofd_t * const aiofd, size_t nread, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
+read_evt_fn	src/aiofd.h	/^        int (*read_evt_fn)( aiofd_t * const aiofd, size_t nread, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
+read_fn	src/aiofd.h	/^        ssize_t (*read_fn)(int fd, void *buf, size_t count, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
 read_fn	src/child.h	/^    int32_t (*read_fn)( child_process_t * const cp, size_t nread, void * user_data );$/;"	m	struct:child_ops_s
 read_fn	src/socket.h	/^    int32_t (*read_fn)( socket_t * const s, size_t nread, void * user_data );$/;"	m	struct:socket_ops_s
 read_fn	tests/test_aiofd.c	/^static int read_fn( aiofd_t * const aiofd, size_t nread, void * user_data )$/;"	f	file:
 read_fn	tests/test_child.c	/^static int32_t read_fn( child_process_t * const cp, size_t nread, void * user_data )$/;"	f	file:
 read_fn	tests/test_socket.c	/^static int32_t read_fn( socket_t * const s, size_t nread, void * user_data )$/;"	f	file:
 read_pid_fn	tests/test_child.c	/^static int32_t read_pid_fn( child_process_t * const cp, size_t nread, void * user_data )$/;"	f	file:
+readv_fn	src/aiofd.h	/^        ssize_t (*readv_fn)(int fd, const struct iovec *iov, int iovcnt, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
 remove_item	src/list.c	/^static list_itr_t remove_item( list_item_t * const items, list_itr_t const itr )$/;"	f	file:
 reset_test_flags	tests/test_flags.c	/^void reset_test_flags( void )$/;"	f
 restore_privileges	src/privileges.c	/^int restore_privileges( priv_state_t const * const orig )$/;"	f
@@ -989,17 +999,15 @@ sock_state_s	tests/test_socket.c	/^typedef struct sock_state_s$/;"	s	file:
 sock_state_t	tests/test_socket.c	/^} sock_state_t;$/;"	t	typeref:struct:sock_state_s	file:
 socket	tests/test_all.c	/^SUITE( socket );$/;"	v
 socket_accept	src/socket.c	/^socket_t * socket_accept( socket_t * const s,$/;"	f
-socket_aiofd_error_fn	src/socket.c	/^static int socket_aiofd_error_fn( aiofd_t * const aiofd,$/;"	f	file:
-socket_aiofd_read_fn	src/socket.c	/^static int socket_aiofd_read_fn( aiofd_t * const aiofd,$/;"	f	file:
-socket_aiofd_write_fn	src/socket.c	/^static int socket_aiofd_write_fn( aiofd_t * const aiofd,$/;"	f	file:
+socket_aiofd_error_evt_fn	src/socket.c	/^static int socket_aiofd_error_evt_fn( aiofd_t * const aiofd,$/;"	f	file:
+socket_aiofd_read_evt_fn	src/socket.c	/^static int socket_aiofd_read_evt_fn( aiofd_t * const aiofd,$/;"	f	file:
+socket_aiofd_write_evt_fn	src/socket.c	/^static int socket_aiofd_write_evt_fn( aiofd_t * const aiofd,$/;"	f	file:
 socket_bind	src/socket.c	/^socket_ret_t socket_bind( socket_t * const s,$/;"	f
 socket_connect	src/socket.c	/^socket_ret_t socket_connect( socket_t* const s, $/;"	f
 socket_deinitialize	src/socket.c	/^static void socket_deinitialize( socket_t * const s )$/;"	f	file:
 socket_delete	src/socket.c	/^void socket_delete( void * s )$/;"	f
 socket_disconnect	src/socket.c	/^socket_ret_t socket_disconnect( socket_t* const s )$/;"	f
-socket_do_tcp_bind	src/socket.c	/^static int socket_do_tcp_bind( socket_t * const s )$/;"	f	file:
 socket_do_tcp_connect	src/socket.c	/^static int socket_do_tcp_connect( socket_t * const s )$/;"	f	file:
-socket_do_unix_bind	src/socket.c	/^static int socket_do_unix_bind( socket_t * const s )$/;"	f	file:
 socket_do_unix_connect	src/socket.c	/^static int socket_do_unix_connect( socket_t * const s )$/;"	f	file:
 socket_flush	src/socket.c	/^socket_ret_t socket_flush( socket_t* const s )$/;"	f
 socket_get_error	src/socket.c	/^static int socket_get_error( socket_t * const s, int * errval )$/;"	f	file:
@@ -1009,7 +1017,6 @@ socket_is_bound	src/socket.c	/^int socket_is_bound( socket_t* const s )$/;"	f
 socket_is_connected	src/socket.c	/^int socket_is_connected( socket_t* const s )$/;"	f
 socket_is_listening	src/socket.c	/^int socket_is_listening( socket_t * const s )$/;"	f
 socket_listen	src/socket.c	/^socket_ret_t socket_listen( socket_t * const s, int const backlog )$/;"	f
-socket_lookup_host	src/socket.c	/^static socket_ret_t socket_lookup_host( socket_t * const s, $/;"	f	file:
 socket_new	src/socket.c	/^socket_t* socket_new( socket_type_t const type, $/;"	f
 socket_ops_s	src/socket.h	/^typedef struct socket_ops_s $/;"	s
 socket_ops_t	src/socket.h	/^} socket_ops_t;$/;"	t	typeref:struct:socket_ops_s
@@ -1020,6 +1027,10 @@ socket_s	src/socket.c	/^struct socket_s$/;"	s	file:
 socket_t	src/socket.h	/^typedef struct socket_s socket_t;$/;"	t	typeref:struct:socket_s
 socket_type_e	src/socket.h	/^typedef enum socket_type_e$/;"	g
 socket_type_t	src/socket.h	/^} socket_type_t;$/;"	t	typeref:enum:socket_type_e
+socket_udp_read_fn	src/socket.c	/^static ssize_t socket_udp_read_fn( int fd, void *buf, size_t count, void * user_data )$/;"	f	file:
+socket_udp_readv_fn	src/socket.c	/^static ssize_t socket_udp_readv_fn( int fd, struct iovec *iov, int iovcnt, void * user_data )$/;"	f	file:
+socket_udp_write_fn	src/socket.c	/^static ssize_t socket_udp_write_fn( int fd, const void *buf, size_t count, void * user_data )$/;"	f	file:
+socket_udp_writev_fn	src/socket.c	/^static ssize_t socket_udp_writev_fn( int fd, const struct iovec *iov, int iovcnt, void * user_data )$/;"	f	file:
 socket_write	src/socket.c	/^socket_ret_t socket_write( socket_t * const s,$/;"	f
 socket_writev	src/socket.c	/^socket_ret_t socket_writev( socket_t * const s,$/;"	f
 start_logging	src/log.c	/^log_t * start_logging( log_type_t type, void * param, int append )$/;"	f
@@ -1255,7 +1266,8 @@ wevt	src/aiofd.h	/^    evt_t       wevt;           \/* write event *\/$/;"	m	str
 wfd	src/aiofd.h	/^    int         wfd;            \/* read\/write fd, if only one given, write-only otherwise *\/$/;"	m	struct:aiofd_s
 write_callback_fn	src/aiofd.c	/^static int write_callback_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )$/;"	f	file:
 write_callback_ret	src/aiofd.c	/^static int write_callback_ret = TRUE;$/;"	v	file:
-write_fn	src/aiofd.h	/^        int (*write_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
+write_evt_fn	src/aiofd.h	/^        int (*write_evt_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
+write_fn	src/aiofd.h	/^        ssize_t (*write_fn)(int fd, const void *buf, size_t count, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
 write_fn	src/child.h	/^    int32_t (*write_fn)( child_process_t * const cp, uint8_t const * const buffer, void * user_data );$/;"	m	struct:child_ops_s
 write_fn	src/socket.h	/^    int32_t (*write_fn)( socket_t * const s, uint8_t const * const buffer, void * user_data );$/;"	m	struct:socket_ops_s
 write_fn	tests/test_aiofd.c	/^static int write_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )$/;"	f	file:
@@ -1263,6 +1275,7 @@ write_fn	tests/test_child.c	/^static int32_t write_fn( child_process_t * const c
 write_fn	tests/test_socket.c	/^static int32_t write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
 write_pid_fn	tests/test_child.c	/^static int32_t write_pid_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )$/;"	f	file:
 writefn	src/log.c	/^typedef int (*writefn)(void *, const char *, int);$/;"	t	file:
+writev_fn	src/aiofd.h	/^        ssize_t (*writev_fn)(int fd, const struct iovec *iov, int iovcnt, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
 x_cdone	tests/test_socket.c	/^static int x_cdone = FALSE;$/;"	v	file:
 x_client_connect_fn	tests/test_socket.c	/^static socket_ret_t x_client_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 x_client_disconnect_fn	tests/test_socket.c	/^static socket_ret_t x_client_disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
