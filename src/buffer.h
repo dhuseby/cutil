@@ -25,8 +25,8 @@ typedef struct iovec buffer_t;
 
 buffer_t * buffer_new( void * p, size_t len );
 void buffer_delete( void * p );
-int buffer_initialize( buffer_t * const b, void * p, size_t len );
-int buffer_deinitialize( buffer_t * const b );
+int_t buffer_initialize( buffer_t * const b, void * p, size_t len );
+int_t buffer_deinitialize( buffer_t * const b );
 
 /* grow a buffer, return the pointer to the new part of the buffer */
 void* buffer_append( buffer_t * const b, void const * const p, size_t len );

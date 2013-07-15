@@ -17,8 +17,8 @@
 #ifndef __SANITIZE_H__
 #define __SANITIZE_H__
 
-int sanitize_files( int keep[], int nfds );
-int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int8_t ** addv );
+int_t sanitize_files( int keep[], int nfds );
+uint8_t ** build_clean_environ( int preservec, uint8_t ** preservev, int addc, uint8_t ** addv );
 
 
 #endif/*__PRIVILEGES_H__*/

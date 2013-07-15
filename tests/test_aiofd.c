@@ -38,26 +38,46 @@
 extern evt_loop_t * el;
 extern void test_aiofd_private_functions(void);
 
-static int read_fn( aiofd_t * const aiofd, size_t nread, void * user_data )
+static int_t read_evt_fn( aiofd_t * const aiofd, size_t nread, void * user_data )
 {
-	return FALSE;
+    return FALSE;
 }
 
-static int write_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )
+static int_t write_evt_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )
 {
-	return FALSE;
+    return FALSE;
 }
 
-static int error_fn( aiofd_t * const aiofd, int err, void * user_data )
+static int_t error_evt_fn( aiofd_t * const aiofd, int err, void * user_data )
 {
-	return TRUE;
+    return FALSE;
+}
+
+static ssize_t read_fn(int fd, void *buf, size_t count, void * user_data)
+{
+    return -1;
+}
+
+static ssize_t write_fn(int fd, const void *buf, size_t count, void * user_data)
+{
+    return -1;
+}
+
+static ssize_t readv_fn(int fd, struct iovec *iov, int iovcnt, void * user_data)
+{
+    return -1;
+}
+
+static ssize_t writev_fn(int fd, const struct iovec *iov, int iovcnt, void * user_data)
+{
+    return -1;
 }
 
 static void test_aiofd_newdel( void )
 {
 	int i;
 	aiofd_t * aiofd;
-	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+	aiofd_ops_t ops = { &read_evt_fn, &write_evt_fn, &error_evt_fn, NULL, NULL, NULL, NULL };
 
 	/* make sure there is an event loop */
 	CU_ASSERT_PTR_NOT_NULL( el );
@@ -68,9 +88,9 @@ static void test_aiofd_newdel( void )
 		aiofd = aiofd_new( fileno(stdout), fileno(stdin), &ops, el, NULL );
 
 		CU_ASSERT_PTR_NOT_NULL_FATAL( aiofd );
-		CU_ASSERT_EQUAL( aiofd->ops.read_fn, read_fn );
-		CU_ASSERT_EQUAL( aiofd->ops.write_fn, write_fn );
-		CU_ASSERT_EQUAL( aiofd->ops.error_fn, error_fn );
+		CU_ASSERT_EQUAL( aiofd->ops.read_evt_fn, read_evt_fn );
+		CU_ASSERT_EQUAL( aiofd->ops.write_evt_fn, write_evt_fn );
+		CU_ASSERT_EQUAL( aiofd->ops.error_evt_fn, error_evt_fn );
 
 		aiofd_delete( aiofd );
 	}
@@ -80,7 +100,7 @@ static void test_aiofd_initdeinit( void )
 {
 	int i;
 	aiofd_t aiofd;
-	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+	aiofd_ops_t ops = { &read_evt_fn, &write_evt_fn, &error_evt_fn, NULL, NULL, NULL, NULL };
 
 	/* make sure there is an event loop */
 	CU_ASSERT_PTR_NOT_NULL( el );
@@ -89,9 +109,9 @@ static void test_aiofd_initdeinit( void )
 	{
 		CU_ASSERT_TRUE( aiofd_initialize( &aiofd, fileno(stdout), fileno(stdin), &ops, el, NULL ) );
 
-		CU_ASSERT_EQUAL( aiofd.ops.read_fn, read_fn );
-		CU_ASSERT_EQUAL( aiofd.ops.write_fn, write_fn );
-		CU_ASSERT_EQUAL( aiofd.ops.error_fn, error_fn );
+		CU_ASSERT_EQUAL( aiofd.ops.read_evt_fn, read_evt_fn );
+		CU_ASSERT_EQUAL( aiofd.ops.write_evt_fn, write_evt_fn );
+		CU_ASSERT_EQUAL( aiofd.ops.error_evt_fn, error_evt_fn );
 
 		aiofd_deinitialize( &aiofd );
 	}
@@ -100,7 +120,7 @@ static void test_aiofd_initdeinit( void )
 static void test_aiofd_new_fail_alloc( void )
 {
 	int i;
-	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+	aiofd_ops_t ops = { &read_evt_fn, &write_evt_fn, &error_evt_fn, NULL, NULL, NULL, NULL };
 
 	/* make sure there is an event loop */
 	CU_ASSERT_PTR_NOT_NULL( el );
@@ -117,7 +137,7 @@ static void test_aiofd_new_fail_init( void )
 {
 	int i;
 	aiofd_t * aiofd;
-	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+	aiofd_ops_t ops = { &read_evt_fn, &write_evt_fn, &error_evt_fn, NULL, NULL, NULL, NULL };
 
 	/* make sure there is an event loop */
 	CU_ASSERT_PTR_NOT_NULL( el );
@@ -138,7 +158,7 @@ static void test_aiofd_init_fail_evt_init( void )
 {
 	int i;
 	aiofd_t aiofd;
-	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+	aiofd_ops_t ops = { &read_evt_fn, &write_evt_fn, &error_evt_fn, NULL, NULL, NULL, NULL };
 
 	/* make sure there is an event loop */
 	CU_ASSERT_PTR_NOT_NULL( el );
@@ -162,7 +182,7 @@ static void test_aiofd_start_stop_write( void )
 {
 	int i;
 	aiofd_t aiofd;
-	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+	aiofd_ops_t ops = { &read_evt_fn, &write_evt_fn, &error_evt_fn, NULL, NULL, NULL, NULL };
 
 	/* make sure there is an event loop */
 	CU_ASSERT_PTR_NOT_NULL( el );
@@ -183,7 +203,7 @@ static void test_aiofd_start_stop_read( void )
 {
 	int i;
 	aiofd_t aiofd;
-	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+	aiofd_ops_t ops = { &read_evt_fn, &write_evt_fn, &error_evt_fn, NULL, NULL, NULL, NULL };
 
 	/* make sure there is an event loop */
 	CU_ASSERT_PTR_NOT_NULL( el );
@@ -208,7 +228,7 @@ static void test_aiofd_delete_null( void )
 static void test_aiofd_init_prereqs( void )
 {
 	aiofd_t aiofd;
-	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+	aiofd_ops_t ops = { &read_evt_fn, &write_evt_fn, &error_evt_fn, NULL, NULL, NULL, NULL };
 	MEMSET( &aiofd, 0, sizeof( aiofd_t ) );
 
 	CU_ASSERT_FALSE( aiofd_initialize( NULL, -1, -1, NULL, NULL, NULL ) );
@@ -223,7 +243,7 @@ static void test_aiofd_init_prereqs( void )
 static void test_aiofd_init_fail_list_init( void )
 {
 	aiofd_t aiofd;
-	aiofd_ops_t ops = { &read_fn, &write_fn, &error_fn };
+	aiofd_ops_t ops = { &read_evt_fn, &write_evt_fn, &error_evt_fn, NULL, NULL, NULL, NULL };
 	MEMSET( &aiofd, 0, sizeof( aiofd_t ) );
 
 	fake_list_init = TRUE;
@@ -254,27 +274,30 @@ static void test_aiofd_writev( void )
 static void test_aiofd_read( void )
 {
 	aiofd_t aiofd;
+	aiofd_ops_t ops = { &read_evt_fn, &write_evt_fn, &error_evt_fn, NULL, NULL, NULL, NULL };
 	uint8_t buf[10];
 	MEMSET( &aiofd, 0, sizeof( aiofd_t ) );
 
-	CU_ASSERT_EQUAL( aiofd_read( NULL, NULL, 0 ), 0 );
-	CU_ASSERT_EQUAL( aiofd_read( &aiofd, NULL, 0 ), 0 );
-	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 0 ), 0 );
+	CU_ASSERT_EQUAL( aiofd_read( NULL, NULL, 0 ), -1 );
+	CU_ASSERT_EQUAL( aiofd_read( &aiofd, NULL, 0 ), -1 );
+	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 0 ), -1 );
+
+    /* sets up low level read/write/readv/writev function pointers to interal ones */
+    CU_ASSERT_TRUE( aiofd_initialize( &aiofd, STDOUT_FILENO, STDIN_FILENO, &ops, el, NULL ) );
 	fake_read = TRUE;
 	fake_read_ret = 10;
 	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), 10 );
 	fake_read = TRUE;
 	fake_read_ret = 0;
-	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), 0 );
+	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), -1 );
 	CU_ASSERT_EQUAL( errno, EPIPE );
 	fake_read = TRUE;
 	fake_read_ret = -1;
-	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), 0 );
-	aiofd.ops.error_fn = &error_fn;
-	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), 0 );
+	aiofd.ops.error_evt_fn = &error_evt_fn;
+	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), -1 );
 	fake_errno = TRUE;
 	fake_errno_value = EPIPE;
-	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), 0 );
+	CU_ASSERT_EQUAL( aiofd_read( &aiofd, buf, 10 ), -1 );
 	fake_errno_value = 0;
 	fake_errno = FALSE;
 	fake_read = FALSE;

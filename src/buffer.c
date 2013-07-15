@@ -20,7 +20,7 @@
 
 #if defined(UNIT_TESTING)
 #include "test_flags.h"
-int fail_alloc_bak = FALSE;
+int_t fail_alloc_bak = FALSE;
 #endif
 
 /*
@@ -55,7 +55,7 @@ void buffer_delete( void * b )
     FREE( buf );
 }
 
-int buffer_initialize( buffer_t * const b, void * p, size_t len )
+int_t buffer_initialize( buffer_t * const b, void * p, size_t len )
 {
     UNIT_TEST_FAIL( buffer_init );
 
@@ -97,7 +97,7 @@ int buffer_initialize( buffer_t * const b, void * p, size_t len )
     return TRUE;
 }
 
-int buffer_deinitialize( buffer_t * const b )
+int_t buffer_deinitialize( buffer_t * const b )
 {
     UNIT_TEST_FAIL( buffer_deinit );
 

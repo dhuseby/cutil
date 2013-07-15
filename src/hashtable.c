@@ -57,7 +57,7 @@ uint_t const PRIMES[] =
 
 /* forward declarations of private functions */
 static uint_t ht_get_new_size( uint_t const count, float const limit );
-static int ht_grow( ht_t * const htable );
+static int_t ht_grow( ht_t * const htable );
 
 /* heap allocate the hashtable */
 ht_t* ht_new( uint_t const initial_capacity, ht_hash_fn hfn, 
@@ -94,7 +94,7 @@ void ht_delete(void * ht)
 }
 
 /* initializes a hashtable */
-int ht_initialize( ht_t * const htable, uint_t const initial_capacity, 
+int_t ht_initialize( ht_t * const htable, uint_t const initial_capacity, 
                    ht_hash_fn hfn, ht_match_fn mfn, ht_delete_fn dfn )
 {
     uint_t i = 0;
@@ -121,9 +121,9 @@ int ht_initialize( ht_t * const htable, uint_t const initial_capacity,
 }
 
 /* deinitialize a hashtable. */
-int ht_deinitialize( ht_t * const htable )
+int_t ht_deinitialize( ht_t * const htable )
 {
-    int i;
+    uint_t i;
 
     UNIT_TEST_RET( ht_deinit );
 
@@ -147,7 +147,7 @@ uint_t ht_count( ht_t * const htable )
     return htable->count;
 }
 
-int ht_insert( ht_t * const htable, void * const data )
+int_t ht_insert( ht_t * const htable, void * const data )
 {
     uint_t index;
     CHECK_PTR_RET( htable, FALSE );
@@ -172,7 +172,7 @@ int ht_insert( ht_t * const htable, void * const data )
     return TRUE;
 }
 
-int ht_clear( ht_t * const htable )
+int_t ht_clear( ht_t * const htable )
 {
     ht_t tmp;
     CHECK_PTR_RET( htable, FALSE );
@@ -217,7 +217,7 @@ ht_itr_t ht_find( ht_t const * const htable, void * const data )
     return ht_itr_end_t;
 }
 
-int ht_remove( ht_t * const htable, ht_itr_t const itr )
+int_t ht_remove( ht_t * const htable, ht_itr_t const itr )
 {
     CHECK_PTR_RET( htable, FALSE );
     CHECK_RET( !ITR_EQ( itr, ht_itr_end_t ), FALSE );
@@ -359,7 +359,7 @@ static uint_t ht_get_new_size( uint_t const count, float const limit )
     return PRIMES[index];
 }
 
-static int ht_grow( ht_t * const htable )
+static int_t ht_grow( ht_t * const htable )
 {
     uint_t i, count, new_size, old_size;
     list_t *new_lists, *old_lists;

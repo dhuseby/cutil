@@ -33,7 +33,7 @@
  * I hope they don't mind I borrowed the code.
  */
 
-int drop_privileges( int permanent, priv_state_t * const orig )
+int_t drop_privileges( int_t permanent, priv_state_t * const orig )
 {
     gid_t newgid = GETGID(), oldgid = GETEGID();
     uid_t newuid = GETUID(), olduid = GETEUID();
@@ -61,15 +61,15 @@ int drop_privileges( int permanent, priv_state_t * const orig )
     * system call requires root privileges.  Drop ancillary groups regardless of
     * whether privileges are being dropped temporarily or permanently.
     */
-    if ( !olduid ) 
+    if ( olduid == ROOT_UID ) 
         CHECK_RET( SETGROUPS(1, &newgid) != -1, FALSE );
 
     if ( newgid != oldgid ) 
-        if ( SETREGID((permanent ? newgid : -1), newgid) == -1 )
+        if ( SETREGID((permanent ? newgid : LEAVE_UNCHANGED), newgid) == -1 )
             return FALSE;
 
     if ( newuid != olduid ) 
-        if ( SETREUID((permanent ? newuid : -1), newuid) == -1 )
+        if ( SETREUID((permanent ? newuid : LEAVE_UNCHANGED), newuid) == -1 )
             return FALSE;
 
     /* verify that the changes were successful */
@@ -95,7 +95,7 @@ int drop_privileges( int permanent, priv_state_t * const orig )
     return TRUE;
 }
 
-int restore_privileges( priv_state_t const * const orig )
+int_t restore_privileges( priv_state_t const * const orig )
 {
     CHECK_PTR_RET( orig, FALSE );
 

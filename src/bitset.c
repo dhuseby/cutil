@@ -51,7 +51,7 @@ void bset_delete( void * bset )
     FREE( bitset );
 }
 
-int bset_initialize( bitset_t * const bset, size_t const num_bits )
+int_t bset_initialize( bitset_t * const bset, size_t const num_bits )
 {
     UNIT_TEST_FAIL( bitset_init );
     CHECK_PTR_RET( bset, FALSE );
@@ -66,7 +66,7 @@ int bset_initialize( bitset_t * const bset, size_t const num_bits )
     return TRUE;
 }
 
-int bset_deinitialize( bitset_t * const bset )
+int_t bset_deinitialize( bitset_t * const bset )
 {
     UNIT_TEST_FAIL( bitset_deinit );
     CHECK_PTR_RET( bset, FALSE );
@@ -79,7 +79,7 @@ int bset_deinitialize( bitset_t * const bset )
     return TRUE;
 }
 
-int bset_set( bitset_t * const bset, size_t const bit )
+int_t bset_set( bitset_t * const bset, size_t const bit )
 {
     CHECK_PTR_RET( bset, FALSE );
     CHECK_RET( (bit < bset->num_bits), FALSE );
@@ -87,7 +87,7 @@ int bset_set( bitset_t * const bset, size_t const bit )
     return TRUE;
 }
 
-int bset_clear( bitset_t * const bset, size_t const bit )
+int_t bset_clear( bitset_t * const bset, size_t const bit )
 {
     CHECK_PTR_RET( bset, FALSE );
     CHECK_RET( (bit < bset->num_bits), FALSE );
@@ -95,14 +95,14 @@ int bset_clear( bitset_t * const bset, size_t const bit )
     return TRUE;
 }
 
-int bset_test( bitset_t const * const bset, size_t const bit )
+int_t bset_test( bitset_t const * const bset, size_t const bit )
 {
     CHECK_PTR_RET( bset, FALSE );
     CHECK_RET( (bit < bset->num_bits), FALSE );
     return (bset->bits[ DWORD_INDEX(bit) ] & BIT(bit) ? TRUE : FALSE);
 }
 
-int bset_clear_all( bitset_t * const bset )
+int_t bset_clear_all( bitset_t * const bset )
 {
     size_t i;
     CHECK_PTR_RET( bset, FALSE );
@@ -115,7 +115,7 @@ int bset_clear_all( bitset_t * const bset )
     return TRUE;
 }
 
-int bset_set_all( bitset_t * const bset )
+int_t bset_set_all( bitset_t * const bset )
 {
     size_t i;
     CHECK_PTR_RET( bset, FALSE );

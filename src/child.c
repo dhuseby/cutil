@@ -48,7 +48,7 @@ struct child_process_s
     pid_t           pid;            /* the pid of the child process */
     child_ops_t     ops;            /* child proces callbacks */
     aiofd_t         aiofd;          /* the fd management state */
-    int             exited;         /* have we received the SIGCHLD signal? */
+    int_t           exited;         /* have we received the SIGCHLD signal? */
     evt_t           sigchld;        /* the SIGCHILD signal event handler */
     void *          user_data;      /* passed to ops callbacks */
 };
@@ -65,13 +65,13 @@ static evt_ret_t sigchld_cb( evt_loop_t * const el,
     DEBUG( "received SIGCHLD\n" );
 
     /* execute the exit_fn callback */
-    if ( child->ops.exit_fn != NULL )
+    if ( child->ops.exit_evt_fn != NULL )
     {
         DEBUG( "calling child process exit callback\n" );
-        (*(child->ops.exit_fn))( child, 
-                                 params->child_params.rpid, 
-                                 params->child_params.rstatus,
-                                 child->user_data );
+        (*(child->ops.exit_evt_fn))( child, 
+                                     params->child_params.rpid, 
+                                     params->child_params.rstatus,
+                                     child->user_data );
     }
 
     /* record that the child process has exited */
@@ -81,9 +81,9 @@ static evt_ret_t sigchld_cb( evt_loop_t * const el,
 }
 
 
-static int child_aiofd_write_fn( aiofd_t * const aiofd,
-                                 uint8_t const * const buffer,
-                                 void * user_data )
+static int_t child_aiofd_write_evt_fn( aiofd_t * const aiofd,
+                                       uint8_t const * const buffer,
+                                       void * user_data )
 {
     child_process_t * child = (child_process_t*)user_data;
     CHECK_PTR_RET( aiofd, FALSE );
@@ -105,10 +105,10 @@ static int child_aiofd_write_fn( aiofd_t * const aiofd,
     {
         /* call the write complete callback to let client know that a particular
          * buffer has been written to the socket. */
-        if ( child->ops.write_fn != NULL )
+        if ( child->ops.write_evt_fn != NULL )
         {
             DEBUG( "calling child process write complete callback\n" );
-            (*(child->ops.write_fn))( child, buffer, child->user_data );
+            return (*(child->ops.write_evt_fn))( child, buffer, child->user_data );
         }
 
         return TRUE;
@@ -118,21 +118,27 @@ static int child_aiofd_write_fn( aiofd_t * const aiofd,
 }
 
 
-static int child_aiofd_error_fn( aiofd_t * const aiofd,
-                                  int err,
-                                  void * user_data )
+static int_t child_aiofd_error_evt_fn( aiofd_t * const aiofd,
+                                       int err,
+                                       void * user_data )
 {
     child_process_t * child = (child_process_t*)user_data;
     CHECK_PTR_RET( aiofd, FALSE );
     CHECK_PTR_RET( child, FALSE );
 
+    if ( child->ops.error_evt_fn != NULL )
+    {
+        DEBUG( "calling child process error callback\n" );
+        return (*(child->ops.error_evt_fn))( child, err, child->user_data );
+    }
+
     return TRUE;
 }
 
 
-static int child_aiofd_read_fn( aiofd_t * const aiofd,
-                                size_t const nread,
-                                void * user_data )
+static int_t child_aiofd_read_evt_fn( aiofd_t * const aiofd,
+                                      size_t const nread,
+                                      void * user_data )
 {
     child_process_t * child = (child_process_t*)user_data;
     CHECK_PTR_RET( aiofd, FALSE );
@@ -144,9 +150,9 @@ static int child_aiofd_read_fn( aiofd_t * const aiofd,
         return FALSE;
     }
 
-    if ( child->ops.read_fn != NULL )
+    if ( child->ops.read_evt_fn != NULL )
     {
-        (*(child->ops.read_fn))( child, nread, child->user_data );
+        (*(child->ops.read_evt_fn))( child, nread, child->user_data );
     }
 
     return TRUE;
@@ -175,7 +181,7 @@ static pid_t safe_fork( int keepfds[], int nfds, int drop )
     /* clean up open file descriptors */
     sanitize_files( keepfds, nfds );
 
-    /* remove root privileges and any unnecessary group privileges permanently */
+    /* if desired, remove root privileges and any unnecessary group privileges permanently */
     if ( drop )
         drop_privileges( TRUE, NULL );
 
@@ -189,12 +195,12 @@ static pid_t safe_fork( int keepfds[], int nfds, int drop )
 #define PIPE_WRITE_FD 1
 
 static int child_process_initialize( child_process_t * const child,
-                                     int8_t const * const path,
-                                     int8_t const * const argv[],
-                                     int8_t const * const environ[],
+                                     uint8_t const * const path,
+                                     uint8_t const * const argv[],
+                                     uint8_t const * const environ[],
                                      child_ops_t const * const ops,
                                      evt_loop_t * const el,
-                                     int const drop_privileges,
+                                     int_t const drop_privileges,
                                      void * user_data )
 {
     /* 
@@ -208,9 +214,10 @@ static int child_process_initialize( child_process_t * const child,
     evt_params_t chld_params;
     static aiofd_ops_t aiofd_ops =
     {
-        &child_aiofd_read_fn,
-        &child_aiofd_write_fn,
-        &child_aiofd_error_fn
+        &child_aiofd_read_evt_fn,
+        &child_aiofd_write_evt_fn,
+        &child_aiofd_error_evt_fn,
+        NULL, NULL, NULL, NULL
     };
 
     CHECK_PTR_RET( child, FALSE );
@@ -314,12 +321,12 @@ static int child_process_initialize( child_process_t * const child,
     return TRUE;
 }
 
-child_process_t * child_process_new( int8_t const * const path,
-                                     int8_t const * const argv[],
-                                     int8_t const * const environ[],
+child_process_t * child_process_new( uint8_t const * const path,
+                                     uint8_t const * const argv[],
+                                     uint8_t const * const environ[],
                                      child_ops_t const * const ops,
                                      evt_loop_t * const el,
-                                     int const drop_privileges,
+                                     int_t const drop_privileges,
                                      void * user_data )
 {
     child_process_t * child = NULL;
@@ -382,33 +389,45 @@ pid_t child_process_get_pid( child_process_t * const cp )
     return cp->pid;
 }
 
-int32_t child_process_read( child_process_t * const cp, 
+ssize_t child_process_read( child_process_t * const cp, 
                             uint8_t * const buffer, 
-                            int32_t const n )
+                            size_t const n )
 {
-    CHECK_PTR_RET( cp, FALSE );
-    CHECK_PTR_RET(buffer, 0);
-    CHECK_RET(n > 0, 0);
+    CHECK_PTR_RET( cp, -1 );
+    CHECK_PTR_RET( buffer, -1 );
+    CHECK_RET( n > 0, -1 );
     return aiofd_read( &(cp->aiofd), buffer, n );
 }
 
-int child_process_write( child_process_t * const cp, 
-                         uint8_t const * const buffer, 
-                         size_t const n )
+int_t child_process_write( child_process_t * const cp, 
+                           uint8_t const * const buffer, 
+                           size_t const n )
 {
     CHECK_PTR_RET( cp, FALSE );
     return aiofd_write( &(cp->aiofd), buffer, n );
 }
 
-int child_process_writev( child_process_t * const cp,
-                          struct iovec * iov,
-                          size_t iovcnt )
+ssize_t child_process_readv( child_process_t * const cp,
+                             struct iovec * iov,
+                             size_t iovcnt )
+{
+    CHECK_PTR_RET( cp, -1 );
+    CHECK_PTR_RET( iov, -1 );
+    CHECK_RET( iovcnt > 0, -1 );
+    return aiofd_readv( &(cp->aiofd), iov, iovcnt );
+}
+
+int_t child_process_writev( child_process_t * const cp,
+                            struct iovec * iov,
+                            size_t iovcnt )
 {
     CHECK_PTR_RET( cp, FALSE );
+    CHECK_PTR_RET( iov, FALSE );
+    CHECK_RET( iovcnt > 0, FALSE );
     return aiofd_writev( &(cp->aiofd), iov, iovcnt );
 }
 
-int child_process_flush( child_process_t * const cp )
+int_t child_process_flush( child_process_t * const cp )
 {
     CHECK_PTR_RET( cp, FALSE );
     return aiofd_flush( &(cp->aiofd) );
@@ -418,23 +437,29 @@ int child_process_flush( child_process_t * const cp )
 
 #include <CUnit/Basic.h>
 
-static int test_flag = FALSE;
+static int_t test_flag = FALSE;
 
-static int test_exit_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )
+static int_t test_exit_evt_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )
 {
-    *((int*)user_data) = TRUE;
+    *((int_t*)user_data) = TRUE;
     return TRUE;
 }
 
-static int32_t test_write_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )
+static ssize_t test_write_evt_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )
 {
-    *((int*)user_data) = TRUE;
+    *((int_t*)user_data) = TRUE;
     return TRUE;
 }
 
-static int32_t test_read_fn( child_process_t * const cp, size_t nread, void * user_data )
+static ssize_t test_read_evt_fn( child_process_t * const cp, size_t nread, void * user_data )
 {
-    *((int*)user_data) = TRUE;
+    *((int_t*)user_data) = TRUE;
+    return TRUE;
+}
+
+static int_t test_error_evt_fn( child_process_t * const cp, int err, void * user_data )
+{
+    *((int_t*)user_data) = TRUE;
     return TRUE;
 }
 
@@ -455,7 +480,7 @@ static void test_sigchld_cb( void )
     CU_ASSERT_TRUE( child.exited );
 
     child.exited = 0;
-    child.ops.exit_fn = &test_exit_fn;
+    child.ops.exit_evt_fn = &test_exit_evt_fn;
     child.user_data = &test_flag;
     test_flag = FALSE;
     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &params, &child ), EVT_OK );
@@ -464,35 +489,35 @@ static void test_sigchld_cb( void )
     test_flag = FALSE;
 }
 
-static void test_child_aiofd_write_fn( void )
+static void test_child_aiofd_write_evt_fn( void )
 {
     aiofd_t aiofd;
     child_process_t child;
-    uint8_t * buf = "foo";
+    uint8_t * buf = UT("foo");
     MEMSET( &aiofd, 0, sizeof(aiofd_t));
     MEMSET( &child, 0, sizeof(child_process_t) );
 
-    CU_ASSERT_FALSE( child_aiofd_write_fn( NULL, NULL, NULL ) );
-    CU_ASSERT_FALSE( child_aiofd_write_fn( &aiofd, NULL, NULL ) );
+    CU_ASSERT_FALSE( child_aiofd_write_evt_fn( NULL, NULL, NULL ) );
+    CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &aiofd, NULL, NULL ) );
     child.aiofd.rfd = -1;
-    CU_ASSERT_FALSE( child_aiofd_write_fn( &aiofd, NULL, &child ) );
+    CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &aiofd, NULL, &child ) );
     child.aiofd.rfd = 0;
     fake_list_count = TRUE;
     fake_list_count_ret = 0;
-    CU_ASSERT_FALSE( child_aiofd_write_fn( &aiofd, NULL, &child ) );
+    CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &aiofd, NULL, &child ) );
     fake_list_count_ret = 1;
-    CU_ASSERT_TRUE( child_aiofd_write_fn( &aiofd, NULL, &child ) );
+    CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &aiofd, NULL, &child ) );
     fake_list_count = FALSE;
 
-    CU_ASSERT_TRUE( child_aiofd_write_fn( &aiofd, buf, &child ) );
-    child.ops.write_fn = &test_write_fn;
+    CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &aiofd, buf, &child ) );
+    child.ops.write_evt_fn = &test_write_evt_fn;
     test_flag = FALSE;
     child.user_data = &test_flag;
-    CU_ASSERT_TRUE( child_aiofd_write_fn( &aiofd, buf, &child ) );
+    CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &aiofd, buf, &child ) );
     CU_ASSERT_TRUE( test_flag );
 }
 
-static void test_child_aiofd_error_fn( void )
+static void test_child_aiofd_error_evt_fn( void )
 {
     aiofd_t aiofd;
     child_process_t child;
@@ -500,12 +525,12 @@ static void test_child_aiofd_error_fn( void )
     MEMSET( &aiofd, 0, sizeof(aiofd_t));
     MEMSET( &child, 0, sizeof(child_process_t) );
 
-    CU_ASSERT_FALSE( child_aiofd_error_fn( NULL, 0, NULL ) );
-    CU_ASSERT_FALSE( child_aiofd_error_fn( &aiofd, 0, NULL ) );
-    CU_ASSERT_TRUE( child_aiofd_error_fn( &aiofd, 0, &child ) );
+    CU_ASSERT_FALSE( child_aiofd_error_evt_fn( NULL, 0, NULL ) );
+    CU_ASSERT_FALSE( child_aiofd_error_evt_fn( &aiofd, 0, NULL ) );
+    CU_ASSERT_TRUE( child_aiofd_error_evt_fn( &aiofd, 0, &child ) );
 }
 
-static void test_child_aiofd_read_fn( void )
+static void test_child_aiofd_read_evt_fn( void )
 {
     aiofd_t aiofd;
     child_process_t child;
@@ -513,24 +538,24 @@ static void test_child_aiofd_read_fn( void )
     MEMSET( &aiofd, 0, sizeof(aiofd_t));
     MEMSET( &child, 0, sizeof(child_process_t) );
 
-    CU_ASSERT_FALSE( child_aiofd_read_fn( NULL, 0, NULL ) );
-    CU_ASSERT_FALSE( child_aiofd_read_fn( &aiofd, 0, NULL ) );
-    CU_ASSERT_FALSE( child_aiofd_read_fn( &aiofd, 0, &child ) );
+    CU_ASSERT_FALSE( child_aiofd_read_evt_fn( NULL, 0, NULL ) );
+    CU_ASSERT_FALSE( child_aiofd_read_evt_fn( &aiofd, 0, NULL ) );
+    CU_ASSERT_FALSE( child_aiofd_read_evt_fn( &aiofd, 0, &child ) );
     test_flag = FALSE;
     child.user_data = &test_flag;
-    CU_ASSERT_TRUE( child_aiofd_read_fn( &aiofd, 1, &child ) );
+    CU_ASSERT_TRUE( child_aiofd_read_evt_fn( &aiofd, 1, &child ) );
     CU_ASSERT_FALSE( test_flag );
-    child.ops.read_fn = &test_read_fn;
-    CU_ASSERT_TRUE( child_aiofd_read_fn( &aiofd, 1, &child ) );
+    child.ops.read_evt_fn = &test_read_evt_fn;
+    CU_ASSERT_TRUE( child_aiofd_read_evt_fn( &aiofd, 1, &child ) );
     CU_ASSERT_TRUE( test_flag );
 }
 
 void test_child_private_functions( void )
 {
     test_sigchld_cb();
-    test_child_aiofd_write_fn();
-    test_child_aiofd_error_fn();
-    test_child_aiofd_read_fn();
+    test_child_aiofd_write_evt_fn();
+    test_child_aiofd_error_evt_fn();
+    test_child_aiofd_read_evt_fn();
 }
 
 #endif

@@ -41,7 +41,7 @@
 #define OPEN_MAX (256)
 #endif
 
-static int open_devnull( int fd )
+static int_t open_devnull( int fd )
 {
     FILE *f = 0;
 
@@ -63,7 +63,7 @@ static int open_devnull( int fd )
     return ( f && (fileno(f) == fd) );
 }
 
-int sanitize_files( int keep[], int nfds )
+int_t sanitize_files( int keep[], int nfds )
 {
     int skip;
     int i, fd, fds;
@@ -102,25 +102,25 @@ int sanitize_files( int keep[], int nfds )
 }
 
 /* the standard clean environment */
-static int8_t * clean_environ[] =
+static uint8_t * clean_environ[] =
 {
-    "IFS= \t\n",
-    "PATH=" _PATH_STDPATH,
-    NULL
+    UT("IFS= \t\n"),
+    UT("PATH=" _PATH_STDPATH),
+    UT(NULL)
 };
 
 /* the default list of environment variables to preserve */
-static int8_t * preserve_environ[] =
+static uint8_t * preserve_environ[] =
 {
-    "TZ",
-    NULL
+    UT("TZ"),
+    UT(NULL)
 };
 
-int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int8_t ** addv )
+uint8_t ** build_clean_environ( int preservec, uint8_t ** preservev, int addc, uint8_t ** addv )
 {
     int i;
-    int8_t ** new_environ;
-    int8_t *ptr, *value, *var;
+    uint8_t ** new_environ;
+    uint8_t *ptr, *value, *var;
     size_t arr_size = 1, arr_ptr = 0, len, new_size = 0;
 
     /* get the size and count of the standard clean environment */
@@ -166,12 +166,12 @@ int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int
     }
 
     /* allocate the new environment variable array */
-    new_size += (arr_size * sizeof(int8_t *));
-    new_environ = (int8_t**)CALLOC( new_size, sizeof(int8_t) );
+    new_size += (arr_size * sizeof(uint8_t *));
+    new_environ = (uint8_t**)CALLOC( new_size, sizeof(uint8_t) );
     CHECK_PTR_RET( new_environ, FALSE );
 
     /* copy over the default basic environment */
-    ptr = (int8_t*)new_environ + (arr_size * sizeof(int8_t*));
+    ptr = (uint8_t*)new_environ + (arr_size * sizeof(uint8_t*));
     for ( i = 0; (var = clean_environ[i]) != NULL; i++ )
     {
         new_environ[arr_ptr++] = ptr;

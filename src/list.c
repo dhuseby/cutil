@@ -47,7 +47,7 @@ static list_itr_t remove_item( list_item_t * const items, list_itr_t const itr )
 static list_itr_t insert_item( list_item_t * const items, 
                                list_itr_t const itr, 
                                list_itr_t const item );
-static int list_grow( list_t * const list, uint_t amount );
+static int_t list_grow( list_t * const list, uint_t amount );
 
 
 /********** PUBLIC **********/
@@ -71,7 +71,7 @@ void list_delete( void * l )
     FREE( l );
 }
 
-int list_initialize( list_t * const list, uint_t const initial_capacity, list_delete_fn dfn )
+int_t list_initialize( list_t * const list, uint_t const initial_capacity, list_delete_fn dfn )
 {
     uint_t i;
     CHECK_PTR_RET( list, FALSE );
@@ -92,7 +92,7 @@ int list_initialize( list_t * const list, uint_t const initial_capacity, list_de
     return TRUE;
 }
 
-int list_deinitialize( list_t * const list )
+int_t list_deinitialize( list_t * const list )
 {
     list_itr_t itr, end;
 
@@ -132,7 +132,7 @@ uint_t list_count( list_t const * const list )
     return list->count;
 }
 
-int list_reserve( list_t * const list, uint const amount )
+int_t list_reserve( list_t * const list, uint const amount )
 {
     CHECK_PTR_RET( list, FALSE );
 
@@ -144,7 +144,7 @@ int list_reserve( list_t * const list, uint const amount )
     return TRUE;
 }
 
-int list_clear( list_t * const list )
+int_t list_clear( list_t * const list )
 {
     list_delete_fn dfn = NULL;
     CHECK_PTR_RET( list, FALSE );
@@ -204,9 +204,9 @@ list_itr_t list_itr_rnext( list_t const * const list, list_itr_t const itr )
              list_itr_end_t;
 }
 
-int list_push( list_t * const list, void * const data, list_itr_t const itr )
+int_t list_push( list_t * const list, void * const data, list_itr_t const itr )
 {
-    int i = 0;
+    int_t i = 0;
     list_itr_t tmp = list_itr_end_t;
     list_itr_t item = list_itr_end_t;
     list_itr_t before = itr;
@@ -401,7 +401,7 @@ static list_itr_t insert_item( list_item_t * const items,
     return itr;
 }
 
-static int list_grow( list_t * const list, uint_t amount )
+static int_t list_grow( list_t * const list, uint_t amount )
 {
     uint_t i = 0;
     uint_t new_size = 0;
@@ -477,7 +477,7 @@ static int list_grow( list_t * const list, uint_t amount )
 
 void test_list_private_functions( void )
 {
-    int i;
+    int_t i;
     list_item_t items[4];
     list_itr_t head = list_itr_end_t;
     MEMSET( items, 0, 4 * sizeof(list_item_t) );

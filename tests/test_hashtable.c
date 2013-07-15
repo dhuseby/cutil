@@ -43,9 +43,9 @@ static uint_t hash_fn( void const * const key )
 	return (uint_t)key;
 }
 
-static int match_fn( void const * const l, void const * const r )
+static int_t match_fn( void const * const l, void const * const r )
 {
-	return ((uint_t)l == (uint_t)r);
+	return (int_t)((uint_t)l == (uint_t)r);
 }
 
 static void test_hashtable_newdel( void )

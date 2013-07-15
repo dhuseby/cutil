@@ -46,17 +46,17 @@ list_t * list_new( uint_t const initial_capacity, list_delete_fn dfn );
 void list_delete( void * l );
 
 /* stack allocated list */
-int list_initialize( list_t * const list, uint_t const initial_capacity, list_delete_fn dfn );
-int list_deinitialize( list_t * const list );
+int_t list_initialize( list_t * const list, uint_t const initial_capacity, list_delete_fn dfn );
+int_t list_deinitialize( list_t * const list );
 
 /* gets the number of items in the list */
 uint_t list_count( list_t const * const list );
 
 /* grow the list to be at least this size */
-int list_reserve( list_t * const list, uint const amount );
+int_t list_reserve( list_t * const list, uint const amount );
 
 /* clear the entire list */
-int list_clear( list_t * const list );
+int_t list_clear( list_t * const list );
 
 /* functions for getting iterators */
 list_itr_t list_itr_begin( list_t const * const list );
@@ -73,7 +73,7 @@ list_itr_t list_itr_rnext( list_t const * const list, list_itr_t const itr );
 #define list_itr_rprev(a,i) list_itr_next(a,i)
 
 /* O(1) functions for adding items to the list */
-int list_push( list_t * const list, void * const data, list_itr_t const itr );
+int_t list_push( list_t * const list, void * const data, list_itr_t const itr );
 #define list_push_head(list, data) list_push(list, data, list_itr_head(list))
 #define list_push_tail(list, data) list_push(list, data, list_itr_end(list))
 

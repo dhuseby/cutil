@@ -21,6 +21,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#define ROOT_UID (0)
+#define LEAVE_UNCHANGED (-1)
+
 typedef struct priv_state_s
 {
     gid_t   gid;
@@ -30,8 +33,8 @@ typedef struct priv_state_s
 
 } priv_state_t;
 
-int drop_privileges( int permanent, priv_state_t * const orig );
-int restore_privileges( priv_state_t const * const orig );
+int_t drop_privileges( int_t permanent, priv_state_t * const orig );
+int_t restore_privileges( priv_state_t const * const orig );
 
 #endif/*__PRIVILEGES_H__*/
 

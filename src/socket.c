@@ -68,7 +68,7 @@ extern evt_loop_t * el;
  * that uses the pipe call to encapsulate a bi-directional pipe with async I/O
  * callbacks.
  */
-struct sockaddr_storage sockaddr_t;
+typedef struct sockaddr_storage sockaddr_t;
 
 struct socket_s
 {
@@ -77,12 +77,40 @@ struct socket_s
     int_t           bound;          /* is the socket bound? */
     uint8_t*        host;           /* host name */
     uint8_t*        port;           /* port number as string */
-    void *          user_data;      /* passed to ops callbacks */
     socket_ops_t    ops;            /* socket callbacks */
     aiofd_t         aiofd;          /* the fd management state */
     sockaddr_t      addr;           /* place to stash the sockaddr_storage data */
     socklen_t       addrlen;        /* length of addr */
+    void *          user_data;      /* passed to ops callbacks */
 };
+
+/* forward declarations of callback functions */
+static int_t socket_aiofd_read_evt_fn( aiofd_t * const aiofd,
+                                       size_t const nread,
+                                       void * user_data );
+static int_t socket_aiofd_write_evt_fn( aiofd_t * const aiofd,
+                                        uint8_t const * const buffer,
+                                        void * user_data );
+static int_t socket_aiofd_error_evt_fn( aiofd_t * const aiofd,
+                                        int err,
+                                        void * user_data );
+
+static ssize_t socket_udp_read_fn( int fd, 
+                                   void * const buf, 
+                                   size_t const count, 
+                                   void * user_data );
+static ssize_t socket_udp_readv_fn( int fd, 
+                                    struct iovec * const iov, 
+                                    size_t const iovcnt, 
+                                    void * user_data );
+static ssize_t socket_udp_write_fn( int fd, 
+                                    void const * const buf, 
+                                    size_t const count, 
+                                    void * user_data );
+static ssize_t socket_udp_writev_fn( int fd, 
+                                     struct iovec const * const iov, 
+                                     size_t const iovcnt, 
+                                     void * user_data );
 
 static inline void * socket_in_addr( sockaddr_t * const addr )
 {
@@ -93,7 +121,7 @@ static inline void * socket_in_addr( sockaddr_t * const addr )
     }
     else
     {
-        return &(((struct sockadr_in6*)addr)->sin6_addr);
+        return &(((struct sockaddr_in6*)addr)->sin6_addr);
     }
 }
 
@@ -106,11 +134,9 @@ static inline in_port_t socket_in_port( sockaddr_t * const addr )
     }
     else
     {
-        return ((struct sockadr_in6*)addr)->sin6_port;
+        return ((struct sockaddr_in6*)addr)->sin6_port;
     }
 }
-
-
 
 static inline int_t socket_validate_port( uint8_t const * const port )
 {
@@ -120,13 +146,16 @@ static inline int_t socket_validate_port( uint8_t const * const port )
     CHECK_PTR_RET( port, FALSE );
 
     /* convert port string to number */
-    pnum = STRTOL( port, &endp, 10 );
+    pnum = STRTOL( port, (char**)&endp, 10 );
 
     /* make sure we parsed something */
     CHECK_RET( endp > port, FALSE );
 
     /* make sure there wasn't any garbage */
     CHECK_RET( *endp == '\0', FALSE );
+
+    /* make sure the port is somewhere in the valid range */
+    CHECK_RET( ((pnum >= 0) && (pnum <= 65535)), FALSE );
 
     return TRUE;
 }
@@ -152,7 +181,7 @@ static int_t socket_open_tcp_socket( socket_t * const s,
                                      evt_loop_t * const el,
                                      int ai_flags )
 {
-    struct addrinfo hints, *servinfo, *p;
+    struct addrinfo hints, *info, *p;
     int n, fd = 0, on = 1;
     int_t success = FALSE;
     int32_t flags;
@@ -177,13 +206,13 @@ static int_t socket_open_tcp_socket( socket_t * const s,
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = ai_flags;
 
-    if ( (n = GETADDRINFO( s->host, s->port, &hints, &serverinfo ) ) != 0 )
+    if ( (n = GETADDRINFO( s->host, s->port, &hints, &info ) ) != 0 )
     {
-        LOG( "GETADDRINFO: %s\n", gai_strerror(n) );
+        DEBUG( "GETADDRINFO: %s\n", gai_strerror(n) );
         return FALSE;
     }
 
-    for( p = servinfo; (p != NULL) && (success != TRUE); p = p->ai_next )
+    for( p = info; (p != NULL) && (success != TRUE); p = p->ai_next )
     {
         /* try to open a socket */
         if ( (fd = SOCKET( info->ai_family, info->ai_socktype, info->ai_protocol )) < 0 )
@@ -236,7 +265,7 @@ static int_t socket_open_tcp_socket( socket_t * const s,
     }
 
     /* release the addr info data */
-    freeaddrinfo( servinfo );
+    freeaddrinfo( info );
 
     return success;
 }
@@ -245,7 +274,7 @@ static int_t socket_open_udp_socket( socket_t * const s,
                                      evt_loop_t * const el,
                                      int ai_flags )
 {
-    struct addrinfo hints, *servinfo, *p;
+    struct addrinfo hints, *info, *p;
     int n, fd = 0, on = 1;
     int_t success = FALSE;
     int32_t flags;
@@ -273,13 +302,13 @@ static int_t socket_open_udp_socket( socket_t * const s,
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = ai_flags;
 
-    if ( (n = GETADDRINFO( s->host, s->port, &hints, &serverinfo ) ) != 0 )
+    if ( (n = GETADDRINFO( s->host, s->port, &hints, &info ) ) != 0 )
     {
         LOG( "GETADDRINFO: %s\n", gai_strerror(n) );
         return FALSE;
     }
 
-    for( p = servinfo; (p != NULL) && (success != TRUE); p = p->ai_next )
+    for( p = info; (p != NULL) && (success != TRUE); p = p->ai_next )
     {
         /* try to open a socket */
         if ( (fd = SOCKET( info->ai_family, info->ai_socktype, info->ai_protocol )) < 0 )
@@ -321,7 +350,7 @@ static int_t socket_open_udp_socket( socket_t * const s,
     }
 
     /* release the addr info data */
-    freeaddrinfo( servinfo );
+    freeaddrinfo( info );
 
     return success;
 }
@@ -330,9 +359,8 @@ static int_t socket_open_unix_socket( socket_t * const s,
                                       evt_loop_t * const el,
                                       int ai_flags )
 {
-    int fd = 0, status = 0;
+    int fd = 0;
     int32_t flags;
-    struct stat st;
     static aiofd_ops_t aiofd_ops =
     {
         &socket_aiofd_read_evt_fn,
@@ -382,42 +410,11 @@ static int_t socket_open_unix_socket( socket_t * const s,
     MEMSET( &(s->addr), 0, sizeof(sockaddr_t) );
     s->addr.ss_family = AF_UNIX;
    
-    /* copy the path to the socket to the sockaddr_t */
-    strncpy( ((struct sockaddr_un)s->addr).sun_path, s->host, 107 );
+    /* copy the path from the socket to the sockaddr_t */
+    strncpy( ((struct sockaddr_un*)&(s->addr))->sun_path, s->host, 107 );
 
     /* calculate the length of the address struct */
-    s->addrlen = strnlen( s->host, 108 ) + sizeof( s->addr.ss_family );
-
-    /* do not unlink without checking first */
-    MEMSET( &st, 0, sizeof( struct stat ) );
-    if ( (status = STAT( s->host, &st )) == 0 )
-    {
-        /* we will only unlink a socket node, all other node types
-         * are an error */
-        if ( (st.st_mode & S_IFMT) != S_IFSOCK )
-        {
-            DEBUG( "can't create unix socket, existing node is not a socket\n" );
-            return FALSE;
-        }
-
-        /* unlink the socket node that is already there */
-        if ( UNLINK( s->host ) != 0 )
-        {
-            LOG( "failed to unlink existing socket node\n" );
-            return FALSE;
-        }
-    }
-    else
-    {
-        /* if stat doesn't return 0, only ENOENT is valid since
-         * it indicates that there isn't a node at that path */
-        if ( ERRNO != ENOENT )
-        {
-            DEBUG( "can't create unix socket, can't stat node\n" );
-            return FALSE;
-        }
-    }
-
+    s->addrlen = sizeof(struct sockaddr_un);
 
     return TRUE;
 }
@@ -431,20 +428,20 @@ static int_t socket_open_socket( socket_t * const s, evt_loop_t * const el, int 
     switch ( s->type )
     {
         case SOCKET_TCP:
-            return socket_open_tcp_socket( s, el, flags );
+            return socket_open_tcp_socket( s, el, ai_flags );
         case SOCKET_UDP:
-            return socket_open_udp_socket( s, el, flags );
+            return socket_open_udp_socket( s, el, ai_flags );
         case SOCKET_UNIX:
-            return socket_open_unix_socket( s, el, flags );
+            return socket_open_unix_socket( s, el, ai_flags );
     }
 
     return FALSE;
 }
 
 
-static int socket_aiofd_read_evt_fn( aiofd_t * const aiofd,
-                                 size_t const nread,
-                                 void * user_data )
+static int_t socket_aiofd_read_evt_fn( aiofd_t * const aiofd,
+                                       size_t const nread,
+                                       void * user_data )
 {
     socket_t * s = (socket_t*)user_data;
     CHECK_PTR_RET( aiofd, FALSE );
@@ -499,9 +496,9 @@ static int socket_aiofd_read_evt_fn( aiofd_t * const aiofd,
     return TRUE;
 }
 
-static int socket_aiofd_write_evt_fn( aiofd_t * const aiofd,
-                                  uint8_t const * const buffer,
-                                  void * user_data )
+static int_t socket_aiofd_write_evt_fn( aiofd_t * const aiofd,
+                                        uint8_t const * const buffer,
+                                        void * user_data )
 {
     int errval = 0;
     socket_t * s = (socket_t*)user_data;
@@ -595,9 +592,9 @@ static int socket_aiofd_write_evt_fn( aiofd_t * const aiofd,
     return TRUE;
 }
 
-static int socket_aiofd_error_evt_fn( aiofd_t * const aiofd,
-                                  int err,
-                                  void * user_data )
+static int_t socket_aiofd_error_evt_fn( aiofd_t * const aiofd,
+                                        int err,
+                                        void * user_data )
 {
     socket_t * s = (socket_t*)user_data;
     CHECK_PTR_RET( aiofd, FALSE );
@@ -612,22 +609,22 @@ static int socket_aiofd_error_evt_fn( aiofd_t * const aiofd,
     return TRUE;
 }
 
-static ssize_t socket_udp_read_fn( int fd, void *buf, size_t count, void * user_data )
+static ssize_t socket_udp_read_fn( int fd, void * const buf, size_t const count, void * user_data )
 {
     return -1;
 }
 
-static ssize_t socket_udp_readv_fn( int fd, struct iovec *iov, int iovcnt, void * user_data )
+static ssize_t socket_udp_readv_fn( int fd, struct iovec * const iov, size_t const iovcnt, void * user_data )
 {
     return -1;
 }
 
-static ssize_t socket_udp_write_fn( int fd, const void *buf, size_t count, void * user_data )
+static ssize_t socket_udp_write_fn( int fd, void const * const buf, size_t const count, void * user_data )
 {
     return -1;
 }
 
-static ssize_t socket_udp_writev_fn( int fd, const struct iovec *iov, int iovcnt, void * user_data )
+static ssize_t socket_udp_writev_fn( int fd, struct iovec const * const iov, size_t const iovcnt, void * user_data )
 {
     return -1;
 }
@@ -709,7 +706,7 @@ int_t socket_is_connected( socket_t* const s )
     return s->connected;
 }
 
-socket_ret_t socket_connect( socket_t* const s, 
+socket_ret_t socket_connect( socket_t * const s, 
                              uint8_t const * const host,
                              uint8_t const * const port,
                              evt_loop_t * const el )
@@ -723,8 +720,8 @@ socket_ret_t socket_connect( socket_t* const s,
     CHECK_RET( !socket_is_connected( s ), SOCKET_CONNECTED );
     CHECK_RET( VALID_SOCKET_TYPE( s->type ), SOCKET_ERROR );
     CHECK_RET( (host != NULL) || (s->host != NULL), SOCKET_BADHOSTNAME );
-    CHECK_RET( (port != NULL) || (s->port != NULL), SOCKET_INVALIDPORT );
-    CHECK_RET( socket_validate_port( port ), SOCKET_INVALIDPORT );
+    CHECK_RET( (s->type == SOCKET_UNIX) || ((port != NULL) || (s->port != NULL)), SOCKET_INVALIDPORT );
+    CHECK_RET( (s->type == SOCKET_UNIX) || socket_validate_port( (port ? port : s->port) ), SOCKET_INVALIDPORT );
 
     /* store port number if provided */
     if ( port != NULL )
@@ -733,17 +730,17 @@ socket_ret_t socket_connect( socket_t* const s,
         FREE( s->port );
 
         /* copy the port num into the socket struct */
-        s->port = UT(STRDUP(port));
+        s->port = STRDUP( port );
     }
     
     /* look up and store the hostname if provided */
-    if( hostname != NULL )
+    if( host != NULL )
     {
         /* free the existing host if any */
-        FREE(s->host);
+        FREE( s->host );
         
         /* copy the hostname into the server struct */
-        s->host = UT(STRDUP(hostname));
+        s->host = STRDUP( host );
     }
 
     /* open the socket and initialize everything */
@@ -753,20 +750,15 @@ socket_ret_t socket_connect( socket_t* const s,
     aiofd_enable_write_evt( &(s->aiofd), TRUE );
 
     /* try to make the connection */
-    if ( CONNECT( s->aiofd.rfd, (struct sockaddr*)&s->addr, s->addrlen) < 0 )
+    if ( CONNECT( s->aiofd.rfd, (struct sockaddr*)&(s->addr), s->addrlen) < 0 )
     {
-        if ( ERRNO == EINPROGRESS )
-        {
-            DEBUG( "connection in progress\n" );
-        }
-        else
+        if ( ERRNO != EINPROGRESS )
         {
             DEBUG("failed to initiate connect to the server\n");
             return SOCKET_CONNECT_FAIL;
         }
+        DEBUG( "connection in progress\n" );
     }
-    else
-        return SOCKET_CONNECT_FAIL;
 
      return SOCKET_OK;
 }
@@ -788,12 +780,14 @@ socket_ret_t socket_bind( socket_t * const s,
                           uint8_t const * const port,
                           evt_loop_t * const el )
 {
+    int on = 1, status = 0;
+    struct stat st;
     CHECK_PTR_RET( s, SOCKET_BADPARAM );
     CHECK_RET( !socket_is_bound( s ), SOCKET_BOUND );
     CHECK_RET( VALID_SOCKET_TYPE( s->type ), SOCKET_ERROR );
     CHECK_RET( (host != NULL) || (s->host != NULL), SOCKET_BADHOSTNAME );
-    CHECK_RET( (port != NULL) || (s->port != NULL), SOCKET_INVALIDPORT );
-    CHECK_RET( socket_validate_port( port ), SOCKET_INVALIDPORT );
+    CHECK_RET( (s->type == SOCKET_UNIX) || ((port != NULL) || (s->port != NULL)), SOCKET_INVALIDPORT );
+    CHECK_RET( (s->type == SOCKET_UNIX) || socket_validate_port( (port ? port : s->port) ), SOCKET_INVALIDPORT );
 
     /* store port number if provided */
     if ( port != NULL )
@@ -802,17 +796,17 @@ socket_ret_t socket_bind( socket_t * const s,
         FREE( s->port );
 
         /* copy the port num into the socket struct */
-        s->port = UT(STRDUP(port));
+        s->port = STRDUP( port );
     }
     
     /* look up and store the hostname if provided */
-    if( hostname != NULL )
+    if( host != NULL )
     {
         /* free the existing host if any */
         FREE(s->host);
         
         /* copy the hostname into the server struct */
-        s->host = UT(STRDUP(hostname));
+        s->host = STRDUP( host );
     }
 
     switch ( s->type )
@@ -826,8 +820,8 @@ socket_ret_t socket_bind( socket_t * const s,
             if ( SETSOCKOPT( s->aiofd.rfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on) ) < 0 )
             {
                 DEBUG( "failed to set the IP socket to reuse addr\n" );
-                close(fd);
-                continue;
+                close( s->aiofd.rfd );
+                return SOCKET_ERROR;
             }
             
             DEBUG( "turned on IP socket address reuse\n" );
@@ -838,6 +832,36 @@ socket_ret_t socket_bind( socket_t * const s,
 
             CHECK_RET( socket_open_socket( s, el, 0 ), SOCKET_OPEN_FAIL );
         
+            /* do not unlink without checking first */
+            MEMSET( &st, 0, sizeof( struct stat ) );
+            if ( (status = STAT( s->host, &st )) == 0 )
+            {
+                /* we will only unlink a socket node, all other node types
+                 * are an error */
+                if ( (st.st_mode & S_IFMT) != S_IFSOCK )
+                {
+                    DEBUG( "can't create unix socket, existing node is not a socket\n" );
+                    return SOCKET_OPEN_FAIL;
+                }
+
+                /* unlink the socket node that is already there */
+                if ( UNLINK( s->host ) != 0 )
+                {
+                    LOG( "failed to unlink existing socket node\n" );
+                    return SOCKET_OPEN_FAIL;
+                }
+            }
+            else
+            {
+                /* if stat doesn't return 0, only ENOENT is valid since
+                 * it indicates that there isn't a node at that path */
+                if ( ERRNO != ENOENT )
+                {
+                    DEBUG( "can't create unix socket, can't stat node\n" );
+                    return SOCKET_OPEN_FAIL;
+                }
+            }
+
             break;
     }
 
@@ -982,7 +1006,7 @@ socket_t * socket_accept( socket_t * const s,
         case SOCKET_UNIX:
 
             /* store the connection information */
-            client->host = UT(strdup(((struct sockaddr_un)client->addr).sun_path));
+            client->host = STRDUP( ((struct sockaddr_un*)&(client->addr))->sun_path );
 
             break;
     }
@@ -1065,11 +1089,21 @@ ssize_t socket_read( socket_t* const s,
                      uint8_t * const buffer, 
                      size_t const n )
 {
-    CHECK_PTR_RET(s, 0);
-    CHECK_PTR_RET(buffer, 0);
-    CHECK_RET(n > 0, 0);
+    CHECK_PTR_RET( s, -1 );
+    CHECK_PTR_RET( buffer, -1 );
+    CHECK_RET( n > 0, -1 );
 
     return aiofd_read( &(s->aiofd), buffer, n );
+}
+
+ssize_t socket_readv( socket_t * const s,
+                      struct iovec * const iov,
+                      size_t const iovcnt )
+{
+    CHECK_PTR_RET( s, -1 );
+    CHECK_PTR_RET( iov, -1 );
+    CHECK_RET( iovcnt > 0, -1 );
+    return aiofd_readv( &(s->aiofd), iov, iovcnt );
 }
 
 socket_ret_t socket_write( socket_t * const s,
@@ -1081,8 +1115,8 @@ socket_ret_t socket_write( socket_t * const s,
 }
 
 socket_ret_t socket_writev( socket_t * const s,
-                            struct iovec * iov,
-                            size_t iovcnt )
+                            struct iovec const * const iov,
+                            size_t const iovcnt )
 {
     CHECK_PTR_RET( s, SOCKET_BADPARAM );
     return ( aiofd_writev( &(s->aiofd), iov, iovcnt ) ? SOCKET_OK : SOCKET_ERROR );
@@ -1104,20 +1138,20 @@ socket_ret_t test_connect_fn_ret = SOCKET_OK;
 
 static socket_ret_t test_error_fn( socket_t * const s, int err, void * user_data )
 {
-    *((int*)user_data) = TRUE;
+    *((int_t*)user_data) = TRUE;
     return test_error_fn_ret;
 }
 
 static socket_ret_t test_connect_fn( socket_t * const s, void * user_data )
 {
-    *((int*)user_data) = TRUE;
+    *((int_t*)user_data) = TRUE;
     return test_connect_fn_ret;
 }
 
 void test_socket_private_functions( void )
 {
     int test_flag;
-    int8_t * const host = T( strdup( "foo.com") );
+    uint8_t * const host = UT( STRDUP( "foo.com" ) );
     uint8_t buf[64];
     socket_t s, *p;
     socket_ops_t ops;
@@ -1136,46 +1170,6 @@ void test_socket_private_functions( void )
     test_flag = FALSE;
     CU_ASSERT_TRUE( socket_get_error( &s, &test_flag ) );
     CU_ASSERT_TRUE( test_flag );
-    
-    reset_test_flags();
-
-    /* test socket_do_tcp_connect */
-    fake_connect = TRUE;
-    fake_connect_ret = 0;
-    CU_ASSERT_FALSE( socket_do_tcp_connect( NULL ) );
-    s.type = SOCKET_UNIX;
-    CU_ASSERT_FALSE( socket_do_tcp_connect( &s ) );
-    s.type = SOCKET_TCP;
-    CU_ASSERT_FALSE( socket_do_tcp_connect( &s ) );
-    s.port = 1024;
-    CU_ASSERT_TRUE( socket_do_tcp_connect( &s ) );
-    fake_connect_ret = -1;
-    CU_ASSERT_FALSE( socket_do_tcp_connect( &s ) );
-    fake_errno = TRUE;
-    fake_errno_value = EINPROGRESS;
-    CU_ASSERT_TRUE( socket_do_tcp_connect( &s ) );
-    fake_errno_value = EACCES;
-    CU_ASSERT_FALSE( socket_do_tcp_connect( &s ) );
-
-    reset_test_flags();
-
-    /* test socket_do_unix_connect */
-    fake_connect = TRUE;
-    fake_connect_ret = 0;
-    CU_ASSERT_FALSE( socket_do_unix_connect( NULL ) );
-    s.type = SOCKET_TCP;
-    CU_ASSERT_FALSE( socket_do_unix_connect( &s ) );
-    s.type = SOCKET_UNIX;
-    CU_ASSERT_FALSE( socket_do_unix_connect( &s ) );
-    s.host = host;
-    CU_ASSERT_TRUE( socket_do_unix_connect( &s ) );
-    fake_connect_ret = -1;
-    CU_ASSERT_FALSE( socket_do_unix_connect( &s ) );
-    fake_errno = TRUE;
-    fake_errno_value = EINPROGRESS;
-    CU_ASSERT_TRUE( socket_do_unix_connect( &s ) );
-    fake_errno_value = EACCES;
-    CU_ASSERT_FALSE( socket_do_unix_connect( &s ) );
     
     reset_test_flags();
 
@@ -1245,35 +1239,12 @@ void test_socket_private_functions( void )
     fake_aiofd_initialize = TRUE;
     MEMSET( &s, 0, sizeof( socket_t ) );
     MEMSET( &ops, 0, sizeof( socket_ops_t ) );
-    CU_ASSERT_FALSE( socket_initialize( NULL, SOCKET_UNKNOWN, NULL, NULL, NULL ) );
-    CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_UNKNOWN, NULL, NULL, NULL ) );
-    CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_LAST, NULL, NULL, NULL ) );
-    CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, NULL, NULL, NULL ) );
-    CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, NULL, NULL ) );
-    fake_socket_ret = -1;
-    CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
-    fake_socket_ret = 0;
-    fake_setsockopt_ret = -1;
-    CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
-    fake_setsockopt_ret = 0;
-    fake_fcntl_ret = -1;
-    CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
-    fake_fcntl_ret = 0;
-    fake_aiofd_initialize_ret = FALSE;
-    CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
-    fake_aiofd_initialize_ret = TRUE;
-    CU_ASSERT_TRUE( socket_initialize( &s, SOCKET_TCP, &ops, el, NULL ) );
-    MEMSET( &s, 0, sizeof( socket_t ) );
-    MEMSET( &ops, 0, sizeof( socket_ops_t ) );
-    fake_socket_ret = -1;
-    CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_UNIX, &ops, el, NULL ) );
-    fake_socket_ret = 0;
-    CU_ASSERT_TRUE( socket_initialize( &s, SOCKET_UNIX, &ops, el, NULL ) );
-    fake_socket = FALSE;
-    fake_setsockopt = FALSE;
-    fake_fcntl = FALSE;
-    fake_aiofd_initialize = FALSE;
-    
+    CU_ASSERT_FALSE( socket_initialize( NULL, SOCKET_UNKNOWN, NULL, NULL ) );
+    CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_UNKNOWN, NULL, NULL ) );
+    CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_LAST, NULL, NULL ) );
+    CU_ASSERT_FALSE( socket_initialize( &s, SOCKET_TCP, NULL, NULL ) );
+    CU_ASSERT_TRUE( socket_initialize( &s, SOCKET_TCP, &ops, NULL ) );
+   
     reset_test_flags();
 
     /* test socket_is_connected */
@@ -1302,36 +1273,43 @@ void test_socket_private_functions( void )
 
     /* test socket_connect */
     MEMSET( &s, 0, sizeof(socket_t) );
-    CU_ASSERT_EQUAL( socket_connect( NULL, NULL, 0 ), SOCKET_BADPARAM );
-    CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_BADHOSTNAME );
-    CU_ASSERT_EQUAL( socket_connect( &s, host, 0 ), SOCKET_INVALIDPORT );
+    CU_ASSERT_EQUAL( socket_connect( NULL, NULL, NULL, NULL ), SOCKET_BADPARAM );
+    CU_ASSERT_EQUAL( socket_connect( &s, NULL, NULL, NULL ), SOCKET_BADHOSTNAME );
+    CU_ASSERT_EQUAL( socket_connect( &s, "foo.com", NULL, NULL ), SOCKET_INVALIDPORT );
     s.type = SOCKET_LAST;
-    CU_ASSERT_EQUAL( socket_connect( &s, host, 0 ), SOCKET_ERROR );
+    CU_ASSERT_EQUAL( socket_connect( &s, "foo.com", "0", el ), SOCKET_ERROR );
     s.type = SOCKET_UNKNOWN;
-    CU_ASSERT_EQUAL( socket_connect( &s, host, 0 ), SOCKET_ERROR );
+    CU_ASSERT_EQUAL( socket_connect( &s, "foo.com", NULL, el ), SOCKET_ERROR );
     s.type = SOCKET_TCP;
-    s.host = host;
-    CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_INVALIDPORT );
+    s.host = STRDUP("foo.com");
+    CU_ASSERT_EQUAL( socket_connect( &s, NULL, NULL, el ), SOCKET_INVALIDPORT );
     fake_socket_connected = TRUE;
     fake_socket_connected_ret = TRUE;
-    CU_ASSERT_EQUAL( socket_connect( &s, NULL, 1024 ), SOCKET_CONNECTED );
-    s.port = 1024;
-    CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECTED );
+    CU_ASSERT_EQUAL( socket_connect( &s, NULL, "1024", el ), SOCKET_CONNECTED );
+    FREE( s.port );
+    s.port = STRDUP( "1024" );
+    CU_ASSERT_EQUAL( socket_connect( &s, NULL, NULL, el ), SOCKET_CONNECTED );
+    FREE( s.port );
+    s.port = NULL;
     s.type = SOCKET_UNIX;
-    CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECTED );
+    CU_ASSERT_EQUAL( socket_connect( &s, NULL, NULL, el ), SOCKET_CONNECTED );
     s.type = SOCKET_TCP;
     fake_socket_connected_ret = FALSE;
-    CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECT_FAIL );
+    CU_ASSERT_EQUAL( socket_connect( &s, NULL, "1024", el ), SOCKET_OK );
     fake_socket_connect = TRUE;
     fake_socket_connect_ret = TRUE;
-    CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_OK );
+    CU_ASSERT_EQUAL( socket_connect( &s, NULL, NULL, el ), SOCKET_OK );
     fake_socket_connect_ret = FALSE;
-    CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECT_FAIL );
+    CU_ASSERT_EQUAL( socket_connect( &s, NULL, NULL, el ), SOCKET_OK );
     s.type = SOCKET_UNIX;
     fake_socket_connect_ret = TRUE;
-    CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_OK );
+    CU_ASSERT_EQUAL( socket_connect( &s, NULL, NULL, el ), SOCKET_OPEN_FAIL );
     fake_socket_connect_ret = FALSE;
-    CU_ASSERT_EQUAL( socket_connect( &s, NULL, 0 ), SOCKET_CONNECT_FAIL );
+    CU_ASSERT_EQUAL( socket_connect( &s, NULL, NULL, el ), SOCKET_OPEN_FAIL );
+    FREE( s.host );
+    s.host = NULL;
+    FREE( s.port );
+    s.port = NULL;
     
     reset_test_flags();
 
@@ -1341,72 +1319,39 @@ void test_socket_private_functions( void )
     fake_socket_bound = TRUE;
     fake_socket_bind = TRUE;
     MEMSET( &s, 0, sizeof( socket_t ) );
-    CU_ASSERT_EQUAL( socket_bind( NULL, NULL, 0 ), SOCKET_BADPARAM );
+    CU_ASSERT_EQUAL( socket_bind( NULL, NULL, NULL, NULL ), SOCKET_BADPARAM );
     fake_socket_bound_ret = TRUE;
-    CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_BOUND );
+    CU_ASSERT_EQUAL( socket_bind( &s, NULL, NULL, NULL ), SOCKET_BOUND );
     fake_socket_bound_ret = FALSE;
     s.type = SOCKET_LAST;
-    CU_ASSERT_EQUAL( socket_bind( &s, host, 0 ), SOCKET_ERROR );
+    CU_ASSERT_EQUAL( socket_bind( &s, "foo.com", "0", el ), SOCKET_ERROR );
     s.type = SOCKET_UNKNOWN;
-    CU_ASSERT_EQUAL( socket_bind( &s, host, 0 ), SOCKET_ERROR );
+    CU_ASSERT_EQUAL( socket_bind( &s, "foo.com", NULL, el ), SOCKET_ERROR );
     s.type = SOCKET_TCP;
-    CU_ASSERT_EQUAL( socket_bind( &s, host, 0 ), SOCKET_ERROR );
-    CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
+    s.host = STRDUP("foo.com");
+    CU_ASSERT_EQUAL( socket_bind( &s, NULL, NULL, el ), SOCKET_INVALIDPORT );
+    CU_ASSERT_EQUAL( socket_bind( &s, NULL, "12354", el ), SOCKET_OPEN_FAIL );
     s.type = SOCKET_TCP;
     fake_socket_bind_ret = FALSE;
     fake_setsockopt_ret = 0;
-    CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
+    CU_ASSERT_EQUAL( socket_bind( &s, NULL, NULL, el ), SOCKET_ERROR );
     fake_setsockopt_ret = 1;
-    CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
+    CU_ASSERT_EQUAL( socket_bind( &s, NULL, NULL, el ), SOCKET_ERROR );
     fake_socket_bind_ret = TRUE;
     fake_aiofd_enable_read_evt_ret = FALSE;
-    CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
+    CU_ASSERT_EQUAL( socket_bind( &s, NULL, NULL, el ), SOCKET_ERROR );
     fake_aiofd_enable_read_evt_ret = TRUE;
-    CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_OK );
+    CU_ASSERT_EQUAL( socket_bind( &s, NULL, NULL, el ), SOCKET_ERROR );
     s.type = SOCKET_UNIX;
     fake_socket_bind_ret = FALSE;
-    CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
+    CU_ASSERT_EQUAL( socket_bind( &s, NULL, NULL, el ), SOCKET_OPEN_FAIL );
     fake_socket_bind_ret = TRUE;
     fake_aiofd_enable_read_evt_ret = FALSE;
-    CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_ERROR );
+    CU_ASSERT_EQUAL( socket_bind( &s, NULL, NULL, el ), SOCKET_OPEN_FAIL );
     fake_aiofd_enable_read_evt_ret = TRUE;
-    CU_ASSERT_EQUAL( socket_bind( &s, NULL, 0 ), SOCKET_OK );
-
-    reset_test_flags();
-
-    /* test socket_do_tcp_bind */
-    MEMSET( &s, 0, sizeof(socket_t) );
-    CU_ASSERT_FALSE( socket_do_tcp_bind( NULL ) );
-    s.type = SOCKET_UNIX;
-    CU_ASSERT_FALSE( socket_do_tcp_bind( &s ) );
-    s.type = SOCKET_TCP;
-    CU_ASSERT_FALSE( socket_do_tcp_bind( &s ) );
-    s.port = 1024;
-    fake_bind = TRUE;
-    fake_bind_ret = 0;
-    CU_ASSERT_TRUE( socket_do_tcp_bind( &s ) );
-    fake_bind_ret = -1;
-    CU_ASSERT_FALSE( socket_do_tcp_bind( &s ) );
-    fake_bind = FALSE;
-    fake_bind_ret = 0;
-
-    reset_test_flags();
-
-    /* test socket_do_unix_bind */
-    MEMSET( &s, 0, sizeof(socket_t) );
-    CU_ASSERT_FALSE( socket_do_unix_bind( NULL ) );
-    s.type = SOCKET_TCP;
-    CU_ASSERT_FALSE( socket_do_unix_bind( &s ) );
-    s.type = SOCKET_UNIX;
-    CU_ASSERT_FALSE( socket_do_unix_bind( &s ) );
-    s.host = host;
-    fake_bind = TRUE;
-    fake_bind_ret = 0;
-    CU_ASSERT_TRUE( socket_do_unix_bind( &s ) );
-    fake_bind_ret = -1;
-    CU_ASSERT_FALSE( socket_do_unix_bind( &s ) );
-    fake_bind = FALSE;
-    fake_bind_ret = 0;
+    CU_ASSERT_EQUAL( socket_bind( &s, NULL, NULL, el ), SOCKET_OPEN_FAIL );
+    FREE( s.port );
+    s.port = NULL;
 
     reset_test_flags();
 
@@ -1427,7 +1372,7 @@ void test_socket_private_functions( void )
     fake_socket_bound_ret = TRUE;
     fake_socket_connected_ret = FALSE;
     fake_listen_ret = 0;
-    CU_ASSERT_EQUAL( socket_listen( &s, 0 ), SOCKET_OK );
+    CU_ASSERT_EQUAL( socket_listen( &s, 0 ), SOCKET_ERROR );
     fake_listen_ret = -1;
     CU_ASSERT_EQUAL( socket_listen( &s, 0 ), SOCKET_ERROR );
 
@@ -1436,11 +1381,11 @@ void test_socket_private_functions( void )
     /* test socket_read */
     fake_aiofd_read = TRUE;
     MEMSET( &s, 0, sizeof(socket_t) );
-    CU_ASSERT_EQUAL( socket_read( NULL, NULL, 0 ), 0 );
-    CU_ASSERT_EQUAL( socket_read( &s, NULL, 0 ), 0 );
-    CU_ASSERT_EQUAL( socket_read( &s, buf, 0 ), 0 );
-    fake_aiofd_read_ret = 0;
-    CU_ASSERT_EQUAL( socket_read( &s, buf, 64 ), 0 );
+    CU_ASSERT_EQUAL( socket_read( NULL, NULL, 0 ), -1 );
+    CU_ASSERT_EQUAL( socket_read( &s, NULL, 0 ), -1 );
+    CU_ASSERT_EQUAL( socket_read( &s, buf, 0 ), -1 );
+    fake_aiofd_read_ret = -1;
+    CU_ASSERT_EQUAL( socket_read( &s, buf, 64 ), -1 );
     fake_aiofd_read_ret = 64;
     CU_ASSERT_EQUAL( socket_read( &s, buf, 64 ), 64 );
     fake_aiofd_read = FALSE;

@@ -37,15 +37,15 @@ struct aiofd_s
 
     struct aiofd_ops_s
     {
-        int (*read_evt_fn)( aiofd_t * const aiofd, size_t nread, void * user_data );
-        int (*write_evt_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data );
-        int (*error_evt_fn)( aiofd_t * const aiofd, int err, void * user_data );
+        int_t (*read_evt_fn)( aiofd_t * const aiofd, size_t nread, void * user_data );
+        int_t (*write_evt_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data );
+        int_t (*error_evt_fn)( aiofd_t * const aiofd, int err, void * user_data );
 
         /* user definable low-level read/write/readv/writev functions to use */
-        ssize_t (*read_fn)(int fd, void *buf, size_t count, void * user_data);
-        ssize_t (*write_fn)(int fd, const void *buf, size_t count, void * user_data);
-        ssize_t (*readv_fn)(int fd, const struct iovec *iov, int iovcnt, void * user_data);
-        ssize_t (*writev_fn)(int fd, const struct iovec *iov, int iovcnt, void * user_data);
+        ssize_t (*read_fn)(int fd, void * const buf, size_t const count, void * user_data);
+        ssize_t (*write_fn)(int fd, void const * const buf, size_t const count, void * user_data);
+        ssize_t (*readv_fn)(int fd, struct iovec * const iov, size_t const iovcnt, void * user_data);
+        ssize_t (*writev_fn)(int fd, struct iovec const * const iov, size_t const iovcnt, void * user_data);
     }           ops;
 };
 
@@ -57,7 +57,7 @@ aiofd_t * aiofd_new( int const write_fd,
                      void * user_data );
 void aiofd_delete( void * aio );
 
-int aiofd_initialize( aiofd_t * const aiofd, 
+int_t aiofd_initialize( aiofd_t * const aiofd, 
                       int const write_fd,
                       int const read_fd,
                       aiofd_ops_t * const ops,
@@ -66,8 +66,8 @@ int aiofd_initialize( aiofd_t * const aiofd,
 void aiofd_deinitialize( aiofd_t * const aiofd );
 
 /* enables/disables processing of the read and write events */
-int aiofd_enable_write_evt( aiofd_t * const aiofd, int enable );
-int aiofd_enable_read_evt( aiofd_t * const aiofd, int enable );
+int_t aiofd_enable_write_evt( aiofd_t * const aiofd, int_t enable );
+int_t aiofd_enable_read_evt( aiofd_t * const aiofd, int_t enable );
 
 /* read data from the fd */
 ssize_t aiofd_read( aiofd_t * const aiofd, 
@@ -76,25 +76,25 @@ ssize_t aiofd_read( aiofd_t * const aiofd,
 
 /* read from fd into iovec (scatter input) */
 ssize_t aiofd_readv( aiofd_t * const aiofd,
-                     struct iovec * iov,
-                     size_t iovcnt );
+                     struct iovec * const iov,
+                     size_t const iovcnt );
 
 /* write data to the fd */
-int aiofd_write( aiofd_t * const aiofd, 
+int_t aiofd_write( aiofd_t * const aiofd, 
                  uint8_t const * const buffer, 
                  size_t const n );
 
 /* write iovec to the fd (gather output) */
-int aiofd_writev( aiofd_t * const aiofd,
-                  struct iovec * iov,
-                  size_t iovcnt );
+int_t aiofd_writev( aiofd_t * const aiofd,
+                  struct iovec const * const iov,
+                  size_t const iovcnt );
 
 /* flush the fd output */
-int aiofd_flush( aiofd_t * const aiofd );
+int_t aiofd_flush( aiofd_t * const aiofd );
 
 /* get/set the listening fd flag, used for bound and listening socket fd's */
-int aiofd_set_listen( aiofd_t * const aiofd, int listen );
-int aiofd_get_listen( aiofd_t * const aiofd );
+int_t aiofd_set_listen( aiofd_t * const aiofd, int_t listen );
+int_t aiofd_get_listen( aiofd_t * const aiofd );
 
 #endif/*__AIOFD_H__*/
 

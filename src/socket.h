@@ -37,7 +37,7 @@ typedef enum socket_ret_e
     SOCKET_POLLERR      = -6,
     SOCKET_CONNECTED    = -7,
     SOCKET_BOUND        = -8,
-    SOCKET_OPEN_FAIL    = -9
+    SOCKET_OPEN_FAIL    = -9,
     SOCKET_CONNECT_FAIL = -10,
     SOCKET_BIND_FAIL    = -11
 
@@ -68,8 +68,8 @@ typedef struct socket_ops_s
     socket_ret_t (*connect_fn)( socket_t * const s, void * user_data );
     socket_ret_t (*disconnect_fn)( socket_t * const s, void * user_data );
     socket_ret_t (*error_fn)( socket_t * const s, int err, void * user_data );
-    int32_t (*read_fn)( socket_t * const s, size_t nread, void * user_data );
-    int32_t (*write_fn)( socket_t * const s, uint8_t const * const buffer, void * user_data );
+    ssize_t (*read_fn)( socket_t * const s, size_t const nread, void * user_data );
+    ssize_t (*write_fn)( socket_t * const s, uint8_t const * const buffer, void * user_data );
 
 } socket_ops_t;
 
@@ -125,10 +125,15 @@ socket_ret_t socket_write( socket_t * const s,
                            uint8_t const * const buffer, 
                            size_t const n );
 
-/* write iovec to the socket */
+/* read data from the socket to iovec (scatter input) */
+ssize_t socket_readv( socket_t * const s,
+                      struct iovec * const iov,
+                      size_t const iovcnt );
+
+/* write iovec to the socket (gather output) */
 socket_ret_t socket_writev( socket_t * const s,
-                            struct iovec * iov,
-                            size_t iovcnt );
+                            struct iovec const * const iov,
+                            size_t const iovcnt );
 
 /* flush the socket output */
 socket_ret_t socket_flush( socket_t* const s );

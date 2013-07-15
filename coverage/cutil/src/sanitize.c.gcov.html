@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2013-06-18</td>
+            <td class="headerValue">2013-07-15</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -112,7 +112,7 @@
 <span class="lineNum">      41 </span>                :            : #define OPEN_MAX (256)
 <a name="42"><span class="lineNum">      42 </span>                :            : #endif</a>
 <span class="lineNum">      43 </span>                :            : 
-<span class="lineNum">      44 </span>                :<span class="lineCov">          3 : static int open_devnull( int fd )</span>
+<span class="lineNum">      44 </span>                :<span class="lineCov">          3 : static int_t open_devnull( int fd )</span>
 <span class="lineNum">      45 </span>                :            : {
 <span class="lineNum">      46 </span>                :<span class="lineCov">          3 :     FILE *f = 0;</span>
 <span class="lineNum">      47 </span>                :            : 
@@ -134,7 +134,7 @@
 <span class="lineNum">      63 </span>[<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          3 :     return ( f &amp;&amp; (fileno(f) == fd) );</span>
 <a name="64"><span class="lineNum">      64 </span>                :            : }</a>
 <span class="lineNum">      65 </span>                :            : 
-<span class="lineNum">      66 </span>                :<span class="lineCov">          2 : int sanitize_files( int keep[], int nfds )</span>
+<span class="lineNum">      66 </span>                :<span class="lineCov">          2 : int_t sanitize_files( int keep[], int nfds )</span>
 <span class="lineNum">      67 </span>                :            : {
 <span class="lineNum">      68 </span>                :            :     int skip;
 <span class="lineNum">      69 </span>                :            :     int i, fd, fds;
@@ -174,25 +174,25 @@
 <span class="lineNum">     102 </span>                :            : }
 <span class="lineNum">     103 </span>                :            : 
 <span class="lineNum">     104 </span>                :            : /* the standard clean environment */
-<span class="lineNum">     105 </span>                :            : static int8_t * clean_environ[] =
+<span class="lineNum">     105 </span>                :            : static uint8_t * clean_environ[] =
 <span class="lineNum">     106 </span>                :            : {
-<span class="lineNum">     107 </span>                :            :     &quot;IFS= \t\n&quot;,
-<span class="lineNum">     108 </span>                :            :     &quot;PATH=&quot; _PATH_STDPATH,
-<span class="lineNum">     109 </span>                :            :     NULL
+<span class="lineNum">     107 </span>                :            :     UT(&quot;IFS= \t\n&quot;),
+<span class="lineNum">     108 </span>                :            :     UT(&quot;PATH=&quot; _PATH_STDPATH),
+<span class="lineNum">     109 </span>                :            :     UT(NULL)
 <span class="lineNum">     110 </span>                :            : };
 <span class="lineNum">     111 </span>                :            : 
 <span class="lineNum">     112 </span>                :            : /* the default list of environment variables to preserve */
-<span class="lineNum">     113 </span>                :            : static int8_t * preserve_environ[] =
+<span class="lineNum">     113 </span>                :            : static uint8_t * preserve_environ[] =
 <span class="lineNum">     114 </span>                :            : {
-<span class="lineNum">     115 </span>                :            :     &quot;TZ&quot;,
-<span class="lineNum">     116 </span>                :            :     NULL
+<span class="lineNum">     115 </span>                :            :     UT(&quot;TZ&quot;),
+<span class="lineNum">     116 </span>                :            :     UT(NULL)
 <a name="117"><span class="lineNum">     117 </span>                :            : };</a>
 <span class="lineNum">     118 </span>                :            : 
-<span class="lineNum">     119 </span>                :<span class="lineCov">          3 : int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int8_t ** addv )</span>
+<span class="lineNum">     119 </span>                :<span class="lineCov">          3 : uint8_t ** build_clean_environ( int preservec, uint8_t ** preservev, int addc, uint8_t ** addv )</span>
 <span class="lineNum">     120 </span>                :            : {
 <span class="lineNum">     121 </span>                :            :     int i;
-<span class="lineNum">     122 </span>                :            :     int8_t ** new_environ;
-<span class="lineNum">     123 </span>                :            :     int8_t *ptr, *value, *var;
+<span class="lineNum">     122 </span>                :            :     uint8_t ** new_environ;
+<span class="lineNum">     123 </span>                :            :     uint8_t *ptr, *value, *var;
 <span class="lineNum">     124 </span>                :<span class="lineCov">          3 :     size_t arr_size = 1, arr_ptr = 0, len, new_size = 0;</span>
 <span class="lineNum">     125 </span>                :            : 
 <span class="lineNum">     126 </span>                :            :     /* get the size and count of the standard clean environment */
@@ -238,12 +238,12 @@
 <span class="lineNum">     166 </span>                :            :     }
 <span class="lineNum">     167 </span>                :            : 
 <span class="lineNum">     168 </span>                :            :     /* allocate the new environment variable array */
-<span class="lineNum">     169 </span>                :<span class="lineCov">          3 :     new_size += (arr_size * sizeof(int8_t *));</span>
-<span class="lineNum">     170 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          3 :     new_environ = (int8_t**)CALLOC( new_size, sizeof(int8_t) );</span>
+<span class="lineNum">     169 </span>                :<span class="lineCov">          3 :     new_size += (arr_size * sizeof(uint8_t *));</span>
+<span class="lineNum">     170 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          3 :     new_environ = (uint8_t**)CALLOC( new_size, sizeof(uint8_t) );</span>
 <span class="lineNum">     171 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          3 :     CHECK_PTR_RET( new_environ, FALSE );</span>
 <span class="lineNum">     172 </span>                :            : 
 <span class="lineNum">     173 </span>                :            :     /* copy over the default basic environment */
-<span class="lineNum">     174 </span>                :<span class="lineCov">          3 :     ptr = (int8_t*)new_environ + (arr_size * sizeof(int8_t*));</span>
+<span class="lineNum">     174 </span>                :<span class="lineCov">          3 :     ptr = (uint8_t*)new_environ + (arr_size * sizeof(uint8_t*));</span>
 <span class="lineNum">     175 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          9 :     for ( i = 0; (var = clean_environ[i]) != NULL; i++ )</span>
 <span class="lineNum">     176 </span>                :            :     {
 <span class="lineNum">     177 </span>                :<span class="lineCov">          6 :         new_environ[arr_ptr++] = ptr;</span>

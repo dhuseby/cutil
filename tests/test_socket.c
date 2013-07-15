@@ -53,12 +53,12 @@ static socket_ret_t error_fn( socket_t * const s, int err, void * user_data )
 	return SOCKET_OK;
 }
 
-static int32_t read_fn( socket_t * const s, size_t nread, void * user_data )
+static ssize_t read_fn( socket_t * const s, size_t const nread, void * user_data )
 {
 	return 0;
 }
 
-static int32_t write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )
+static ssize_t write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )
 {
 	return 0;
 }
@@ -81,7 +81,7 @@ static void test_socket_newdel( void )
 	{
 		s = NULL;
 		type = ((rand() & 1) ? SOCKET_TCP : SOCKET_UNIX);
-		s = socket_new( type, &ops, el, NULL );
+		s = socket_new( type, &ops, NULL );
 
 		CU_ASSERT_PTR_NOT_NULL( s );
 		CU_ASSERT_EQUAL( socket_get_type( s ), type );
@@ -104,7 +104,7 @@ static void test_socket_bad_hostname( void )
 		&write_fn
 	};
 
-	s = socket_new( SOCKET_TCP, &ops, el, NULL );
+	s = socket_new( SOCKET_TCP, &ops, NULL );
 
 	CU_ASSERT_PTR_NOT_NULL( s );
 	CU_ASSERT_EQUAL( socket_get_type( s ), SOCKET_TCP );
@@ -112,7 +112,7 @@ static void test_socket_bad_hostname( void )
 	CU_ASSERT_EQUAL( socket_is_bound( s ), FALSE );
 	
 	/* connect to the socket */
-	CU_ASSERT_EQUAL( socket_connect( s, "invalid.hostname", 80 ), SOCKET_BADHOSTNAME );
+	CU_ASSERT_EQUAL( socket_connect( s, "invalid.hostname", "80", el ), SOCKET_OPEN_FAIL );
 
 	socket_delete( s );
 }
@@ -120,8 +120,8 @@ static void test_socket_bad_hostname( void )
 
 typedef struct sock_state_s
 {
-	int connected;
-	int error;
+	int_t connected;
+	int_t error;
 } sock_state_t;
 
 static socket_ret_t connect_tests_connect_fn( socket_t * const s, void * user_data )
@@ -161,7 +161,7 @@ static void test_tcp_socket_failed_connection( void )
 		&write_fn
 	};
 
-	s = socket_new( SOCKET_TCP, &ops, el, (void*)&state );
+	s = socket_new( SOCKET_TCP, &ops, (void*)&state );
 
 	CU_ASSERT_PTR_NOT_NULL( s );
 	CU_ASSERT_EQUAL( socket_get_type( s ), SOCKET_TCP );
@@ -169,7 +169,7 @@ static void test_tcp_socket_failed_connection( void )
 	CU_ASSERT_EQUAL( socket_is_bound( s ), FALSE );
 	
 	/* connect to the socket */
-	CU_ASSERT_EQUAL( socket_connect( s, "localhost", 5559 ), SOCKET_OK );
+	CU_ASSERT_EQUAL( socket_connect( s, "localhost", "5559", el ), SOCKET_OK );
 
 	/* run the event loop */
 	evt_run( el );
@@ -209,7 +209,7 @@ static socket_ret_t t_server_error_fn( socket_t * const s, int err, void * user_
 	return SOCKET_OK;
 }
 
-static int32_t t_server_read_fn( socket_t * const s, size_t nread, void * user_data )
+static ssize_t t_server_read_fn( socket_t * const s, size_t const nread, void * user_data )
 {
 	uint8_t ping[6];
 	uint8_t const * const pong = UT("PONG!");
@@ -228,7 +228,7 @@ static int32_t t_server_read_fn( socket_t * const s, size_t nread, void * user_d
 	return 6;
 }
 
-static int32_t t_server_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )
+static ssize_t t_server_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )
 {
 	socket_flush( s );
 
@@ -289,7 +289,7 @@ static socket_ret_t t_client_error_fn( socket_t * const s, int err, void * user_
 	return SOCKET_OK;
 }
 
-static int32_t t_client_read_fn( socket_t * const s, size_t nread, void * user_data )
+static ssize_t t_client_read_fn( socket_t * const s, size_t const nread, void * user_data )
 {
 	uint8_t pong[6];
 
@@ -304,7 +304,7 @@ static int32_t t_client_read_fn( socket_t * const s, size_t nread, void * user_d
 	return 6;
 }
 
-static int32_t t_client_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )
+static ssize_t t_client_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )
 {
 	return 0;
 }
@@ -316,25 +316,32 @@ static void test_tcp_socket( void )
 	socket_t * csock;
 
 	socket_ops_t lops = { &t_incoming_fn, NULL, NULL, NULL, NULL };
-	socket_ops_t cops = { &t_client_connect_fn, &t_client_disconnect_fn, &t_client_error_fn, &t_client_read_fn, &t_client_write_fn };
+	socket_ops_t cops = 
+    { 
+        &t_client_connect_fn, 
+        &t_client_disconnect_fn, 
+        &t_client_error_fn, 
+        &t_client_read_fn, 
+        &t_client_write_fn 
+    };
 
 	/* create the listening socket */
-	lsock = socket_new( SOCKET_TCP, &lops, el, (void*)&ssock );
+	lsock = socket_new( SOCKET_TCP, &lops, (void*)&ssock );
 	CU_ASSERT_PTR_NOT_NULL_FATAL( lsock );
 	
 	/* bind it */
-	CU_ASSERT_EQUAL( socket_bind( lsock, "127.0.0.1", 12121 ), SOCKET_OK );
+	CU_ASSERT_EQUAL( socket_bind( lsock, "127.0.0.1", "12121", el ), SOCKET_OK );
 
 	/* set it to listen */
 	CU_ASSERT_EQUAL( socket_listen( lsock, 5 ), SOCKET_OK );
 	CU_ASSERT_TRUE( socket_is_listening( lsock ) );
 
 	/* create the client socket */
-	csock = socket_new( SOCKET_TCP, &cops, el, NULL );
+	csock = socket_new( SOCKET_TCP, &cops, NULL );
 	CU_ASSERT_PTR_NOT_NULL( lsock );
 
 	/* connect to the socket */
-	socket_connect( csock, "127.0.0.1", 12121 );
+	socket_connect( csock, "127.0.0.1", "12121", el );
 
 	/* run the event loop */
 	evt_run( el );
@@ -371,18 +378,18 @@ static socket_ret_t x_server_error_fn( socket_t * const s, int err, void * user_
 	return SOCKET_OK;
 }
 
-static int32_t x_server_read_fn( socket_t * const s, size_t nread, void * user_data )
+static ssize_t x_server_read_fn( socket_t * const s, size_t const nread, void * user_data )
 {
 	uint8_t * ping[6];
 	uint8_t const * const pong = UT("PONG!");
 
 	CU_ASSERT_EQUAL( nread, 6 );
 
-	socket_read( s, UT(ping), 6 );
+	CU_ASSERT_EQUAL( socket_read( s, UT(ping), 6 ), 6 );
 
 	CU_ASSERT_EQUAL( strcmp( C(ping), "PING!" ), 0 );
 
-	socket_write( s, pong, 6 );
+	CU_ASSERT_EQUAL( socket_write( s, pong, 6 ), SOCKET_OK );
 
 	/* signal to the server that it should disconnect after the next write completes */
 	x_sclose = TRUE;
@@ -390,11 +397,11 @@ static int32_t x_server_read_fn( socket_t * const s, size_t nread, void * user_d
 	return 6;
 }
 
-static int32_t x_server_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )
+static ssize_t x_server_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )
 {
 	if ( x_sclose == TRUE )
 	{
-		socket_disconnect( s );
+		CU_ASSERT_EQUAL( socket_disconnect( s ), SOCKET_OK );
 	}
 
 	return 0;
@@ -425,7 +432,7 @@ static socket_ret_t x_client_connect_fn( socket_t * const s, void * user_data )
 {
 	uint8_t const * const ping = UT("PING!");
 
-	socket_write( s, ping, 6 );
+	CU_ASSERT_EQUAL( socket_write( s, ping, 6 ), SOCKET_OK );
 
 	return SOCKET_OK;
 }
@@ -447,22 +454,22 @@ static socket_ret_t x_client_error_fn( socket_t * const s, int err, void * user_
 	return SOCKET_OK;
 }
 
-static int32_t x_client_read_fn( socket_t * const s, size_t nread, void * user_data )
+static ssize_t x_client_read_fn( socket_t * const s, size_t const nread, void * user_data )
 {
 	uint8_t * pong[6];
 
 	CU_ASSERT_EQUAL( nread, 6 );
 
-	socket_read( s, UT(pong), 6 );
+	CU_ASSERT_EQUAL( socket_read( s, UT(pong), 6 ), 6 );
 
 	CU_ASSERT_EQUAL( strcmp( C(pong), "PONG!" ), 0 );
 
-	socket_disconnect( s );
+	CU_ASSERT_EQUAL( socket_disconnect( s ), SOCKET_OK );
 
 	return 6;
 }
 
-static int32_t x_client_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )
+static ssize_t x_client_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )
 {
 	return 0;
 }
@@ -474,22 +481,31 @@ static void test_unix_socket( void )
 	socket_t * csock;
 
 	socket_ops_t lops = { &x_incoming_fn, NULL, NULL, NULL, NULL };
-	socket_ops_t cops = { &x_client_connect_fn, &x_client_disconnect_fn, &x_client_error_fn, &x_client_read_fn, &x_client_write_fn };
+	socket_ops_t cops = 
+    { 
+        &x_client_connect_fn, 
+        &x_client_disconnect_fn, 
+        &x_client_error_fn, 
+        &x_client_read_fn, 
+        &x_client_write_fn 
+    };
 
 	/* create the listening socket */
-	lsock = socket_new( SOCKET_UNIX, &lops, el, (void*)&ssock );
+	lsock = socket_new( SOCKET_UNIX, &lops, (void*)&ssock );
+    CU_ASSERT_PTR_NOT_NULL( lsock );
 	
 	/* bind it */
-	socket_bind( lsock, "/tmp/blah", 0 );
+	CU_ASSERT_EQUAL( socket_bind( lsock, "/tmp/blah", NULL, el ), SOCKET_OK );
 
 	/* set it to listen */
-	socket_listen( lsock, 5 );
+	CU_ASSERT_EQUAL( socket_listen( lsock, 5 ), SOCKET_OK );
 
 	/* create the client socket */
-	csock = socket_new( SOCKET_UNIX, &cops, el, NULL );
+	csock = socket_new( SOCKET_UNIX, &cops, NULL );
+    CU_ASSERT_PTR_NOT_NULL( csock );
 
 	/* connect to the socket */
-	socket_connect( csock, "/tmp/blah", 0 );
+	CU_ASSERT_EQUAL( socket_connect( csock, "/tmp/blah", NULL, el ), SOCKET_OK );
 
 	/* run the event loop */
 	evt_run( el );
@@ -519,7 +535,7 @@ static void test_socket_new_fail_alloc( void )
 	};
 
 	fail_alloc = TRUE;
-	CU_ASSERT_PTR_NULL( socket_new( SOCKET_TCP, &ops, el, NULL ) );
+	CU_ASSERT_PTR_NULL( socket_new( SOCKET_TCP, &ops, NULL ) );
 	fail_alloc = FALSE;
 }
 
@@ -535,7 +551,7 @@ static void test_socket_new_fail_init( void )
 	};
 
 	fail_socket_initialize = TRUE;
-	CU_ASSERT_PTR_NULL( socket_new( SOCKET_TCP, &ops, el, NULL ) );
+	CU_ASSERT_PTR_NULL( socket_new( SOCKET_TCP, &ops, NULL ) );
 	fail_socket_initialize = FALSE;
 }
 
@@ -560,7 +576,7 @@ static void test_socket_get_type( void )
 		&read_fn,
 		&write_fn
 	};
-	s = socket_new( SOCKET_TCP, &ops, el, NULL );
+	s = socket_new( SOCKET_TCP, &ops, NULL );
 	CU_ASSERT_PTR_NOT_NULL( s );
 	CU_ASSERT_EQUAL( socket_get_type( NULL ), SOCKET_UNKNOWN );
 	CU_ASSERT_EQUAL( socket_get_type( s ), SOCKET_TCP );

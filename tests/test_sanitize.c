@@ -36,9 +36,9 @@ static int added_tz = FALSE;
 static void test_sanitize_environment( void )
 {
 	int i = 0;
-	int8_t ** new_env = NULL;
+	uint8_t ** new_env = NULL;
 
-	new_env = build_clean_environ( 0, (int8_t**)NULL, 0, (int8_t**)NULL );
+	new_env = build_clean_environ( 0, (uint8_t**)NULL, 0, (uint8_t**)NULL );
 
 	CU_ASSERT_EQUAL( strcmp( new_env[0], "IFS= \t\n" ), 0 );
 	CU_ASSERT_EQUAL( strcmp( new_env[1], "PATH=" _PATH_STDPATH ), 0 );
@@ -46,7 +46,7 @@ static void test_sanitize_environment( void )
 	FREE( new_env );
 }
 
-static int8_t * preserve_environ[] =
+static uint8_t * preserve_environ[] =
 {
 	"USER",
 	NULL
@@ -55,9 +55,9 @@ static int8_t * preserve_environ[] =
 static void test_sanitize_environment_preserve( void )
 {
 	int i = 0;
-	int8_t ** new_env = NULL;
+	uint8_t ** new_env = NULL;
 
-	new_env = build_clean_environ( 1, preserve_environ, 0, (int8_t**)NULL );
+	new_env = build_clean_environ( 1, preserve_environ, 0, (uint8_t**)NULL );
 
 	CU_ASSERT_EQUAL( strcmp( new_env[0], "IFS= \t\n" ), 0 );
 	CU_ASSERT_EQUAL( strcmp( new_env[1], "PATH=" _PATH_STDPATH ), 0 );
@@ -67,7 +67,7 @@ static void test_sanitize_environment_preserve( void )
 	FREE( new_env );
 }
 
-static int8_t * add_environ[] =
+static uint8_t * add_environ[] =
 {
 	"FOO=BAR",
 	NULL
@@ -76,9 +76,9 @@ static int8_t * add_environ[] =
 static void test_sanitize_environment_add( void )
 {
 	int i = 0;
-	int8_t ** new_env = NULL;
+	uint8_t ** new_env = NULL;
 
-	new_env = build_clean_environ( 0, (int8_t**)NULL, 1, add_environ );
+	new_env = build_clean_environ( 0, (uint8_t**)NULL, 1, add_environ );
 
 	CU_ASSERT_EQUAL( strcmp( new_env[0], "IFS= \t\n" ), 0 );
 	CU_ASSERT_EQUAL( strcmp( new_env[1], "PATH=" _PATH_STDPATH ), 0 );
@@ -91,7 +91,7 @@ static void test_sanitize_environment_add( void )
 static void test_sanitize_open_files( void )
 {
 	struct stat st;
-	int8_t tname[32];
+	uint8_t tname[32];
 	int fd = -1;
 
 	MEMSET( tname, 0, 32 );

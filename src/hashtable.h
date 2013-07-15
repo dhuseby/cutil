@@ -35,7 +35,7 @@ typedef uint_t (*ht_hash_fn)(void const * const key);
 
 /* match function prototype
  * it must return 1 if the data matches, 0 otherwise */
-typedef int (*ht_match_fn)(void const * const l, void const * const r);
+typedef int_t (*ht_match_fn)(void const * const l, void const * const r);
 
 /* the delete function prototype */
 typedef void (*ht_delete_fn)(void * value);
@@ -59,24 +59,24 @@ ht_t* ht_new( uint_t const initial_capacity, ht_hash_fn hfn,
 void ht_delete( void * ht );
 
 /* stack allocated hash table */
-int ht_initialize( ht_t * const htable, uint_t const initial_capacity, 
+int_t ht_initialize( ht_t * const htable, uint_t const initial_capacity, 
                    ht_hash_fn hfn, ht_match_fn mfn, ht_delete_fn dfn );
-int ht_deinitialize( ht_t * const htable );
+int_t ht_deinitialize( ht_t * const htable );
 
 /* returns the number of items stored in the hashtable */
 uint_t ht_count( ht_t * const htable );
 
 /* inserts the given data into the hash table */
-int ht_insert( ht_t * const htable, void * const data);
+int_t ht_insert( ht_t * const htable, void * const data);
 
 /* clears all data from the hash table */
-int ht_clear( ht_t * const htable );
+int_t ht_clear( ht_t * const htable );
 
 /* finds the corresponding data in the hash table */
 ht_itr_t ht_find( ht_t const * const htable, void * const data );
 
 /* remove the key/value at the specified iterator position */
-int ht_remove( ht_t * const htable, ht_itr_t const itr );
+int_t ht_remove( ht_t * const htable, ht_itr_t const itr );
 
 /* get the data at the given iterator position */
 void* ht_get( ht_t const * const htable, ht_itr_t const itr );

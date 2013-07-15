@@ -38,35 +38,40 @@
 extern evt_loop_t * el;
 extern void test_child_private_functions( void );
 
-static int exit_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )
+static int_t exit_evt_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )
 {
 	evt_stop( el, TRUE );
 	return TRUE;
 }
 
-static int32_t read_fn( child_process_t * const cp, size_t nread, void * user_data )
+static int_t read_evt_fn( child_process_t * const cp, size_t nread, void * user_data )
 {
-	return 0;
+	return FALSE;
 }
 
-static int32_t write_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )
+static int_t write_evt_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )
 {
-	return 0;
+	return FALSE;
+}
+
+static int_t error_evt_fn( child_process_t * const cp, int err, void * user_data )
+{
+    return FALSE;
 }
 
 static void test_child_newdel( void )
 {
 	int i;
 	uint32_t size;
-	int8_t const * const args[] = { "./child.sh", NULL };
-	int8_t const * const env[] = { NULL };
+	uint8_t const * const args[] = { "./child.sh", NULL };
+	uint8_t const * const env[] = { NULL };
 	child_process_t * child;
-	child_ops_t ops = { &exit_fn, &read_fn, &write_fn };
+	child_ops_t ops = { &exit_evt_fn, &read_evt_fn, &write_evt_fn, &error_evt_fn };
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
 		child = NULL;
-		child = child_process_new( "./child.sh", args, env, &ops, el, TRUE, NULL );
+		child = child_process_new( UT("./child.sh"), args, env, &ops, el, TRUE, NULL );
 
 		/* run the event loop */
 		evt_run( el );
@@ -81,10 +86,10 @@ static void test_child_newdel_fail_first_pipe( void )
 {
 	int i;
 	uint32_t size;
-	int8_t const * const args[] = { "./child.sh", NULL };
-	int8_t const * const env[] = { NULL };
+	uint8_t const * const args[] = { "./child.sh", NULL };
+	uint8_t const * const env[] = { NULL };
 	child_process_t * child;
-	child_ops_t ops = { &exit_fn, &read_fn, &write_fn };
+	child_ops_t ops = { &exit_evt_fn, &read_evt_fn, &write_evt_fn, &error_evt_fn };
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
@@ -103,10 +108,10 @@ static void test_child_newdel_fail_second_pipe( void )
 {
 	int i;
 	uint32_t size;
-	int8_t const * const args[] = { "./child.sh", NULL };
-	int8_t const * const env[] = { NULL };
+	uint8_t const * const args[] = { "./child.sh", NULL };
+	uint8_t const * const env[] = { NULL };
 	child_process_t * child;
-	child_ops_t ops = { &exit_fn, &read_fn, &write_fn };
+	child_ops_t ops = { &exit_evt_fn, &read_evt_fn, &write_evt_fn, &error_evt_fn };
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
@@ -125,10 +130,10 @@ static void test_child_newdel_fail_fork( void )
 {
 	int i;
 	uint32_t size;
-	int8_t const * const args[] = { "./child.sh", NULL };
-	int8_t const * const env[] = { NULL };
+	uint8_t const * const args[] = { "./child.sh", NULL };
+	uint8_t const * const env[] = { NULL };
 	child_process_t * child;
-	child_ops_t ops = { &exit_fn, &read_fn, &write_fn };
+	child_ops_t ops = { &exit_evt_fn, &read_evt_fn, &write_evt_fn, &error_evt_fn };
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
@@ -147,13 +152,13 @@ static void test_child_wait( void )
 {
 	int i;
 	uint32_t size;
-	int8_t const * const args[] = { "./child_sleep.sh", NULL };
-	int8_t const * const env[] = { NULL };
+	uint8_t const * const args[] = { "./child_sleep.sh", NULL };
+	uint8_t const * const env[] = { NULL };
 	child_process_t * child;
-	child_ops_t ops = { &exit_fn, &read_fn, &write_fn };
+	child_ops_t ops = { &exit_evt_fn, &read_evt_fn, &write_evt_fn, &error_evt_fn };
 
 	child = NULL;
-	child = child_process_new( "./child.sh", args, env, &ops, el, TRUE, NULL );
+	child = child_process_new( UT("./child.sh"), args, env, &ops, el, TRUE, NULL );
 
 	/* run the event loop */
 	evt_run( el );
@@ -166,24 +171,29 @@ static void test_child_wait( void )
 static buf[16];
 static pid_t child_pid = -1;
 
-static int exit_pid_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )
+static int_t exit_pid_evt_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )
 {
 	evt_stop( el, FALSE );
 	return TRUE;
 }
 
 /* this will get called whenever there is data to be read */
-static int32_t read_pid_fn( child_process_t * const cp, size_t nread, void * user_data )
+static int_t read_pid_evt_fn( child_process_t * const cp, size_t nread, void * user_data )
 {
 	MEMSET( buf, 0, 16 );
 	child_process_read( cp, (uint8_t * const)buf, (nread < 16) ? nread : 16 );
 	child_pid = (pid_t)atoi(C(buf));
-	return 0;
+	return TRUE;
 }
 
-static int32_t write_pid_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )
+static int_t write_pid_evt_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )
 {
-	return 0;
+	return TRUE;
+}
+
+static int_t error_pid_evt_fn( child_process_t * const cp, int err, void * user_data )
+{
+    return TRUE;
 }
 
 static void test_child_read( void )
@@ -191,17 +201,17 @@ static void test_child_read( void )
 	int i;
 	uint32_t size;
 	pid_t cpid;
-	int8_t const * const args[] = { "./child_pid.sh", NULL };
-	int8_t const * const env[] = { NULL };
+	uint8_t const * const args[] = { "./child_pid.sh", NULL };
+	uint8_t const * const env[] = { NULL };
 	child_process_t * child;
-	child_ops_t ops = { &exit_pid_fn, &read_pid_fn, &write_pid_fn };
+	child_ops_t ops = { &exit_pid_evt_fn, &read_pid_evt_fn, &write_pid_evt_fn, &error_pid_evt_fn };
 
 	for ( i = 0; i < REPEAT; i++ )
 	{
 		child_pid = -1;
 		cpid = -1;
 		child = NULL;
-		child = child_process_new( "./child_pid.sh", args, env, &ops, el, TRUE, NULL );
+		child = child_process_new( UT("./child_pid.sh"), args, env, &ops, el, TRUE, NULL );
 
 		CU_ASSERT_PTR_NOT_NULL( child );
 
@@ -220,12 +230,12 @@ static void test_child_read( void )
 
 void test_child_process_write( void )
 {
-	int8_t const * const args[] = { "./child_pid.sh", NULL };
-	int8_t const * const env[] = { NULL };
+	uint8_t const * const args[] = { "./child_pid.sh", NULL };
+	uint8_t const * const env[] = { NULL };
 	child_process_t * child;
-	child_ops_t ops = { &exit_pid_fn, &read_pid_fn, &write_pid_fn };
+	child_ops_t ops = { &exit_pid_evt_fn, &read_pid_evt_fn, &write_pid_evt_fn, &error_pid_evt_fn };
 
-	child = child_process_new( "./child_pid.sh", args, env, &ops, el, TRUE, NULL );
+	child = child_process_new( UT("./child_pid.sh"), args, env, &ops, el, TRUE, NULL );
 	CU_ASSERT_PTR_NOT_NULL_FATAL( child );
 
 	CU_ASSERT_FALSE( child_process_write( NULL, NULL, 0 ) );
@@ -237,12 +247,12 @@ void test_child_process_write( void )
 
 void test_child_process_writev( void )
 {
-	int8_t const * const args[] = { "./child_pid.sh", NULL };
-	int8_t const * const env[] = { NULL };
+	uint8_t const * const args[] = { "./child_pid.sh", NULL };
+	uint8_t const * const env[] = { NULL };
 	child_process_t * child;
-	child_ops_t ops = { &exit_pid_fn, &read_pid_fn, &write_pid_fn };
+	child_ops_t ops = { &exit_pid_evt_fn, &read_pid_evt_fn, &write_pid_evt_fn, &error_pid_evt_fn };
 
-	child = child_process_new( "./child_pid.sh", args, env, &ops, el, TRUE, NULL );
+	child = child_process_new( UT("./child_pid.sh"), args, env, &ops, el, TRUE, NULL );
 	CU_ASSERT_PTR_NOT_NULL_FATAL( child );
 
 	CU_ASSERT_FALSE( child_process_writev( NULL, NULL, 0 ) );
@@ -254,12 +264,12 @@ void test_child_process_writev( void )
 
 void test_child_process_flush( void )
 {
-	int8_t const * const args[] = { "./child_pid.sh", NULL };
-	int8_t const * const env[] = { NULL };
+	uint8_t const * const args[] = { "./child_pid.sh", NULL };
+	uint8_t const * const env[] = { NULL };
 	child_process_t * child;
-	child_ops_t ops = { &exit_pid_fn, &read_pid_fn, &write_pid_fn };
+	child_ops_t ops = { &exit_pid_evt_fn, &read_pid_evt_fn, &write_pid_evt_fn, &error_pid_evt_fn };
 
-	child = child_process_new( "./child_pid.sh", args, env, &ops, el, TRUE, NULL );
+	child = child_process_new( UT("./child_pid.sh"), args, env, &ops, el, TRUE, NULL );
 	CU_ASSERT_PTR_NOT_NULL_FATAL( child );
 
 	CU_ASSERT_FALSE( child_process_flush( NULL ) );

@@ -20,17 +20,27 @@
 1018	coverage/cutil/src/btree.c.gcov.html	/^<a name="1018"><span class="lineNum">    1018 <\/span>                :            : }<\/a>$/;"	a
 1029	coverage/cutil/src/btree.c.gcov.html	/^<a name="1029"><span class="lineNum">    1029 <\/span>                :            : static const bt_itr_t itr_end = NULL;<\/a>$/;"	a
 103	coverage/cutil/src/bitset.c.gcov.html	/^<a name="103"><span class="lineNum">     103 <\/span>                :            : }<\/a>$/;"	a
-103	coverage/cutil/src/socket.c.gcov.html	/^<a name="103"><span class="lineNum">     103 <\/span>                :            : }<\/a>$/;"	a
 1037	coverage/cutil/src/btree.c.gcov.html	/^<a name="1037"><span class="lineNum">    1037 <\/span>                :            : <\/a>$/;"	a
 1048	coverage/cutil/src/btree.c.gcov.html	/^<a name="1048"><span class="lineNum">    1048 <\/span>                :            : <\/a>$/;"	a
+1052	coverage/cutil/src/socket.c.gcov.html	/^<a name="1052"><span class="lineNum">    1052 <\/span>                :            : }<\/a>$/;"	a
 1054	coverage/cutil/src/btree.c.gcov.html	/^<a name="1054"><span class="lineNum">    1054 <\/span>                :            : <\/a>$/;"	a
 1062	coverage/cutil/src/btree.c.gcov.html	/^<a name="1062"><span class="lineNum">    1062 <\/span>                :            : <\/a>$/;"	a
 1073	coverage/cutil/src/btree.c.gcov.html	/^<a name="1073"><span class="lineNum">    1073 <\/span>                :            : <\/a>$/;"	a
 1079	coverage/cutil/src/btree.c.gcov.html	/^<a name="1079"><span class="lineNum">    1079 <\/span>                :            : <\/a>$/;"	a
+1080	coverage/cutil/src/socket.c.gcov.html	/^<a name="1080"><span class="lineNum">    1080 <\/span>                :            : }<\/a>$/;"	a
+1086	coverage/cutil/src/socket.c.gcov.html	/^<a name="1086"><span class="lineNum">    1086 <\/span>                :            : }<\/a>$/;"	a
 1088	coverage/cutil/src/btree.c.gcov.html	/^<a name="1088"><span class="lineNum">    1088 <\/span>                :            : }<\/a>$/;"	a
 109	coverage/cutil/src/btree.c.gcov.html	/^<a name="109"><span class="lineNum">     109 <\/span>                :            : }<\/a>$/;"	a
 109	coverage/cutil/src/buffer.c.gcov.html	/^<a name="109"><span class="lineNum">     109 <\/span>                :            : }<\/a>$/;"	a
+1097	coverage/cutil/src/socket.c.gcov.html	/^<a name="1097"><span class="lineNum">    1097 <\/span>                :            : }<\/a>$/;"	a
 1101	coverage/cutil/src/btree.c.gcov.html	/^<a name="1101"><span class="lineNum">    1101 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
+1107	coverage/cutil/src/socket.c.gcov.html	/^<a name="1107"><span class="lineNum">    1107 <\/span>                :            : }<\/a>$/;"	a
+1115	coverage/cutil/src/socket.c.gcov.html	/^<a name="1115"><span class="lineNum">    1115 <\/span>                :            : }<\/a>$/;"	a
+1124	coverage/cutil/src/socket.c.gcov.html	/^<a name="1124"><span class="lineNum">    1124 <\/span>                :            : <\/a>$/;"	a
+113	coverage/cutil/src/socket.c.gcov.html	/^<a name="113"><span class="lineNum">     113 <\/span>                :            :                                      void * user_data );<\/a>$/;"	a
+1137	coverage/cutil/src/socket.c.gcov.html	/^<a name="1137"><span class="lineNum">    1137 <\/span>                :            : socket_ret_t test_connect_fn_ret = SOCKET_OK;<\/a>$/;"	a
+1143	coverage/cutil/src/socket.c.gcov.html	/^<a name="1143"><span class="lineNum">    1143 <\/span>                :            : }<\/a>$/;"	a
+1149	coverage/cutil/src/socket.c.gcov.html	/^<a name="1149"><span class="lineNum">    1149 <\/span>                :            : }<\/a>$/;"	a
 116	coverage/cutil/src/bitset.c.gcov.html	/^<a name="116"><span class="lineNum">     116 <\/span>                :            : }<\/a>$/;"	a
 116	coverage/cutil/src/events.c.gcov.html	/^<a name="116"><span class="lineNum">     116 <\/span>                :            : }<\/a>$/;"	a
 117	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="117"><span class="lineNum">     117 <\/span>                :            : };<\/a>$/;"	a
@@ -39,209 +49,213 @@
 122	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="122"><span class="lineNum">     122 <\/span>                :            : <\/a>$/;"	a
 123	coverage/cutil/src/privileges.c.gcov.html	/^<a name="123"><span class="lineNum">     123 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
 125	coverage/cutil/src/list.c.gcov.html	/^<a name="125"><span class="lineNum">     125 <\/span>                :            : }<\/a>$/;"	a
-131	coverage/cutil/src/child.c.gcov.html	/^<a name="131"><span class="lineNum">     131 <\/span>                :            : <\/a>$/;"	a
+126	coverage/cutil/src/socket.c.gcov.html	/^<a name="126"><span class="lineNum">     126 <\/span>                :            : }<\/a>$/;"	a
 133	coverage/cutil/src/bitset.c.gcov.html	/^<a name="133"><span class="lineNum">     133 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
 133	coverage/cutil/src/list.c.gcov.html	/^<a name="133"><span class="lineNum">     133 <\/span>                :            : }<\/a>$/;"	a
 134	coverage/cutil/src/btree.c.gcov.html	/^<a name="134"><span class="lineNum">     134 <\/span>                :            : <\/a>$/;"	a
-135	coverage/cutil/src/socket.c.gcov.html	/^<a name="135"><span class="lineNum">     135 <\/span>                :            : <\/a>$/;"	a
+137	coverage/cutil/src/child.c.gcov.html	/^<a name="137"><span class="lineNum">     137 <\/span>                :            : <\/a>$/;"	a
 139	coverage/cutil/src/events.c.gcov.html	/^<a name="139"><span class="lineNum">     139 <\/span>                :            : }<\/a>$/;"	a
-140	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="140"><span class="lineNum">     140 <\/span>                :            : <\/a>$/;"	a
+139	coverage/cutil/src/socket.c.gcov.html	/^<a name="139"><span class="lineNum">     139 <\/span>                :            : }<\/a>$/;"	a
 142	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="142"><span class="lineNum">     142 <\/span>                :            : }<\/a>$/;"	a
 145	coverage/cutil/src/buffer.c.gcov.html	/^<a name="145"><span class="lineNum">     145 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
 145	coverage/cutil/src/list.c.gcov.html	/^<a name="145"><span class="lineNum">     145 <\/span>                :            : }<\/a>$/;"	a
 148	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="148"><span class="lineNum">     148 <\/span>                :            : }<\/a>$/;"	a
 153	coverage/cutil/src/events.c.gcov.html	/^<a name="153"><span class="lineNum">     153 <\/span>                :            : }<\/a>$/;"	a
-154	coverage/cutil/src/child.c.gcov.html	/^<a name="154"><span class="lineNum">     154 <\/span>                :            : <\/a>$/;"	a
+160	coverage/cutil/src/child.c.gcov.html	/^<a name="160"><span class="lineNum">     160 <\/span>                :            : <\/a>$/;"	a
 160	coverage/cutil/src/list.c.gcov.html	/^<a name="160"><span class="lineNum">     160 <\/span>                :            : }<\/a>$/;"	a
+161	coverage/cutil/src/socket.c.gcov.html	/^<a name="161"><span class="lineNum">     161 <\/span>                :            : }<\/a>$/;"	a
+164	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="164"><span class="lineNum">     164 <\/span>                :            : <\/a>$/;"	a
 164	coverage/cutil/src/events.c.gcov.html	/^<a name="164"><span class="lineNum">     164 <\/span>                :            : <\/a>$/;"	a
 167	coverage/cutil/src/list.c.gcov.html	/^<a name="167"><span class="lineNum">     167 <\/span>                :            : }<\/a>$/;"	a
-171	coverage/cutil/src/socket.c.gcov.html	/^<a name="171"><span class="lineNum">     171 <\/span>                :            : }<\/a>$/;"	a
 172	coverage/cutil/src/list.c.gcov.html	/^<a name="172"><span class="lineNum">     172 <\/span>                :            : }<\/a>$/;"	a
 173	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="173"><span class="lineNum">     173 <\/span>                :            : }<\/a>$/;"	a
 177	coverage/cutil/src/btree.c.gcov.html	/^<a name="177"><span class="lineNum">     177 <\/span>                :            : \/* NOTE: If NULL is passed in for the bt_key_cmp_fn function, the default<\/a>$/;"	a
+178	coverage/cutil/src/socket.c.gcov.html	/^<a name="178"><span class="lineNum">     178 <\/span>                :            : }<\/a>$/;"	a
 181	coverage/cutil/src/list.c.gcov.html	/^<a name="181"><span class="lineNum">     181 <\/span>                :            : }<\/a>$/;"	a
-187	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="187"><span class="lineNum">     187 <\/span>                :            : <\/a>$/;"	a
-189	coverage/cutil/src/child.c.gcov.html	/^<a name="189"><span class="lineNum">     189 <\/span>                :            : #define PIPE_WRITE_FD 1<\/a>$/;"	a
 189	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="189"><span class="lineNum">     189 <\/span>                :            : }<\/a>$/;"	a
 193	coverage/cutil/src/list.c.gcov.html	/^<a name="193"><span class="lineNum">     193 <\/span>                :            : }<\/a>$/;"	a
+195	coverage/cutil/src/child.c.gcov.html	/^<a name="195"><span class="lineNum">     195 <\/span>                :            : #define PIPE_WRITE_FD 1<\/a>$/;"	a
 200	coverage/cutil/src/btree.c.gcov.html	/^<a name="200"><span class="lineNum">     200 <\/span>                :            : <\/a>$/;"	a
 205	coverage/cutil/src/list.c.gcov.html	/^<a name="205"><span class="lineNum">     205 <\/span>                :            : }<\/a>$/;"	a
-207	coverage/cutil/src/socket.c.gcov.html	/^<a name="207"><span class="lineNum">     207 <\/span>                :            : }<\/a>$/;"	a
-209	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="209"><span class="lineNum">     209 <\/span>                :            : }<\/a>$/;"	a
+211	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="211"><span class="lineNum">     211 <\/span>                :            : <\/a>$/;"	a
 218	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="218"><span class="lineNum">     218 <\/span>                :            : }<\/a>$/;"	a
-219	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="219"><span class="lineNum">     219 <\/span>                :            : }<\/a>$/;"	a
 225	coverage/cutil/src/events.c.gcov.html	/^<a name="225"><span class="lineNum">     225 <\/span>                :            : <\/a>$/;"	a
 232	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="232"><span class="lineNum">     232 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
+233	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="233"><span class="lineNum">     233 <\/span>                :            : }<\/a>$/;"	a
 235	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="235"><span class="lineNum">     235 <\/span>                :            : }<\/a>$/;"	a
 236	coverage/cutil/src/btree.c.gcov.html	/^<a name="236"><span class="lineNum">     236 <\/span>                :            : <\/a>$/;"	a
 236	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="236"><span class="lineNum">     236 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+243	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="243"><span class="lineNum">     243 <\/span>                :            : }<\/a>$/;"	a
 244	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="244"><span class="lineNum">     244 <\/span>                :            : }<\/a>$/;"	a
-244	coverage/cutil/src/socket.c.gcov.html	/^<a name="244"><span class="lineNum">     244 <\/span>                :            : <\/a>$/;"	a
 245	coverage/cutil/src/events.c.gcov.html	/^<a name="245"><span class="lineNum">     245 <\/span>                :            : }<\/a>$/;"	a
 250	coverage/cutil/src/btree.c.gcov.html	/^<a name="250"><span class="lineNum">     250 <\/span>                :            : <\/a>$/;"	a
-254	coverage/cutil/src/events.c.gcov.html	/^<a name="254"><span class="lineNum">     254 <\/span>                :<span class="lineCov">        825 : }<\/span><\/a>$/;"	a
+254	coverage/cutil/src/events.c.gcov.html	/^<a name="254"><span class="lineNum">     254 <\/span>                :<span class="lineCov">        833 : }<\/span><\/a>$/;"	a
 257	coverage/cutil/src/btree.c.gcov.html	/^<a name="257"><span class="lineNum">     257 <\/span>                :            : }<\/a>$/;"	a
 262	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="262"><span class="lineNum">     262 <\/span>                :            : }<\/a>$/;"	a
 265	coverage/cutil/src/events.c.gcov.html	/^<a name="265"><span class="lineNum">     265 <\/span>                :            : };<\/a>$/;"	a
 267	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="267"><span class="lineNum">     267 <\/span>                :            : }<\/a>$/;"	a
 268	coverage/cutil/src/btree.c.gcov.html	/^<a name="268"><span class="lineNum">     268 <\/span>                :            : }<\/a>$/;"	a
 27	coverage/cutil/src/bitset.c.gcov.html	/^<a name="27"><span class="lineNum">      27 <\/span>                :            : #define BIT(x) ((uint32_t)(1 &lt;&lt; (x &amp; 0x1f)))<\/a>$/;"	a
-287	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="287"><span class="lineNum">     287 <\/span>                :            : }<\/a>$/;"	a
+271	coverage/cutil/src/socket.c.gcov.html	/^<a name="271"><span class="lineNum">     271 <\/span>                :            : }<\/a>$/;"	a
 288	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="288"><span class="lineNum">     288 <\/span>                :            : }<\/a>$/;"	a
 29	coverage/cutil/src/pair.c.gcov.html	/^<a name="29"><span class="lineNum">      29 <\/span>                :            : };<\/a>$/;"	a
 297	coverage/cutil/src/list.c.gcov.html	/^<a name="297"><span class="lineNum">     297 <\/span>                :            : }<\/a>$/;"	a
-299	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="299"><span class="lineNum">     299 <\/span>                :<span class="lineCov">        410 : }<\/span><\/a>$/;"	a
 305	coverage/cutil/src/events.c.gcov.html	/^<a name="305"><span class="lineNum">     305 <\/span>                :            : }<\/a>$/;"	a
 31	coverage/cutil/src/buffer.c.gcov.html	/^<a name="31"><span class="lineNum">      31 <\/span>                :            :  *\/<\/a>$/;"	a
 314	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="314"><span class="lineNum">     314 <\/span>                :            : }<\/a>$/;"	a
-315	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="315"><span class="lineNum">     315 <\/span>                :            : }<\/a>$/;"	a
-315	coverage/cutil/src/child.c.gcov.html	/^<a name="315"><span class="lineNum">     315 <\/span>                :            : }<\/a>$/;"	a
+321	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="321"><span class="lineNum">     321 <\/span>                :            : }<\/a>$/;"	a
+322	coverage/cutil/src/child.c.gcov.html	/^<a name="322"><span class="lineNum">     322 <\/span>                :            : }<\/a>$/;"	a
 33	coverage/cutil/src/events.c.gcov.html	/^<a name="33"><span class="lineNum">      33 <\/span>                :            : <\/a>$/;"	a
-335	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="335"><span class="lineNum">     335 <\/span>                :            : }<\/a>$/;"	a
+333	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="333"><span class="lineNum">     333 <\/span>                :<span class="lineCov">        414 : }<\/span><\/a>$/;"	a
 336	coverage/cutil/src/btree.c.gcov.html	/^<a name="336"><span class="lineNum">     336 <\/span>                :            : }<\/a>$/;"	a
 336	coverage/cutil/src/list.c.gcov.html	/^<a name="336"><span class="lineNum">     336 <\/span>                :            : }<\/a>$/;"	a
 34	coverage/cutil/src/privileges.c.gcov.html	/^<a name="34"><span class="lineNum">      34 <\/span>                :            :  *\/<\/a>$/;"	a
-341	coverage/cutil/src/socket.c.gcov.html	/^<a name="341"><span class="lineNum">     341 <\/span>                :            : <\/a>$/;"	a
 342	coverage/cutil/src/events.c.gcov.html	/^<a name="342"><span class="lineNum">     342 <\/span>                :            : <\/a>$/;"	a
-343	coverage/cutil/src/child.c.gcov.html	/^<a name="343"><span class="lineNum">     343 <\/span>                :            : }<\/a>$/;"	a
 344	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="344"><span class="lineNum">     344 <\/span>                :            : \/********** PRIVATE **********\/<\/a>$/;"	a
+348	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="348"><span class="lineNum">     348 <\/span>                :            : }<\/a>$/;"	a
+350	coverage/cutil/src/child.c.gcov.html	/^<a name="350"><span class="lineNum">     350 <\/span>                :            : }<\/a>$/;"	a
 352	coverage/cutil/src/events.c.gcov.html	/^<a name="352"><span class="lineNum">     352 <\/span>                :            : }<\/a>$/;"	a
 354	coverage/cutil/src/list.c.gcov.html	/^<a name="354"><span class="lineNum">     354 <\/span>                :            : \/* removes the item at index &quot;itr&quot; and returns the iterator of the<\/a>$/;"	a
-359	coverage/cutil/src/socket.c.gcov.html	/^<a name="359"><span class="lineNum">     359 <\/span>                :            : <\/a>$/;"	a
+356	coverage/cutil/src/socket.c.gcov.html	/^<a name="356"><span class="lineNum">     356 <\/span>                :            : }<\/a>$/;"	a
 360	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="360"><span class="lineNum">     360 <\/span>                :            : }<\/a>$/;"	a
-366	coverage/cutil/src/child.c.gcov.html	/^<a name="366"><span class="lineNum">     366 <\/span>                :            : }<\/a>$/;"	a
-368	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="368"><span class="lineNum">     368 <\/span>                :            : <\/a>$/;"	a
-371	coverage/cutil/src/events.c.gcov.html	/^<a name="371"><span class="lineNum">     371 <\/span>                :            : static int test_flag = FALSE;<\/a>$/;"	a
+367	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="367"><span class="lineNum">     367 <\/span>                :            : }<\/a>$/;"	a
+371	coverage/cutil/src/events.c.gcov.html	/^<a name="371"><span class="lineNum">     371 <\/span>                :            : static int_t test_flag = FALSE;<\/a>$/;"	a
+373	coverage/cutil/src/child.c.gcov.html	/^<a name="373"><span class="lineNum">     373 <\/span>                :            : }<\/a>$/;"	a
 376	coverage/cutil/src/events.c.gcov.html	/^<a name="376"><span class="lineNum">     376 <\/span>                :<span class="lineCov">          3 : }<\/span><\/a>$/;"	a
-377	coverage/cutil/src/child.c.gcov.html	/^<a name="377"><span class="lineNum">     377 <\/span>                :            : }<\/a>$/;"	a
 378	coverage/cutil/src/list.c.gcov.html	/^<a name="378"><span class="lineNum">     378 <\/span>                :            : \/* inserts the item at index &quot;item&quot; before the item at &quot;itr&quot; and returns<\/a>$/;"	a
-383	coverage/cutil/src/child.c.gcov.html	/^<a name="383"><span class="lineNum">     383 <\/span>                :            : }<\/a>$/;"	a
+384	coverage/cutil/src/child.c.gcov.html	/^<a name="384"><span class="lineNum">     384 <\/span>                :            : }<\/a>$/;"	a
 39	coverage/cutil/src/pair.c.gcov.html	/^<a name="39"><span class="lineNum">      39 <\/span>                :            : }<\/a>$/;"	a
-393	coverage/cutil/src/child.c.gcov.html	/^<a name="393"><span class="lineNum">     393 <\/span>                :            : }<\/a>$/;"	a
+390	coverage/cutil/src/child.c.gcov.html	/^<a name="390"><span class="lineNum">     390 <\/span>                :            : }<\/a>$/;"	a
 397	coverage/cutil/src/events.c.gcov.html	/^<a name="397"><span class="lineNum">     397 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
-401	coverage/cutil/src/child.c.gcov.html	/^<a name="401"><span class="lineNum">     401 <\/span>                :            : }<\/a>$/;"	a
-401	coverage/cutil/src/socket.c.gcov.html	/^<a name="401"><span class="lineNum">     401 <\/span>                :            : }<\/a>$/;"	a
+400	coverage/cutil/src/child.c.gcov.html	/^<a name="400"><span class="lineNum">     400 <\/span>                :            : }<\/a>$/;"	a
 402	coverage/cutil/src/list.c.gcov.html	/^<a name="402"><span class="lineNum">     402 <\/span>                :            : }<\/a>$/;"	a
+403	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="403"><span class="lineNum">     403 <\/span>                :            : }<\/a>$/;"	a
 405	coverage/cutil/src/btree.c.gcov.html	/^<a name="405"><span class="lineNum">     405 <\/span>                :            : }<\/a>$/;"	a
-409	coverage/cutil/src/child.c.gcov.html	/^<a name="409"><span class="lineNum">     409 <\/span>                :            : }<\/a>$/;"	a
-416	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="416"><span class="lineNum">     416 <\/span>                :            : }<\/a>$/;"	a
+408	coverage/cutil/src/child.c.gcov.html	/^<a name="408"><span class="lineNum">     408 <\/span>                :            : }<\/a>$/;"	a
+41	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="41"><span class="lineNum">      41 <\/span>                :            : } aiofd_write_t;<\/a>$/;"	a
+418	coverage/cutil/src/child.c.gcov.html	/^<a name="418"><span class="lineNum">     418 <\/span>                :            : }<\/a>$/;"	a
 418	coverage/cutil/src/events.c.gcov.html	/^<a name="418"><span class="lineNum">     418 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
-42	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="42"><span class="lineNum">      42 <\/span>                :            : <\/a>$/;"	a
 42	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="42"><span class="lineNum">      42 <\/span>                :            : #endif<\/a>$/;"	a
-421	coverage/cutil/src/child.c.gcov.html	/^<a name="421"><span class="lineNum">     421 <\/span>                :            : static int test_flag = FALSE;<\/a>$/;"	a
-424	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="424"><span class="lineNum">     424 <\/span>                :            : }<\/a>$/;"	a
+420	coverage/cutil/src/socket.c.gcov.html	/^<a name="420"><span class="lineNum">     420 <\/span>                :            : }<\/a>$/;"	a
 425	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="425"><span class="lineNum">     425 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
-427	coverage/cutil/src/child.c.gcov.html	/^<a name="427"><span class="lineNum">     427 <\/span>                :            : }<\/a>$/;"	a
-433	coverage/cutil/src/child.c.gcov.html	/^<a name="433"><span class="lineNum">     433 <\/span>                :            : }<\/a>$/;"	a
+428	coverage/cutil/src/child.c.gcov.html	/^<a name="428"><span class="lineNum">     428 <\/span>                :            : }<\/a>$/;"	a
+436	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="436"><span class="lineNum">     436 <\/span>                :            : <\/a>$/;"	a
 439	coverage/cutil/src/events.c.gcov.html	/^<a name="439"><span class="lineNum">     439 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 44	coverage/cutil/src/bitset.c.gcov.html	/^<a name="44"><span class="lineNum">      44 <\/span>                :            : }<\/a>$/;"	a
-440	coverage/cutil/src/child.c.gcov.html	/^<a name="440"><span class="lineNum">     440 <\/span>                :            : <\/a>$/;"	a
-442	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="442"><span class="lineNum">     442 <\/span>                :            : }<\/a>$/;"	a
+440	coverage/cutil/src/child.c.gcov.html	/^<a name="440"><span class="lineNum">     440 <\/span>                :            : static int_t test_flag = FALSE;<\/a>$/;"	a
+440	coverage/cutil/src/socket.c.gcov.html	/^<a name="440"><span class="lineNum">     440 <\/span>                :            : <\/a>$/;"	a
 445	coverage/cutil/src/events.c.gcov.html	/^<a name="445"><span class="lineNum">     445 <\/span>                :            : <\/a>$/;"	a
-454	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="454"><span class="lineNum">     454 <\/span>                :            : }<\/a>$/;"	a
-463	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="463"><span class="lineNum">     463 <\/span>                :            : }<\/a>$/;"	a
-465	coverage/cutil/src/child.c.gcov.html	/^<a name="465"><span class="lineNum">     465 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+446	coverage/cutil/src/child.c.gcov.html	/^<a name="446"><span class="lineNum">     446 <\/span>                :            : }<\/a>$/;"	a
+452	coverage/cutil/src/child.c.gcov.html	/^<a name="452"><span class="lineNum">     452 <\/span>                :            : }<\/a>$/;"	a
+458	coverage/cutil/src/child.c.gcov.html	/^<a name="458"><span class="lineNum">     458 <\/span>                :            : }<\/a>$/;"	a
+46	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="46"><span class="lineNum">      46 <\/span>                :            : }<\/a>$/;"	a
+465	coverage/cutil/src/child.c.gcov.html	/^<a name="465"><span class="lineNum">     465 <\/span>                :            : <\/a>$/;"	a
 47	coverage/cutil/src/pair.c.gcov.html	/^<a name="47"><span class="lineNum">      47 <\/span>                :            : }<\/a>$/;"	a
 476	coverage/cutil/src/list.c.gcov.html	/^<a name="476"><span class="lineNum">     476 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
 48	coverage/cutil/src/buffer.c.gcov.html	/^<a name="48"><span class="lineNum">      48 <\/span>                :            : }<\/a>$/;"	a
-483	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="483"><span class="lineNum">     483 <\/span>                :            : static int error_callback_ret = TRUE;<\/a>$/;"	a
-489	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="489"><span class="lineNum">     489 <\/span>                :            : }<\/a>$/;"	a
-493	coverage/cutil/src/child.c.gcov.html	/^<a name="493"><span class="lineNum">     493 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
-495	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="495"><span class="lineNum">     495 <\/span>                :            : }<\/a>$/;"	a
-501	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="501"><span class="lineNum">     501 <\/span>                :            : }<\/a>$/;"	a
-501	coverage/cutil/src/socket.c.gcov.html	/^<a name="501"><span class="lineNum">     501 <\/span>                :            : }<\/a>$/;"	a
-506	coverage/cutil/src/child.c.gcov.html	/^<a name="506"><span class="lineNum">     506 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+484	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="484"><span class="lineNum">     484 <\/span>                :            : }<\/a>$/;"	a
+490	coverage/cutil/src/child.c.gcov.html	/^<a name="490"><span class="lineNum">     490 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+492	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="492"><span class="lineNum">     492 <\/span>                :            : }<\/a>$/;"	a
+497	coverage/cutil/src/socket.c.gcov.html	/^<a name="497"><span class="lineNum">     497 <\/span>                :            : }<\/a>$/;"	a
+51	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="51"><span class="lineNum">      51 <\/span>                :            : }<\/a>$/;"	a
+510	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="510"><span class="lineNum">     510 <\/span>                :            : }<\/a>$/;"	a
+518	coverage/cutil/src/child.c.gcov.html	/^<a name="518"><span class="lineNum">     518 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 519	coverage/cutil/src/btree.c.gcov.html	/^<a name="519"><span class="lineNum">     519 <\/span>                :            : }<\/a>$/;"	a
 52	coverage/cutil/src/bitset.c.gcov.html	/^<a name="52"><span class="lineNum">      52 <\/span>                :            : }<\/a>$/;"	a
-523	coverage/cutil/src/socket.c.gcov.html	/^<a name="523"><span class="lineNum">     523 <\/span>                :            : }<\/a>$/;"	a
-526	coverage/cutil/src/child.c.gcov.html	/^<a name="526"><span class="lineNum">     526 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+522	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="522"><span class="lineNum">     522 <\/span>                :            : }<\/a>$/;"	a
 53	coverage/cutil/src/list.c.gcov.html	/^<a name="53"><span class="lineNum">      53 <\/span>                :            : \/********** PUBLIC **********\/<\/a>$/;"	a
 53	coverage/cutil/src/pair.c.gcov.html	/^<a name="53"><span class="lineNum">      53 <\/span>                :            : }<\/a>$/;"	a
-534	coverage/cutil/src/socket.c.gcov.html	/^<a name="534"><span class="lineNum">     534 <\/span>                :<span class="lineCov">        147 : }<\/span><\/a>$/;"	a
+531	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="531"><span class="lineNum">     531 <\/span>                :            : }<\/a>$/;"	a
+531	coverage/cutil/src/child.c.gcov.html	/^<a name="531"><span class="lineNum">     531 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 54	coverage/cutil/src/child.c.gcov.html	/^<a name="54"><span class="lineNum">      54 <\/span>                :            : };<\/a>$/;"	a
-545	coverage/cutil/src/socket.c.gcov.html	/^<a name="545"><span class="lineNum">     545 <\/span>                :            : <\/a>$/;"	a
-554	coverage/cutil/src/socket.c.gcov.html	/^<a name="554"><span class="lineNum">     554 <\/span>                :            : }<\/a>$/;"	a
+551	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="551"><span class="lineNum">     551 <\/span>                :            : static int_t error_callback_ret = TRUE;<\/a>$/;"	a
+551	coverage/cutil/src/child.c.gcov.html	/^<a name="551"><span class="lineNum">     551 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+557	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="557"><span class="lineNum">     557 <\/span>                :            : }<\/a>$/;"	a
+56	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="56"><span class="lineNum">      56 <\/span>                :            : }<\/a>$/;"	a
 56	coverage/cutil/src/buffer.c.gcov.html	/^<a name="56"><span class="lineNum">      56 <\/span>                :            : }<\/a>$/;"	a
-58	coverage/cutil/src/socket.c.gcov.html	/^<a name="58"><span class="lineNum">      58 <\/span>                :            : };<\/a>$/;"	a
+563	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="563"><span class="lineNum">     563 <\/span>                :            : }<\/a>$/;"	a
+569	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="569"><span class="lineNum">     569 <\/span>                :            : }<\/a>$/;"	a
+593	coverage/cutil/src/socket.c.gcov.html	/^<a name="593"><span class="lineNum">     593 <\/span>                :            : }<\/a>$/;"	a
 60	coverage/cutil/src/events.c.gcov.html	/^<a name="60"><span class="lineNum">      60 <\/span>                :            : <\/a>$/;"	a
-609	coverage/cutil/src/socket.c.gcov.html	/^<a name="609"><span class="lineNum">     609 <\/span>                :            : <\/a>$/;"	a
 61	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="61"><span class="lineNum">      61 <\/span>                :            : <\/a>$/;"	a
-618	coverage/cutil/src/socket.c.gcov.html	/^<a name="618"><span class="lineNum">     618 <\/span>                :            : }<\/a>$/;"	a
+610	coverage/cutil/src/socket.c.gcov.html	/^<a name="610"><span class="lineNum">     610 <\/span>                :            : }<\/a>$/;"	a
+615	coverage/cutil/src/socket.c.gcov.html	/^<a name="615"><span class="lineNum">     615 <\/span>                :            : }<\/a>$/;"	a
+62	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="62"><span class="lineNum">      62 <\/span>                :            : <\/a>$/;"	a
+620	coverage/cutil/src/socket.c.gcov.html	/^<a name="620"><span class="lineNum">     620 <\/span>                :            : }<\/a>$/;"	a
+625	coverage/cutil/src/socket.c.gcov.html	/^<a name="625"><span class="lineNum">     625 <\/span>                :            : }<\/a>$/;"	a
 63	coverage/cutil/src/pair.c.gcov.html	/^<a name="63"><span class="lineNum">      63 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
+630	coverage/cutil/src/socket.c.gcov.html	/^<a name="630"><span class="lineNum">     630 <\/span>                :            : }<\/a>$/;"	a
 634	coverage/cutil/src/btree.c.gcov.html	/^<a name="634"><span class="lineNum">     634 <\/span>                :            : <\/a>$/;"	a
 64	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="64"><span class="lineNum">      64 <\/span>                :            : }<\/a>$/;"	a
 65	coverage/cutil/src/list.c.gcov.html	/^<a name="65"><span class="lineNum">      65 <\/span>                :            : }<\/a>$/;"	a
+655	coverage/cutil/src/socket.c.gcov.html	/^<a name="655"><span class="lineNum">     655 <\/span>                :            : }<\/a>$/;"	a
 67	coverage/cutil/src/bitset.c.gcov.html	/^<a name="67"><span class="lineNum">      67 <\/span>                :            : }<\/a>$/;"	a
 676	coverage/cutil/src/socket.c.gcov.html	/^<a name="676"><span class="lineNum">     676 <\/span>                :            : }<\/a>$/;"	a
 68	coverage/cutil/src/btree.c.gcov.html	/^<a name="68"><span class="lineNum">      68 <\/span>                :            : <\/a>$/;"	a
-696	coverage/cutil/src/socket.c.gcov.html	/^<a name="696"><span class="lineNum">     696 <\/span>                :            : }<\/a>$/;"	a
-702	coverage/cutil/src/socket.c.gcov.html	/^<a name="702"><span class="lineNum">     702 <\/span>                :            : }<\/a>$/;"	a
-716	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="716"><span class="lineNum">     716 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+687	coverage/cutil/src/socket.c.gcov.html	/^<a name="687"><span class="lineNum">     687 <\/span>                :<span class="lineCov">        147 : }<\/span><\/a>$/;"	a
+698	coverage/cutil/src/socket.c.gcov.html	/^<a name="698"><span class="lineNum">     698 <\/span>                :            : <\/a>$/;"	a
+707	coverage/cutil/src/socket.c.gcov.html	/^<a name="707"><span class="lineNum">     707 <\/span>                :            : }<\/a>$/;"	a
 716	coverage/cutil/src/btree.c.gcov.html	/^<a name="716"><span class="lineNum">     716 <\/span>                :            : <\/a>$/;"	a
 72	coverage/cutil/src/list.c.gcov.html	/^<a name="72"><span class="lineNum">      72 <\/span>                :            : }<\/a>$/;"	a
-75	coverage/cutil/src/socket.c.gcov.html	/^<a name="75"><span class="lineNum">      75 <\/span>                :            : }<\/a>$/;"	a
+766	coverage/cutil/src/socket.c.gcov.html	/^<a name="766"><span class="lineNum">     766 <\/span>                :            : <\/a>$/;"	a
 77	coverage/cutil/src/btree.c.gcov.html	/^<a name="77"><span class="lineNum">      77 <\/span>                :            : }<\/a>$/;"	a
+776	coverage/cutil/src/socket.c.gcov.html	/^<a name="776"><span class="lineNum">     776 <\/span>                :            : <\/a>$/;"	a
+788	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="788"><span class="lineNum">     788 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 793	coverage/cutil/src/btree.c.gcov.html	/^<a name="793"><span class="lineNum">     793 <\/span>                :            : \/* NOTE: if the number of values stored in the table will exceed a load <\/a>$/;"	a
-794	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="794"><span class="lineNum">     794 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 80	coverage/cutil/src/bitset.c.gcov.html	/^<a name="80"><span class="lineNum">      80 <\/span>                :            : }<\/a>$/;"	a
 814	coverage/cutil/src/btree.c.gcov.html	/^<a name="814"><span class="lineNum">     814 <\/span>                :            : <\/a>$/;"	a
 82	coverage/cutil/src/child.c.gcov.html	/^<a name="82"><span class="lineNum">      82 <\/span>                :            : <\/a>$/;"	a
 82	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="82"><span class="lineNum">      82 <\/span>                :            : <\/a>$/;"	a
-825	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="825"><span class="lineNum">     825 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 840	coverage/cutil/src/btree.c.gcov.html	/^<a name="840"><span class="lineNum">     840 <\/span>                :            : }<\/a>$/;"	a
-845	coverage/cutil/src/socket.c.gcov.html	/^<a name="845"><span class="lineNum">     845 <\/span>                :            : }<\/a>$/;"	a
 852	coverage/cutil/src/btree.c.gcov.html	/^<a name="852"><span class="lineNum">     852 <\/span>                :            : }<\/a>$/;"	a
 865	coverage/cutil/src/btree.c.gcov.html	/^<a name="865"><span class="lineNum">     865 <\/span>                :            : <\/a>$/;"	a
-873	coverage/cutil/src/socket.c.gcov.html	/^<a name="873"><span class="lineNum">     873 <\/span>                :            : }<\/a>$/;"	a
+866	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="866"><span class="lineNum">     866 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 878	coverage/cutil/src/btree.c.gcov.html	/^<a name="878"><span class="lineNum">     878 <\/span>                :            : }<\/a>$/;"	a
-879	coverage/cutil/src/socket.c.gcov.html	/^<a name="879"><span class="lineNum">     879 <\/span>                :            : }<\/a>$/;"	a
 88	coverage/cutil/src/bitset.c.gcov.html	/^<a name="88"><span class="lineNum">      88 <\/span>                :            : }<\/a>$/;"	a
+883	coverage/cutil/src/socket.c.gcov.html	/^<a name="883"><span class="lineNum">     883 <\/span>                :            : }<\/a>$/;"	a
 89	coverage/cutil/src/events.c.gcov.html	/^<a name="89"><span class="lineNum">      89 <\/span>                :            : <\/a>$/;"	a
-890	coverage/cutil/src/socket.c.gcov.html	/^<a name="890"><span class="lineNum">     890 <\/span>                :            : }<\/a>$/;"	a
-898	coverage/cutil/src/socket.c.gcov.html	/^<a name="898"><span class="lineNum">     898 <\/span>                :            : }<\/a>$/;"	a
-907	coverage/cutil/src/socket.c.gcov.html	/^<a name="907"><span class="lineNum">     907 <\/span>                :            : <\/a>$/;"	a
-920	coverage/cutil/src/socket.c.gcov.html	/^<a name="920"><span class="lineNum">     920 <\/span>                :            : socket_ret_t test_connect_fn_ret = SOCKET_OK;<\/a>$/;"	a
-926	coverage/cutil/src/socket.c.gcov.html	/^<a name="926"><span class="lineNum">     926 <\/span>                :            : }<\/a>$/;"	a
+897	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="897"><span class="lineNum">     897 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+906	coverage/cutil/src/socket.c.gcov.html	/^<a name="906"><span class="lineNum">     906 <\/span>                :            : }<\/a>$/;"	a
+912	coverage/cutil/src/socket.c.gcov.html	/^<a name="912"><span class="lineNum">     912 <\/span>                :            : }<\/a>$/;"	a
 93	coverage/cutil/src/list.c.gcov.html	/^<a name="93"><span class="lineNum">      93 <\/span>                :            : }<\/a>$/;"	a
-932	coverage/cutil/src/socket.c.gcov.html	/^<a name="932"><span class="lineNum">     932 <\/span>                :            : }<\/a>$/;"	a
 939	coverage/cutil/src/btree.c.gcov.html	/^<a name="939"><span class="lineNum">     939 <\/span>                :            : <\/a>$/;"	a
 95	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="95"><span class="lineNum">      95 <\/span>                :            : <\/a>$/;"	a
 96	coverage/cutil/src/bitset.c.gcov.html	/^<a name="96"><span class="lineNum">      96 <\/span>                :            : }<\/a>$/;"	a
 96	coverage/cutil/src/privileges.c.gcov.html	/^<a name="96"><span class="lineNum">      96 <\/span>                :            : }<\/a>$/;"	a
 98	coverage/cutil/src/buffer.c.gcov.html	/^<a name="98"><span class="lineNum">      98 <\/span>                :            : }<\/a>$/;"	a
-ACCEPT	src/macros.h	126;"	d
-ACCEPT	src/macros.h	252;"	d
+ACCEPT	src/macros.h	268;"	d
+ACCEPT	src/macros.h	90;"	d
 ADD_SUITE	tests/test_macros.h	21;"	d
 ADD_TEST	tests/test_macros.h	22;"	d
-ARRAY_SIZE	src/macros.h	59;"	d
-ASSERT	src/macros.h	62;"	d
-BIND	src/macros.h	130;"	d
-BIND	src/macros.h	256;"	d
+ARRAY_SIZE	src/macros.h	60;"	d
+ASSERT	src/macros.h	63;"	d
+BIND	src/macros.h	272;"	d
+BIND	src/macros.h	94;"	d
 BIT	src/bitset.c	27;"	d	file:
 BUILDDIRS	Makefile	/^BUILDDIRS = $(DIRS:%=build-%)$/;"	m
-C	src/macros.h	35;"	d
-CALLOC	src/macros.h	243;"	d
-CALLOC	src/macros.h	93;"	d
+C	src/macros.h	36;"	d
+CALLOC	src/macros.h	259;"	d
+CALLOC	src/macros.h	98;"	d
 CFLAGS	src/Makefile	/^CFLAGS=-O3 -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
 CFLAGS	src/Makefile	/^coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)\/include -I..\/tests$/;"	m
 CFLAGS	src/Makefile	/^debug: CFLAGS=-O0 -gstabs+ -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
 CFLAGS	src/Makefile	/^test: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)\/include -I..\/tests$/;"	m
 CFLAGS	src/Makefile	/^testnr: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)\/include -I..\/tests$/;"	m
 CFLAGS	tests/Makefile	/^CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(CUTIL_ROOT)\/include -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
-CHECK	src/macros.h	73;"	d
-CHECK_ERR_STR	src/macros.h	70;"	d
-CHECK_GOTO	src/macros.h	77;"	d
-CHECK_MSG	src/macros.h	74;"	d
-CHECK_PTR	src/macros.h	78;"	d
-CHECK_PTR_GOTO	src/macros.h	82;"	d
-CHECK_PTR_MSG	src/macros.h	79;"	d
-CHECK_PTR_RET	src/macros.h	80;"	d
-CHECK_PTR_RET_MSG	src/macros.h	81;"	d
-CHECK_RET	src/macros.h	75;"	d
-CHECK_RET_MSG	src/macros.h	76;"	d
+CHECK	src/macros.h	74;"	d
+CHECK_ERR_STR	src/macros.h	71;"	d
+CHECK_GOTO	src/macros.h	78;"	d
+CHECK_MSG	src/macros.h	75;"	d
+CHECK_PTR	src/macros.h	79;"	d
+CHECK_PTR_GOTO	src/macros.h	83;"	d
+CHECK_PTR_MSG	src/macros.h	80;"	d
+CHECK_PTR_RET	src/macros.h	81;"	d
+CHECK_PTR_RET_MSG	src/macros.h	82;"	d
+CHECK_RET	src/macros.h	76;"	d
+CHECK_RET_MSG	src/macros.h	77;"	d
 CLEANDIRS	Makefile	/^CLEANDIRS = $(DIRS:%=clean-%)$/;"	m
-CONNECT	src/macros.h	134;"	d
-CONNECT	src/macros.h	260;"	d
+CONNECT	src/macros.h	102;"	d
+CONNECT	src/macros.h	276;"	d
 COVERAGE	Makefile	/^COVERAGE?=.\/coverage$/;"	m
 COVERAGE	src/Makefile	/^COVERAGE?=..\/coverage$/;"	m
 CUTIL_ROOT	tests/Makefile	/^CUTIL_ROOT=..\/src$/;"	m
@@ -255,8 +269,8 @@ DIRS	Makefile	/^DIRS = $(SRCDIR) $(TESTDIR)$/;"	m
 DWORDS_NEEDED	src/bitset.c	25;"	d	file:
 DWORD_INDEX	src/bitset.c	26;"	d	file:
 EMPTY_ENV	src/child.h	24;"	d
-ERRNO	src/macros.h	138;"	d
-ERRNO	src/macros.h	264;"	d
+ERRNO	src/macros.h	106;"	d
+ERRNO	src/macros.h	280;"	d
 EVT_BADPARAM	src/events.h	/^    EVT_BADPARAM = -3$/;"	e	enum:evt_ret_e
 EVT_BADPTR	src/events.h	/^    EVT_BADPTR = -1,$/;"	e	enum:evt_ret_e
 EVT_CHILD	src/events.h	/^    EVT_CHILD,$/;"	e	enum:evt_type_e
@@ -269,22 +283,22 @@ EVT_SIGNAL	src/events.h	/^    EVT_SIGNAL,$/;"	e	enum:evt_type_e
 EVT_TYPE_COUNT	src/events.h	/^    EVT_TYPE_COUNT = EVT_TYPE_LAST - EVT_TYPE_FIRST$/;"	e	enum:evt_type_e
 EVT_TYPE_FIRST	src/events.h	/^    EVT_TYPE_FIRST = EVT_SIGNAL,$/;"	e	enum:evt_type_e
 EVT_TYPE_LAST	src/events.h	/^    EVT_TYPE_LAST,$/;"	e	enum:evt_type_e
-EV_DEFAULT_LOOP	src/macros.h	229;"	d
-EV_DEFAULT_LOOP	src/macros.h	361;"	d
+EV_DEFAULT_LOOP	src/macros.h	245;"	d
+EV_DEFAULT_LOOP	src/macros.h	401;"	d
 EV_MULTIPLICITY	src/events.c	18;"	d	file:
 EV_STANDALONE	src/events.c	17;"	d	file:
 EXTRA_LIBS_ROOT	src/Makefile	/^EXTRA_LIBS_ROOT?=\/usr\/local$/;"	m
 EXTRA_LIBS_ROOT	tests/Makefile	/^EXTRA_LIBS_ROOT?=\/usr\/local$/;"	m
-FAIL	src/macros.h	66;"	d
-FALSE	src/macros.h	49;"	d
-FCNTL	src/macros.h	142;"	d
-FCNTL	src/macros.h	268;"	d
-FORK	src/macros.h	150;"	d
-FORK	src/macros.h	272;"	d
-FREE	src/macros.h	101;"	d
-FREE	src/macros.h	245;"	d
-FSTAT	src/macros.h	146;"	d
-FSTAT	src/macros.h	276;"	d
+FAIL	src/macros.h	67;"	d
+FALSE	src/macros.h	50;"	d
+FCNTL	src/macros.h	110;"	d
+FCNTL	src/macros.h	284;"	d
+FORK	src/macros.h	114;"	d
+FORK	src/macros.h	288;"	d
+FREE	src/macros.h	118;"	d
+FREE	src/macros.h	261;"	d
+FSTAT	src/macros.h	122;"	d
+FSTAT	src/macros.h	292;"	d
 GCDA	src/Makefile	/^GCDA=$(SRC:.c=.gcda)$/;"	m
 GCDA	tests/Makefile	/^GCDA=$(SRC:.c=.gcda)$/;"	m
 GCNO	src/Makefile	/^GCNO=$(SRC:.c=.gcno)$/;"	m
@@ -292,19 +306,22 @@ GCNO	tests/Makefile	/^GCNO=$(SRC:.c=.gcno)$/;"	m
 GCOV	src/Makefile	/^GCOV=$(SRC:.c=.c.gcov)$/;"	m
 GCOV	tests/Makefile	/^GCOV=$(SRC:.c=.c.gcov)$/;"	m
 GCOVDIRS	Makefile	/^GCOVDIRS = $(DIRS:%=gcov-%)$/;"	m
-GETDTABLESIZE	src/macros.h	154;"	d
-GETDTABLESIZE	src/macros.h	280;"	d
-GETEGID	src/macros.h	158;"	d
-GETEGID	src/macros.h	284;"	d
-GETEUID	src/macros.h	162;"	d
-GETEUID	src/macros.h	288;"	d
-GETGID	src/macros.h	166;"	d
-GETGID	src/macros.h	292;"	d
-GETGROUPS	src/macros.h	170;"	d
-GETGROUPS	src/macros.h	296;"	d
-GETUID	src/macros.h	174;"	d
-GETUID	src/macros.h	300;"	d
+GETADDRINFO	src/macros.h	126;"	d
+GETADDRINFO	src/macros.h	296;"	d
+GETDTABLESIZE	src/macros.h	130;"	d
+GETDTABLESIZE	src/macros.h	300;"	d
+GETEGID	src/macros.h	134;"	d
+GETEGID	src/macros.h	304;"	d
+GETEUID	src/macros.h	138;"	d
+GETEUID	src/macros.h	308;"	d
+GETGID	src/macros.h	142;"	d
+GETGID	src/macros.h	312;"	d
+GETGROUPS	src/macros.h	146;"	d
+GETGROUPS	src/macros.h	316;"	d
+GETUID	src/macros.h	150;"	d
+GETUID	src/macros.h	320;"	d
 HDR	src/Makefile	/^HDR=aiofd.h bitset.h btree.h buffer.h child.h daemon.h debug.h events.h hashtable.h list.h log.h macros.h pair.h privileges.h sanitize.h socket.h$/;"	m
+HOSTNAME_BUFFER_LEN	src/socket.h	61;"	d
 INSTALL	Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
 INSTALL	src/Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
 INSTALLDIRS	Makefile	/^INSTALLDIRS = $(DIRS:%=install-%)$/;"	m
@@ -312,34 +329,33 @@ INSTALL_DATA	Makefile	/^INSTALL_DATA=$(INSTALL) -m 644$/;"	m
 INSTALL_DATA	src/Makefile	/^INSTALL_DATA=$(INSTALL) -m 644$/;"	m
 INSTALL_PROGRAM	Makefile	/^INSTALL_PROGRAM=$(INSTALL)$/;"	m
 INSTALL_PROGRAM	src/Makefile	/^INSTALL_PROGRAM=$(INSTALL)$/;"	m
-IOCTL	src/macros.h	178;"	d
-IOCTL	src/macros.h	304;"	d
-IPv4	src/socket.h	/^typedef struct in_addr IPv4;$/;"	t	typeref:struct:in_addr
-IPv6	src/socket.h	/^typedef struct in6_addr IPv6;$/;"	t	typeref:struct:in6_addr
+IOCTL	src/macros.h	154;"	d
+IOCTL	src/macros.h	324;"	d
 ITEM_AT	src/hashtable.c	34;"	d	file:
 ITEM_AT	src/list.c	40;"	d	file:
 ITR_EQ	src/hashtable.h	31;"	d
 LDFLAGS	tests/Makefile	/^LDFLAGS=-O0 -gstabs+ -L$(CUTIL_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
 LDFLAGS	tests/Makefile	/^coverage: LDFLAGS=-fprofile-arcs -O0 -gstabs+ -L$(CUTIL_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
+LEAVE_UNCHANGED	src/privileges.h	25;"	d
 LIBS	tests/Makefile	/^LIBS=-lcutil -lcunit -lev$/;"	m
-LISTEN	src/macros.h	182;"	d
-LISTEN	src/macros.h	308;"	d
+LISTEN	src/macros.h	158;"	d
+LISTEN	src/macros.h	328;"	d
 LIST_AT	src/hashtable.c	33;"	d	file:
-LOG	src/macros.h	65;"	d
+LOG	src/macros.h	66;"	d
 LOG_TYPE_FILE	src/log.h	/^    LOG_TYPE_FILE,$/;"	e	enum:log_type_s
 LOG_TYPE_LIST	src/log.h	/^    LOG_TYPE_LIST$/;"	e	enum:log_type_s
 LOG_TYPE_STDERR	src/log.h	/^    LOG_TYPE_STDERR,$/;"	e	enum:log_type_s
 LOG_TYPE_SYSLOG	src/log.h	/^    LOG_TYPE_SYSLOG,$/;"	e	enum:log_type_s
-MALLOC	src/macros.h	242;"	d
-MALLOC	src/macros.h	89;"	d
-MEMCMP	src/macros.h	110;"	d
-MEMCMP	src/macros.h	247;"	d
-MEMCPY	src/macros.h	106;"	d
-MEMCPY	src/macros.h	248;"	d
-MEMSET	src/macros.h	114;"	d
-MEMSET	src/macros.h	246;"	d
-MISSING_64BIT_ENDIAN	src/macros.h	55;"	d
-MISSING_STRNLEN	src/macros.h	54;"	d
+MALLOC	src/macros.h	162;"	d
+MALLOC	src/macros.h	258;"	d
+MEMCMP	src/macros.h	166;"	d
+MEMCMP	src/macros.h	263;"	d
+MEMCPY	src/macros.h	170;"	d
+MEMCPY	src/macros.h	264;"	d
+MEMSET	src/macros.h	174;"	d
+MEMSET	src/macros.h	262;"	d
+MISSING_64BIT_ENDIAN	src/macros.h	56;"	d
+MISSING_STRNLEN	src/macros.h	55;"	d
 MULTIPLE	tests/test_aiofd.c	36;"	d	file:
 MULTIPLE	tests/test_child.c	36;"	d	file:
 MULTIPLE	tests/test_events.c	37;"	d	file:
@@ -348,7 +364,7 @@ MULTIPLE	tests/test_list.c	36;"	d	file:
 MULTIPLE	tests/test_privileges.c	35;"	d	file:
 MULTIPLE	tests/test_socket.c	36;"	d	file:
 NAME	src/Makefile	/^NAME=cutil$/;"	m
-NOTICE	src/macros.h	64;"	d
+NOTICE	src/macros.h	65;"	d
 NO_ARGS	src/child.h	23;"	d
 NUM_PRIMES	src/hashtable.c	/^uint_t const NUM_PRIMES = 30;$/;"	v
 OBJ	src/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
@@ -356,19 +372,20 @@ OBJ	tests/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
 OPEN_MAX	src/sanitize.c	41;"	d	file:
 OUT	src/Makefile	/^OUT=lib$(NAME).a$/;"	m
 OUT	tests/Makefile	/^OUT=test_all$/;"	m
-PIPE	src/macros.h	186;"	d
-PIPE	src/macros.h	312;"	d
-PIPE_READ_FD	src/child.c	188;"	d	file:
-PIPE_WRITE_FD	src/child.c	189;"	d	file:
-PORTABLE_32_BIT	src/macros.h	43;"	d
-PORTABLE_64_BIT	src/macros.h	39;"	d
+PIPE	src/macros.h	178;"	d
+PIPE	src/macros.h	332;"	d
+PIPE_READ_FD	src/child.c	194;"	d	file:
+PIPE_WRITE_FD	src/child.c	195;"	d	file:
+PORTABLE_32_BIT	src/macros.h	44;"	d
+PORTABLE_64_BIT	src/macros.h	40;"	d
+PORT_BUFFER_LEN	src/socket.h	62;"	d
 PREFIX	src/Makefile	/^PREFIX?=\/usr\/local$/;"	m
 PRIMES	src/hashtable.c	/^uint_t const PRIMES[] =$/;"	v
-READ	src/macros.h	190;"	d
-READ	src/macros.h	316;"	d
-READV	src/macros.h	320;"	d
-REALLOC	src/macros.h	244;"	d
-REALLOC	src/macros.h	97;"	d
+READ	src/macros.h	182;"	d
+READ	src/macros.h	336;"	d
+READV	src/macros.h	340;"	d
+REALLOC	src/macros.h	186;"	d
+REALLOC	src/macros.h	260;"	d
 REPEAT	tests/test_aiofd.c	34;"	d	file:
 REPEAT	tests/test_child.c	34;"	d	file:
 REPEAT	tests/test_events.c	35;"	d	file:
@@ -377,18 +394,19 @@ REPEAT	tests/test_list.c	34;"	d	file:
 REPEAT	tests/test_privileges.c	33;"	d	file:
 REPEAT	tests/test_socket.c	34;"	d	file:
 REPORTDIRS	Makefile	/^REPORTDIRS = $(DIRS:%=report-%)$/;"	m
-SETEGID	src/macros.h	194;"	d
-SETEGID	src/macros.h	324;"	d
-SETEUID	src/macros.h	198;"	d
-SETEUID	src/macros.h	328;"	d
-SETGROUPS	src/macros.h	202;"	d
-SETGROUPS	src/macros.h	332;"	d
-SETREGID	src/macros.h	206;"	d
-SETREGID	src/macros.h	336;"	d
-SETREUID	src/macros.h	210;"	d
-SETREUID	src/macros.h	340;"	d
-SETSOCKOPT	src/macros.h	214;"	d
-SETSOCKOPT	src/macros.h	344;"	d
+ROOT_UID	src/privileges.h	24;"	d
+SETEGID	src/macros.h	190;"	d
+SETEGID	src/macros.h	344;"	d
+SETEUID	src/macros.h	194;"	d
+SETEUID	src/macros.h	348;"	d
+SETGROUPS	src/macros.h	198;"	d
+SETGROUPS	src/macros.h	352;"	d
+SETREGID	src/macros.h	202;"	d
+SETREGID	src/macros.h	356;"	d
+SETREUID	src/macros.h	206;"	d
+SETREUID	src/macros.h	360;"	d
+SETSOCKOPT	src/macros.h	210;"	d
+SETSOCKOPT	src/macros.h	364;"	d
 SHELL	Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	tests/Makefile	/^SHELL=\/bin\/sh$/;"	m
@@ -399,13 +417,14 @@ SIZEMAX	tests/test_hashtable.c	35;"	d	file:
 SIZEMAX	tests/test_list.c	35;"	d	file:
 SIZEMAX	tests/test_privileges.c	34;"	d	file:
 SIZEMAX	tests/test_socket.c	35;"	d	file:
-SOCKET	src/macros.h	218;"	d
-SOCKET	src/macros.h	348;"	d
+SOCKET	src/macros.h	214;"	d
+SOCKET	src/macros.h	368;"	d
 SOCKET_BADHOSTNAME	src/socket.h	/^    SOCKET_BADHOSTNAME  = -3,$/;"	e	enum:socket_ret_e
 SOCKET_BADPARAM	src/socket.h	/^    SOCKET_BADPARAM     = -2,$/;"	e	enum:socket_ret_e
+SOCKET_BIND_FAIL	src/socket.h	/^    SOCKET_BIND_FAIL    = -11$/;"	e	enum:socket_ret_e
 SOCKET_BOUND	src/socket.h	/^    SOCKET_BOUND        = -8,$/;"	e	enum:socket_ret_e
 SOCKET_CONNECTED	src/socket.h	/^    SOCKET_CONNECTED    = -7,$/;"	e	enum:socket_ret_e
-SOCKET_CONNECT_FAIL	src/socket.h	/^    SOCKET_CONNECT_FAIL = -9$/;"	e	enum:socket_ret_e
+SOCKET_CONNECT_FAIL	src/socket.h	/^    SOCKET_CONNECT_FAIL = -10,$/;"	e	enum:socket_ret_e
 SOCKET_COUNT	src/socket.h	/^    SOCKET_COUNT = (SOCKET_LAST - SOCKET_FIRST),$/;"	e	enum:socket_type_e
 SOCKET_ERROR	src/socket.h	/^    SOCKET_ERROR        = -1,$/;"	e	enum:socket_ret_e
 SOCKET_FIRST	src/socket.h	/^    SOCKET_FIRST = SOCKET_TCP,$/;"	e	enum:socket_type_e
@@ -413,6 +432,7 @@ SOCKET_INPUT	src/socket.h	/^    SOCKET_INPUT        = 2,$/;"	e	enum:socket_ret_e
 SOCKET_INVALIDPORT	src/socket.h	/^    SOCKET_INVALIDPORT  = -4,$/;"	e	enum:socket_ret_e
 SOCKET_LAST	src/socket.h	/^    SOCKET_LAST,$/;"	e	enum:socket_type_e
 SOCKET_OK	src/socket.h	/^    SOCKET_OK           = 1,$/;"	e	enum:socket_ret_e
+SOCKET_OPEN_FAIL	src/socket.h	/^    SOCKET_OPEN_FAIL    = -9,$/;"	e	enum:socket_ret_e
 SOCKET_OUTPUT	src/socket.h	/^    SOCKET_OUTPUT       = 3,$/;"	e	enum:socket_ret_e
 SOCKET_POLLERR	src/socket.h	/^    SOCKET_POLLERR      = -6,$/;"	e	enum:socket_ret_e
 SOCKET_TCP	src/socket.h	/^    SOCKET_TCP,$/;"	e	enum:socket_type_e
@@ -423,27 +443,35 @@ SOCKET_UNKNOWN	src/socket.h	/^    SOCKET_UNKNOWN = -1$/;"	e	enum:socket_type_e
 SRC	src/Makefile	/^SRC=aiofd.c bitset.c btree.c buffer.c child.c daemon.c events.c hashtable.c list.c log.c pair.c privileges.c sanitize.c socket.c$/;"	m
 SRC	tests/Makefile	/^SRC=test_all.c test_aiofd.c test_bitset.c test_btree.c test_buffer.c test_child.c test_events.c test_flags.c test_hashtable.c test_list.c test_pair.c test_privileges.c test_sanitize.c test_socket.c$/;"	m
 SRCDIR	Makefile	/^SRCDIR = src$/;"	m
-STRCMP	src/macros.h	122;"	d
-STRDUP	src/macros.h	118;"	d
+STAT	src/macros.h	218;"	d
+STAT	src/macros.h	372;"	d
+STRCMP	src/macros.h	222;"	d
+STRCMP	src/macros.h	376;"	d
+STRDUP	src/macros.h	226;"	d
+STRDUP	src/macros.h	380;"	d
+STRTOL	src/macros.h	230;"	d
+STRTOL	src/macros.h	384;"	d
 SUITE	tests/test_macros.h	20;"	d
-T	src/macros.h	33;"	d
+T	src/macros.h	34;"	d
 TESTDIR	Makefile	/^TESTDIR = tests$/;"	m
 TESTDIRS	Makefile	/^TESTDIRS = $(DIRS:%=test-%)$/;"	m
 TESTNRDIRS	Makefile	/^TESTNRDIRS = $(DIRS:%=testnr-%)$/;"	m
-TRUE	src/macros.h	50;"	d
+TRUE	src/macros.h	51;"	d
 UNINSTALLDIRS	Makefile	/^UNINSTALLDIRS = $(DIRS:%=uninstall-%)$/;"	m
-UNIT_TEST_FAIL	src/macros.h	233;"	d
-UNIT_TEST_FAIL	src/macros.h	238;"	d
-UNIT_TEST_RET	src/macros.h	232;"	d
-UNIT_TEST_RET	src/macros.h	237;"	d
-UT	src/macros.h	34;"	d
+UNIT_TEST_FAIL	src/macros.h	249;"	d
+UNIT_TEST_FAIL	src/macros.h	254;"	d
+UNIT_TEST_RET	src/macros.h	248;"	d
+UNIT_TEST_RET	src/macros.h	253;"	d
+UNLINK	src/macros.h	234;"	d
+UNLINK	src/macros.h	388;"	d
+UT	src/macros.h	35;"	d
 VALID_EVENT_TYPE	src/events.h	46;"	d
-VALID_SOCKET_TYPE	src/socket.h	58;"	d
-WARN	src/macros.h	63;"	d
-WRITE	src/macros.h	222;"	d
-WRITE	src/macros.h	352;"	d
-WRITEV	src/macros.h	226;"	d
-WRITEV	src/macros.h	356;"	d
+VALID_SOCKET_TYPE	src/socket.h	60;"	d
+WARN	src/macros.h	64;"	d
+WRITE	src/macros.h	238;"	d
+WRITE	src/macros.h	392;"	d
+WRITEV	src/macros.h	242;"	d
+WRITEV	src/macros.h	396;"	d
 _GNU_SOURCE	src/log.c	17;"	d	file:
 __AIOFD_H__	src/aiofd.h	18;"	d
 __BITSET_H__	src/bitset.h	18;"	d
@@ -471,7 +499,7 @@ add_buffer_test_suite	tests/test_buffer.c	/^CU_pSuite add_buffer_test_suite()$/;
 add_buffer_tests	tests/test_buffer.c	/^static CU_pSuite add_buffer_tests( CU_pSuite pSuite )$/;"	f	file:
 add_child_test_suite	tests/test_child.c	/^CU_pSuite add_child_test_suite()$/;"	f
 add_child_tests	tests/test_child.c	/^static CU_pSuite add_child_tests( CU_pSuite pSuite )$/;"	f	file:
-add_environ	tests/test_sanitize.c	/^static int8_t * add_environ[] =$/;"	v	file:
+add_environ	tests/test_sanitize.c	/^static uint8_t * add_environ[] =$/;"	v	file:
 add_events_test_suite	tests/test_events.c	/^CU_pSuite add_events_test_suite()$/;"	f
 add_events_tests	tests/test_events.c	/^static CU_pSuite add_events_tests( CU_pSuite pSuite )$/;"	f	file:
 add_hashtable_test_suite	tests/test_hashtable.c	/^CU_pSuite add_hashtable_test_suite()$/;"	f
@@ -487,20 +515,22 @@ add_sanitize_tests	tests/test_sanitize.c	/^static CU_pSuite add_sanitize_tests( 
 add_socket_test_suite	tests/test_socket.c	/^CU_pSuite add_socket_test_suite()$/;"	f
 add_socket_tests	tests/test_socket.c	/^static CU_pSuite add_socket_tests( CU_pSuite pSuite )$/;"	f	file:
 added_tz	tests/test_sanitize.c	/^static int added_tz = FALSE;$/;"	v	file:
+addr	src/socket.c	/^    sockaddr_t      addr;           \/* place to stash the sockaddr_storage data *\/$/;"	m	struct:socket_s	file:
+addrlen	src/socket.c	/^    socklen_t       addrlen;        \/* length of addr *\/$/;"	m	struct:socket_s	file:
 aiofd	src/child.c	/^    aiofd_t         aiofd;          \/* the fd management state *\/$/;"	m	struct:child_process_s	file:
 aiofd	src/socket.c	/^    aiofd_t         aiofd;          \/* the fd management state *\/$/;"	m	struct:socket_s	file:
 aiofd	tests/test_all.c	/^SUITE( aiofd );$/;"	v
 aiofd_deinitialize	src/aiofd.c	/^void aiofd_deinitialize( aiofd_t * const aiofd )$/;"	f
 aiofd_delete	src/aiofd.c	/^void aiofd_delete( void * aio )$/;"	f
-aiofd_do_read	src/aiofd.c	/^static ssize_t aiofd_do_read( int fd, void * buf, size_t count, void * user_data )$/;"	f	file:
-aiofd_do_readv	src/aiofd.c	/^static ssize_t aiofd_do_readv( int fd, const struct iovec * iov, int iovcnt, void * user_data )$/;"	f	file:
-aiofd_do_write	src/aiofd.c	/^static ssize_t aiofd_do_write( int fd, const void * buf, size_t count, void * user_data )$/;"	f	file:
-aiofd_do_writev	src/aiofd.c	/^static ssize_t aiofd_do_writev( int fd, const struct iovec * iov, int iovcnt, void * user_data )$/;"	f	file:
-aiofd_enable_read_evt	src/aiofd.c	/^int aiofd_enable_read_evt( aiofd_t * const aiofd,$/;"	f
-aiofd_enable_write_evt	src/aiofd.c	/^int aiofd_enable_write_evt( aiofd_t * const aiofd,$/;"	f
-aiofd_flush	src/aiofd.c	/^int aiofd_flush( aiofd_t * const aiofd )$/;"	f
-aiofd_get_listen	src/aiofd.c	/^int aiofd_get_listen( aiofd_t * const aiofd )$/;"	f
-aiofd_initialize	src/aiofd.c	/^int aiofd_initialize( aiofd_t * const aiofd, $/;"	f
+aiofd_do_read	src/aiofd.c	/^static ssize_t aiofd_do_read( int fd, void * const buf, size_t const count, void * user_data )$/;"	f	file:
+aiofd_do_readv	src/aiofd.c	/^static ssize_t aiofd_do_readv( int fd, struct iovec * const iov, size_t const iovcnt, void * user_data )$/;"	f	file:
+aiofd_do_write	src/aiofd.c	/^static ssize_t aiofd_do_write( int fd, void const * const buf, size_t const count, void * user_data )$/;"	f	file:
+aiofd_do_writev	src/aiofd.c	/^static ssize_t aiofd_do_writev( int fd, struct iovec const * const iov, size_t const iovcnt, void * user_data )$/;"	f	file:
+aiofd_enable_read_evt	src/aiofd.c	/^int_t aiofd_enable_read_evt( aiofd_t * const aiofd, int_t enable )$/;"	f
+aiofd_enable_write_evt	src/aiofd.c	/^int_t aiofd_enable_write_evt( aiofd_t * const aiofd, int_t enable )$/;"	f
+aiofd_flush	src/aiofd.c	/^int_t aiofd_flush( aiofd_t * const aiofd )$/;"	f
+aiofd_get_listen	src/aiofd.c	/^int_t aiofd_get_listen( aiofd_t * const aiofd )$/;"	f
+aiofd_initialize	src/aiofd.c	/^int_t aiofd_initialize( aiofd_t * const aiofd, $/;"	f
 aiofd_new	src/aiofd.c	/^aiofd_t * aiofd_new( int const write_fd,$/;"	f
 aiofd_ops_s	src/aiofd.h	/^    struct aiofd_ops_s$/;"	s	struct:aiofd_s
 aiofd_ops_t	src/aiofd.h	/^typedef struct aiofd_ops_s aiofd_ops_t;$/;"	t	typeref:struct:aiofd_ops_s
@@ -508,29 +538,29 @@ aiofd_read	src/aiofd.c	/^ssize_t aiofd_read( aiofd_t * const aiofd,$/;"	f
 aiofd_read_fn	src/aiofd.c	/^static evt_ret_t aiofd_read_fn( evt_loop_t * const el,$/;"	f	file:
 aiofd_readv	src/aiofd.c	/^ssize_t aiofd_readv( aiofd_t * const aiofd,$/;"	f
 aiofd_s	src/aiofd.h	/^struct aiofd_s$/;"	s
-aiofd_set_listen	src/aiofd.c	/^int aiofd_set_listen( aiofd_t * const aiofd, int listen )$/;"	f
+aiofd_set_listen	src/aiofd.c	/^int_t aiofd_set_listen( aiofd_t * const aiofd, int_t listen )$/;"	f
 aiofd_t	src/aiofd.h	/^typedef struct aiofd_s aiofd_t;$/;"	t	typeref:struct:aiofd_s
-aiofd_write	src/aiofd.c	/^int aiofd_write( aiofd_t * const aiofd, $/;"	f
-aiofd_write_common	src/aiofd.c	/^static int aiofd_write_common( aiofd_t* const aiofd, $/;"	f	file:
+aiofd_write	src/aiofd.c	/^int_t aiofd_write( aiofd_t * const aiofd, $/;"	f
+aiofd_write_common	src/aiofd.c	/^static int_t aiofd_write_common( aiofd_t* const aiofd, $/;"	f	file:
 aiofd_write_fn	src/aiofd.c	/^static evt_ret_t aiofd_write_fn( evt_loop_t * const el,$/;"	f	file:
 aiofd_write_s	src/aiofd.c	/^typedef struct aiofd_write_s$/;"	s	file:
 aiofd_write_t	src/aiofd.c	/^} aiofd_write_t;$/;"	t	typeref:struct:aiofd_write_s	file:
-aiofd_writev	src/aiofd.c	/^int aiofd_writev( aiofd_t * const aiofd,$/;"	f
+aiofd_writev	src/aiofd.c	/^int_t aiofd_writev( aiofd_t * const aiofd,$/;"	f
 balance	src/btree.c	/^    int32_t balance;            \/* balance factor *\/$/;"	m	struct:node_s	file:
 bits	src/bitset.h	/^    uint32_t * bits;$/;"	m	struct:bitset_s
 bitset	tests/test_all.c	/^SUITE( bitset );$/;"	v
 bitset_s	src/bitset.h	/^typedef struct bitset_s$/;"	s
 bitset_t	src/bitset.h	/^} bitset_t;$/;"	t	typeref:struct:bitset_s
-bound	src/socket.c	/^    int32_t         bound;          \/* is the socket bound? *\/$/;"	m	struct:socket_s	file:
-bset_clear	src/bitset.c	/^int bset_clear( bitset_t * const bset, size_t const bit )$/;"	f
-bset_clear_all	src/bitset.c	/^int bset_clear_all( bitset_t * const bset )$/;"	f
-bset_deinitialize	src/bitset.c	/^int bset_deinitialize( bitset_t * const bset )$/;"	f
+bound	src/socket.c	/^    int_t           bound;          \/* is the socket bound? *\/$/;"	m	struct:socket_s	file:
+bset_clear	src/bitset.c	/^int_t bset_clear( bitset_t * const bset, size_t const bit )$/;"	f
+bset_clear_all	src/bitset.c	/^int_t bset_clear_all( bitset_t * const bset )$/;"	f
+bset_deinitialize	src/bitset.c	/^int_t bset_deinitialize( bitset_t * const bset )$/;"	f
 bset_delete	src/bitset.c	/^void bset_delete( void * bset )$/;"	f
-bset_initialize	src/bitset.c	/^int bset_initialize( bitset_t * const bset, size_t const num_bits )$/;"	f
+bset_initialize	src/bitset.c	/^int_t bset_initialize( bitset_t * const bset, size_t const num_bits )$/;"	f
 bset_new	src/bitset.c	/^bitset_t * bset_new( size_t const num_bits )$/;"	f
-bset_set	src/bitset.c	/^int bset_set( bitset_t * const bset, size_t const bit )$/;"	f
-bset_set_all	src/bitset.c	/^int bset_set_all( bitset_t * const bset )$/;"	f
-bset_test	src/bitset.c	/^int bset_test( bitset_t const * const bset, size_t const bit )$/;"	f
+bset_set	src/bitset.c	/^int_t bset_set( bitset_t * const bset, size_t const bit )$/;"	f
+bset_set_all	src/bitset.c	/^int_t bset_set_all( bitset_t * const bset )$/;"	f
+bset_test	src/bitset.c	/^int_t bset_test( bitset_t const * const bset, size_t const bit )$/;"	f
 bt_add	src/btree.c	/^int bt_add( bt_t * const btree, $/;"	f
 bt_add_more_nodes	src/btree.c	/^static void bt_add_more_nodes( bt_t * const btree )$/;"	f	file:
 bt_balance_tree	src/btree.c	/^static node_t * bt_balance_tree( bt_t * const btree, node_t * n )$/;"	f	file:
@@ -573,12 +603,12 @@ buf	tests/test_buffer.c	/^int8_t const * const buf = "blah";$/;"	v
 buf	tests/test_child.c	/^static buf[16];$/;"	v	file:
 buffer	tests/test_all.c	/^SUITE( buffer );$/;"	v
 buffer_append	src/buffer.c	/^void* buffer_append( buffer_t * const b, void const * const p, size_t len )$/;"	f
-buffer_deinitialize	src/buffer.c	/^int buffer_deinitialize( buffer_t * const b )$/;"	f
+buffer_deinitialize	src/buffer.c	/^int_t buffer_deinitialize( buffer_t * const b )$/;"	f
 buffer_delete	src/buffer.c	/^void buffer_delete( void * b )$/;"	f
-buffer_initialize	src/buffer.c	/^int buffer_initialize( buffer_t * const b, void * p, size_t len )$/;"	f
+buffer_initialize	src/buffer.c	/^int_t buffer_initialize( buffer_t * const b, void * p, size_t len )$/;"	f
 buffer_new	src/buffer.c	/^buffer_t * buffer_new( void * p, size_t len )$/;"	f
 buffer_t	src/buffer.h	/^typedef struct iovec buffer_t;$/;"	t	typeref:struct:iovec
-build_clean_environ	src/sanitize.c	/^int8_t ** build_clean_environ( int preservec, int8_t ** preservev, int addc, int8_t ** addv )$/;"	f
+build_clean_environ	src/sanitize.c	/^uint8_t ** build_clean_environ( int preservec, uint8_t ** preservev, int addc, uint8_t ** addv )$/;"	f
 callback	src/events.h	/^    evt_fn          callback;$/;"	m	struct:evt_s
 cb_count_s	src/aiofd.c	/^typedef struct cb_count_s$/;"	s	file:
 cb_count_t	src/aiofd.c	/^} cb_count_t;$/;"	t	typeref:struct:cb_count_s	file:
@@ -586,31 +616,32 @@ cb_counts	src/aiofd.c	/^static cb_count_t cb_counts;$/;"	v	file:
 check_err_str_	src/macros.h	/^uint8_t * check_err_str_;$/;"	v
 child	src/events.h	/^    struct ev_child     child;$/;"	m	union:ev_data_u	typeref:struct:ev_data_u::ev_child
 child	tests/test_all.c	/^SUITE( child );$/;"	v
-child_aiofd_error_fn	src/child.c	/^static int child_aiofd_error_fn( aiofd_t * const aiofd,$/;"	f	file:
-child_aiofd_read_fn	src/child.c	/^static int child_aiofd_read_fn( aiofd_t * const aiofd,$/;"	f	file:
-child_aiofd_write_fn	src/child.c	/^static int child_aiofd_write_fn( aiofd_t * const aiofd,$/;"	f	file:
+child_aiofd_error_evt_fn	src/child.c	/^static int_t child_aiofd_error_evt_fn( aiofd_t * const aiofd,$/;"	f	file:
+child_aiofd_read_evt_fn	src/child.c	/^static int_t child_aiofd_read_evt_fn( aiofd_t * const aiofd,$/;"	f	file:
+child_aiofd_write_evt_fn	src/child.c	/^static int_t child_aiofd_write_evt_fn( aiofd_t * const aiofd,$/;"	f	file:
 child_ops_s	src/child.h	/^typedef struct child_ops_s $/;"	s
 child_ops_t	src/child.h	/^} child_ops_t;$/;"	t	typeref:struct:child_ops_s
 child_params	src/events.h	/^    } child_params;$/;"	m	union:evt_params_u	typeref:struct:evt_params_u::__anon2
 child_pid	tests/test_child.c	/^static pid_t child_pid = -1;$/;"	v	file:
 child_process_deinitialize	src/child.c	/^static void child_process_deinitialize( child_process_t * const child, int wait )$/;"	f	file:
 child_process_delete	src/child.c	/^void child_process_delete( void * cp, int wait )$/;"	f
-child_process_flush	src/child.c	/^int child_process_flush( child_process_t * const cp )$/;"	f
+child_process_flush	src/child.c	/^int_t child_process_flush( child_process_t * const cp )$/;"	f
 child_process_get_pid	src/child.c	/^pid_t child_process_get_pid( child_process_t * const cp )$/;"	f
 child_process_initialize	src/child.c	/^static int child_process_initialize( child_process_t * const child,$/;"	f	file:
-child_process_new	src/child.c	/^child_process_t * child_process_new( int8_t const * const path,$/;"	f
-child_process_read	src/child.c	/^int32_t child_process_read( child_process_t * const cp, $/;"	f
+child_process_new	src/child.c	/^child_process_t * child_process_new( uint8_t const * const path,$/;"	f
+child_process_read	src/child.c	/^ssize_t child_process_read( child_process_t * const cp, $/;"	f
+child_process_readv	src/child.c	/^ssize_t child_process_readv( child_process_t * const cp,$/;"	f
 child_process_s	src/child.c	/^struct child_process_s$/;"	s	file:
 child_process_t	src/child.h	/^typedef struct child_process_s child_process_t;$/;"	t	typeref:struct:child_process_s
-child_process_write	src/child.c	/^int child_process_write( child_process_t * const cp, $/;"	f
-child_process_writev	src/child.c	/^int child_process_writev( child_process_t * const cp,$/;"	f
-clean_environ	src/sanitize.c	/^static int8_t * clean_environ[] =$/;"	v	file:
+child_process_write	src/child.c	/^int_t child_process_write( child_process_t * const cp, $/;"	f
+child_process_writev	src/child.c	/^int_t child_process_writev( child_process_t * const cp,$/;"	f
+clean_environ	src/sanitize.c	/^static uint8_t * clean_environ[] =$/;"	v	file:
 connect_fn	src/socket.h	/^    socket_ret_t (*connect_fn)( socket_t * const s, void * user_data );$/;"	m	struct:socket_ops_s
 connect_fn	tests/test_socket.c	/^static socket_ret_t connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 connect_tests_connect_fn	tests/test_socket.c	/^static socket_ret_t connect_tests_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 connect_tests_error_fn	tests/test_socket.c	/^static socket_ret_t connect_tests_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
-connected	src/socket.c	/^    int32_t         connected;      \/* is the socket connected? *\/$/;"	m	struct:socket_s	file:
-connected	tests/test_socket.c	/^	int connected;$/;"	m	struct:sock_state_s	file:
+connected	src/socket.c	/^    int_t           connected;      \/* is the socket connected? *\/$/;"	m	struct:socket_s	file:
+connected	tests/test_socket.c	/^	int_t connected;$/;"	m	struct:sock_state_s	file:
 cookie	src/log.h	/^    void * cookie;$/;"	m	struct:log_s
 count	src/hashtable.h	/^    uint_t              count;              \/* number of items in the hashtable *\/$/;"	m	struct:ht_s
 count	src/list.h	/^    uint_t          count;                  \/* number of items in the list *\/$/;"	m	struct:list_s
@@ -637,18 +668,21 @@ dfn	src/hashtable.h	/^    ht_delete_fn        dfn;                \/* key delete
 dfn	src/list.h	/^    list_delete_fn  dfn;                    \/* destruction function for each node *\/$/;"	m	struct:list_s
 disconnect_fn	src/socket.h	/^    socket_ret_t (*disconnect_fn)( socket_t * const s, void * user_data );$/;"	m	struct:socket_ops_s
 disconnect_fn	tests/test_socket.c	/^static socket_ret_t disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
-drop_privileges	src/privileges.c	/^int drop_privileges( int permanent, priv_state_t * const orig )$/;"	f
+drop_privileges	src/privileges.c	/^int_t drop_privileges( int_t permanent, priv_state_t * const orig )$/;"	f
 e	src/aiofd.c	/^    int r, w, e;$/;"	m	struct:cb_count_s	file:
 el	src/aiofd.h	/^    evt_loop_t* el;             \/* event loop we registered out evt with *\/$/;"	m	struct:aiofd_s
 el	src/events.h	/^    evt_loop_t *    el;         \/* the event loop associated wtih *\/$/;"	m	struct:evt_s
 el	tests/test_all.c	/^evt_loop_t * el = NULL;$/;"	v
-error	tests/test_socket.c	/^	int error;$/;"	m	struct:sock_state_s	file:
-error_callback_fn	src/aiofd.c	/^static int error_callback_fn( aiofd_t * const aiofd, int err, void * user_data )$/;"	f	file:
-error_callback_ret	src/aiofd.c	/^static int error_callback_ret = TRUE;$/;"	v	file:
-error_evt_fn	src/aiofd.h	/^        int (*error_evt_fn)( aiofd_t * const aiofd, int err, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
+error	tests/test_socket.c	/^	int_t error;$/;"	m	struct:sock_state_s	file:
+error_callback_fn	src/aiofd.c	/^static int_t error_callback_fn( aiofd_t * const aiofd, int err, void * user_data )$/;"	f	file:
+error_callback_ret	src/aiofd.c	/^static int_t error_callback_ret = TRUE;$/;"	v	file:
+error_evt_fn	src/aiofd.h	/^        int_t (*error_evt_fn)( aiofd_t * const aiofd, int err, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
+error_evt_fn	src/child.h	/^    int_t (*error_evt_fn)( child_process_t * const cp, int err, void * user_data );$/;"	m	struct:child_ops_s
+error_evt_fn	tests/test_aiofd.c	/^static int_t error_evt_fn( aiofd_t * const aiofd, int err, void * user_data )$/;"	f	file:
+error_evt_fn	tests/test_child.c	/^static int_t error_evt_fn( child_process_t * const cp, int err, void * user_data )$/;"	f	file:
 error_fn	src/socket.h	/^    socket_ret_t (*error_fn)( socket_t * const s, int err, void * user_data );$/;"	m	struct:socket_ops_s
-error_fn	tests/test_aiofd.c	/^static int error_fn( aiofd_t * const aiofd, int err, void * user_data )$/;"	f	file:
 error_fn	tests/test_socket.c	/^static socket_ret_t error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
+error_pid_evt_fn	tests/test_child.c	/^static int_t error_pid_evt_fn( child_process_t * const cp, int err, void * user_data )$/;"	f	file:
 ev	src/events.h	/^    ev_data_t       ev;         \/* MUST BE FIRST *\/$/;"	m	struct:evt_s
 ev_data_t	src/events.h	/^} ev_data_t;$/;"	t	typeref:union:ev_data_u
 ev_data_u	src/events.h	/^typedef union ev_data_u$/;"	u
@@ -658,7 +692,7 @@ evt_deinitialize_event_handler	src/events.c	/^void evt_deinitialize_event_handle
 evt_delete	src/events.c	/^void evt_delete(void * e)$/;"	f
 evt_delete_event_handler	src/events.c	/^void evt_delete_event_handler( void * e )$/;"	f
 evt_fn	src/events.h	/^typedef evt_ret_t (*evt_fn)( evt_loop_t * const el,$/;"	t
-evt_initialize_event_handler	src/events.c	/^int evt_initialize_event_handler( evt_t * const evt,$/;"	f
+evt_initialize_event_handler	src/events.c	/^int_t evt_initialize_event_handler( evt_t * const evt,$/;"	f
 evt_io_callback	src/events.c	/^static void evt_io_callback( struct ev_loop * loop,$/;"	f	file:
 evt_io_type_e	src/events.h	/^typedef enum evt_io_type_e$/;"	g
 evt_io_type_t	src/events.h	/^} evt_io_type_t;$/;"	t	typeref:enum:evt_io_type_e
@@ -675,136 +709,156 @@ evt_run	src/events.c	/^evt_ret_t evt_run( evt_loop_t * const el )$/;"	f
 evt_s	src/events.h	/^struct evt_s$/;"	s
 evt_signal_callback	src/events.c	/^static void evt_signal_callback( struct ev_loop * loop,$/;"	f	file:
 evt_start_event_handler	src/events.c	/^evt_ret_t evt_start_event_handler( evt_loop_t * const el,$/;"	f
-evt_stop	src/events.c	/^evt_ret_t evt_stop( evt_loop_t * const el, int once )$/;"	f
+evt_stop	src/events.c	/^evt_ret_t evt_stop( evt_loop_t * const el, int_t once )$/;"	f
 evt_stop_event_handler	src/events.c	/^evt_ret_t evt_stop_event_handler( evt_loop_t * const el,$/;"	f
 evt_t	src/events.h	/^typedef struct evt_s evt_t;$/;"	t	typeref:struct:evt_s
 evt_type	src/events.h	/^    evt_type_t      evt_type;$/;"	m	struct:evt_s
 evt_type_e	src/events.h	/^typedef enum evt_type_e$/;"	g
 evt_type_t	src/events.h	/^} evt_type_t;$/;"	t	typeref:enum:evt_type_e
-exit_fn	src/child.h	/^    int (*exit_fn)( child_process_t * const cp, int rpid, int rstatus, void * user_data );$/;"	m	struct:child_ops_s
-exit_fn	tests/test_child.c	/^static int exit_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )$/;"	f	file:
-exit_pid_fn	tests/test_child.c	/^static int exit_pid_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )$/;"	f	file:
-exited	src/child.c	/^    int             exited;         \/* have we received the SIGCHLD signal? *\/$/;"	m	struct:child_process_s	file:
-fail_alloc	tests/test_flags.c	/^int fail_alloc = FALSE;$/;"	v
-fail_alloc_bak	src/buffer.c	/^int fail_alloc_bak = FALSE;$/;"	v
-fail_bitset_deinit	tests/test_flags.c	/^int fail_bitset_deinit = FALSE;$/;"	v
-fail_bitset_init	tests/test_flags.c	/^int fail_bitset_init = FALSE;$/;"	v
-fail_buffer_deinit	tests/test_flags.c	/^int fail_buffer_deinit = FALSE;$/;"	v
-fail_buffer_init	tests/test_flags.c	/^int fail_buffer_init = FALSE;$/;"	v
-fail_buffer_init_alloc	tests/test_flags.c	/^int fail_buffer_init_alloc = FALSE;$/;"	v
-fail_socket_initialize	tests/test_flags.c	/^int fail_socket_initialize = FALSE;$/;"	v
-fake_accept	tests/test_flags.c	/^int fake_accept = FALSE;$/;"	v
+exit_evt_fn	src/child.h	/^    int_t (*exit_evt_fn)( child_process_t * const cp, int rpid, int rstatus, void * user_data );$/;"	m	struct:child_ops_s
+exit_evt_fn	tests/test_child.c	/^static int_t exit_evt_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )$/;"	f	file:
+exit_pid_evt_fn	tests/test_child.c	/^static int_t exit_pid_evt_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )$/;"	f	file:
+exited	src/child.c	/^    int_t           exited;         \/* have we received the SIGCHLD signal? *\/$/;"	m	struct:child_process_s	file:
+fail_alloc	tests/test_flags.c	/^int_t fail_alloc = FALSE;$/;"	v
+fail_alloc_bak	src/buffer.c	/^int_t fail_alloc_bak = FALSE;$/;"	v
+fail_bitset_deinit	tests/test_flags.c	/^int_t fail_bitset_deinit = FALSE;$/;"	v
+fail_bitset_init	tests/test_flags.c	/^int_t fail_bitset_init = FALSE;$/;"	v
+fail_buffer_deinit	tests/test_flags.c	/^int_t fail_buffer_deinit = FALSE;$/;"	v
+fail_buffer_init	tests/test_flags.c	/^int_t fail_buffer_init = FALSE;$/;"	v
+fail_buffer_init_alloc	tests/test_flags.c	/^int_t fail_buffer_init_alloc = FALSE;$/;"	v
+fail_socket_initialize	tests/test_flags.c	/^int_t fail_socket_initialize = FALSE;$/;"	v
+fake_accept	tests/test_flags.c	/^int_t fake_accept = FALSE;$/;"	v
 fake_accept_ret	tests/test_flags.c	/^int fake_accept_ret = -1;$/;"	v
-fake_aiofd_enable_read_evt	tests/test_flags.c	/^int fake_aiofd_enable_read_evt = FALSE;$/;"	v
-fake_aiofd_enable_read_evt_ret	tests/test_flags.c	/^int fake_aiofd_enable_read_evt_ret = FALSE;$/;"	v
-fake_aiofd_flush	tests/test_flags.c	/^int fake_aiofd_flush = FALSE;$/;"	v
-fake_aiofd_flush_ret	tests/test_flags.c	/^int fake_aiofd_flush_ret = FALSE;$/;"	v
-fake_aiofd_initialize	tests/test_flags.c	/^int fake_aiofd_initialize = FALSE;$/;"	v
-fake_aiofd_initialize_ret	tests/test_flags.c	/^int fake_aiofd_initialize_ret = FALSE;$/;"	v
-fake_aiofd_read	tests/test_flags.c	/^int fake_aiofd_read = FALSE;$/;"	v
-fake_aiofd_read_ret	tests/test_flags.c	/^int fake_aiofd_read_ret = 0;$/;"	v
-fake_aiofd_readv	tests/test_flags.c	/^int fake_aiofd_readv = FALSE;$/;"	v
-fake_aiofd_readv_ret	tests/test_flags.c	/^int fake_aiofd_readv_ret = 0;$/;"	v
-fake_aiofd_write	tests/test_flags.c	/^int fake_aiofd_write = FALSE;$/;"	v
-fake_aiofd_write_common	tests/test_flags.c	/^int fake_aiofd_write_common = FALSE;$/;"	v
-fake_aiofd_write_common_ret	tests/test_flags.c	/^int fake_aiofd_write_common_ret = FALSE;$/;"	v
-fake_aiofd_write_ret	tests/test_flags.c	/^int fake_aiofd_write_ret = FALSE;$/;"	v
-fake_aiofd_writev	tests/test_flags.c	/^int fake_aiofd_writev = FALSE;$/;"	v
-fake_aiofd_writev_ret	tests/test_flags.c	/^int fake_aiofd_writev_ret = FALSE;$/;"	v
-fake_bind	tests/test_flags.c	/^int fake_bind = FALSE;$/;"	v
+fake_aiofd_enable_read_evt	tests/test_flags.c	/^int_t fake_aiofd_enable_read_evt = FALSE;$/;"	v
+fake_aiofd_enable_read_evt_ret	tests/test_flags.c	/^int_t fake_aiofd_enable_read_evt_ret = FALSE;$/;"	v
+fake_aiofd_flush	tests/test_flags.c	/^int_t fake_aiofd_flush = FALSE;$/;"	v
+fake_aiofd_flush_ret	tests/test_flags.c	/^int_t fake_aiofd_flush_ret = FALSE;$/;"	v
+fake_aiofd_initialize	tests/test_flags.c	/^int_t fake_aiofd_initialize = FALSE;$/;"	v
+fake_aiofd_initialize_ret	tests/test_flags.c	/^int_t fake_aiofd_initialize_ret = FALSE;$/;"	v
+fake_aiofd_read	tests/test_flags.c	/^int_t fake_aiofd_read = FALSE;$/;"	v
+fake_aiofd_read_ret	tests/test_flags.c	/^ssize_t fake_aiofd_read_ret = -1;$/;"	v
+fake_aiofd_readv	tests/test_flags.c	/^int_t fake_aiofd_readv = FALSE;$/;"	v
+fake_aiofd_readv_ret	tests/test_flags.c	/^ssize_t fake_aiofd_readv_ret = -1;$/;"	v
+fake_aiofd_write	tests/test_flags.c	/^int_t fake_aiofd_write = FALSE;$/;"	v
+fake_aiofd_write_common	tests/test_flags.c	/^int_t fake_aiofd_write_common = FALSE;$/;"	v
+fake_aiofd_write_common_ret	tests/test_flags.c	/^int_t fake_aiofd_write_common_ret = FALSE;$/;"	v
+fake_aiofd_write_ret	tests/test_flags.c	/^int_t fake_aiofd_write_ret = FALSE;$/;"	v
+fake_aiofd_writev	tests/test_flags.c	/^int_t fake_aiofd_writev = FALSE;$/;"	v
+fake_aiofd_writev_ret	tests/test_flags.c	/^int_t fake_aiofd_writev_ret = FALSE;$/;"	v
+fake_bind	tests/test_flags.c	/^int_t fake_bind = FALSE;$/;"	v
 fake_bind_ret	tests/test_flags.c	/^int fake_bind_ret = -1;$/;"	v
-fake_connect	tests/test_flags.c	/^int fake_connect = FALSE;$/;"	v
+fake_connect	tests/test_flags.c	/^int_t fake_connect = FALSE;$/;"	v
 fake_connect_ret	tests/test_flags.c	/^int fake_connect_ret = -1;$/;"	v
-fake_errno	tests/test_flags.c	/^int fake_errno = FALSE;$/;"	v
+fake_errno	tests/test_flags.c	/^int_t fake_errno = FALSE;$/;"	v
 fake_errno_value	tests/test_flags.c	/^int fake_errno_value = 0;$/;"	v
-fake_ev_default_loop	tests/test_flags.c	/^int fake_ev_default_loop = FALSE;$/;"	v
+fake_ev_default_loop	tests/test_flags.c	/^int_t fake_ev_default_loop = FALSE;$/;"	v
 fake_ev_default_loop_ret	tests/test_flags.c	/^void* fake_ev_default_loop_ret = NULL;$/;"	v
-fake_event_handler_init	tests/test_flags.c	/^int fake_event_handler_init = FALSE;$/;"	v
+fake_event_handler_init	tests/test_flags.c	/^int_t fake_event_handler_init = FALSE;$/;"	v
 fake_event_handler_init_count	tests/test_flags.c	/^int fake_event_handler_init_count = 0;$/;"	v
-fake_event_handler_init_ret	tests/test_flags.c	/^int fake_event_handler_init_ret = FALSE;$/;"	v
-fake_event_start_handler	tests/test_flags.c	/^int fake_event_start_handler = FALSE;$/;"	v
-fake_event_start_handler_ret	tests/test_flags.c	/^int fake_event_start_handler_ret = FALSE;$/;"	v
-fake_event_stop_handler	tests/test_flags.c	/^int fake_event_stop_handler = FALSE;$/;"	v
-fake_event_stop_handler_ret	tests/test_flags.c	/^int fake_event_stop_handler_ret = FALSE;$/;"	v
-fake_fcntl	tests/test_flags.c	/^int fake_fcntl = FALSE;$/;"	v
+fake_event_handler_init_ret	tests/test_flags.c	/^int_t fake_event_handler_init_ret = FALSE;$/;"	v
+fake_event_start_handler	tests/test_flags.c	/^int_t fake_event_start_handler = FALSE;$/;"	v
+fake_event_start_handler_ret	tests/test_flags.c	/^int_t fake_event_start_handler_ret = FALSE;$/;"	v
+fake_event_stop_handler	tests/test_flags.c	/^int_t fake_event_stop_handler = FALSE;$/;"	v
+fake_event_stop_handler_ret	tests/test_flags.c	/^int_t fake_event_stop_handler_ret = FALSE;$/;"	v
+fake_fcntl	tests/test_flags.c	/^int_t fake_fcntl = FALSE;$/;"	v
 fake_fcntl_ret	tests/test_flags.c	/^int fake_fcntl_ret = -1;$/;"	v
-fake_fork	tests/test_flags.c	/^int fake_fork = FALSE;$/;"	v
+fake_fork	tests/test_flags.c	/^int_t fake_fork = FALSE;$/;"	v
 fake_fork_ret	tests/test_flags.c	/^int fake_fork_ret = -1;$/;"	v
-fake_fstat	tests/test_flags.c	/^int fake_fstat = FALSE;$/;"	v
+fake_fstat	tests/test_flags.c	/^int_t fake_fstat = FALSE;$/;"	v
 fake_fstat_ret	tests/test_flags.c	/^int fake_fstat_ret = -1;$/;"	v
-fake_getdtablesize	tests/test_flags.c	/^int fake_getdtablesize = FALSE;$/;"	v
+fake_getaddrinfo	tests/test_flags.c	/^int_t fake_getaddrinfo = FALSE;$/;"	v
+fake_getaddrinfo_ret	tests/test_flags.c	/^int fake_getaddrinfo_ret = -1;$/;"	v
+fake_getdtablesize	tests/test_flags.c	/^int_t fake_getdtablesize = FALSE;$/;"	v
 fake_getdtablesize_ret	tests/test_flags.c	/^int fake_getdtablesize_ret = -1;$/;"	v
-fake_getegid	tests/test_flags.c	/^int fake_getegid = FALSE;$/;"	v
+fake_getegid	tests/test_flags.c	/^int_t fake_getegid = FALSE;$/;"	v
 fake_getegid_ret	tests/test_flags.c	/^int fake_getegid_ret = -1;$/;"	v
-fake_geteuid	tests/test_flags.c	/^int fake_geteuid = FALSE;$/;"	v
+fake_geteuid	tests/test_flags.c	/^int_t fake_geteuid = FALSE;$/;"	v
 fake_geteuid_ret	tests/test_flags.c	/^int fake_geteuid_ret = -1;$/;"	v
-fake_getgid	tests/test_flags.c	/^int fake_getgid = FALSE;$/;"	v
+fake_getgid	tests/test_flags.c	/^int_t fake_getgid = FALSE;$/;"	v
 fake_getgid_ret	tests/test_flags.c	/^int fake_getgid_ret = -1;$/;"	v
-fake_getgroups	tests/test_flags.c	/^int fake_getgroups = FALSE;$/;"	v
+fake_getgroups	tests/test_flags.c	/^int_t fake_getgroups = FALSE;$/;"	v
 fake_getgroups_ret	tests/test_flags.c	/^int fake_getgroups_ret = -1;$/;"	v
-fake_getuid	tests/test_flags.c	/^int fake_getuid = FALSE;$/;"	v
+fake_getuid	tests/test_flags.c	/^int_t fake_getuid = FALSE;$/;"	v
 fake_getuid_ret	tests/test_flags.c	/^int fake_getuid_ret = -1;$/;"	v
-fake_ht_deinit	tests/test_flags.c	/^int fake_ht_deinit = FALSE;$/;"	v
-fake_ht_deinit_ret	tests/test_flags.c	/^int fake_ht_deinit_ret = FALSE;$/;"	v
-fake_ht_find	tests/test_flags.c	/^int fake_ht_find = FALSE;$/;"	v
+fake_ht_deinit	tests/test_flags.c	/^int_t fake_ht_deinit = FALSE;$/;"	v
+fake_ht_deinit_ret	tests/test_flags.c	/^int_t fake_ht_deinit_ret = FALSE;$/;"	v
+fake_ht_find	tests/test_flags.c	/^int_t fake_ht_find = FALSE;$/;"	v
 fake_ht_find_ret	tests/test_hashtable.c	/^ht_itr_t fake_ht_find_ret;$/;"	v
-fake_ht_grow	tests/test_flags.c	/^int fake_ht_grow = FALSE;$/;"	v
-fake_ht_grow_ret	tests/test_flags.c	/^int fake_ht_grow_ret = FALSE;$/;"	v
-fake_ht_init	tests/test_flags.c	/^int fake_ht_init = FALSE;$/;"	v
-fake_ht_init_ret	tests/test_flags.c	/^int fake_ht_init_ret = FALSE;$/;"	v
-fake_ioctl	tests/test_flags.c	/^int fake_ioctl = FALSE;$/;"	v
+fake_ht_grow	tests/test_flags.c	/^int_t fake_ht_grow = FALSE;$/;"	v
+fake_ht_grow_ret	tests/test_flags.c	/^int_t fake_ht_grow_ret = FALSE;$/;"	v
+fake_ht_init	tests/test_flags.c	/^int_t fake_ht_init = FALSE;$/;"	v
+fake_ht_init_ret	tests/test_flags.c	/^int_t fake_ht_init_ret = FALSE;$/;"	v
+fake_ioctl	tests/test_flags.c	/^int_t fake_ioctl = FALSE;$/;"	v
 fake_ioctl_ret	tests/test_flags.c	/^int fake_ioctl_ret = -1;$/;"	v
-fake_list_count	tests/test_flags.c	/^int fake_list_count = FALSE;$/;"	v
+fake_list_count	tests/test_flags.c	/^int_t fake_list_count = FALSE;$/;"	v
 fake_list_count_ret	tests/test_flags.c	/^int fake_list_count_ret = 0;$/;"	v
-fake_list_deinit	tests/test_flags.c	/^int fake_list_deinit = FALSE;$/;"	v
-fake_list_deinit_ret	tests/test_flags.c	/^int fake_list_deinit_ret = FALSE;$/;"	v
-fake_list_get	tests/test_flags.c	/^int fake_list_get = FALSE;$/;"	v
+fake_list_deinit	tests/test_flags.c	/^int_t fake_list_deinit = FALSE;$/;"	v
+fake_list_deinit_ret	tests/test_flags.c	/^int_t fake_list_deinit_ret = FALSE;$/;"	v
+fake_list_get	tests/test_flags.c	/^int_t fake_list_get = FALSE;$/;"	v
 fake_list_get_ret	tests/test_flags.c	/^void* fake_list_get_ret = NULL;$/;"	v
-fake_list_grow	tests/test_flags.c	/^int fake_list_grow = FALSE;$/;"	v
-fake_list_grow_ret	tests/test_flags.c	/^int fake_list_grow_ret = FALSE;$/;"	v
-fake_list_init	tests/test_flags.c	/^int fake_list_init = FALSE;$/;"	v
-fake_list_init_ret	tests/test_flags.c	/^int fake_list_init_ret = FALSE;$/;"	v
-fake_list_push	tests/test_flags.c	/^int fake_list_push = FALSE;$/;"	v
-fake_list_push_ret	tests/test_flags.c	/^int fake_list_push_ret = FALSE;$/;"	v
-fake_listen	tests/test_flags.c	/^int fake_listen = FALSE;$/;"	v
+fake_list_grow	tests/test_flags.c	/^int_t fake_list_grow = FALSE;$/;"	v
+fake_list_grow_ret	tests/test_flags.c	/^int_t fake_list_grow_ret = FALSE;$/;"	v
+fake_list_init	tests/test_flags.c	/^int_t fake_list_init = FALSE;$/;"	v
+fake_list_init_ret	tests/test_flags.c	/^int_t fake_list_init_ret = FALSE;$/;"	v
+fake_list_push	tests/test_flags.c	/^int_t fake_list_push = FALSE;$/;"	v
+fake_list_push_ret	tests/test_flags.c	/^int_t fake_list_push_ret = FALSE;$/;"	v
+fake_listen	tests/test_flags.c	/^int_t fake_listen = FALSE;$/;"	v
 fake_listen_ret	tests/test_flags.c	/^int fake_listen_ret = -1;$/;"	v
-fake_open_devnull	tests/test_flags.c	/^int fake_open_devnull = FALSE;$/;"	v
-fake_open_devnull_ret	tests/test_flags.c	/^int fake_open_devnull_ret = FALSE;$/;"	v
-fake_pipe	tests/test_flags.c	/^int fake_pipe = FALSE;$/;"	v
+fake_open_devnull	tests/test_flags.c	/^int_t fake_open_devnull = FALSE;$/;"	v
+fake_open_devnull_ret	tests/test_flags.c	/^int_t fake_open_devnull_ret = FALSE;$/;"	v
+fake_pipe	tests/test_flags.c	/^int_t fake_pipe = FALSE;$/;"	v
 fake_pipe_ret	tests/test_flags.c	/^int fake_pipe_ret = -1;$/;"	v
-fake_read	tests/test_flags.c	/^int fake_read = FALSE;$/;"	v
-fake_read_ret	tests/test_flags.c	/^int fake_read_ret = -1;$/;"	v
-fake_setegid	tests/test_flags.c	/^int fake_setegid = FALSE;$/;"	v
+fake_read	tests/test_flags.c	/^int_t fake_read = FALSE;$/;"	v
+fake_read_ret	tests/test_flags.c	/^ssize_t fake_read_ret = -1;$/;"	v
+fake_readv	tests/test_flags.c	/^int_t fake_readv = FALSE;$/;"	v
+fake_readv_ret	tests/test_flags.c	/^ssize_t fake_readv_ret = -1;$/;"	v
+fake_setegid	tests/test_flags.c	/^int_t fake_setegid = FALSE;$/;"	v
 fake_setegid_ret	tests/test_flags.c	/^int fake_setegid_ret = -1;$/;"	v
-fake_seteuid	tests/test_flags.c	/^int fake_seteuid = FALSE;$/;"	v
+fake_seteuid	tests/test_flags.c	/^int_t fake_seteuid = FALSE;$/;"	v
 fake_seteuid_ret	tests/test_flags.c	/^int fake_seteuid_ret = -1;$/;"	v
-fake_setgroups	tests/test_flags.c	/^int fake_setgroups = FALSE;$/;"	v
+fake_setgroups	tests/test_flags.c	/^int_t fake_setgroups = FALSE;$/;"	v
 fake_setgroups_ret	tests/test_flags.c	/^int fake_setgroups_ret = -1;$/;"	v
-fake_setregid	tests/test_flags.c	/^int fake_setregid = FALSE;$/;"	v
+fake_setregid	tests/test_flags.c	/^int_t fake_setregid = FALSE;$/;"	v
 fake_setregid_ret	tests/test_flags.c	/^int fake_setregid_ret = -1;$/;"	v
-fake_setreuid	tests/test_flags.c	/^int fake_setreuid = FALSE;$/;"	v
+fake_setreuid	tests/test_flags.c	/^int_t fake_setreuid = FALSE;$/;"	v
 fake_setreuid_ret	tests/test_flags.c	/^int fake_setreuid_ret = -1;$/;"	v
-fake_setsockopt	tests/test_flags.c	/^int fake_setsockopt = FALSE;$/;"	v
+fake_setsockopt	tests/test_flags.c	/^int_t fake_setsockopt = FALSE;$/;"	v
 fake_setsockopt_ret	tests/test_flags.c	/^int fake_setsockopt_ret = -1;$/;"	v
-fake_socket	tests/test_flags.c	/^int fake_socket = FALSE;$/;"	v
-fake_socket_bind	tests/test_flags.c	/^int fake_socket_bind = FALSE;$/;"	v
-fake_socket_bind_ret	tests/test_flags.c	/^int fake_socket_bind_ret = FALSE;$/;"	v
-fake_socket_bound	tests/test_flags.c	/^int fake_socket_bound = FALSE;$/;"	v
-fake_socket_bound_ret	tests/test_flags.c	/^int fake_socket_bound_ret = FALSE;$/;"	v
-fake_socket_connect	tests/test_flags.c	/^int fake_socket_connect = FALSE;$/;"	v
-fake_socket_connect_ret	tests/test_flags.c	/^int fake_socket_connect_ret = FALSE;$/;"	v
-fake_socket_connected	tests/test_flags.c	/^int fake_socket_connected = FALSE;$/;"	v
-fake_socket_connected_ret	tests/test_flags.c	/^int fake_socket_connected_ret = FALSE;$/;"	v
+fake_socket	tests/test_flags.c	/^int_t fake_socket = FALSE;$/;"	v
+fake_socket_bind	tests/test_flags.c	/^int_t fake_socket_bind = FALSE;$/;"	v
+fake_socket_bind_ret	tests/test_flags.c	/^int_t fake_socket_bind_ret = FALSE;$/;"	v
+fake_socket_bound	tests/test_flags.c	/^int_t fake_socket_bound = FALSE;$/;"	v
+fake_socket_bound_ret	tests/test_flags.c	/^int_t fake_socket_bound_ret = FALSE;$/;"	v
+fake_socket_connect	tests/test_flags.c	/^int_t fake_socket_connect = FALSE;$/;"	v
+fake_socket_connect_ret	tests/test_flags.c	/^int_t fake_socket_connect_ret = FALSE;$/;"	v
+fake_socket_connected	tests/test_flags.c	/^int_t fake_socket_connected = FALSE;$/;"	v
+fake_socket_connected_ret	tests/test_flags.c	/^int_t fake_socket_connected_ret = FALSE;$/;"	v
+fake_socket_create_tcp_socket	tests/test_flags.c	/^int_t fake_socket_create_tcp_socket = FALSE;$/;"	v
+fake_socket_create_tcp_socket_ret	tests/test_flags.c	/^int_t fake_socket_create_tcp_socket_ret = FALSE;$/;"	v
+fake_socket_create_udp_socket	tests/test_flags.c	/^int_t fake_socket_create_udp_socket = FALSE;$/;"	v
+fake_socket_create_udp_socket_ret	tests/test_flags.c	/^int_t fake_socket_create_udp_socket_ret = FALSE;$/;"	v
+fake_socket_create_unix_socket	tests/test_flags.c	/^int_t fake_socket_create_unix_socket = FALSE;$/;"	v
+fake_socket_create_unix_socket_ret	tests/test_flags.c	/^int_t fake_socket_create_unix_socket_ret = FALSE;$/;"	v
 fake_socket_errval	tests/test_flags.c	/^int fake_socket_errval = 0;$/;"	v
-fake_socket_get_error_ret	tests/test_flags.c	/^int fake_socket_get_error_ret = FALSE;$/;"	v
-fake_socket_getsockopt	tests/test_flags.c	/^int fake_socket_getsockopt = FALSE;$/;"	v
-fake_socket_lookup_host	tests/test_flags.c	/^int fake_socket_lookup_host = FALSE;$/;"	v
-fake_socket_lookup_host_ret	tests/test_flags.c	/^int fake_socket_lookup_host_ret = FALSE;$/;"	v
+fake_socket_get_error_ret	tests/test_flags.c	/^int_t fake_socket_get_error_ret = FALSE;$/;"	v
+fake_socket_getsockopt	tests/test_flags.c	/^int_t fake_socket_getsockopt = FALSE;$/;"	v
+fake_socket_lookup_host	tests/test_flags.c	/^int_t fake_socket_lookup_host = FALSE;$/;"	v
+fake_socket_lookup_host_ret	tests/test_flags.c	/^int_t fake_socket_lookup_host_ret = FALSE;$/;"	v
 fake_socket_ret	tests/test_flags.c	/^int fake_socket_ret = -1;$/;"	v
-fake_write	tests/test_flags.c	/^int fake_write = FALSE;$/;"	v
-fake_write_ret	tests/test_flags.c	/^int fake_write_ret = -1;$/;"	v
-fake_writev	tests/test_flags.c	/^int fake_writev = FALSE;$/;"	v
-fake_writev_ret	tests/test_flags.c	/^int fake_writev_ret = -1;$/;"	v
+fake_stat	tests/test_flags.c	/^int_t fake_stat = FALSE;$/;"	v
+fake_stat_ret	tests/test_flags.c	/^int fake_stat_ret = -1;$/;"	v
+fake_strcmp	tests/test_flags.c	/^int_t fake_strcmp = FALSE;$/;"	v
+fake_strcmp_ret	tests/test_flags.c	/^int fake_strcmp_ret = 0;$/;"	v
+fake_strdup	tests/test_flags.c	/^int_t fake_strdup = FALSE;$/;"	v
+fake_strdup_ret	tests/test_flags.c	/^char* fake_strdup_ret = NULL;$/;"	v
+fake_strtol	tests/test_flags.c	/^int_t fake_strtol = FALSE;$/;"	v
+fake_strtol_ret	tests/test_flags.c	/^uint_t fake_strtol_ret = LONG_MIN;$/;"	v
+fake_unlink	tests/test_flags.c	/^int_t fake_unlink = FALSE;$/;"	v
+fake_unlink_ret	tests/test_flags.c	/^int fake_unlink_ret = -1;$/;"	v
+fake_write	tests/test_flags.c	/^int_t fake_write = FALSE;$/;"	v
+fake_write_ret	tests/test_flags.c	/^ssize_t fake_write_ret = -1;$/;"	v
+fake_writev	tests/test_flags.c	/^int_t fake_writev = FALSE;$/;"	v
+fake_writev_ret	tests/test_flags.c	/^ssize_t fake_writev_ret = -1;$/;"	v
 fd	src/events.h	/^        int fd;$/;"	m	struct:evt_params_u::__anon3
 filelog_fns	src/log.c	/^static cookie_io_functions_t filelog_fns =$/;"	v	file:
 filelog_writer	src/log.c	/^static ssize_t filelog_writer( void * cookie, char const * data, size_t leng )$/;"	f	file:
@@ -817,19 +871,19 @@ groups	src/privileges.h	/^    gid_t   groups[NGROUPS_MAX];$/;"	m	struct:priv_sta
 hash_fn	tests/test_hashtable.c	/^static uint_t hash_fn( void const * const key )$/;"	f	file:
 hashtable	tests/test_all.c	/^SUITE( hashtable );$/;"	v
 hfn	src/hashtable.h	/^    ht_hash_fn          hfn;                \/* hash function *\/$/;"	m	struct:ht_s
-host	src/socket.c	/^    int8_t*         host;           \/* host name *\/$/;"	m	struct:socket_s	file:
-ht_clear	src/hashtable.c	/^int ht_clear( ht_t * const htable )$/;"	f
+host	src/socket.c	/^    uint8_t*        host;           \/* host name *\/$/;"	m	struct:socket_s	file:
+ht_clear	src/hashtable.c	/^int_t ht_clear( ht_t * const htable )$/;"	f
 ht_count	src/hashtable.c	/^uint_t ht_count( ht_t * const htable )$/;"	f
-ht_deinitialize	src/hashtable.c	/^int ht_deinitialize( ht_t * const htable )$/;"	f
+ht_deinitialize	src/hashtable.c	/^int_t ht_deinitialize( ht_t * const htable )$/;"	f
 ht_delete	src/hashtable.c	/^void ht_delete(void * ht)$/;"	f
 ht_delete_fn	src/hashtable.h	/^typedef void (*ht_delete_fn)(void * value);$/;"	t
 ht_find	src/hashtable.c	/^ht_itr_t ht_find( ht_t const * const htable, void * const data )$/;"	f
 ht_get	src/hashtable.c	/^void * ht_get( ht_t const * const htable, ht_itr_t const itr )$/;"	f
 ht_get_new_size	src/hashtable.c	/^static uint_t ht_get_new_size( uint_t const count, float const limit )$/;"	f	file:
-ht_grow	src/hashtable.c	/^static int ht_grow( ht_t * const htable )$/;"	f	file:
+ht_grow	src/hashtable.c	/^static int_t ht_grow( ht_t * const htable )$/;"	f	file:
 ht_hash_fn	src/hashtable.h	/^typedef uint_t (*ht_hash_fn)(void const * const key);$/;"	t
-ht_initialize	src/hashtable.c	/^int ht_initialize( ht_t * const htable, uint_t const initial_capacity, $/;"	f
-ht_insert	src/hashtable.c	/^int ht_insert( ht_t * const htable, void * const data )$/;"	f
+ht_initialize	src/hashtable.c	/^int_t ht_initialize( ht_t * const htable, uint_t const initial_capacity, $/;"	f
+ht_insert	src/hashtable.c	/^int_t ht_insert( ht_t * const htable, void * const data )$/;"	f
 ht_itr_begin	src/hashtable.c	/^ht_itr_t ht_itr_begin( ht_t const * const htable )$/;"	f
 ht_itr_end	src/hashtable.c	/^ht_itr_t ht_itr_end( ht_t const * const htable )$/;"	f
 ht_itr_end_t	src/hashtable.c	/^ht_itr_t const ht_itr_end_t = { -1, -1 };$/;"	v
@@ -841,9 +895,9 @@ ht_itr_rnext	src/hashtable.c	/^ht_itr_t ht_itr_rnext( ht_t const * const htable,
 ht_itr_rprev	src/hashtable.h	92;"	d
 ht_itr_s	src/hashtable.h	/^typedef struct ht_itr_s$/;"	s
 ht_itr_t	src/hashtable.h	/^} ht_itr_t;$/;"	t	typeref:struct:ht_itr_s
-ht_match_fn	src/hashtable.h	/^typedef int (*ht_match_fn)(void const * const l, void const * const r);$/;"	t
+ht_match_fn	src/hashtable.h	/^typedef int_t (*ht_match_fn)(void const * const l, void const * const r);$/;"	t
 ht_new	src/hashtable.c	/^ht_t* ht_new( uint_t const initial_capacity, ht_hash_fn hfn, $/;"	f
-ht_remove	src/hashtable.c	/^int ht_remove( ht_t * const htable, ht_itr_t const itr )$/;"	f
+ht_remove	src/hashtable.c	/^int_t ht_remove( ht_t * const htable, ht_itr_t const itr )$/;"	f
 ht_s	src/hashtable.h	/^typedef struct ht_s$/;"	s
 ht_t	src/hashtable.h	/^} ht_t;$/;"	t	typeref:struct:ht_s
 idx	src/hashtable.h	/^    int_t               idx;                \/* index of the list *\/$/;"	m	struct:ht_itr_s
@@ -866,7 +920,7 @@ int_t	src/macros.h	/^typedef int32_t int_t;$/;"	t
 int_t	src/macros.h	/^typedef int64_t int_t;$/;"	t
 io	src/events.h	/^    struct ev_io        io;$/;"	m	union:ev_data_u	typeref:struct:ev_data_u::ev_io
 io_params	src/events.h	/^    } io_params;$/;"	m	union:evt_params_u	typeref:struct:evt_params_u::__anon3
-iov	src/aiofd.c	/^    int iov;$/;"	m	struct:aiofd_write_s	file:
+iov	src/aiofd.c	/^    int_t iov;$/;"	m	struct:aiofd_write_s	file:
 items	src/list.h	/^    list_item_t*    items;                  \/* array of list items *\/$/;"	m	struct:list_s
 itr	src/hashtable.h	/^    list_itr_t          itr;                \/* list iterator *\/$/;"	m	struct:ht_itr_s
 itr_end	src/btree.c	/^static const bt_itr_t itr_end = NULL;$/;"	v	file:
@@ -876,16 +930,16 @@ key	src/btree.c	/^    void * key;                 \/* key *\/$/;"	m	struct:node_
 left	src/btree.c	/^    struct node_s * left;       \/* left child *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
 limit	src/hashtable.h	/^    float               limit;              \/* load limit that will trigger resize *\/$/;"	m	struct:ht_s
 list	tests/test_all.c	/^SUITE( list );$/;"	v
-list_clear	src/list.c	/^int list_clear( list_t * const list )$/;"	f
+list_clear	src/list.c	/^int_t list_clear( list_t * const list )$/;"	f
 list_count	src/list.c	/^uint_t list_count( list_t const * const list )$/;"	f
-list_deinitialize	src/list.c	/^int list_deinitialize( list_t * const list )$/;"	f
+list_deinitialize	src/list.c	/^int_t list_deinitialize( list_t * const list )$/;"	f
 list_delete	src/list.c	/^void list_delete( void * l )$/;"	f
 list_delete_fn	src/list.h	/^typedef void (*list_delete_fn)(void*);$/;"	t
 list_get	src/list.c	/^void * list_get( list_t const * const list, list_itr_t const itr )$/;"	f
 list_get_head	src/list.h	87;"	d
 list_get_tail	src/list.h	88;"	d
-list_grow	src/list.c	/^static int list_grow( list_t * const list, uint_t amount )$/;"	f	file:
-list_initialize	src/list.c	/^int list_initialize( list_t * const list, uint_t const initial_capacity, list_delete_fn dfn )$/;"	f
+list_grow	src/list.c	/^static int_t list_grow( list_t * const list, uint_t amount )$/;"	f	file:
+list_initialize	src/list.c	/^int_t list_initialize( list_t * const list, uint_t const initial_capacity, list_delete_fn dfn )$/;"	f
 list_item_s	src/list.c	/^struct list_item_s$/;"	s	file:
 list_item_t	src/list.h	/^typedef struct list_item_s list_item_t;$/;"	t	typeref:struct:list_item_s
 list_itr_begin	src/list.c	/^list_itr_t list_itr_begin( list_t const * const list )$/;"	f
@@ -904,10 +958,10 @@ list_new	src/list.c	/^list_t * list_new( uint_t const initial_capacity, list_del
 list_pop	src/list.c	/^list_itr_t list_pop( list_t * const list, list_itr_t const itr )$/;"	f
 list_pop_head	src/list.h	82;"	d
 list_pop_tail	src/list.h	83;"	d
-list_push	src/list.c	/^int list_push( list_t * const list, void * const data, list_itr_t const itr )$/;"	f
+list_push	src/list.c	/^int_t list_push( list_t * const list, void * const data, list_itr_t const itr )$/;"	f
 list_push_head	src/list.h	77;"	d
 list_push_tail	src/list.h	78;"	d
-list_reserve	src/list.c	/^int list_reserve( list_t * const list, uint const amount )$/;"	f
+list_reserve	src/list.c	/^int_t list_reserve( list_t * const list, uint const amount )$/;"	f
 list_s	src/list.h	/^typedef struct list_s$/;"	s
 list_size	src/btree.c	/^    uint_t              list_size;  \/* equal to initial capacity, size blocks in node_list *\/$/;"	m	struct:bt_s	file:
 list_t	src/list.h	/^} list_t;$/;"	t	typeref:struct:list_s
@@ -920,7 +974,7 @@ log_t	src/log.h	/^} log_t;$/;"	t	typeref:struct:log_s
 log_type_s	src/log.h	/^typedef enum log_type_s$/;"	g
 log_type_t	src/log.h	/^} log_type_t;$/;"	t	typeref:enum:log_type_s
 main	tests/test_all.c	/^int main()$/;"	f
-match_fn	tests/test_hashtable.c	/^static int match_fn( void const * const l, void const * const r )$/;"	f	file:
+match_fn	tests/test_hashtable.c	/^static int_t match_fn( void const * const l, void const * const r )$/;"	f	file:
 max	src/btree.c	34;"	d	file:
 mfn	src/hashtable.h	/^    ht_match_fn         mfn;                \/* match function *\/$/;"	m	struct:ht_s
 min	src/btree.c	33;"	d	file:
@@ -934,7 +988,7 @@ node_t	src/btree.c	/^} node_t;$/;"	t	typeref:struct:node_s	file:
 noop	src/log.c	/^static int noop( void ) { return 0; }$/;"	f	file:
 num_bits	src/bitset.h	/^    size_t num_bits;$/;"	m	struct:bitset_s
 num_lists	src/btree.c	/^    uint_t              num_lists;  \/* number of blocks allocated *\/$/;"	m	struct:bt_s	file:
-open_devnull	src/sanitize.c	/^static int open_devnull( int fd )$/;"	f	file:
+open_devnull	src/sanitize.c	/^static int_t open_devnull( int fd )$/;"	f	file:
 ops	src/aiofd.h	/^    }           ops;$/;"	m	struct:aiofd_s	typeref:struct:aiofd_s::aiofd_ops_s
 ops	src/child.c	/^    child_ops_t     ops;            \/* child proces callbacks *\/$/;"	m	struct:child_process_s	file:
 ops	src/socket.c	/^    socket_ops_t    ops;            \/* socket callbacks *\/$/;"	m	struct:socket_s	file:
@@ -950,9 +1004,9 @@ pid	src/child.c	/^    pid_t           pid;            \/* the pid of the child p
 pid	src/daemon.c	/^pid_t pid, sid;$/;"	v
 pid	src/events.h	/^        int pid;    \/* pid to watch *\/$/;"	m	struct:evt_params_u::__anon2
 pint_less	tests/test_btree.c	/^static int pint_less( void * l, void * r )$/;"	f	file:
-port	src/socket.c	/^    uint16_t        port;           \/* port number *\/$/;"	m	struct:socket_s	file:
-preserve_environ	src/sanitize.c	/^static int8_t * preserve_environ[] =$/;"	v	file:
-preserve_environ	tests/test_sanitize.c	/^static int8_t * preserve_environ[] =$/;"	v	file:
+port	src/socket.c	/^    uint8_t*        port;           \/* port number as string *\/$/;"	m	struct:socket_s	file:
+preserve_environ	src/sanitize.c	/^static uint8_t * preserve_environ[] =$/;"	v	file:
+preserve_environ	tests/test_sanitize.c	/^static uint8_t * preserve_environ[] =$/;"	v	file:
 prev	src/btree.c	/^    struct node_s * prev;       \/* traversal threading pointer *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
 prev	src/list.c	/^    int_t   prev;   \/* prev node in the list *\/$/;"	m	struct:list_item_s	file:
 priov	src/log.c	/^static int8_t * const priov[] =$/;"	v	file:
@@ -960,20 +1014,22 @@ priv_state_s	src/privileges.h	/^typedef struct priv_state_s$/;"	s
 priv_state_t	src/privileges.h	/^} priv_state_t;$/;"	t	typeref:struct:priv_state_s
 privileges	tests/test_all.c	/^SUITE( privileges );$/;"	v
 r	src/aiofd.c	/^    int r, w, e;$/;"	m	struct:cb_count_s	file:
-read_callback_fn	src/aiofd.c	/^static int read_callback_fn( aiofd_t * const aiofd, size_t nread, void * user_data )$/;"	f	file:
-read_callback_ret	src/aiofd.c	/^static int read_callback_ret = TRUE;$/;"	v	file:
-read_evt_fn	src/aiofd.h	/^        int (*read_evt_fn)( aiofd_t * const aiofd, size_t nread, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
-read_fn	src/aiofd.h	/^        ssize_t (*read_fn)(int fd, void *buf, size_t count, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
-read_fn	src/child.h	/^    int32_t (*read_fn)( child_process_t * const cp, size_t nread, void * user_data );$/;"	m	struct:child_ops_s
-read_fn	src/socket.h	/^    int32_t (*read_fn)( socket_t * const s, size_t nread, void * user_data );$/;"	m	struct:socket_ops_s
-read_fn	tests/test_aiofd.c	/^static int read_fn( aiofd_t * const aiofd, size_t nread, void * user_data )$/;"	f	file:
-read_fn	tests/test_child.c	/^static int32_t read_fn( child_process_t * const cp, size_t nread, void * user_data )$/;"	f	file:
-read_fn	tests/test_socket.c	/^static int32_t read_fn( socket_t * const s, size_t nread, void * user_data )$/;"	f	file:
-read_pid_fn	tests/test_child.c	/^static int32_t read_pid_fn( child_process_t * const cp, size_t nread, void * user_data )$/;"	f	file:
-readv_fn	src/aiofd.h	/^        ssize_t (*readv_fn)(int fd, const struct iovec *iov, int iovcnt, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
+read_callback_fn	src/aiofd.c	/^static int_t read_callback_fn( aiofd_t * const aiofd, size_t nread, void * user_data )$/;"	f	file:
+read_callback_ret	src/aiofd.c	/^static int_t read_callback_ret = TRUE;$/;"	v	file:
+read_evt_fn	src/aiofd.h	/^        int_t (*read_evt_fn)( aiofd_t * const aiofd, size_t nread, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
+read_evt_fn	src/child.h	/^    int_t (*read_evt_fn)( child_process_t * const cp, size_t nread, void * user_data );$/;"	m	struct:child_ops_s
+read_evt_fn	tests/test_aiofd.c	/^static int_t read_evt_fn( aiofd_t * const aiofd, size_t nread, void * user_data )$/;"	f	file:
+read_evt_fn	tests/test_child.c	/^static int_t read_evt_fn( child_process_t * const cp, size_t nread, void * user_data )$/;"	f	file:
+read_fn	src/aiofd.h	/^        ssize_t (*read_fn)(int fd, void * const buf, size_t const count, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
+read_fn	src/socket.h	/^    ssize_t (*read_fn)( socket_t * const s, size_t const nread, void * user_data );$/;"	m	struct:socket_ops_s
+read_fn	tests/test_aiofd.c	/^static ssize_t read_fn(int fd, void *buf, size_t count, void * user_data)$/;"	f	file:
+read_fn	tests/test_socket.c	/^static ssize_t read_fn( socket_t * const s, size_t const nread, void * user_data )$/;"	f	file:
+read_pid_evt_fn	tests/test_child.c	/^static int_t read_pid_evt_fn( child_process_t * const cp, size_t nread, void * user_data )$/;"	f	file:
+readv_fn	src/aiofd.h	/^        ssize_t (*readv_fn)(int fd, struct iovec * const iov, size_t const iovcnt, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
+readv_fn	tests/test_aiofd.c	/^static ssize_t readv_fn(int fd, struct iovec *iov, int iovcnt, void * user_data)$/;"	f	file:
 remove_item	src/list.c	/^static list_itr_t remove_item( list_item_t * const items, list_itr_t const itr )$/;"	f	file:
 reset_test_flags	tests/test_flags.c	/^void reset_test_flags( void )$/;"	f
-restore_privileges	src/privileges.c	/^int restore_privileges( priv_state_t const * const orig )$/;"	f
+restore_privileges	src/privileges.c	/^int_t restore_privileges( priv_state_t const * const orig )$/;"	f
 revt	src/aiofd.h	/^    evt_t       revt;           \/* read event *\/$/;"	m	struct:aiofd_s
 rfd	src/aiofd.h	/^    int         rfd;            \/* read fd if two are given *\/$/;"	m	struct:aiofd_s
 right	src/btree.c	/^    struct node_s * right;      \/* right child *\/$/;"	m	struct:node_s	typeref:struct:node_s::node_s	file:
@@ -981,7 +1037,7 @@ rpid	src/events.h	/^        int rpid;   \/* pid of process causing change *\/$/;
 rstatus	src/events.h	/^        int rstatus;\/* status word of process, use macros from sys\/wait.h, waitpid *\/$/;"	m	struct:evt_params_u::__anon2
 safe_fork	src/child.c	/^static pid_t safe_fork( int keepfds[], int nfds, int drop )$/;"	f	file:
 sanitize	tests/test_all.c	/^SUITE( sanitize );$/;"	v
-sanitize_files	src/sanitize.c	/^int sanitize_files( int keep[], int nfds )$/;"	f
+sanitize_files	src/sanitize.c	/^int_t sanitize_files( int keep[], int nfds )$/;"	f
 second	src/pair.c	/^    void * second;$/;"	m	struct:pair_s	file:
 second	tests/test_pair.c	/^int8_t const * const second = "second";$/;"	v
 sid	src/daemon.c	/^pid_t pid, sid;$/;"	v
@@ -997,40 +1053,47 @@ size	src/list.h	/^    uint_t          size;                   \/* total number o
 size	tests/test_buffer.c	/^size_t const size = 5;$/;"	v
 sock_state_s	tests/test_socket.c	/^typedef struct sock_state_s$/;"	s	file:
 sock_state_t	tests/test_socket.c	/^} sock_state_t;$/;"	t	typeref:struct:sock_state_s	file:
+sockaddr_t	src/socket.c	/^typedef struct sockaddr_storage sockaddr_t;$/;"	t	typeref:struct:sockaddr_storage	file:
 socket	tests/test_all.c	/^SUITE( socket );$/;"	v
 socket_accept	src/socket.c	/^socket_t * socket_accept( socket_t * const s,$/;"	f
-socket_aiofd_error_evt_fn	src/socket.c	/^static int socket_aiofd_error_evt_fn( aiofd_t * const aiofd,$/;"	f	file:
-socket_aiofd_read_evt_fn	src/socket.c	/^static int socket_aiofd_read_evt_fn( aiofd_t * const aiofd,$/;"	f	file:
-socket_aiofd_write_evt_fn	src/socket.c	/^static int socket_aiofd_write_evt_fn( aiofd_t * const aiofd,$/;"	f	file:
+socket_aiofd_error_evt_fn	src/socket.c	/^static int_t socket_aiofd_error_evt_fn( aiofd_t * const aiofd,$/;"	f	file:
+socket_aiofd_read_evt_fn	src/socket.c	/^static int_t socket_aiofd_read_evt_fn( aiofd_t * const aiofd,$/;"	f	file:
+socket_aiofd_write_evt_fn	src/socket.c	/^static int_t socket_aiofd_write_evt_fn( aiofd_t * const aiofd,$/;"	f	file:
 socket_bind	src/socket.c	/^socket_ret_t socket_bind( socket_t * const s,$/;"	f
-socket_connect	src/socket.c	/^socket_ret_t socket_connect( socket_t* const s, $/;"	f
+socket_connect	src/socket.c	/^socket_ret_t socket_connect( socket_t * const s, $/;"	f
 socket_deinitialize	src/socket.c	/^static void socket_deinitialize( socket_t * const s )$/;"	f	file:
 socket_delete	src/socket.c	/^void socket_delete( void * s )$/;"	f
 socket_disconnect	src/socket.c	/^socket_ret_t socket_disconnect( socket_t* const s )$/;"	f
-socket_do_tcp_connect	src/socket.c	/^static int socket_do_tcp_connect( socket_t * const s )$/;"	f	file:
-socket_do_unix_connect	src/socket.c	/^static int socket_do_unix_connect( socket_t * const s )$/;"	f	file:
 socket_flush	src/socket.c	/^socket_ret_t socket_flush( socket_t* const s )$/;"	f
-socket_get_error	src/socket.c	/^static int socket_get_error( socket_t * const s, int * errval )$/;"	f	file:
+socket_get_error	src/socket.c	/^static int_t socket_get_error( socket_t * const s, int * errval )$/;"	f	file:
 socket_get_type	src/socket.c	/^socket_type_t socket_get_type( socket_t * const s )$/;"	f
+socket_in_addr	src/socket.c	/^static inline void * socket_in_addr( sockaddr_t * const addr )$/;"	f	file:
+socket_in_port	src/socket.c	/^static inline in_port_t socket_in_port( sockaddr_t * const addr )$/;"	f	file:
 socket_initialize	src/socket.c	/^static int socket_initialize( socket_t * const s,$/;"	f	file:
-socket_is_bound	src/socket.c	/^int socket_is_bound( socket_t* const s )$/;"	f
-socket_is_connected	src/socket.c	/^int socket_is_connected( socket_t* const s )$/;"	f
-socket_is_listening	src/socket.c	/^int socket_is_listening( socket_t * const s )$/;"	f
+socket_is_bound	src/socket.c	/^int_t socket_is_bound( socket_t* const s )$/;"	f
+socket_is_connected	src/socket.c	/^int_t socket_is_connected( socket_t* const s )$/;"	f
+socket_is_listening	src/socket.c	/^int_t socket_is_listening( socket_t * const s )$/;"	f
 socket_listen	src/socket.c	/^socket_ret_t socket_listen( socket_t * const s, int const backlog )$/;"	f
 socket_new	src/socket.c	/^socket_t* socket_new( socket_type_t const type, $/;"	f
+socket_open_socket	src/socket.c	/^static int_t socket_open_socket( socket_t * const s, evt_loop_t * const el, int ai_flags )$/;"	f	file:
+socket_open_tcp_socket	src/socket.c	/^static int_t socket_open_tcp_socket( socket_t * const s,$/;"	f	file:
+socket_open_udp_socket	src/socket.c	/^static int_t socket_open_udp_socket( socket_t * const s,$/;"	f	file:
+socket_open_unix_socket	src/socket.c	/^static int_t socket_open_unix_socket( socket_t * const s,$/;"	f	file:
 socket_ops_s	src/socket.h	/^typedef struct socket_ops_s $/;"	s
 socket_ops_t	src/socket.h	/^} socket_ops_t;$/;"	t	typeref:struct:socket_ops_s
-socket_read	src/socket.c	/^int32_t socket_read( socket_t* const s, $/;"	f
+socket_read	src/socket.c	/^ssize_t socket_read( socket_t* const s, $/;"	f
+socket_readv	src/socket.c	/^ssize_t socket_readv( socket_t * const s,$/;"	f
 socket_ret_e	src/socket.h	/^typedef enum socket_ret_e$/;"	g
 socket_ret_t	src/socket.h	/^} socket_ret_t;$/;"	t	typeref:enum:socket_ret_e
 socket_s	src/socket.c	/^struct socket_s$/;"	s	file:
 socket_t	src/socket.h	/^typedef struct socket_s socket_t;$/;"	t	typeref:struct:socket_s
 socket_type_e	src/socket.h	/^typedef enum socket_type_e$/;"	g
 socket_type_t	src/socket.h	/^} socket_type_t;$/;"	t	typeref:enum:socket_type_e
-socket_udp_read_fn	src/socket.c	/^static ssize_t socket_udp_read_fn( int fd, void *buf, size_t count, void * user_data )$/;"	f	file:
-socket_udp_readv_fn	src/socket.c	/^static ssize_t socket_udp_readv_fn( int fd, struct iovec *iov, int iovcnt, void * user_data )$/;"	f	file:
-socket_udp_write_fn	src/socket.c	/^static ssize_t socket_udp_write_fn( int fd, const void *buf, size_t count, void * user_data )$/;"	f	file:
-socket_udp_writev_fn	src/socket.c	/^static ssize_t socket_udp_writev_fn( int fd, const struct iovec *iov, int iovcnt, void * user_data )$/;"	f	file:
+socket_udp_read_fn	src/socket.c	/^static ssize_t socket_udp_read_fn( int fd, void * const buf, size_t const count, void * user_data )$/;"	f	file:
+socket_udp_readv_fn	src/socket.c	/^static ssize_t socket_udp_readv_fn( int fd, struct iovec * const iov, size_t const iovcnt, void * user_data )$/;"	f	file:
+socket_udp_write_fn	src/socket.c	/^static ssize_t socket_udp_write_fn( int fd, void const * const buf, size_t const count, void * user_data )$/;"	f	file:
+socket_udp_writev_fn	src/socket.c	/^static ssize_t socket_udp_writev_fn( int fd, struct iovec const * const iov, size_t const iovcnt, void * user_data )$/;"	f	file:
+socket_validate_port	src/socket.c	/^static inline int_t socket_validate_port( uint8_t const * const port )$/;"	f	file:
 socket_write	src/socket.c	/^socket_ret_t socket_write( socket_t * const s,$/;"	f
 socket_writev	src/socket.c	/^socket_ret_t socket_writev( socket_t * const s,$/;"	f
 start_logging	src/log.c	/^log_t * start_logging( log_type_t type, void * param, int append )$/;"	f
@@ -1041,16 +1104,16 @@ t_cdone	tests/test_socket.c	/^static int t_cdone = FALSE;$/;"	v	file:
 t_client_connect_fn	tests/test_socket.c	/^static socket_ret_t t_client_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 t_client_disconnect_fn	tests/test_socket.c	/^static socket_ret_t t_client_disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 t_client_error_fn	tests/test_socket.c	/^static socket_ret_t t_client_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
-t_client_read_fn	tests/test_socket.c	/^static int32_t t_client_read_fn( socket_t * const s, size_t nread, void * user_data )$/;"	f	file:
-t_client_write_fn	tests/test_socket.c	/^static int32_t t_client_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+t_client_read_fn	tests/test_socket.c	/^static ssize_t t_client_read_fn( socket_t * const s, size_t const nread, void * user_data )$/;"	f	file:
+t_client_write_fn	tests/test_socket.c	/^static ssize_t t_client_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
 t_incoming_fn	tests/test_socket.c	/^static socket_ret_t t_incoming_fn( socket_t * const s, void * user_data )$/;"	f	file:
 t_sclose	tests/test_socket.c	/^static int t_sclose = FALSE;$/;"	v	file:
 t_sdone	tests/test_socket.c	/^static int t_sdone = FALSE;$/;"	v	file:
 t_server_connect_fn	tests/test_socket.c	/^static socket_ret_t t_server_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 t_server_disconnect_fn	tests/test_socket.c	/^static socket_ret_t t_server_disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 t_server_error_fn	tests/test_socket.c	/^static socket_ret_t t_server_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
-t_server_read_fn	tests/test_socket.c	/^static int32_t t_server_read_fn( socket_t * const s, size_t nread, void * user_data )$/;"	f	file:
-t_server_write_fn	tests/test_socket.c	/^static int32_t t_server_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+t_server_read_fn	tests/test_socket.c	/^static ssize_t t_server_read_fn( socket_t * const s, size_t const nread, void * user_data )$/;"	f	file:
+t_server_write_fn	tests/test_socket.c	/^static ssize_t t_server_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
 test_aiofd_delete_null	tests/test_aiofd.c	/^static void test_aiofd_delete_null( void )$/;"	f	file:
 test_aiofd_flush_null	tests/test_aiofd.c	/^static void test_aiofd_flush_null( void )$/;"	f	file:
 test_aiofd_get_listen_null	tests/test_aiofd.c	/^static void test_aiofd_get_listen_null( void )$/;"	f	file:
@@ -1115,9 +1178,9 @@ test_buffer_new_fail_init	tests/test_buffer.c	/^static void test_buffer_new_fail
 test_buffer_newdel	tests/test_buffer.c	/^static void test_buffer_newdel( void )$/;"	f	file:
 test_buffer_newdel_pwned	tests/test_buffer.c	/^static void test_buffer_newdel_pwned( void )$/;"	f	file:
 test_buffer_private_functions	src/buffer.c	/^void test_buffer_private_functions( void )$/;"	f
-test_child_aiofd_error_fn	src/child.c	/^static void test_child_aiofd_error_fn( void )$/;"	f	file:
-test_child_aiofd_read_fn	src/child.c	/^static void test_child_aiofd_read_fn( void )$/;"	f	file:
-test_child_aiofd_write_fn	src/child.c	/^static void test_child_aiofd_write_fn( void )$/;"	f	file:
+test_child_aiofd_error_evt_fn	src/child.c	/^static void test_child_aiofd_error_evt_fn( void )$/;"	f	file:
+test_child_aiofd_read_evt_fn	src/child.c	/^static void test_child_aiofd_read_evt_fn( void )$/;"	f	file:
+test_child_aiofd_write_evt_fn	src/child.c	/^static void test_child_aiofd_write_evt_fn( void )$/;"	f	file:
 test_child_newdel	tests/test_child.c	/^static void test_child_newdel( void )$/;"	f	file:
 test_child_newdel_fail_first_pipe	tests/test_child.c	/^static void test_child_newdel_fail_first_pipe( void )$/;"	f	file:
 test_child_newdel_fail_fork	tests/test_child.c	/^static void test_child_newdel_fail_fork( void )$/;"	f	file:
@@ -1131,6 +1194,7 @@ test_child_wait	tests/test_child.c	/^static void test_child_wait( void )$/;"	f	f
 test_connect_fn	src/socket.c	/^static socket_ret_t test_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 test_connect_fn_ret	src/socket.c	/^socket_ret_t test_connect_fn_ret = SOCKET_OK;$/;"	v
 test_delete_event_handler	tests/test_events.c	/^static void test_delete_event_handler( void )$/;"	f	file:
+test_error_evt_fn	src/child.c	/^static int_t test_error_evt_fn( child_process_t * const cp, int err, void * user_data )$/;"	f	file:
 test_error_fn	src/socket.c	/^static socket_ret_t test_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
 test_error_fn_ret	src/socket.c	/^socket_ret_t test_error_fn_ret = SOCKET_OK;$/;"	v
 test_event_callback	tests/test_events.c	/^static evt_ret_t test_event_callback( evt_loop_t * const el, evt_t * const evt,$/;"	f	file:
@@ -1144,9 +1208,9 @@ test_evt_new_failure	tests/test_events.c	/^static void test_evt_new_failure( voi
 test_evt_run_null	tests/test_events.c	/^static void test_evt_run_null( void )$/;"	f	file:
 test_evt_signal_callback	src/events.c	/^void test_evt_signal_callback( void )$/;"	f
 test_evt_stop_null	tests/test_events.c	/^static void test_evt_stop_null( void )$/;"	f	file:
-test_exit_fn	src/child.c	/^static int test_exit_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )$/;"	f	file:
-test_flag	src/child.c	/^static int test_flag = FALSE;$/;"	v	file:
-test_flag	src/events.c	/^static int test_flag = FALSE;$/;"	v	file:
+test_exit_evt_fn	src/child.c	/^static int_t test_exit_evt_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )$/;"	f	file:
+test_flag	src/child.c	/^static int_t test_flag = FALSE;$/;"	v	file:
+test_flag	src/events.c	/^static int_t test_flag = FALSE;$/;"	v	file:
 test_flag	tests/test_events.c	/^static int test_flag = FALSE;$/;"	v	file:
 test_hashtable_clear	tests/test_hashtable.c	/^static void test_hashtable_clear( void )$/;"	f	file:
 test_hashtable_count	tests/test_hashtable.c	/^static void test_hashtable_count( void )$/;"	f	file:
@@ -1218,7 +1282,7 @@ test_privileges_private_functions	src/privileges.c	/^void test_privileges_privat
 test_privileges_restore_failures	tests/test_privileges.c	/^static void test_privileges_restore_failures( void )$/;"	f	file:
 test_privileges_restore_root	tests/test_privileges.c	/^static void test_privileges_restore_root( void )$/;"	f	file:
 test_privileges_temp_drop	tests/test_privileges.c	/^static void test_privileges_temp_drop( void )$/;"	f	file:
-test_read_fn	src/child.c	/^static int32_t test_read_fn( child_process_t * const cp, size_t nread, void * user_data )$/;"	f	file:
+test_read_evt_fn	src/child.c	/^static ssize_t test_read_evt_fn( child_process_t * const cp, size_t nread, void * user_data )$/;"	f	file:
 test_sanitize_closed_std_descriptors	tests/test_sanitize.c	/^static void test_sanitize_closed_std_descriptors( void )$/;"	f	file:
 test_sanitize_environment	tests/test_sanitize.c	/^static void test_sanitize_environment( void )$/;"	f	file:
 test_sanitize_environment_add	tests/test_sanitize.c	/^static void test_sanitize_environment_add( void )$/;"	f	file:
@@ -1243,7 +1307,7 @@ test_stop_event_handler	tests/test_events.c	/^static void test_stop_event_handle
 test_tcp_socket	tests/test_socket.c	/^static void test_tcp_socket( void )$/;"	f	file:
 test_tcp_socket_failed_connection	tests/test_socket.c	/^static void test_tcp_socket_failed_connection( void )$/;"	f	file:
 test_unix_socket	tests/test_socket.c	/^static void test_unix_socket( void )$/;"	f	file:
-test_write_fn	src/child.c	/^static int32_t test_write_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+test_write_evt_fn	src/child.c	/^static ssize_t test_write_evt_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )$/;"	f	file:
 trace	src/events.h	/^        int trace;  \/* 0 == only signal upon termination, 1 == also signal when stopped\/continued *\/$/;"	m	struct:evt_params_u::__anon2
 tree	src/btree.c	/^    node_t*             tree;       \/* pointer to btree root *\/$/;"	m	struct:bt_s	file:
 type	src/log.h	/^    log_type_t type;$/;"	m	struct:log_s
@@ -1264,29 +1328,31 @@ w	src/aiofd.c	/^    int r, w, e;$/;"	m	struct:cb_count_s	file:
 wbuf	src/aiofd.h	/^    list_t      wbuf;           \/* array of buffers waiting to be written *\/$/;"	m	struct:aiofd_s
 wevt	src/aiofd.h	/^    evt_t       wevt;           \/* write event *\/$/;"	m	struct:aiofd_s
 wfd	src/aiofd.h	/^    int         wfd;            \/* read\/write fd, if only one given, write-only otherwise *\/$/;"	m	struct:aiofd_s
-write_callback_fn	src/aiofd.c	/^static int write_callback_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )$/;"	f	file:
-write_callback_ret	src/aiofd.c	/^static int write_callback_ret = TRUE;$/;"	v	file:
-write_evt_fn	src/aiofd.h	/^        int (*write_evt_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
-write_fn	src/aiofd.h	/^        ssize_t (*write_fn)(int fd, const void *buf, size_t count, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
-write_fn	src/child.h	/^    int32_t (*write_fn)( child_process_t * const cp, uint8_t const * const buffer, void * user_data );$/;"	m	struct:child_ops_s
-write_fn	src/socket.h	/^    int32_t (*write_fn)( socket_t * const s, uint8_t const * const buffer, void * user_data );$/;"	m	struct:socket_ops_s
-write_fn	tests/test_aiofd.c	/^static int write_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )$/;"	f	file:
-write_fn	tests/test_child.c	/^static int32_t write_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )$/;"	f	file:
-write_fn	tests/test_socket.c	/^static int32_t write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
-write_pid_fn	tests/test_child.c	/^static int32_t write_pid_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+write_callback_fn	src/aiofd.c	/^static int_t write_callback_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+write_callback_ret	src/aiofd.c	/^static int_t write_callback_ret = TRUE;$/;"	v	file:
+write_evt_fn	src/aiofd.h	/^        int_t (*write_evt_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data );$/;"	m	struct:aiofd_s::aiofd_ops_s
+write_evt_fn	src/child.h	/^    int_t (*write_evt_fn)( child_process_t * const cp, uint8_t const * const buffer, void * user_data );$/;"	m	struct:child_ops_s
+write_evt_fn	tests/test_aiofd.c	/^static int_t write_evt_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+write_evt_fn	tests/test_child.c	/^static int_t write_evt_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+write_fn	src/aiofd.h	/^        ssize_t (*write_fn)(int fd, void const * const buf, size_t const count, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
+write_fn	src/socket.h	/^    ssize_t (*write_fn)( socket_t * const s, uint8_t const * const buffer, void * user_data );$/;"	m	struct:socket_ops_s
+write_fn	tests/test_aiofd.c	/^static ssize_t write_fn(int fd, const void *buf, size_t count, void * user_data)$/;"	f	file:
+write_fn	tests/test_socket.c	/^static ssize_t write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+write_pid_evt_fn	tests/test_child.c	/^static int_t write_pid_evt_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )$/;"	f	file:
 writefn	src/log.c	/^typedef int (*writefn)(void *, const char *, int);$/;"	t	file:
-writev_fn	src/aiofd.h	/^        ssize_t (*writev_fn)(int fd, const struct iovec *iov, int iovcnt, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
+writev_fn	src/aiofd.h	/^        ssize_t (*writev_fn)(int fd, struct iovec const * const iov, size_t const iovcnt, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
+writev_fn	tests/test_aiofd.c	/^static ssize_t writev_fn(int fd, const struct iovec *iov, int iovcnt, void * user_data)$/;"	f	file:
 x_cdone	tests/test_socket.c	/^static int x_cdone = FALSE;$/;"	v	file:
 x_client_connect_fn	tests/test_socket.c	/^static socket_ret_t x_client_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 x_client_disconnect_fn	tests/test_socket.c	/^static socket_ret_t x_client_disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 x_client_error_fn	tests/test_socket.c	/^static socket_ret_t x_client_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
-x_client_read_fn	tests/test_socket.c	/^static int32_t x_client_read_fn( socket_t * const s, size_t nread, void * user_data )$/;"	f	file:
-x_client_write_fn	tests/test_socket.c	/^static int32_t x_client_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+x_client_read_fn	tests/test_socket.c	/^static ssize_t x_client_read_fn( socket_t * const s, size_t const nread, void * user_data )$/;"	f	file:
+x_client_write_fn	tests/test_socket.c	/^static ssize_t x_client_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
 x_incoming_fn	tests/test_socket.c	/^static socket_ret_t x_incoming_fn( socket_t * const s, void * user_data )$/;"	f	file:
 x_sclose	tests/test_socket.c	/^static int x_sclose = FALSE;$/;"	v	file:
 x_sdone	tests/test_socket.c	/^static int x_sdone = FALSE;$/;"	v	file:
 x_server_connect_fn	tests/test_socket.c	/^static socket_ret_t x_server_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 x_server_disconnect_fn	tests/test_socket.c	/^static socket_ret_t x_server_disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 x_server_error_fn	tests/test_socket.c	/^static socket_ret_t x_server_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
-x_server_read_fn	tests/test_socket.c	/^static int32_t x_server_read_fn( socket_t * const s, size_t nread, void * user_data )$/;"	f	file:
-x_server_write_fn	tests/test_socket.c	/^static int32_t x_server_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+x_server_read_fn	tests/test_socket.c	/^static ssize_t x_server_read_fn( socket_t * const s, size_t const nread, void * user_data )$/;"	f	file:
+x_server_write_fn	tests/test_socket.c	/^static ssize_t x_server_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:

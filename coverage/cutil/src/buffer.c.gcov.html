@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2013-06-18</td>
+            <td class="headerValue">2013-07-15</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">6</td>
@@ -91,7 +91,7 @@
 <span class="lineNum">      20 </span>                :            : 
 <span class="lineNum">      21 </span>                :            : #if defined(UNIT_TESTING)
 <span class="lineNum">      22 </span>                :            : #include &quot;test_flags.h&quot;
-<span class="lineNum">      23 </span>                :            : int fail_alloc_bak = FALSE;
+<span class="lineNum">      23 </span>                :            : int_t fail_alloc_bak = FALSE;
 <span class="lineNum">      24 </span>                :            : #endif
 <span class="lineNum">      25 </span>                :            : 
 <span class="lineNum">      26 </span>                :            : /*
@@ -126,7 +126,7 @@
 <span class="lineNum">      55 </span>                :<span class="lineCov">       4096 :     FREE( buf );</span>
 <a name="56"><span class="lineNum">      56 </span>                :            : }</a>
 <span class="lineNum">      57 </span>                :            : 
-<span class="lineNum">      58 </span>                :<span class="lineCov">       6147 : int buffer_initialize( buffer_t * const b, void * p, size_t len )</span>
+<span class="lineNum">      58 </span>                :<span class="lineCov">       6147 : int_t buffer_initialize( buffer_t * const b, void * p, size_t len )</span>
 <span class="lineNum">      59 </span>                :            : {
 <span class="lineNum">      60 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 6146 times"> + </span>]:<span class="lineCov">       6147 :     UNIT_TEST_FAIL( buffer_init );</span>
 <span class="lineNum">      61 </span>                :            : 
@@ -168,7 +168,7 @@
 <span class="lineNum">      97 </span>                :<span class="lineCov">       6147 :     return TRUE;</span>
 <a name="98"><span class="lineNum">      98 </span>                :            : }</a>
 <span class="lineNum">      99 </span>                :            : 
-<span class="lineNum">     100 </span>                :<span class="lineCov">       6147 : int buffer_deinitialize( buffer_t * const b )</span>
+<span class="lineNum">     100 </span>                :<span class="lineCov">       6147 : int_t buffer_deinitialize( buffer_t * const b )</span>
 <span class="lineNum">     101 </span>                :            : {
 <span class="lineNum">     102 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 6146 times"> + </span>]:<span class="lineCov">       6147 :     UNIT_TEST_FAIL( buffer_deinit );</span>
 <span class="lineNum">     103 </span>                :            : 

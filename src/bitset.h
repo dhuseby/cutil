@@ -29,15 +29,15 @@ typedef struct bitset_s
 bitset_t * bset_new( size_t const num_bits );
 void bset_delete( void * bset );
 
-int bset_initialize( bitset_t * const bset, size_t const num_bits );
-int bset_deinitialize( bitset_t * const bset );
+int_t bset_initialize( bitset_t * const bset, size_t const num_bits );
+int_t bset_deinitialize( bitset_t * const bset );
 
-int bset_set( bitset_t * const bset, size_t const bit );
-int bset_clear( bitset_t * const bset, size_t const bit );
-int bset_test( bitset_t const * const bset, size_t const bit );
+int_t bset_set( bitset_t * const bset, size_t const bit );
+int_t bset_clear( bitset_t * const bset, size_t const bit );
+int_t bset_test( bitset_t const * const bset, size_t const bit );
 
-int bset_clear_all( bitset_t * const bset );
-int bset_set_all( bitset_t * const bset );
+int_t bset_clear_all( bitset_t * const bset );
+int_t bset_set_all( bitset_t * const bset );
 
 #endif /*__BITSET_H__*/
 
