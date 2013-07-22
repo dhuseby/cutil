@@ -53,16 +53,6 @@ struct child_process_s
     void *          user_data;      /* passed to ops callbacks */
 };
 
-static void child_atfork(void)
-{
-    /* this gets called in the context of the child process, immediately
-     * after the fork() call completes. this unblocks all signals so that
-     * the execve doesn't run an application with any signals blocked. */
-    LOG("child atfork called\n");
-    sigset_t mask;
-    sigfillset( &mask );
-    sigprocmask( SIG_UNBLOCK, &mask, NULL );
-}
 
 static evt_ret_t sigchld_cb( evt_loop_t * const el,
                              evt_t * const evt,
@@ -173,20 +163,31 @@ static int_t child_aiofd_read_evt_fn( aiofd_t * const aiofd,
 
 static pid_t safe_fork( int keepfds[], int nfds, int drop )
 {
-    pid_t childpid = FORK();
+    int i;
+    sigset_t orig, mask;
+    pid_t childpid = 0;
+   
+    /* block all signals, save current mask in orig */
+    sigfillset( &mask );
+    sigprocmask( SIG_SETMASK, &mask, &orig );
+
+    childpid = FORK();
 
     /* this is a workaround to a bug in Mac OS X < 10.7 */
 #if defined (__APPLE__) && defined (UNIT_TESTING)
     vproc_transaction_begin(0);
 #endif
 
-    /* test for error */
-    if ( childpid == -1 )
-        return -1;
-
     /* test for parent process */
     if ( childpid != 0 )
+    {
+        /* PARENT PROCESS or FORK failed (-1) */
+
+        /* restore original signal mask */
+        sigprocmask( SIG_SETMASK, &orig, NULL );
+
         return childpid; /* PARENT PROCESS RETURNS */
+    }
 
     /* CHILD PROCESS  */
 
@@ -199,12 +200,20 @@ static pid_t safe_fork( int keepfds[], int nfds, int drop )
 
     ASSERT( childpid == 0 );
 
+    /* reset all signal actions to defaults */
+    sigfillset( &mask );
+    reset_signals_to_default( &mask );
+
+    /* unblock all signals */
+    sigfillset( &mask );
+    sigprocmask( SIG_UNBLOCK, &mask, NULL );
+
     /* this returns 0 */
-    return childpid;
+    return childpid; /* CHILD PROCESS RETURNS */
 }
 
-#define PIPE_READ_FD 0
-#define PIPE_WRITE_FD 1
+#define PIPE_READ_IDX    (0)
+#define PIPE_WRITE_IDX   (1)
 
 static int child_process_initialize( child_process_t * const child,
                                      uint8_t const * const path,
@@ -216,8 +225,8 @@ static int child_process_initialize( child_process_t * const child,
                                      void * user_data )
 {
     /* 
-     * (parent) -> p2c_pipe[PIPE_WRITE_FD] -> kernel -> p2c_pipe[PIPE_READ_FD] -> (child)
-     * (parent) <- c2p_pipe[PIPE_READ_FD] <- kernel <- c2p_pipe[PIPE_WRITE_FD] <- (child)
+     * (parent) -> p2c_pipe[PIPE_WRITE_IDX] -> kernel -> p2c_pipe[PIPE_READ_IDX] -> (child)
+     * (parent) <- c2p_pipe[PIPE_READ_IDX] <- kernel <- c2p_pipe[PIPE_WRITE_IDX] <- (child)
      *
      */
     int p2c_pipe[2];
@@ -238,8 +247,6 @@ static int child_process_initialize( child_process_t * const child,
     CHECK_PTR_RET( environ, FALSE );
     CHECK_PTR_RET( ops, FALSE );
 
-    pthread_atfork( NULL, NULL, &child_atfork );
-
     MEMSET( (void*)child, 0, sizeof(child_process_t) );
 
     /* store the user context */
@@ -255,55 +262,54 @@ static int child_process_initialize( child_process_t * const child,
     }
     if ( PIPE(p2c_pipe) == -1 )
     {
-        close( c2p_pipe[PIPE_WRITE_FD] );
-        close( c2p_pipe[PIPE_READ_FD] );
+        close( c2p_pipe[PIPE_WRITE_IDX] );
+        close( c2p_pipe[PIPE_READ_IDX] );
         return FALSE;
     }
 
     /* fork the child process */
-    keepfds[0] = p2c_pipe[PIPE_READ_FD];
-    keepfds[1] = p2c_pipe[PIPE_WRITE_FD];
-    keepfds[2] = c2p_pipe[PIPE_READ_FD];
-    keepfds[3] = c2p_pipe[PIPE_WRITE_FD];
+    keepfds[0] = p2c_pipe[PIPE_READ_IDX];
+    keepfds[1] = p2c_pipe[PIPE_WRITE_IDX];
+    keepfds[2] = c2p_pipe[PIPE_READ_IDX];
+    keepfds[3] = c2p_pipe[PIPE_WRITE_IDX];
     child->pid = safe_fork( keepfds, 4, drop_privileges );
     if ( child->pid == -1 )
     {
         /* fork failed, close pipe fd's */
-        close( p2c_pipe[PIPE_WRITE_FD] );
-        close( p2c_pipe[PIPE_READ_FD] );
-        close( c2p_pipe[PIPE_WRITE_FD] );
-        close( c2p_pipe[PIPE_READ_FD] );
+        close( p2c_pipe[PIPE_WRITE_IDX] );
+        close( p2c_pipe[PIPE_READ_IDX] );
+        close( c2p_pipe[PIPE_WRITE_IDX] );
+        close( c2p_pipe[PIPE_READ_IDX] );
         return FALSE;
     }
 
     if ( child->pid == 0 )
     {
         /* CHILD PROCESS */
-        LOG("child process running\n");
 
         /* close the child's STDIN and STDOUT file descriptors */
         close( STDIN_FILENO );
         close( STDOUT_FILENO );
 
         /* close the read side of the child-to-parent pipe */
-        close( c2p_pipe[PIPE_READ_FD] );
+        close( c2p_pipe[PIPE_READ_IDX] );
 
         /* close the write side of the parent-to-child pipe */
-        close( p2c_pipe[PIPE_WRITE_FD] );
+        close( p2c_pipe[PIPE_WRITE_IDX] );
 
         /* make our STDIN be the read side of the parent-to-child pipe */
-        dup2( p2c_pipe[PIPE_READ_FD], STDIN_FILENO );
+        dup2( p2c_pipe[PIPE_READ_IDX], STDIN_FILENO );
 
         /* close the pipe fd which doesn't close the pipe, it just leaves the
          * only copy of the fd bound to STDIN */
-        close( p2c_pipe[PIPE_READ_FD] );
+        close( p2c_pipe[PIPE_READ_IDX] );
 
         /* make our STDOUT be the write side of the child-to-parent pipe */
-        dup2( c2p_pipe[PIPE_WRITE_FD], STDOUT_FILENO );
+        dup2( c2p_pipe[PIPE_WRITE_IDX], STDOUT_FILENO );
 
         /* close the pipe fd which doesn't close the pipe, it just leaves the
          * only copy of the fd bound to STDOUT */
-        close( c2p_pipe[PIPE_WRITE_FD] );
+        close( c2p_pipe[PIPE_WRITE_IDX] );
 
         /* now replace the process image */
         execve( path, (char ** const)argv, (char ** const)environ );
@@ -313,10 +319,10 @@ static int child_process_initialize( child_process_t * const child,
     /* PARENT PROCESS */
 
     /* close the read side of the parent-to-child pipe */
-    close( p2c_pipe[PIPE_READ_FD] );
+    close( p2c_pipe[PIPE_READ_IDX] );
 
     /* close the write side of the child-to-parent pipe */
-    close( p2c_pipe[PIPE_WRITE_FD] );
+    close( p2c_pipe[PIPE_WRITE_IDX] );
 
     /* initialize our SIGCHLD handler */
     MEMSET( &chld_params, 0, sizeof(evt_params_t) );
@@ -329,8 +335,8 @@ static int child_process_initialize( child_process_t * const child,
     evt_start_event_handler( el, &(child->sigchld) );
 
     /* initialize the aiofd to monitor the parent side of the pipes */
-    aiofd_initialize( &(child->aiofd), p2c_pipe[PIPE_WRITE_FD], 
-                      c2p_pipe[PIPE_READ_FD], &aiofd_ops, el, (void*)child );
+    aiofd_initialize( &(child->aiofd), p2c_pipe[PIPE_WRITE_IDX], 
+                      c2p_pipe[PIPE_READ_IDX], &aiofd_ops, el, (void*)child );
 
     /* start listening for incoming data from the child */
     aiofd_enable_read_evt( &(child->aiofd), TRUE );

@@ -25,6 +25,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <limits.h>
+#include <signal.h>
 
 /* 
  * local definitions for porting purposes
@@ -58,6 +59,34 @@ typedef int32_t int_t;
 
 /* array size */
 #define ARRAY_SIZE( x ) (sizeof(x) / sizeof(x[0]))
+
+/* try to deduce the maximum number of signals on this platform, cribbed from libev */
+#if defined EV_NSIG
+/* use what's provided */
+#elif defined NSIG
+# define EV_NSIG (NSIG)
+#elif defined _NSIG
+# define EV_NSIG (_NSIG)
+#elif defined SIGMAX
+# define EV_NSIG (SIGMAX+1)
+#elif defined SIG_MAX
+# define EV_NSIG (SIG_MAX+1)
+#elif defined _SIG_MAX
+# define EV_NSIG (_SIG_MAX+1)
+#elif defined MAXSIG
+# define EV_NSIG (MAXSIG+1)
+#elif defined MAX_SIG
+# define EV_NSIG (MAX_SIG+1)
+#elif defined SIGARRAYSIZE
+# define EV_NSIG (SIGARRAYSIZE) /* Assume ary[SIGARRAYSIZE] */
+#elif defined _sys_nsig
+# define EV_NSIG (_sys_nsig) /* Solaris 2.5 */
+#else
+# error "unable to find value for NSIG, please report"
+/* to make it compile regardless, just remove the above line, */
+/* but consider reporting it, too! :) */
+# define EV_NSIG 65
+#endif
 
 /* used for debugging purposes */
 #define ASSERT(x) assert(x)

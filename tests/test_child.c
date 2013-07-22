@@ -69,8 +69,10 @@ static void test_child_newdel( void )
 	child_ops_t ops = { &exit_evt_fn, &read_evt_fn, &write_evt_fn, &error_evt_fn };
 
     debug_signals_dump("child");
+    /*
 	for ( i = 0; i < REPEAT; i++ )
 	{
+    */
 		child = NULL;
 		child = child_process_new( UT("./child.sh"), args, env, &ops, el, TRUE, NULL );
 
@@ -80,7 +82,7 @@ static void test_child_newdel( void )
 		CU_ASSERT_PTR_NOT_NULL( child );
 
 		child_process_delete( child, TRUE );
-	}
+	/*}*/
     debug_signals_dump("child");
 }
 
@@ -217,8 +219,10 @@ static void test_child_read( void )
 	child_ops_t ops = { &exit_pid_evt_fn, &read_pid_evt_fn, &write_pid_evt_fn, &error_pid_evt_fn };
 
     debug_signals_dump("child");
+    /*
 	for ( i = 0; i < REPEAT; i++ )
 	{
+    */
 		child_pid = -1;
 		cpid = -1;
 		child = NULL;
@@ -236,7 +240,7 @@ static void test_child_read( void )
 		CU_ASSERT_EQUAL( child_pid, cpid );
 
 		child_process_delete( child, TRUE );
-	}
+	/*}*/
     debug_signals_dump("child");
 }
 
@@ -244,18 +248,30 @@ void test_child_process_write( void )
 {
 	uint8_t const * const args[] = { "./child_pid.sh", NULL };
 	uint8_t const * const env[] = { NULL };
+	pid_t cpid;
 	child_process_t * child;
 	child_ops_t ops = { &exit_pid_evt_fn, &read_pid_evt_fn, &write_pid_evt_fn, &error_pid_evt_fn };
 
     debug_signals_dump("child");
+    child_pid = -1;
+    cpid = -1;
 	child = child_process_new( UT("./child_pid.sh"), args, env, &ops, el, TRUE, NULL );
 	CU_ASSERT_PTR_NOT_NULL_FATAL( child );
+    cpid = child_process_get_pid( child );
+    CU_ASSERT_NOT_EQUAL( cpid, 0 );
 
 	CU_ASSERT_FALSE( child_process_write( NULL, NULL, 0 ) );
 	fake_aiofd_write = TRUE;
 	fake_aiofd_write_ret = FALSE;
 	CU_ASSERT_FALSE( child_process_write( child, NULL, 0 ) );
 	fake_aiofd_write = FALSE;
+
+    /* run the event loop */
+    evt_run( el );
+
+    CU_ASSERT_EQUAL( child_pid, cpid );
+
+    child_process_delete( child, TRUE );
     debug_signals_dump("child");
 }
 
@@ -263,18 +279,30 @@ void test_child_process_writev( void )
 {
 	uint8_t const * const args[] = { "./child_pid.sh", NULL };
 	uint8_t const * const env[] = { NULL };
+	pid_t cpid;
 	child_process_t * child;
 	child_ops_t ops = { &exit_pid_evt_fn, &read_pid_evt_fn, &write_pid_evt_fn, &error_pid_evt_fn };
 
     debug_signals_dump("child");
+    child_pid = -1;
+    cpid = -1;
 	child = child_process_new( UT("./child_pid.sh"), args, env, &ops, el, TRUE, NULL );
 	CU_ASSERT_PTR_NOT_NULL_FATAL( child );
+    cpid = child_process_get_pid( child );
+    CU_ASSERT_NOT_EQUAL( cpid, 0 );
 
 	CU_ASSERT_FALSE( child_process_writev( NULL, NULL, 0 ) );
 	fake_aiofd_writev = TRUE;
 	fake_aiofd_writev_ret = FALSE;
 	CU_ASSERT_FALSE( child_process_writev( child, NULL, 0 ) );
 	fake_aiofd_writev = FALSE;
+
+    /* run the event loop */
+    evt_run( el );
+
+    CU_ASSERT_EQUAL( child_pid, cpid );
+
+    child_process_delete( child, TRUE );
     debug_signals_dump("child");
 }
 
@@ -282,12 +310,17 @@ void test_child_process_flush( void )
 {
 	uint8_t const * const args[] = { "./child_pid.sh", NULL };
 	uint8_t const * const env[] = { NULL };
+	pid_t cpid;
 	child_process_t * child;
 	child_ops_t ops = { &exit_pid_evt_fn, &read_pid_evt_fn, &write_pid_evt_fn, &error_pid_evt_fn };
 
     debug_signals_dump("child");
+    child_pid = -1;
+    cpid = -1;
 	child = child_process_new( UT("./child_pid.sh"), args, env, &ops, el, TRUE, NULL );
 	CU_ASSERT_PTR_NOT_NULL_FATAL( child );
+    cpid = child_process_get_pid( child );
+    CU_ASSERT_NOT_EQUAL( cpid, 0 );
 
 	CU_ASSERT_FALSE( child_process_flush( NULL ) );
 	CU_ASSERT_FALSE( child_process_flush( child ) );
@@ -295,6 +328,13 @@ void test_child_process_flush( void )
 	fake_aiofd_flush_ret = FALSE;
 	CU_ASSERT_FALSE( child_process_flush( child ) );
 	fake_aiofd_flush = FALSE;
+
+    /* run the event loop */
+    evt_run( el );
+
+    CU_ASSERT_EQUAL( child_pid, cpid );
+
+    child_process_delete( child, TRUE );
     debug_signals_dump("child");
 }
 
@@ -324,9 +364,7 @@ static CU_pSuite add_child_tests( CU_pSuite pSuite )
 	ADD_TEST( "test child process writev", test_child_process_writev );
 	ADD_TEST( "test child process flush", test_child_process_flush );
 
-#if 0
 	ADD_TEST( "child process private functions", test_child_private_functions );
-#endif
 	return pSuite;
 }
 

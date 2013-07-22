@@ -346,14 +346,14 @@ evt_ret_t evt_start_event_handler( evt_loop_t * const el,
         case EVT_SIGNAL:
         {
             /* start the libev signal event */
-            LOG("starting signal event\n");
+            DEBUG("starting signal event\n");
             ev_signal_start( (struct ev_loop*)el, (struct ev_signal*)evt );
             break;
         }
         case EVT_CHILD:
         {
             /* start the libevn child event */
-            LOG("staring child event\n");
+            DEBUG("staring child event\n");
             ev_child_start( (struct ev_loop*)el, (struct ev_child*)evt );
             break;
         }
@@ -382,14 +382,14 @@ evt_ret_t evt_stop_event_handler( evt_loop_t * const el,
         case EVT_SIGNAL:
         {
             /* stop the libev signal event */
-            LOG("stopping signal event\n");
+            DEBUG("stopping signal event\n");
             ev_signal_stop( (struct ev_loop*)el, (struct ev_signal*)evt );
             break;
         }
         case EVT_CHILD:
         {
             /* stop the libev child event */
-            LOG("stopping child event\n");
+            DEBUG("stopping child event\n");
             ev_child_stop( (struct ev_loop*)el, (struct ev_child*)evt );
             break;
         }
@@ -434,8 +434,6 @@ evt_ret_t evt_stop( evt_loop_t * const el, int_t once )
     return EVT_OK;
 }
 
-#define SIGMIN (1)
-#define SIGMAX (64)
 size_t get_signals_debug_string( sigset_t const * const sigs, uint8_t ** out )
 {
     static uint8_t buf[4096];
@@ -444,7 +442,7 @@ size_t get_signals_debug_string( sigset_t const * const sigs, uint8_t ** out )
 
     MEMSET(buf, 0, 4096);
     p = &buf[0];
-    for ( i = SIGMIN; (i < SIGMAX) && (p < &buf[4095]); ++i )
+    for ( i = 1; (i < EV_NSIG) && (p < &buf[4095]); ++i )
     {
         if ( sigismember( sigs, i ) )
         {

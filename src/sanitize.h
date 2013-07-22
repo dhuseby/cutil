@@ -18,6 +18,7 @@
 #define __SANITIZE_H__
 
 int_t sanitize_files( int keep[], int nfds );
+int_t reset_signals_to_default( sigset_t const * const sigs );
 uint8_t ** build_clean_environ( int preservec, uint8_t ** preservev, int addc, uint8_t ** addv );
 
 

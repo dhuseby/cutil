@@ -17,7 +17,10 @@
 1	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="1"><span class="lineNum">       1 <\/span>                :            : \/*<\/a>$/;"	a
 1	coverage/cutil/src/socket.c.gcov.html	/^<a name="1"><span class="lineNum">       1 <\/span>                :            : \/*<\/a>$/;"	a
 1002	coverage/cutil/src/btree.c.gcov.html	/^<a name="1002"><span class="lineNum">    1002 <\/span>                :            : }<\/a>$/;"	a
+1009	coverage/cutil/src/socket.c.gcov.html	/^<a name="1009"><span class="lineNum">    1009 <\/span>                :            : <\/a>$/;"	a
 1018	coverage/cutil/src/btree.c.gcov.html	/^<a name="1018"><span class="lineNum">    1018 <\/span>                :            : }<\/a>$/;"	a
+102	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="102"><span class="lineNum">     102 <\/span>                :            : }<\/a>$/;"	a
+102	coverage/cutil/src/socket.c.gcov.html	/^<a name="102"><span class="lineNum">     102 <\/span>                :            :                                      void * per_write_data );<\/a>$/;"	a
 1029	coverage/cutil/src/btree.c.gcov.html	/^<a name="1029"><span class="lineNum">    1029 <\/span>                :            : static const bt_itr_t itr_end = NULL;<\/a>$/;"	a
 103	coverage/cutil/src/bitset.c.gcov.html	/^<a name="103"><span class="lineNum">     103 <\/span>                :            : }<\/a>$/;"	a
 1037	coverage/cutil/src/btree.c.gcov.html	/^<a name="1037"><span class="lineNum">    1037 <\/span>                :            : <\/a>$/;"	a
@@ -27,235 +30,242 @@
 1073	coverage/cutil/src/btree.c.gcov.html	/^<a name="1073"><span class="lineNum">    1073 <\/span>                :            : <\/a>$/;"	a
 1079	coverage/cutil/src/btree.c.gcov.html	/^<a name="1079"><span class="lineNum">    1079 <\/span>                :            : <\/a>$/;"	a
 1088	coverage/cutil/src/btree.c.gcov.html	/^<a name="1088"><span class="lineNum">    1088 <\/span>                :            : }<\/a>$/;"	a
+1088	coverage/cutil/src/socket.c.gcov.html	/^<a name="1088"><span class="lineNum">    1088 <\/span>                :            : }<\/a>$/;"	a
 109	coverage/cutil/src/btree.c.gcov.html	/^<a name="109"><span class="lineNum">     109 <\/span>                :            : }<\/a>$/;"	a
 109	coverage/cutil/src/buffer.c.gcov.html	/^<a name="109"><span class="lineNum">     109 <\/span>                :            : }<\/a>$/;"	a
-1097	coverage/cutil/src/socket.c.gcov.html	/^<a name="1097"><span class="lineNum">    1097 <\/span>                :            : }<\/a>$/;"	a
 1101	coverage/cutil/src/btree.c.gcov.html	/^<a name="1101"><span class="lineNum">    1101 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
-1125	coverage/cutil/src/socket.c.gcov.html	/^<a name="1125"><span class="lineNum">    1125 <\/span>                :            : }<\/a>$/;"	a
-113	coverage/cutil/src/socket.c.gcov.html	/^<a name="113"><span class="lineNum">     113 <\/span>                :            :                                      void * user_data );<\/a>$/;"	a
-1131	coverage/cutil/src/socket.c.gcov.html	/^<a name="1131"><span class="lineNum">    1131 <\/span>                :            : }<\/a>$/;"	a
-1142	coverage/cutil/src/socket.c.gcov.html	/^<a name="1142"><span class="lineNum">    1142 <\/span>                :            : }<\/a>$/;"	a
-1152	coverage/cutil/src/socket.c.gcov.html	/^<a name="1152"><span class="lineNum">    1152 <\/span>                :            : }<\/a>$/;"	a
+1113	coverage/cutil/src/socket.c.gcov.html	/^<a name="1113"><span class="lineNum">    1113 <\/span>                :            : }<\/a>$/;"	a
+1119	coverage/cutil/src/socket.c.gcov.html	/^<a name="1119"><span class="lineNum">    1119 <\/span>                :            : }<\/a>$/;"	a
 116	coverage/cutil/src/bitset.c.gcov.html	/^<a name="116"><span class="lineNum">     116 <\/span>                :            : }<\/a>$/;"	a
 116	coverage/cutil/src/events.c.gcov.html	/^<a name="116"><span class="lineNum">     116 <\/span>                :            : }<\/a>$/;"	a
-1160	coverage/cutil/src/socket.c.gcov.html	/^<a name="1160"><span class="lineNum">    1160 <\/span>                :            : }<\/a>$/;"	a
-1169	coverage/cutil/src/socket.c.gcov.html	/^<a name="1169"><span class="lineNum">    1169 <\/span>                :            : <\/a>$/;"	a
-117	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="117"><span class="lineNum">     117 <\/span>                :            : };<\/a>$/;"	a
-1182	coverage/cutil/src/socket.c.gcov.html	/^<a name="1182"><span class="lineNum">    1182 <\/span>                :            : socket_ret_t test_connect_fn_ret = SOCKET_OK;<\/a>$/;"	a
-1188	coverage/cutil/src/socket.c.gcov.html	/^<a name="1188"><span class="lineNum">    1188 <\/span>                :            : }<\/a>$/;"	a
 119	coverage/cutil/src/btree.c.gcov.html	/^<a name="119"><span class="lineNum">     119 <\/span>                :            : }<\/a>$/;"	a
-119	coverage/cutil/src/child.c.gcov.html	/^<a name="119"><span class="lineNum">     119 <\/span>                :            : <\/a>$/;"	a
-1194	coverage/cutil/src/socket.c.gcov.html	/^<a name="1194"><span class="lineNum">    1194 <\/span>                :            : }<\/a>$/;"	a
+121	coverage/cutil/src/child.c.gcov.html	/^<a name="121"><span class="lineNum">     121 <\/span>                :            : <\/a>$/;"	a
 122	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="122"><span class="lineNum">     122 <\/span>                :            : <\/a>$/;"	a
 123	coverage/cutil/src/privileges.c.gcov.html	/^<a name="123"><span class="lineNum">     123 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
 125	coverage/cutil/src/list.c.gcov.html	/^<a name="125"><span class="lineNum">     125 <\/span>                :            : }<\/a>$/;"	a
-126	coverage/cutil/src/socket.c.gcov.html	/^<a name="126"><span class="lineNum">     126 <\/span>                :            : }<\/a>$/;"	a
+1267	coverage/cutil/src/socket.c.gcov.html	/^<a name="1267"><span class="lineNum">    1267 <\/span>                :            : }<\/a>$/;"	a
+1298	coverage/cutil/src/socket.c.gcov.html	/^<a name="1298"><span class="lineNum">    1298 <\/span>                :            : }<\/a>$/;"	a
+1304	coverage/cutil/src/socket.c.gcov.html	/^<a name="1304"><span class="lineNum">    1304 <\/span>                :            : }<\/a>$/;"	a
+1319	coverage/cutil/src/socket.c.gcov.html	/^<a name="1319"><span class="lineNum">    1319 <\/span>                :            : }<\/a>$/;"	a
 133	coverage/cutil/src/bitset.c.gcov.html	/^<a name="133"><span class="lineNum">     133 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
 133	coverage/cutil/src/list.c.gcov.html	/^<a name="133"><span class="lineNum">     133 <\/span>                :            : }<\/a>$/;"	a
+1334	coverage/cutil/src/socket.c.gcov.html	/^<a name="1334"><span class="lineNum">    1334 <\/span>                :            : }<\/a>$/;"	a
 134	coverage/cutil/src/btree.c.gcov.html	/^<a name="134"><span class="lineNum">     134 <\/span>                :            : <\/a>$/;"	a
-137	coverage/cutil/src/child.c.gcov.html	/^<a name="137"><span class="lineNum">     137 <\/span>                :            : <\/a>$/;"	a
+1351	coverage/cutil/src/socket.c.gcov.html	/^<a name="1351"><span class="lineNum">    1351 <\/span>                :            : }<\/a>$/;"	a
+1368	coverage/cutil/src/socket.c.gcov.html	/^<a name="1368"><span class="lineNum">    1368 <\/span>                :            : }<\/a>$/;"	a
+138	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="138"><span class="lineNum">     138 <\/span>                :            : };<\/a>$/;"	a
+1381	coverage/cutil/src/socket.c.gcov.html	/^<a name="1381"><span class="lineNum">    1381 <\/span>                :            : }<\/a>$/;"	a
+139	coverage/cutil/src/child.c.gcov.html	/^<a name="139"><span class="lineNum">     139 <\/span>                :            : <\/a>$/;"	a
 139	coverage/cutil/src/events.c.gcov.html	/^<a name="139"><span class="lineNum">     139 <\/span>                :            : }<\/a>$/;"	a
-139	coverage/cutil/src/socket.c.gcov.html	/^<a name="139"><span class="lineNum">     139 <\/span>                :            : }<\/a>$/;"	a
+1394	coverage/cutil/src/socket.c.gcov.html	/^<a name="1394"><span class="lineNum">    1394 <\/span>                :            : }<\/a>$/;"	a
+1418	coverage/cutil/src/socket.c.gcov.html	/^<a name="1418"><span class="lineNum">    1418 <\/span>                :            : }<\/a>$/;"	a
 142	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="142"><span class="lineNum">     142 <\/span>                :            : }<\/a>$/;"	a
+1443	coverage/cutil/src/socket.c.gcov.html	/^<a name="1443"><span class="lineNum">    1443 <\/span>                :            : <\/a>$/;"	a
 145	coverage/cutil/src/buffer.c.gcov.html	/^<a name="145"><span class="lineNum">     145 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
 145	coverage/cutil/src/list.c.gcov.html	/^<a name="145"><span class="lineNum">     145 <\/span>                :            : }<\/a>$/;"	a
+1456	coverage/cutil/src/socket.c.gcov.html	/^<a name="1456"><span class="lineNum">    1456 <\/span>                :            : socket_ret_t test_connect_fn_ret = SOCKET_OK;<\/a>$/;"	a
+1462	coverage/cutil/src/socket.c.gcov.html	/^<a name="1462"><span class="lineNum">    1462 <\/span>                :            : }<\/a>$/;"	a
+1468	coverage/cutil/src/socket.c.gcov.html	/^<a name="1468"><span class="lineNum">    1468 <\/span>                :            : }<\/a>$/;"	a
 148	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="148"><span class="lineNum">     148 <\/span>                :            : }<\/a>$/;"	a
 153	coverage/cutil/src/events.c.gcov.html	/^<a name="153"><span class="lineNum">     153 <\/span>                :            : }<\/a>$/;"	a
-160	coverage/cutil/src/child.c.gcov.html	/^<a name="160"><span class="lineNum">     160 <\/span>                :            : <\/a>$/;"	a
+154	coverage/cutil/src/socket.c.gcov.html	/^<a name="154"><span class="lineNum">     154 <\/span>                :            : }<\/a>$/;"	a
 160	coverage/cutil/src/list.c.gcov.html	/^<a name="160"><span class="lineNum">     160 <\/span>                :            : }<\/a>$/;"	a
-161	coverage/cutil/src/socket.c.gcov.html	/^<a name="161"><span class="lineNum">     161 <\/span>                :            : }<\/a>$/;"	a
-164	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="164"><span class="lineNum">     164 <\/span>                :            : <\/a>$/;"	a
+162	coverage/cutil/src/child.c.gcov.html	/^<a name="162"><span class="lineNum">     162 <\/span>                :            : <\/a>$/;"	a
 164	coverage/cutil/src/events.c.gcov.html	/^<a name="164"><span class="lineNum">     164 <\/span>                :            : <\/a>$/;"	a
 167	coverage/cutil/src/list.c.gcov.html	/^<a name="167"><span class="lineNum">     167 <\/span>                :            : }<\/a>$/;"	a
+169	coverage/cutil/src/socket.c.gcov.html	/^<a name="169"><span class="lineNum">     169 <\/span>                :            : }<\/a>$/;"	a
 172	coverage/cutil/src/list.c.gcov.html	/^<a name="172"><span class="lineNum">     172 <\/span>                :            : }<\/a>$/;"	a
 173	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="173"><span class="lineNum">     173 <\/span>                :            : }<\/a>$/;"	a
 177	coverage/cutil/src/btree.c.gcov.html	/^<a name="177"><span class="lineNum">     177 <\/span>                :            : \/* NOTE: If NULL is passed in for the bt_key_cmp_fn function, the default<\/a>$/;"	a
-178	coverage/cutil/src/socket.c.gcov.html	/^<a name="178"><span class="lineNum">     178 <\/span>                :            : }<\/a>$/;"	a
+179	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="179"><span class="lineNum">     179 <\/span>                :            : <\/a>$/;"	a
 181	coverage/cutil/src/list.c.gcov.html	/^<a name="181"><span class="lineNum">     181 <\/span>                :            : }<\/a>$/;"	a
+182	coverage/cutil/src/socket.c.gcov.html	/^<a name="182"><span class="lineNum">     182 <\/span>                :            : }<\/a>$/;"	a
 189	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="189"><span class="lineNum">     189 <\/span>                :            : }<\/a>$/;"	a
 193	coverage/cutil/src/list.c.gcov.html	/^<a name="193"><span class="lineNum">     193 <\/span>                :            : }<\/a>$/;"	a
-195	coverage/cutil/src/child.c.gcov.html	/^<a name="195"><span class="lineNum">     195 <\/span>                :            : #define PIPE_WRITE_FD 1<\/a>$/;"	a
 200	coverage/cutil/src/btree.c.gcov.html	/^<a name="200"><span class="lineNum">     200 <\/span>                :            : <\/a>$/;"	a
 205	coverage/cutil/src/list.c.gcov.html	/^<a name="205"><span class="lineNum">     205 <\/span>                :            : }<\/a>$/;"	a
-211	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="211"><span class="lineNum">     211 <\/span>                :            : <\/a>$/;"	a
+216	coverage/cutil/src/child.c.gcov.html	/^<a name="216"><span class="lineNum">     216 <\/span>                :            : #define PIPE_WRITE_IDX   (1)<\/a>$/;"	a
+217	coverage/cutil/src/socket.c.gcov.html	/^<a name="217"><span class="lineNum">     217 <\/span>                :            : }<\/a>$/;"	a
 218	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="218"><span class="lineNum">     218 <\/span>                :            : }<\/a>$/;"	a
-225	coverage/cutil/src/events.c.gcov.html	/^<a name="225"><span class="lineNum">     225 <\/span>                :            : <\/a>$/;"	a
-232	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="232"><span class="lineNum">     232 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
-233	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="233"><span class="lineNum">     233 <\/span>                :            : }<\/a>$/;"	a
+226	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="226"><span class="lineNum">     226 <\/span>                :            : <\/a>$/;"	a
+234	coverage/cutil/src/socket.c.gcov.html	/^<a name="234"><span class="lineNum">     234 <\/span>                :            : }<\/a>$/;"	a
 235	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="235"><span class="lineNum">     235 <\/span>                :            : }<\/a>$/;"	a
 236	coverage/cutil/src/btree.c.gcov.html	/^<a name="236"><span class="lineNum">     236 <\/span>                :            : <\/a>$/;"	a
-236	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="236"><span class="lineNum">     236 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
-243	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="243"><span class="lineNum">     243 <\/span>                :            : }<\/a>$/;"	a
+243	coverage/cutil/src/events.c.gcov.html	/^<a name="243"><span class="lineNum">     243 <\/span>                :            : <\/a>$/;"	a
 244	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="244"><span class="lineNum">     244 <\/span>                :            : }<\/a>$/;"	a
-245	coverage/cutil/src/events.c.gcov.html	/^<a name="245"><span class="lineNum">     245 <\/span>                :            : }<\/a>$/;"	a
+248	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="248"><span class="lineNum">     248 <\/span>                :            : }<\/a>$/;"	a
 250	coverage/cutil/src/btree.c.gcov.html	/^<a name="250"><span class="lineNum">     250 <\/span>                :            : <\/a>$/;"	a
-254	coverage/cutil/src/events.c.gcov.html	/^<a name="254"><span class="lineNum">     254 <\/span>                :<span class="lineCov">        833 : }<\/span><\/a>$/;"	a
+253	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="253"><span class="lineNum">     253 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
 257	coverage/cutil/src/btree.c.gcov.html	/^<a name="257"><span class="lineNum">     257 <\/span>                :            : }<\/a>$/;"	a
+257	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="257"><span class="lineNum">     257 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+258	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="258"><span class="lineNum">     258 <\/span>                :            : }<\/a>$/;"	a
 262	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="262"><span class="lineNum">     262 <\/span>                :            : }<\/a>$/;"	a
-265	coverage/cutil/src/events.c.gcov.html	/^<a name="265"><span class="lineNum">     265 <\/span>                :            : };<\/a>$/;"	a
+263	coverage/cutil/src/events.c.gcov.html	/^<a name="263"><span class="lineNum">     263 <\/span>                :            : }<\/a>$/;"	a
 267	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="267"><span class="lineNum">     267 <\/span>                :            : }<\/a>$/;"	a
 268	coverage/cutil/src/btree.c.gcov.html	/^<a name="268"><span class="lineNum">     268 <\/span>                :            : }<\/a>$/;"	a
 27	coverage/cutil/src/bitset.c.gcov.html	/^<a name="27"><span class="lineNum">      27 <\/span>                :            : #define BIT(x) ((uint32_t)(1 &lt;&lt; (x &amp; 0x1f)))<\/a>$/;"	a
-271	coverage/cutil/src/socket.c.gcov.html	/^<a name="271"><span class="lineNum">     271 <\/span>                :            : }<\/a>$/;"	a
 288	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="288"><span class="lineNum">     288 <\/span>                :            : }<\/a>$/;"	a
 29	coverage/cutil/src/pair.c.gcov.html	/^<a name="29"><span class="lineNum">      29 <\/span>                :            : };<\/a>$/;"	a
 297	coverage/cutil/src/list.c.gcov.html	/^<a name="297"><span class="lineNum">     297 <\/span>                :            : }<\/a>$/;"	a
-305	coverage/cutil/src/events.c.gcov.html	/^<a name="305"><span class="lineNum">     305 <\/span>                :            : }<\/a>$/;"	a
 31	coverage/cutil/src/buffer.c.gcov.html	/^<a name="31"><span class="lineNum">      31 <\/span>                :            :  *\/<\/a>$/;"	a
 314	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="314"><span class="lineNum">     314 <\/span>                :            : }<\/a>$/;"	a
-321	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="321"><span class="lineNum">     321 <\/span>                :            : }<\/a>$/;"	a
-322	coverage/cutil/src/child.c.gcov.html	/^<a name="322"><span class="lineNum">     322 <\/span>                :            : }<\/a>$/;"	a
+319	coverage/cutil/src/events.c.gcov.html	/^<a name="319"><span class="lineNum">     319 <\/span>                :<span class="lineCov">        836 : }<\/span><\/a>$/;"	a
+329	coverage/cutil/src/socket.c.gcov.html	/^<a name="329"><span class="lineNum">     329 <\/span>                :            : }<\/a>$/;"	a
 33	coverage/cutil/src/events.c.gcov.html	/^<a name="33"><span class="lineNum">      33 <\/span>                :            : <\/a>$/;"	a
-333	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="333"><span class="lineNum">     333 <\/span>                :<span class="lineCov">        414 : }<\/span><\/a>$/;"	a
+330	coverage/cutil/src/events.c.gcov.html	/^<a name="330"><span class="lineNum">     330 <\/span>                :            : };<\/a>$/;"	a
+336	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="336"><span class="lineNum">     336 <\/span>                :            : }<\/a>$/;"	a
 336	coverage/cutil/src/btree.c.gcov.html	/^<a name="336"><span class="lineNum">     336 <\/span>                :            : }<\/a>$/;"	a
 336	coverage/cutil/src/list.c.gcov.html	/^<a name="336"><span class="lineNum">     336 <\/span>                :            : }<\/a>$/;"	a
 34	coverage/cutil/src/privileges.c.gcov.html	/^<a name="34"><span class="lineNum">      34 <\/span>                :            :  *\/<\/a>$/;"	a
-342	coverage/cutil/src/events.c.gcov.html	/^<a name="342"><span class="lineNum">     342 <\/span>                :            : <\/a>$/;"	a
 344	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="344"><span class="lineNum">     344 <\/span>                :            : \/********** PRIVATE **********\/<\/a>$/;"	a
-348	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="348"><span class="lineNum">     348 <\/span>                :            : }<\/a>$/;"	a
-350	coverage/cutil/src/child.c.gcov.html	/^<a name="350"><span class="lineNum">     350 <\/span>                :            : }<\/a>$/;"	a
-352	coverage/cutil/src/events.c.gcov.html	/^<a name="352"><span class="lineNum">     352 <\/span>                :            : }<\/a>$/;"	a
+345	coverage/cutil/src/child.c.gcov.html	/^<a name="345"><span class="lineNum">     345 <\/span>                :            : }<\/a>$/;"	a
+348	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="348"><span class="lineNum">     348 <\/span>                :<span class="lineCov">        414 : }<\/span><\/a>$/;"	a
 354	coverage/cutil/src/list.c.gcov.html	/^<a name="354"><span class="lineNum">     354 <\/span>                :            : \/* removes the item at index &quot;itr&quot; and returns the iterator of the<\/a>$/;"	a
-356	coverage/cutil/src/socket.c.gcov.html	/^<a name="356"><span class="lineNum">     356 <\/span>                :            : }<\/a>$/;"	a
 360	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="360"><span class="lineNum">     360 <\/span>                :            : }<\/a>$/;"	a
-367	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="367"><span class="lineNum">     367 <\/span>                :            : }<\/a>$/;"	a
-371	coverage/cutil/src/events.c.gcov.html	/^<a name="371"><span class="lineNum">     371 <\/span>                :            : static int_t test_flag = FALSE;<\/a>$/;"	a
-373	coverage/cutil/src/child.c.gcov.html	/^<a name="373"><span class="lineNum">     373 <\/span>                :            : }<\/a>$/;"	a
-376	coverage/cutil/src/events.c.gcov.html	/^<a name="376"><span class="lineNum">     376 <\/span>                :<span class="lineCov">          3 : }<\/span><\/a>$/;"	a
+363	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="363"><span class="lineNum">     363 <\/span>                :            : }<\/a>$/;"	a
+370	coverage/cutil/src/events.c.gcov.html	/^<a name="370"><span class="lineNum">     370 <\/span>                :            : }<\/a>$/;"	a
+375	coverage/cutil/src/child.c.gcov.html	/^<a name="375"><span class="lineNum">     375 <\/span>                :            : }<\/a>$/;"	a
 378	coverage/cutil/src/list.c.gcov.html	/^<a name="378"><span class="lineNum">     378 <\/span>                :            : \/* inserts the item at index &quot;item&quot; before the item at &quot;itr&quot; and returns<\/a>$/;"	a
-384	coverage/cutil/src/child.c.gcov.html	/^<a name="384"><span class="lineNum">     384 <\/span>                :            : }<\/a>$/;"	a
+382	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="382"><span class="lineNum">     382 <\/span>                :            : }<\/a>$/;"	a
 39	coverage/cutil/src/pair.c.gcov.html	/^<a name="39"><span class="lineNum">      39 <\/span>                :            : }<\/a>$/;"	a
-390	coverage/cutil/src/child.c.gcov.html	/^<a name="390"><span class="lineNum">     390 <\/span>                :            : }<\/a>$/;"	a
-397	coverage/cutil/src/events.c.gcov.html	/^<a name="397"><span class="lineNum">     397 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
-400	coverage/cutil/src/child.c.gcov.html	/^<a name="400"><span class="lineNum">     400 <\/span>                :            : }<\/a>$/;"	a
+398	coverage/cutil/src/child.c.gcov.html	/^<a name="398"><span class="lineNum">     398 <\/span>                :            : }<\/a>$/;"	a
 402	coverage/cutil/src/list.c.gcov.html	/^<a name="402"><span class="lineNum">     402 <\/span>                :            : }<\/a>$/;"	a
-403	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="403"><span class="lineNum">     403 <\/span>                :            : }<\/a>$/;"	a
 405	coverage/cutil/src/btree.c.gcov.html	/^<a name="405"><span class="lineNum">     405 <\/span>                :            : }<\/a>$/;"	a
-408	coverage/cutil/src/child.c.gcov.html	/^<a name="408"><span class="lineNum">     408 <\/span>                :            : }<\/a>$/;"	a
-41	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="41"><span class="lineNum">      41 <\/span>                :            : } aiofd_write_t;<\/a>$/;"	a
-418	coverage/cutil/src/child.c.gcov.html	/^<a name="418"><span class="lineNum">     418 <\/span>                :            : }<\/a>$/;"	a
-418	coverage/cutil/src/events.c.gcov.html	/^<a name="418"><span class="lineNum">     418 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+409	coverage/cutil/src/child.c.gcov.html	/^<a name="409"><span class="lineNum">     409 <\/span>                :            : }<\/a>$/;"	a
+409	coverage/cutil/src/events.c.gcov.html	/^<a name="409"><span class="lineNum">     409 <\/span>                :            : <\/a>$/;"	a
+415	coverage/cutil/src/child.c.gcov.html	/^<a name="415"><span class="lineNum">     415 <\/span>                :            : }<\/a>$/;"	a
+418	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="418"><span class="lineNum">     418 <\/span>                :            : }<\/a>$/;"	a
+42	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="42"><span class="lineNum">      42 <\/span>                :            : } aiofd_write_t;<\/a>$/;"	a
 42	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="42"><span class="lineNum">      42 <\/span>                :            : #endif<\/a>$/;"	a
-420	coverage/cutil/src/socket.c.gcov.html	/^<a name="420"><span class="lineNum">     420 <\/span>                :            : }<\/a>$/;"	a
+422	coverage/cutil/src/events.c.gcov.html	/^<a name="422"><span class="lineNum">     422 <\/span>                :            : }<\/a>$/;"	a
+425	coverage/cutil/src/child.c.gcov.html	/^<a name="425"><span class="lineNum">     425 <\/span>                :            : }<\/a>$/;"	a
 425	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="425"><span class="lineNum">     425 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
-428	coverage/cutil/src/child.c.gcov.html	/^<a name="428"><span class="lineNum">     428 <\/span>                :            : }<\/a>$/;"	a
-436	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="436"><span class="lineNum">     436 <\/span>                :            : <\/a>$/;"	a
-439	coverage/cutil/src/events.c.gcov.html	/^<a name="439"><span class="lineNum">     439 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+425	coverage/cutil/src/socket.c.gcov.html	/^<a name="425"><span class="lineNum">     425 <\/span>                :            : }<\/a>$/;"	a
+433	coverage/cutil/src/child.c.gcov.html	/^<a name="433"><span class="lineNum">     433 <\/span>                :            : }<\/a>$/;"	a
+435	coverage/cutil/src/events.c.gcov.html	/^<a name="435"><span class="lineNum">     435 <\/span>                :            : }<\/a>$/;"	a
 44	coverage/cutil/src/bitset.c.gcov.html	/^<a name="44"><span class="lineNum">      44 <\/span>                :            : }<\/a>$/;"	a
-440	coverage/cutil/src/child.c.gcov.html	/^<a name="440"><span class="lineNum">     440 <\/span>                :            : static int_t test_flag = FALSE;<\/a>$/;"	a
-440	coverage/cutil/src/socket.c.gcov.html	/^<a name="440"><span class="lineNum">     440 <\/span>                :            : <\/a>$/;"	a
-445	coverage/cutil/src/events.c.gcov.html	/^<a name="445"><span class="lineNum">     445 <\/span>                :            : <\/a>$/;"	a
-446	coverage/cutil/src/child.c.gcov.html	/^<a name="446"><span class="lineNum">     446 <\/span>                :            : }<\/a>$/;"	a
-452	coverage/cutil/src/child.c.gcov.html	/^<a name="452"><span class="lineNum">     452 <\/span>                :            : }<\/a>$/;"	a
-458	coverage/cutil/src/child.c.gcov.html	/^<a name="458"><span class="lineNum">     458 <\/span>                :            : }<\/a>$/;"	a
-46	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="46"><span class="lineNum">      46 <\/span>                :            : }<\/a>$/;"	a
-465	coverage/cutil/src/child.c.gcov.html	/^<a name="465"><span class="lineNum">     465 <\/span>                :            : <\/a>$/;"	a
+443	coverage/cutil/src/child.c.gcov.html	/^<a name="443"><span class="lineNum">     443 <\/span>                :            : }<\/a>$/;"	a
+451	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="451"><span class="lineNum">     451 <\/span>                :            : <\/a>$/;"	a
+453	coverage/cutil/src/child.c.gcov.html	/^<a name="453"><span class="lineNum">     453 <\/span>                :            : }<\/a>$/;"	a
+456	coverage/cutil/src/events.c.gcov.html	/^<a name="456"><span class="lineNum">     456 <\/span>                :            : }<\/a>$/;"	a
+465	coverage/cutil/src/child.c.gcov.html	/^<a name="465"><span class="lineNum">     465 <\/span>                :            : static int_t test_flag = FALSE;<\/a>$/;"	a
 47	coverage/cutil/src/pair.c.gcov.html	/^<a name="47"><span class="lineNum">      47 <\/span>                :            : }<\/a>$/;"	a
+471	coverage/cutil/src/child.c.gcov.html	/^<a name="471"><span class="lineNum">     471 <\/span>                :            : }<\/a>$/;"	a
 476	coverage/cutil/src/list.c.gcov.html	/^<a name="476"><span class="lineNum">     476 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
+477	coverage/cutil/src/child.c.gcov.html	/^<a name="477"><span class="lineNum">     477 <\/span>                :            : }<\/a>$/;"	a
 48	coverage/cutil/src/buffer.c.gcov.html	/^<a name="48"><span class="lineNum">      48 <\/span>                :            : }<\/a>$/;"	a
-484	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="484"><span class="lineNum">     484 <\/span>                :            : }<\/a>$/;"	a
-490	coverage/cutil/src/child.c.gcov.html	/^<a name="490"><span class="lineNum">     490 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
-492	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="492"><span class="lineNum">     492 <\/span>                :            : }<\/a>$/;"	a
-497	coverage/cutil/src/socket.c.gcov.html	/^<a name="497"><span class="lineNum">     497 <\/span>                :            : }<\/a>$/;"	a
-51	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="51"><span class="lineNum">      51 <\/span>                :            : }<\/a>$/;"	a
+483	coverage/cutil/src/child.c.gcov.html	/^<a name="483"><span class="lineNum">     483 <\/span>                :            : }<\/a>$/;"	a
+483	coverage/cutil/src/events.c.gcov.html	/^<a name="483"><span class="lineNum">     483 <\/span>                :            : static int_t test_flag = FALSE;<\/a>$/;"	a
+488	coverage/cutil/src/events.c.gcov.html	/^<a name="488"><span class="lineNum">     488 <\/span>                :<span class="lineCov">          3 : }<\/span><\/a>$/;"	a
+490	coverage/cutil/src/child.c.gcov.html	/^<a name="490"><span class="lineNum">     490 <\/span>                :            : <\/a>$/;"	a
+490	coverage/cutil/src/socket.c.gcov.html	/^<a name="490"><span class="lineNum">     490 <\/span>                :            : }<\/a>$/;"	a
+50	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="50"><span class="lineNum">      50 <\/span>                :            : }<\/a>$/;"	a
+501	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="501"><span class="lineNum">     501 <\/span>                :            : }<\/a>$/;"	a
+509	coverage/cutil/src/events.c.gcov.html	/^<a name="509"><span class="lineNum">     509 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 510	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="510"><span class="lineNum">     510 <\/span>                :            : }<\/a>$/;"	a
-518	coverage/cutil/src/child.c.gcov.html	/^<a name="518"><span class="lineNum">     518 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+513	coverage/cutil/src/socket.c.gcov.html	/^<a name="513"><span class="lineNum">     513 <\/span>                :            : <\/a>$/;"	a
+515	coverage/cutil/src/child.c.gcov.html	/^<a name="515"><span class="lineNum">     515 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 519	coverage/cutil/src/btree.c.gcov.html	/^<a name="519"><span class="lineNum">     519 <\/span>                :            : }<\/a>$/;"	a
 52	coverage/cutil/src/bitset.c.gcov.html	/^<a name="52"><span class="lineNum">      52 <\/span>                :            : }<\/a>$/;"	a
-522	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="522"><span class="lineNum">     522 <\/span>                :            : }<\/a>$/;"	a
+529	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="529"><span class="lineNum">     529 <\/span>                :            : }<\/a>$/;"	a
 53	coverage/cutil/src/list.c.gcov.html	/^<a name="53"><span class="lineNum">      53 <\/span>                :            : \/********** PUBLIC **********\/<\/a>$/;"	a
 53	coverage/cutil/src/pair.c.gcov.html	/^<a name="53"><span class="lineNum">      53 <\/span>                :            : }<\/a>$/;"	a
-531	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="531"><span class="lineNum">     531 <\/span>                :            : }<\/a>$/;"	a
-531	coverage/cutil/src/child.c.gcov.html	/^<a name="531"><span class="lineNum">     531 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
-54	coverage/cutil/src/child.c.gcov.html	/^<a name="54"><span class="lineNum">      54 <\/span>                :            : };<\/a>$/;"	a
-551	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="551"><span class="lineNum">     551 <\/span>                :            : static int_t error_callback_ret = TRUE;<\/a>$/;"	a
-551	coverage/cutil/src/child.c.gcov.html	/^<a name="551"><span class="lineNum">     551 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
-557	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="557"><span class="lineNum">     557 <\/span>                :            : }<\/a>$/;"	a
-56	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="56"><span class="lineNum">      56 <\/span>                :            : }<\/a>$/;"	a
+530	coverage/cutil/src/events.c.gcov.html	/^<a name="530"><span class="lineNum">     530 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+541	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="541"><span class="lineNum">     541 <\/span>                :            : }<\/a>$/;"	a
+543	coverage/cutil/src/child.c.gcov.html	/^<a name="543"><span class="lineNum">     543 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+55	coverage/cutil/src/child.c.gcov.html	/^<a name="55"><span class="lineNum">      55 <\/span>                :            : <\/a>$/;"	a
+550	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="550"><span class="lineNum">     550 <\/span>                :            : }<\/a>$/;"	a
+551	coverage/cutil/src/events.c.gcov.html	/^<a name="551"><span class="lineNum">     551 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+556	coverage/cutil/src/child.c.gcov.html	/^<a name="556"><span class="lineNum">     556 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+557	coverage/cutil/src/events.c.gcov.html	/^<a name="557"><span class="lineNum">     557 <\/span>                :            : <\/a>$/;"	a
 56	coverage/cutil/src/buffer.c.gcov.html	/^<a name="56"><span class="lineNum">      56 <\/span>                :            : }<\/a>$/;"	a
-563	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="563"><span class="lineNum">     563 <\/span>                :            : }<\/a>$/;"	a
-569	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="569"><span class="lineNum">     569 <\/span>                :            : }<\/a>$/;"	a
-593	coverage/cutil/src/socket.c.gcov.html	/^<a name="593"><span class="lineNum">     593 <\/span>                :            : }<\/a>$/;"	a
+570	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="570"><span class="lineNum">     570 <\/span>                :            : static int_t error_callback_ret = TRUE;<\/a>$/;"	a
+571	coverage/cutil/src/socket.c.gcov.html	/^<a name="571"><span class="lineNum">     571 <\/span>                :            : }<\/a>$/;"	a
+576	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="576"><span class="lineNum">     576 <\/span>                :            : }<\/a>$/;"	a
+576	coverage/cutil/src/child.c.gcov.html	/^<a name="576"><span class="lineNum">     576 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+58	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="58"><span class="lineNum">      58 <\/span>                :            : }<\/a>$/;"	a
+582	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="582"><span class="lineNum">     582 <\/span>                :            : }<\/a>$/;"	a
+588	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="588"><span class="lineNum">     588 <\/span>                :            : }<\/a>$/;"	a
 60	coverage/cutil/src/events.c.gcov.html	/^<a name="60"><span class="lineNum">      60 <\/span>                :            : <\/a>$/;"	a
 61	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="61"><span class="lineNum">      61 <\/span>                :            : <\/a>$/;"	a
-610	coverage/cutil/src/socket.c.gcov.html	/^<a name="610"><span class="lineNum">     610 <\/span>                :            : }<\/a>$/;"	a
-62	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="62"><span class="lineNum">      62 <\/span>                :            : <\/a>$/;"	a
-622	coverage/cutil/src/socket.c.gcov.html	/^<a name="622"><span class="lineNum">     622 <\/span>                :            : }<\/a>$/;"	a
 63	coverage/cutil/src/pair.c.gcov.html	/^<a name="63"><span class="lineNum">      63 <\/span>                :            : #include &lt;CUnit\/Basic.h&gt;<\/a>$/;"	a
 634	coverage/cutil/src/btree.c.gcov.html	/^<a name="634"><span class="lineNum">     634 <\/span>                :            : <\/a>$/;"	a
 64	coverage/cutil/src/sanitize.c.gcov.html	/^<a name="64"><span class="lineNum">      64 <\/span>                :            : }<\/a>$/;"	a
-647	coverage/cutil/src/socket.c.gcov.html	/^<a name="647"><span class="lineNum">     647 <\/span>                :            : }<\/a>$/;"	a
 65	coverage/cutil/src/list.c.gcov.html	/^<a name="65"><span class="lineNum">      65 <\/span>                :            : }<\/a>$/;"	a
-654	coverage/cutil/src/socket.c.gcov.html	/^<a name="654"><span class="lineNum">     654 <\/span>                :            : }<\/a>$/;"	a
+67	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="67"><span class="lineNum">      67 <\/span>                :            : }<\/a>$/;"	a
 67	coverage/cutil/src/bitset.c.gcov.html	/^<a name="67"><span class="lineNum">      67 <\/span>                :            : }<\/a>$/;"	a
-675	coverage/cutil/src/socket.c.gcov.html	/^<a name="675"><span class="lineNum">     675 <\/span>                :            : }<\/a>$/;"	a
 68	coverage/cutil/src/btree.c.gcov.html	/^<a name="68"><span class="lineNum">      68 <\/span>                :            : <\/a>$/;"	a
-700	coverage/cutil/src/socket.c.gcov.html	/^<a name="700"><span class="lineNum">     700 <\/span>                :            : }<\/a>$/;"	a
+703	coverage/cutil/src/socket.c.gcov.html	/^<a name="703"><span class="lineNum">     703 <\/span>                :            : }<\/a>$/;"	a
 716	coverage/cutil/src/btree.c.gcov.html	/^<a name="716"><span class="lineNum">     716 <\/span>                :            : <\/a>$/;"	a
 72	coverage/cutil/src/list.c.gcov.html	/^<a name="72"><span class="lineNum">      72 <\/span>                :            : }<\/a>$/;"	a
-721	coverage/cutil/src/socket.c.gcov.html	/^<a name="721"><span class="lineNum">     721 <\/span>                :            : }<\/a>$/;"	a
-732	coverage/cutil/src/socket.c.gcov.html	/^<a name="732"><span class="lineNum">     732 <\/span>                :<span class="lineCov">        147 : }<\/span><\/a>$/;"	a
-743	coverage/cutil/src/socket.c.gcov.html	/^<a name="743"><span class="lineNum">     743 <\/span>                :            : <\/a>$/;"	a
-752	coverage/cutil/src/socket.c.gcov.html	/^<a name="752"><span class="lineNum">     752 <\/span>                :            : }<\/a>$/;"	a
+720	coverage/cutil/src/socket.c.gcov.html	/^<a name="720"><span class="lineNum">     720 <\/span>                :            : }<\/a>$/;"	a
+737	coverage/cutil/src/socket.c.gcov.html	/^<a name="737"><span class="lineNum">     737 <\/span>                :            : }<\/a>$/;"	a
+77	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="77"><span class="lineNum">      77 <\/span>                :            : <\/a>$/;"	a
 77	coverage/cutil/src/btree.c.gcov.html	/^<a name="77"><span class="lineNum">      77 <\/span>                :            : }<\/a>$/;"	a
-788	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="788"><span class="lineNum">     788 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
+774	coverage/cutil/src/socket.c.gcov.html	/^<a name="774"><span class="lineNum">     774 <\/span>                :            : }<\/a>$/;"	a
+791	coverage/cutil/src/socket.c.gcov.html	/^<a name="791"><span class="lineNum">     791 <\/span>                :            : }<\/a>$/;"	a
 793	coverage/cutil/src/btree.c.gcov.html	/^<a name="793"><span class="lineNum">     793 <\/span>                :            : \/* NOTE: if the number of values stored in the table will exceed a load <\/a>$/;"	a
 80	coverage/cutil/src/bitset.c.gcov.html	/^<a name="80"><span class="lineNum">      80 <\/span>                :            : }<\/a>$/;"	a
-811	coverage/cutil/src/socket.c.gcov.html	/^<a name="811"><span class="lineNum">     811 <\/span>                :            : <\/a>$/;"	a
+807	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="807"><span class="lineNum">     807 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 814	coverage/cutil/src/btree.c.gcov.html	/^<a name="814"><span class="lineNum">     814 <\/span>                :            : <\/a>$/;"	a
-82	coverage/cutil/src/child.c.gcov.html	/^<a name="82"><span class="lineNum">      82 <\/span>                :            : <\/a>$/;"	a
 82	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="82"><span class="lineNum">      82 <\/span>                :            : <\/a>$/;"	a
-821	coverage/cutil/src/socket.c.gcov.html	/^<a name="821"><span class="lineNum">     821 <\/span>                :            : <\/a>$/;"	a
+821	coverage/cutil/src/socket.c.gcov.html	/^<a name="821"><span class="lineNum">     821 <\/span>                :            : }<\/a>$/;"	a
+83	coverage/cutil/src/child.c.gcov.html	/^<a name="83"><span class="lineNum">      83 <\/span>                :            : <\/a>$/;"	a
 840	coverage/cutil/src/btree.c.gcov.html	/^<a name="840"><span class="lineNum">     840 <\/span>                :            : }<\/a>$/;"	a
 852	coverage/cutil/src/btree.c.gcov.html	/^<a name="852"><span class="lineNum">     852 <\/span>                :            : }<\/a>$/;"	a
+862	coverage/cutil/src/socket.c.gcov.html	/^<a name="862"><span class="lineNum">     862 <\/span>                :            : }<\/a>$/;"	a
 865	coverage/cutil/src/btree.c.gcov.html	/^<a name="865"><span class="lineNum">     865 <\/span>                :            : <\/a>$/;"	a
-866	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="866"><span class="lineNum">     866 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 878	coverage/cutil/src/btree.c.gcov.html	/^<a name="878"><span class="lineNum">     878 <\/span>                :            : }<\/a>$/;"	a
 88	coverage/cutil/src/bitset.c.gcov.html	/^<a name="88"><span class="lineNum">      88 <\/span>                :            : }<\/a>$/;"	a
+885	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="885"><span class="lineNum">     885 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 89	coverage/cutil/src/events.c.gcov.html	/^<a name="89"><span class="lineNum">      89 <\/span>                :            : <\/a>$/;"	a
-897	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="897"><span class="lineNum">     897 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
-928	coverage/cutil/src/socket.c.gcov.html	/^<a name="928"><span class="lineNum">     928 <\/span>                :            : }<\/a>$/;"	a
+891	coverage/cutil/src/socket.c.gcov.html	/^<a name="891"><span class="lineNum">     891 <\/span>                :            : }<\/a>$/;"	a
+902	coverage/cutil/src/socket.c.gcov.html	/^<a name="902"><span class="lineNum">     902 <\/span>                :<span class="lineCov">        148 : }<\/span><\/a>$/;"	a
+912	coverage/cutil/src/socket.c.gcov.html	/^<a name="912"><span class="lineNum">     912 <\/span>                :            : }<\/a>$/;"	a
+916	coverage/cutil/src/aiofd.c.gcov.html	/^<a name="916"><span class="lineNum">     916 <\/span>                :<span class="lineCov">          1 : }<\/span><\/a>$/;"	a
 93	coverage/cutil/src/list.c.gcov.html	/^<a name="93"><span class="lineNum">      93 <\/span>                :            : }<\/a>$/;"	a
 939	coverage/cutil/src/btree.c.gcov.html	/^<a name="939"><span class="lineNum">     939 <\/span>                :            : <\/a>$/;"	a
+947	coverage/cutil/src/socket.c.gcov.html	/^<a name="947"><span class="lineNum">     947 <\/span>                :            : }<\/a>$/;"	a
 95	coverage/cutil/src/hashtable.c.gcov.html	/^<a name="95"><span class="lineNum">      95 <\/span>                :            : <\/a>$/;"	a
-951	coverage/cutil/src/socket.c.gcov.html	/^<a name="951"><span class="lineNum">     951 <\/span>                :            : }<\/a>$/;"	a
-957	coverage/cutil/src/socket.c.gcov.html	/^<a name="957"><span class="lineNum">     957 <\/span>                :            : }<\/a>$/;"	a
 96	coverage/cutil/src/bitset.c.gcov.html	/^<a name="96"><span class="lineNum">      96 <\/span>                :            : }<\/a>$/;"	a
 96	coverage/cutil/src/privileges.c.gcov.html	/^<a name="96"><span class="lineNum">      96 <\/span>                :            : }<\/a>$/;"	a
+962	coverage/cutil/src/socket.c.gcov.html	/^<a name="962"><span class="lineNum">     962 <\/span>                :            : <\/a>$/;"	a
+971	coverage/cutil/src/socket.c.gcov.html	/^<a name="971"><span class="lineNum">     971 <\/span>                :            : }<\/a>$/;"	a
 98	coverage/cutil/src/buffer.c.gcov.html	/^<a name="98"><span class="lineNum">      98 <\/span>                :            : }<\/a>$/;"	a
-ACCEPT	src/macros.h	296;"	d
-ACCEPT	src/macros.h	90;"	d
+999	coverage/cutil/src/socket.c.gcov.html	/^<a name="999"><span class="lineNum">     999 <\/span>                :            : <\/a>$/;"	a
+ACCEPT	src/macros.h	131;"	d
+ACCEPT	src/macros.h	298;"	d
 ADD_SUITE	tests/test_macros.h	21;"	d
 ADD_TEST	tests/test_macros.h	22;"	d
-ARRAY_SIZE	src/macros.h	60;"	d
-ASSERT	src/macros.h	63;"	d
-BIND	src/macros.h	300;"	d
-BIND	src/macros.h	94;"	d
+ARRAY_SIZE	src/macros.h	61;"	d
+ASSERT	src/macros.h	92;"	d
+BIND	src/macros.h	135;"	d
+BIND	src/macros.h	302;"	d
 BIT	src/bitset.c	27;"	d	file:
 BUILDDIRS	Makefile	/^BUILDDIRS = $(DIRS:%=build-%)$/;"	m
-C	src/macros.h	36;"	d
-CALLOC	src/macros.h	287;"	d
-CALLOC	src/macros.h	98;"	d
+C	src/macros.h	37;"	d
+CALLOC	src/macros.h	122;"	d
+CALLOC	src/macros.h	306;"	d
 CFLAGS	src/Makefile	/^CFLAGS=-O3 -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
 CFLAGS	src/Makefile	/^coverage: CFLAGS=-fprofile-arcs -ftest-coverage -O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)\/include -I..\/tests$/;"	m
 CFLAGS	src/Makefile	/^debug: CFLAGS=-O0 -gstabs+ -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
 CFLAGS	src/Makefile	/^test: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)\/include -I..\/tests$/;"	m
 CFLAGS	src/Makefile	/^testnr: CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(EXTRA_LIBS_ROOT)\/include -I..\/tests$/;"	m
 CFLAGS	tests/Makefile	/^CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(CUTIL_ROOT)\/include -I$(EXTRA_LIBS_ROOT)\/include$/;"	m
-CHECK	src/macros.h	74;"	d
-CHECK_ERR_STR	src/macros.h	71;"	d
-CHECK_GOTO	src/macros.h	78;"	d
-CHECK_MSG	src/macros.h	75;"	d
-CHECK_PTR	src/macros.h	79;"	d
-CHECK_PTR_GOTO	src/macros.h	83;"	d
-CHECK_PTR_MSG	src/macros.h	80;"	d
-CHECK_PTR_RET	src/macros.h	81;"	d
-CHECK_PTR_RET_MSG	src/macros.h	82;"	d
-CHECK_RET	src/macros.h	76;"	d
-CHECK_RET_MSG	src/macros.h	77;"	d
+CHECK	src/macros.h	103;"	d
+CHECK_ERR_STR	src/macros.h	100;"	d
+CHECK_GOTO	src/macros.h	107;"	d
+CHECK_MSG	src/macros.h	104;"	d
+CHECK_PTR	src/macros.h	108;"	d
+CHECK_PTR_GOTO	src/macros.h	112;"	d
+CHECK_PTR_MSG	src/macros.h	109;"	d
+CHECK_PTR_RET	src/macros.h	110;"	d
+CHECK_PTR_RET_MSG	src/macros.h	111;"	d
+CHECK_RET	src/macros.h	105;"	d
+CHECK_RET_MSG	src/macros.h	106;"	d
 CLEANDIRS	Makefile	/^CLEANDIRS = $(DIRS:%=clean-%)$/;"	m
-CONNECT	src/macros.h	102;"	d
-CONNECT	src/macros.h	304;"	d
+CONNECT	src/macros.h	139;"	d
+CONNECT	src/macros.h	310;"	d
 COVERAGE	Makefile	/^COVERAGE?=.\/coverage$/;"	m
 COVERAGE	src/Makefile	/^COVERAGE?=..\/coverage$/;"	m
 CUTIL_ROOT	tests/Makefile	/^CUTIL_ROOT=..\/src$/;"	m
@@ -269,8 +279,8 @@ DIRS	Makefile	/^DIRS = $(SRCDIR) $(TESTDIR)$/;"	m
 DWORDS_NEEDED	src/bitset.c	25;"	d	file:
 DWORD_INDEX	src/bitset.c	26;"	d	file:
 EMPTY_ENV	src/child.h	24;"	d
-ERRNO	src/macros.h	106;"	d
-ERRNO	src/macros.h	308;"	d
+ERRNO	src/macros.h	143;"	d
+ERRNO	src/macros.h	314;"	d
 EVT_BADPARAM	src/events.h	/^    EVT_BADPARAM = -3$/;"	e	enum:evt_ret_e
 EVT_BADPTR	src/events.h	/^    EVT_BADPTR = -1,$/;"	e	enum:evt_ret_e
 EVT_CHILD	src/events.h	/^    EVT_CHILD,$/;"	e	enum:evt_type_e
@@ -283,24 +293,34 @@ EVT_SIGNAL	src/events.h	/^    EVT_SIGNAL,$/;"	e	enum:evt_type_e
 EVT_TYPE_COUNT	src/events.h	/^    EVT_TYPE_COUNT = EVT_TYPE_LAST - EVT_TYPE_FIRST$/;"	e	enum:evt_type_e
 EVT_TYPE_FIRST	src/events.h	/^    EVT_TYPE_FIRST = EVT_SIGNAL,$/;"	e	enum:evt_type_e
 EVT_TYPE_LAST	src/events.h	/^    EVT_TYPE_LAST,$/;"	e	enum:evt_type_e
-EV_DEFAULT_LOOP	src/macros.h	273;"	d
-EV_DEFAULT_LOOP	src/macros.h	457;"	d
+EV_DEFAULT_LOOP	src/macros.h	292;"	d
+EV_DEFAULT_LOOP	src/macros.h	481;"	d
 EV_MULTIPLICITY	src/events.c	18;"	d	file:
+EV_NSIG	src/macros.h	67;"	d
+EV_NSIG	src/macros.h	69;"	d
+EV_NSIG	src/macros.h	71;"	d
+EV_NSIG	src/macros.h	73;"	d
+EV_NSIG	src/macros.h	75;"	d
+EV_NSIG	src/macros.h	77;"	d
+EV_NSIG	src/macros.h	79;"	d
+EV_NSIG	src/macros.h	81;"	d
+EV_NSIG	src/macros.h	83;"	d
+EV_NSIG	src/macros.h	88;"	d
 EV_STANDALONE	src/events.c	17;"	d	file:
 EXTRA_LIBS_ROOT	src/Makefile	/^EXTRA_LIBS_ROOT?=\/usr\/local$/;"	m
 EXTRA_LIBS_ROOT	tests/Makefile	/^EXTRA_LIBS_ROOT?=\/usr\/local$/;"	m
-FAIL	src/macros.h	67;"	d
-FALSE	src/macros.h	50;"	d
-FCNTL	src/macros.h	110;"	d
-FCNTL	src/macros.h	312;"	d
-FORK	src/macros.h	114;"	d
-FORK	src/macros.h	316;"	d
-FREE	src/macros.h	118;"	d
-FREE	src/macros.h	289;"	d
-FSTAT	src/macros.h	122;"	d
-FSTAT	src/macros.h	320;"	d
-FSYNC	src/macros.h	126;"	d
-FSYNC	src/macros.h	324;"	d
+FAIL	src/macros.h	96;"	d
+FALSE	src/macros.h	51;"	d
+FCNTL	src/macros.h	147;"	d
+FCNTL	src/macros.h	318;"	d
+FORK	src/macros.h	151;"	d
+FORK	src/macros.h	322;"	d
+FREE	src/macros.h	124;"	d
+FREE	src/macros.h	326;"	d
+FSTAT	src/macros.h	155;"	d
+FSTAT	src/macros.h	330;"	d
+FSYNC	src/macros.h	159;"	d
+FSYNC	src/macros.h	334;"	d
 GCDA	src/Makefile	/^GCDA=$(SRC:.c=.gcda)$/;"	m
 GCDA	tests/Makefile	/^GCDA=$(SRC:.c=.gcda)$/;"	m
 GCNO	src/Makefile	/^GCNO=$(SRC:.c=.gcno)$/;"	m
@@ -308,20 +328,20 @@ GCNO	tests/Makefile	/^GCNO=$(SRC:.c=.gcno)$/;"	m
 GCOV	src/Makefile	/^GCOV=$(SRC:.c=.c.gcov)$/;"	m
 GCOV	tests/Makefile	/^GCOV=$(SRC:.c=.c.gcov)$/;"	m
 GCOVDIRS	Makefile	/^GCOVDIRS = $(DIRS:%=gcov-%)$/;"	m
-GETADDRINFO	src/macros.h	130;"	d
-GETADDRINFO	src/macros.h	328;"	d
-GETDTABLESIZE	src/macros.h	134;"	d
-GETDTABLESIZE	src/macros.h	332;"	d
-GETEGID	src/macros.h	138;"	d
-GETEGID	src/macros.h	336;"	d
-GETEUID	src/macros.h	142;"	d
-GETEUID	src/macros.h	340;"	d
-GETGID	src/macros.h	146;"	d
-GETGID	src/macros.h	344;"	d
-GETGROUPS	src/macros.h	150;"	d
-GETGROUPS	src/macros.h	348;"	d
-GETUID	src/macros.h	154;"	d
-GETUID	src/macros.h	352;"	d
+GETADDRINFO	src/macros.h	163;"	d
+GETADDRINFO	src/macros.h	338;"	d
+GETDTABLESIZE	src/macros.h	167;"	d
+GETDTABLESIZE	src/macros.h	342;"	d
+GETEGID	src/macros.h	171;"	d
+GETEGID	src/macros.h	346;"	d
+GETEUID	src/macros.h	175;"	d
+GETEUID	src/macros.h	350;"	d
+GETGID	src/macros.h	179;"	d
+GETGID	src/macros.h	354;"	d
+GETGROUPS	src/macros.h	183;"	d
+GETGROUPS	src/macros.h	358;"	d
+GETUID	src/macros.h	187;"	d
+GETUID	src/macros.h	362;"	d
 HDR	src/Makefile	/^HDR=aiofd.h bitset.h btree.h buffer.h child.h daemon.h debug.h events.h hashtable.h list.h log.h macros.h pair.h privileges.h sanitize.h socket.h$/;"	m
 HOSTNAME_BUFFER_LEN	src/socket.h	62;"	d
 INSTALL	Makefile	/^INSTALL=\/usr\/bin\/install$/;"	m
@@ -331,33 +351,33 @@ INSTALL_DATA	Makefile	/^INSTALL_DATA=$(INSTALL) -m 644$/;"	m
 INSTALL_DATA	src/Makefile	/^INSTALL_DATA=$(INSTALL) -m 644$/;"	m
 INSTALL_PROGRAM	Makefile	/^INSTALL_PROGRAM=$(INSTALL)$/;"	m
 INSTALL_PROGRAM	src/Makefile	/^INSTALL_PROGRAM=$(INSTALL)$/;"	m
-IOCTL	src/macros.h	158;"	d
-IOCTL	src/macros.h	356;"	d
+IOCTL	src/macros.h	191;"	d
+IOCTL	src/macros.h	366;"	d
 ITEM_AT	src/hashtable.c	34;"	d	file:
 ITEM_AT	src/list.c	40;"	d	file:
 ITR_EQ	src/hashtable.h	31;"	d
 LDFLAGS	tests/Makefile	/^LDFLAGS=-O0 -gstabs+ -L$(CUTIL_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
 LDFLAGS	tests/Makefile	/^coverage: LDFLAGS=-fprofile-arcs -O0 -gstabs+ -L$(CUTIL_ROOT)\/lib -L$(EXTRA_LIBS_ROOT)\/lib$/;"	m
 LEAVE_UNCHANGED	src/privileges.h	25;"	d
-LIBS	tests/Makefile	/^LIBS=-lcutil -lcunit -lev -lm$/;"	m
-LISTEN	src/macros.h	162;"	d
-LISTEN	src/macros.h	360;"	d
+LIBS	tests/Makefile	/^LIBS=-lcutil -lcunit -lev -lm -lpthread$/;"	m
+LISTEN	src/macros.h	195;"	d
+LISTEN	src/macros.h	370;"	d
 LIST_AT	src/hashtable.c	33;"	d	file:
-LOG	src/macros.h	66;"	d
+LOG	src/macros.h	95;"	d
 LOG_TYPE_FILE	src/log.h	/^    LOG_TYPE_FILE,$/;"	e	enum:log_type_s
 LOG_TYPE_LIST	src/log.h	/^    LOG_TYPE_LIST$/;"	e	enum:log_type_s
 LOG_TYPE_STDERR	src/log.h	/^    LOG_TYPE_STDERR,$/;"	e	enum:log_type_s
 LOG_TYPE_SYSLOG	src/log.h	/^    LOG_TYPE_SYSLOG,$/;"	e	enum:log_type_s
-MALLOC	src/macros.h	166;"	d
-MALLOC	src/macros.h	286;"	d
-MEMCMP	src/macros.h	170;"	d
-MEMCMP	src/macros.h	291;"	d
-MEMCPY	src/macros.h	174;"	d
-MEMCPY	src/macros.h	292;"	d
-MEMSET	src/macros.h	178;"	d
-MEMSET	src/macros.h	290;"	d
-MISSING_64BIT_ENDIAN	src/macros.h	56;"	d
-MISSING_STRNLEN	src/macros.h	55;"	d
+MALLOC	src/macros.h	121;"	d
+MALLOC	src/macros.h	374;"	d
+MEMCMP	src/macros.h	126;"	d
+MEMCMP	src/macros.h	378;"	d
+MEMCPY	src/macros.h	127;"	d
+MEMCPY	src/macros.h	382;"	d
+MEMSET	src/macros.h	125;"	d
+MEMSET	src/macros.h	386;"	d
+MISSING_64BIT_ENDIAN	src/macros.h	57;"	d
+MISSING_STRNLEN	src/macros.h	56;"	d
 MULTIPLE	tests/test_aiofd.c	36;"	d	file:
 MULTIPLE	tests/test_child.c	36;"	d	file:
 MULTIPLE	tests/test_events.c	37;"	d	file:
@@ -366,7 +386,7 @@ MULTIPLE	tests/test_list.c	36;"	d	file:
 MULTIPLE	tests/test_privileges.c	35;"	d	file:
 MULTIPLE	tests/test_socket.c	39;"	d	file:
 NAME	src/Makefile	/^NAME=cutil$/;"	m
-NOTICE	src/macros.h	65;"	d
+NOTICE	src/macros.h	94;"	d
 NO_ARGS	src/child.h	23;"	d
 NUM_PRIMES	src/hashtable.c	/^uint_t const NUM_PRIMES = 30;$/;"	v
 OBJ	src/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
@@ -374,26 +394,26 @@ OBJ	tests/Makefile	/^OBJ=$(SRC:.c=.o)$/;"	m
 OPEN_MAX	src/sanitize.c	41;"	d	file:
 OUT	src/Makefile	/^OUT=lib$(NAME).a$/;"	m
 OUT	tests/Makefile	/^OUT=test_all$/;"	m
-PIPE	src/macros.h	182;"	d
-PIPE	src/macros.h	364;"	d
-PIPE_READ_FD	src/child.c	195;"	d	file:
-PIPE_WRITE_FD	src/child.c	196;"	d	file:
-PORTABLE_32_BIT	src/macros.h	44;"	d
-PORTABLE_64_BIT	src/macros.h	40;"	d
+PIPE	src/macros.h	199;"	d
+PIPE	src/macros.h	390;"	d
+PIPE_READ_IDX	src/child.c	215;"	d	file:
+PIPE_WRITE_IDX	src/child.c	216;"	d	file:
+PORTABLE_32_BIT	src/macros.h	45;"	d
+PORTABLE_64_BIT	src/macros.h	41;"	d
 PORT_BUFFER_LEN	src/socket.h	63;"	d
 PREFIX	src/Makefile	/^PREFIX?=\/usr\/local$/;"	m
 PRIMES	src/hashtable.c	/^uint_t const PRIMES[] =$/;"	v
-READ	src/macros.h	186;"	d
-READ	src/macros.h	368;"	d
-READV	src/macros.h	372;"	d
-REALLOC	src/macros.h	190;"	d
-REALLOC	src/macros.h	288;"	d
-RECV	src/macros.h	194;"	d
-RECV	src/macros.h	376;"	d
-RECVFROM	src/macros.h	198;"	d
-RECVFROM	src/macros.h	380;"	d
-RECVMSG	src/macros.h	202;"	d
-RECVMSG	src/macros.h	384;"	d
+READ	src/macros.h	203;"	d
+READ	src/macros.h	394;"	d
+READV	src/macros.h	207;"	d
+REALLOC	src/macros.h	123;"	d
+REALLOC	src/macros.h	398;"	d
+RECV	src/macros.h	211;"	d
+RECV	src/macros.h	402;"	d
+RECVFROM	src/macros.h	215;"	d
+RECVFROM	src/macros.h	406;"	d
+RECVMSG	src/macros.h	219;"	d
+RECVMSG	src/macros.h	410;"	d
 REPEAT	tests/test_aiofd.c	34;"	d	file:
 REPEAT	tests/test_child.c	34;"	d	file:
 REPEAT	tests/test_events.c	35;"	d	file:
@@ -403,24 +423,24 @@ REPEAT	tests/test_privileges.c	33;"	d	file:
 REPEAT	tests/test_socket.c	37;"	d	file:
 REPORTDIRS	Makefile	/^REPORTDIRS = $(DIRS:%=report-%)$/;"	m
 ROOT_UID	src/privileges.h	24;"	d
-SEND	src/macros.h	206;"	d
-SEND	src/macros.h	388;"	d
-SENDMSG	src/macros.h	210;"	d
-SENDMSG	src/macros.h	392;"	d
-SENDTO	src/macros.h	214;"	d
-SENDTO	src/macros.h	396;"	d
-SETEGID	src/macros.h	218;"	d
-SETEGID	src/macros.h	400;"	d
-SETEUID	src/macros.h	222;"	d
-SETEUID	src/macros.h	404;"	d
-SETGROUPS	src/macros.h	226;"	d
-SETGROUPS	src/macros.h	408;"	d
-SETREGID	src/macros.h	230;"	d
-SETREGID	src/macros.h	412;"	d
-SETREUID	src/macros.h	234;"	d
-SETREUID	src/macros.h	416;"	d
-SETSOCKOPT	src/macros.h	238;"	d
-SETSOCKOPT	src/macros.h	420;"	d
+SEND	src/macros.h	223;"	d
+SEND	src/macros.h	414;"	d
+SENDMSG	src/macros.h	227;"	d
+SENDMSG	src/macros.h	418;"	d
+SENDTO	src/macros.h	231;"	d
+SENDTO	src/macros.h	422;"	d
+SETEGID	src/macros.h	235;"	d
+SETEGID	src/macros.h	426;"	d
+SETEUID	src/macros.h	239;"	d
+SETEUID	src/macros.h	430;"	d
+SETGROUPS	src/macros.h	243;"	d
+SETGROUPS	src/macros.h	434;"	d
+SETREGID	src/macros.h	247;"	d
+SETREGID	src/macros.h	438;"	d
+SETREUID	src/macros.h	251;"	d
+SETREUID	src/macros.h	442;"	d
+SETSOCKOPT	src/macros.h	255;"	d
+SETSOCKOPT	src/macros.h	446;"	d
 SHELL	Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	tests/Makefile	/^SHELL=\/bin\/sh$/;"	m
@@ -431,8 +451,8 @@ SIZEMAX	tests/test_hashtable.c	35;"	d	file:
 SIZEMAX	tests/test_list.c	35;"	d	file:
 SIZEMAX	tests/test_privileges.c	34;"	d	file:
 SIZEMAX	tests/test_socket.c	38;"	d	file:
-SOCKET	src/macros.h	242;"	d
-SOCKET	src/macros.h	424;"	d
+SOCKET	src/macros.h	259;"	d
+SOCKET	src/macros.h	450;"	d
 SOCKET_BADHOSTNAME	src/socket.h	/^    SOCKET_BADHOSTNAME  = -3,$/;"	e	enum:socket_ret_e
 SOCKET_BADPARAM	src/socket.h	/^    SOCKET_BADPARAM     = -2,$/;"	e	enum:socket_ret_e
 SOCKET_BIND_FAIL	src/socket.h	/^    SOCKET_BIND_FAIL    = -11,$/;"	e	enum:socket_ret_e
@@ -458,35 +478,35 @@ SOCKET_UNKNOWN	src/socket.h	/^    SOCKET_UNKNOWN = -1$/;"	e	enum:socket_type_e
 SRC	src/Makefile	/^SRC=aiofd.c bitset.c btree.c buffer.c child.c daemon.c events.c hashtable.c list.c log.c pair.c privileges.c sanitize.c socket.c$/;"	m
 SRC	tests/Makefile	/^SRC=test_all.c test_aiofd.c test_bitset.c test_btree.c test_buffer.c test_child.c test_events.c test_flags.c test_hashtable.c test_list.c test_pair.c test_privileges.c test_sanitize.c test_socket.c$/;"	m
 SRCDIR	Makefile	/^SRCDIR = src$/;"	m
-STAT	src/macros.h	246;"	d
-STAT	src/macros.h	428;"	d
-STRCMP	src/macros.h	250;"	d
-STRCMP	src/macros.h	432;"	d
-STRDUP	src/macros.h	254;"	d
-STRDUP	src/macros.h	436;"	d
-STRTOL	src/macros.h	258;"	d
-STRTOL	src/macros.h	440;"	d
+STAT	src/macros.h	263;"	d
+STAT	src/macros.h	454;"	d
+STRCMP	src/macros.h	267;"	d
+STRCMP	src/macros.h	458;"	d
+STRDUP	src/macros.h	271;"	d
+STRDUP	src/macros.h	462;"	d
+STRTOL	src/macros.h	275;"	d
+STRTOL	src/macros.h	466;"	d
 SUITE	tests/test_macros.h	20;"	d
-T	src/macros.h	34;"	d
+T	src/macros.h	35;"	d
 TESTDIR	Makefile	/^TESTDIR = tests$/;"	m
 TESTDIRS	Makefile	/^TESTDIRS = $(DIRS:%=test-%)$/;"	m
 TESTNRDIRS	Makefile	/^TESTNRDIRS = $(DIRS:%=testnr-%)$/;"	m
-TRUE	src/macros.h	51;"	d
+TRUE	src/macros.h	52;"	d
 UNINSTALLDIRS	Makefile	/^UNINSTALLDIRS = $(DIRS:%=uninstall-%)$/;"	m
-UNIT_TEST_FAIL	src/macros.h	277;"	d
-UNIT_TEST_FAIL	src/macros.h	282;"	d
-UNIT_TEST_RET	src/macros.h	276;"	d
-UNIT_TEST_RET	src/macros.h	281;"	d
-UNLINK	src/macros.h	262;"	d
-UNLINK	src/macros.h	444;"	d
-UT	src/macros.h	35;"	d
+UNIT_TEST_FAIL	src/macros.h	117;"	d
+UNIT_TEST_FAIL	src/macros.h	485;"	d
+UNIT_TEST_RET	src/macros.h	116;"	d
+UNIT_TEST_RET	src/macros.h	484;"	d
+UNLINK	src/macros.h	279;"	d
+UNLINK	src/macros.h	470;"	d
+UT	src/macros.h	36;"	d
 VALID_EVENT_TYPE	src/events.h	46;"	d
 VALID_SOCKET_TYPE	src/socket.h	61;"	d
-WARN	src/macros.h	64;"	d
-WRITE	src/macros.h	266;"	d
-WRITE	src/macros.h	448;"	d
-WRITEV	src/macros.h	270;"	d
-WRITEV	src/macros.h	452;"	d
+WARN	src/macros.h	93;"	d
+WRITE	src/macros.h	283;"	d
+WRITE	src/macros.h	474;"	d
+WRITEV	src/macros.h	287;"	d
+WRITEV	src/macros.h	478;"	d
 _GNU_SOURCE	src/log.c	17;"	d	file:
 __AIOFD_H__	src/aiofd.h	18;"	d
 __BITSET_H__	src/bitset.h	18;"	d
@@ -668,6 +688,7 @@ create_start_file	src/daemon.c	/^int create_start_file( int8_t const * const fpa
 daemonize	src/daemon.c	/^void daemonize( int8_t const * const root_dir )$/;"	f
 data	src/aiofd.c	/^    void * data;$/;"	m	struct:aiofd_write_s	file:
 data	src/list.c	/^    void *  data;   \/* pointer to the data *\/$/;"	m	struct:list_item_s	file:
+debug_signals_dump	src/events.c	/^void debug_signals_dump(uint8_t const * const prefix)$/;"	f
 default_key_cmp	src/btree.c	/^static int default_key_cmp( void * l, void * r )$/;"	f	file:
 default_load_limit	src/hashtable.c	/^float const default_load_limit = 3.0f;$/;"	v
 deinit_aiofd_suite	tests/test_aiofd.c	/^static int deinit_aiofd_suite( void )$/;"	f	file:
@@ -898,6 +919,7 @@ first	src/pair.c	/^    void * first;$/;"	m	struct:pair_s	file:
 first	tests/test_pair.c	/^int8_t const * const first = "first";$/;"	v
 free_head	src/list.h	/^    list_itr_t      free_head;              \/* head node of the free circular list *\/$/;"	m	struct:list_s
 free_list	src/btree.c	/^    node_t*             free_list;  \/* list of free nodes *\/$/;"	m	struct:bt_s	file:
+get_signals_debug_string	src/events.c	/^size_t get_signals_debug_string( sigset_t const * const sigs, uint8_t ** out )$/;"	f
 gid	src/privileges.h	/^    gid_t   gid;$/;"	m	struct:priv_state_s
 groups	src/privileges.h	/^    gid_t   groups[NGROUPS_MAX];$/;"	m	struct:priv_state_s
 hash_fn	tests/test_hashtable.c	/^static uint_t hash_fn( void const * const key )$/;"	f	file:
@@ -1020,6 +1042,10 @@ node_t	src/btree.c	/^} node_t;$/;"	t	typeref:struct:node_s	file:
 noop	src/log.c	/^static int noop( void ) { return 0; }$/;"	f	file:
 num_bits	src/bitset.h	/^    size_t num_bits;$/;"	m	struct:bitset_s
 num_lists	src/btree.c	/^    uint_t              num_lists;  \/* number of blocks allocated *\/$/;"	m	struct:bt_s	file:
+oldact	src/events.h	/^        struct sigaction oldact;\/* old action value for specified signal *\/$/;"	m	struct:evt_params_u::__anon1	typeref:struct:evt_params_u::__anon1::sigaction
+oldact	src/events.h	/^        struct sigaction oldact;\/* old action value for specified signal *\/$/;"	m	struct:evt_params_u::__anon2	typeref:struct:evt_params_u::__anon2::sigaction
+oldset	src/events.h	/^        sigset_t oldset;        \/* old mask value for specified signal *\/$/;"	m	struct:evt_params_u::__anon1
+oldset	src/events.h	/^        sigset_t oldset;        \/* old mask value for specified signal *\/$/;"	m	struct:evt_params_u::__anon2
 open_devnull	src/sanitize.c	/^static int_t open_devnull( int fd )$/;"	f	file:
 ops	src/aiofd.h	/^    }           ops;$/;"	m	struct:aiofd_s	typeref:struct:aiofd_s::aiofd_ops_s
 ops	src/child.c	/^    child_ops_t     ops;            \/* child proces callbacks *\/$/;"	m	struct:child_process_s	file:
@@ -1063,6 +1089,7 @@ readaddrlen	src/socket.c	/^    socklen_t *     readaddrlen;    \/* place to put 
 readv_fn	src/aiofd.h	/^        ssize_t (*readv_fn)(int fd, struct iovec * const iov, size_t const iovcnt, void * user_data);$/;"	m	struct:aiofd_s::aiofd_ops_s
 readv_fn	tests/test_aiofd.c	/^static ssize_t readv_fn(int fd, struct iovec *iov, int iovcnt, void * user_data)$/;"	f	file:
 remove_item	src/list.c	/^static list_itr_t remove_item( list_item_t * const items, list_itr_t const itr )$/;"	f	file:
+reset_signals_to_default	src/sanitize.c	/^int_t reset_signals_to_default( sigset_t const * const sigs )$/;"	f
 reset_test_flags	tests/test_flags.c	/^void reset_test_flags( void )$/;"	f
 restore_privileges	src/privileges.c	/^int_t restore_privileges( priv_state_t const * const orig )$/;"	f
 revt	src/aiofd.h	/^    evt_t       revt;           \/* read event *\/$/;"	m	struct:aiofd_s
@@ -1352,26 +1379,23 @@ test_tcp_socket_failed_connection	tests/test_socket.c	/^static void test_tcp_soc
 test_udp_socket	tests/test_socket.c	/^static void test_udp_socket( void )$/;"	f	file:
 test_unix_socket	tests/test_socket.c	/^static void test_unix_socket( void )$/;"	f	file:
 test_write_evt_fn	src/child.c	/^static ssize_t test_write_evt_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )$/;"	f	file:
-trace	src/events.h	/^        int trace;  \/* 0 == only signal upon termination, 1 == also signal when stopped\/continued *\/$/;"	m	struct:evt_params_u::__anon2
+trace	src/events.h	/^        int trace;  \/* 0 == only signal upon term, 1 == also signal when stopped\/continued *\/$/;"	m	struct:evt_params_u::__anon2
 tree	src/btree.c	/^    node_t*             tree;       \/* pointer to btree root *\/$/;"	m	struct:bt_s	file:
 type	src/log.h	/^    log_type_t type;$/;"	m	struct:log_s
 type	src/socket.c	/^    socket_type_t   type;           \/* type of socket *\/$/;"	m	struct:socket_s	file:
 types	src/events.h	/^        evt_io_type_t types;$/;"	m	struct:evt_params_u::__anon3
 u_cconnected	tests/test_socket.c	/^static int_t u_cconnected = FALSE;$/;"	v	file:
 u_cdone	tests/test_socket.c	/^static int_t u_cdone = FALSE;$/;"	v	file:
-u_client_connect_fn	tests/test_socket.c	/^static socket_ret_t u_client_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
-u_client_disconnect_fn	tests/test_socket.c	/^static socket_ret_t u_client_disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
+u_cexit	tests/test_socket.c	/^static int_t u_cexit = FALSE;$/;"	v	file:
 u_client_error_fn	tests/test_socket.c	/^static socket_ret_t u_client_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
 u_client_read_fn	tests/test_socket.c	/^static ssize_t u_client_read_fn( socket_t * const s, size_t const nread, void * user_data )$/;"	f	file:
 u_client_write_fn	tests/test_socket.c	/^static ssize_t u_client_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
-u_sclose	tests/test_socket.c	/^static int_t u_sclose = FALSE;$/;"	v	file:
 u_sconnected	tests/test_socket.c	/^static int_t u_sconnected = FALSE;$/;"	v	file:
 u_sdone	tests/test_socket.c	/^static int_t u_sdone = FALSE;$/;"	v	file:
-u_server_connect_fn	tests/test_socket.c	/^static socket_ret_t u_server_connect_fn( socket_t * const s, void * user_data )$/;"	f	file:
-u_server_disconnect_fn	tests/test_socket.c	/^static socket_ret_t u_server_disconnect_fn( socket_t * const s, void * user_data )$/;"	f	file:
 u_server_error_fn	tests/test_socket.c	/^static socket_ret_t u_server_error_fn( socket_t * const s, int err, void * user_data )$/;"	f	file:
 u_server_read_fn	tests/test_socket.c	/^static ssize_t u_server_read_fn( socket_t * const s, size_t const nread, void * user_data )$/;"	f	file:
 u_server_write_fn	tests/test_socket.c	/^static ssize_t u_server_write_fn( socket_t * const s, uint8_t const * const buffer, void * user_data )$/;"	f	file:
+u_sexit	tests/test_socket.c	/^static int_t u_sexit = FALSE;$/;"	v	file:
 uid	src/privileges.h	/^    uid_t   uid;$/;"	m	struct:priv_state_s
 uint_t	src/macros.h	/^typedef uint32_t uint_t;$/;"	t
 uint_t	src/macros.h	/^typedef uint64_t uint_t;$/;"	t

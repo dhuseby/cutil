@@ -101,6 +101,27 @@ int_t sanitize_files( int keep[], int nfds )
     return TRUE;
 }
 
+int_t reset_signals_to_default( sigset_t const * const sigs )
+{
+    int i;
+    struct sigaction sa;
+    CHECK_PTR_RET( sigs, FALSE );
+
+    MEMSET( &sa, 0, sizeof( struct sigaction ) );
+    sa.sa_handler = SIG_DFL;
+    sa.sa_flags = 0;
+    sigemptyset( &sa.sa_mask );
+
+    for ( i = 0; i < EV_NSIG; i++ )
+    {
+        if ( sigismember( sigs, i ) )
+        {
+            CHECK_RET_MSG( sigaction( i, &sa, NULL ) == 0, FALSE, "failed to set handler for signal %s\n" );
+        }
+    }
+    return TRUE;
+}
+
 /* the standard clean environment */
 static uint8_t * clean_environ[] =
 {
