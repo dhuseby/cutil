@@ -168,7 +168,7 @@ static uint8_t * socket_get_addrinfo_string( addrinfo_t const * const info )
     return &buf[0];
 }
 
-static inline void * socket_in_addr( sockaddr_t * const addr )
+void * socket_in_addr( sockaddr_t * const addr )
 {
     CHECK_PTR_RET( addr, NULL );
     if ( addr->ss_family == AF_INET )

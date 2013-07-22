@@ -100,6 +100,9 @@ socket_t* socket_new( socket_type_t const type,
 
 void socket_delete( void * s );
 
+/* used to convert sockaddr_t to the correct sockaddr_in struct */
+void * socket_in_addr( sockaddr_t * const addr );
+
 /* used to get the string representation of an addr. */
 int_t socket_get_addr_string( sockaddr_t const * const addr,
                               uint8_t * const buf, 
