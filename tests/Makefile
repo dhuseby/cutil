@@ -12,7 +12,7 @@ GCDA=$(SRC:.c=.gcda)
 GCNO=$(SRC:.c=.gcno)
 GCOV=$(SRC:.c=.c.gcov)
 OUT=test_all
-LIBS=-lcutil -lcunit -lev
+LIBS=-lcutil -lcunit -lev -lm -lpthread
 CUTIL_ROOT=../src
 CFLAGS=-O0 -gstabs+ -DUNIT_TESTING -I$(CUTIL_ROOT)/include -I$(EXTRA_LIBS_ROOT)/include
 LDFLAGS=-O0 -gstabs+ -L$(CUTIL_ROOT)/lib -L$(EXTRA_LIBS_ROOT)/lib

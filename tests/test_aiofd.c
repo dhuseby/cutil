@@ -43,7 +43,7 @@ static int_t read_evt_fn( aiofd_t * const aiofd, size_t nread, void * user_data 
     return FALSE;
 }
 
-static int_t write_evt_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )
+static int_t write_evt_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data, void * per_write_data )
 {
     return FALSE;
 }
@@ -58,7 +58,7 @@ static ssize_t read_fn(int fd, void *buf, size_t count, void * user_data)
     return -1;
 }
 
-static ssize_t write_fn(int fd, const void *buf, size_t count, void * user_data)
+static ssize_t write_fn(int fd, const void *buf, size_t count, void * user_data, void * per_write_data )
 {
     return -1;
 }
@@ -267,7 +267,7 @@ static void test_aiofd_writev( void )
 
 	fake_aiofd_write_common = TRUE;
 	fake_aiofd_write_common_ret = FALSE;
-	CU_ASSERT_FALSE( aiofd_writev( &aiofd, &iov, 1 ) );
+	CU_ASSERT_FALSE( aiofd_writev( &aiofd, &iov, 1, NULL ) );
 	fake_aiofd_write_common = FALSE;
 }
 

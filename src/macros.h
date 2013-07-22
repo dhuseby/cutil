@@ -82,10 +82,189 @@ uint8_t * check_err_str_;
 #define CHECK_PTR_RET_MSG(x, y, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return (y); } } while(0)
 #define CHECK_PTR_GOTO(x, y) do { if(!(x)) { check_err_str_ = #x; goto y; } } while(0)
 
+#if defined(UNIT_TESTING)
 
-#if !defined(UNIT_TESTING)
+#define UNIT_TEST_RET(x) do { if( fake_##x ) return ( fake_##x##_ret ); } while(0)
+#define UNIT_TEST_FAIL(x) do { if( fail_##x ) return FALSE; } while(0)
 
-/* abstractions of other system functions */
+/* system calls */
+extern int_t fail_alloc;
+#define MALLOC(...) (fail_alloc ? NULL : malloc(__VA_ARGS__))
+#define CALLOC(...) (fail_alloc ? NULL : calloc(__VA_ARGS__))
+#define REALLOC(...) (fail_alloc ? NULL : realloc(__VA_ARGS__))
+#define FREE free
+#define MEMSET memset
+#define MEMCMP memcmp
+#define MEMCPY memcpy
+
+extern int_t fake_accept;
+extern int fake_accept_ret;
+#define ACCEPT(...) (fake_accept ? fake_accept_ret : accept(__VA_ARGS__))
+
+extern int_t fake_bind;
+extern int fake_bind_ret;
+#define BIND(...) (fake_bind ? fake_bind_ret : bind(__VA_ARGS__))
+
+extern int_t fake_connect;
+extern int fake_connect_ret;
+#define CONNECT(...) (fake_connect ? fake_connect_ret : connect(__VA_ARGS__))
+
+extern int_t fake_errno;
+extern int fake_errno_value;
+#define ERRNO (fake_errno ? fake_errno_value : errno)
+
+extern int_t fake_fcntl;
+extern int fake_fcntl_ret;
+#define FCNTL(...) (fake_fcntl ? fake_fcntl_ret : fcntl(__VA_ARGS__))
+
+extern int_t fake_fork;
+extern int fake_fork_ret;
+#define FORK(...) (fake_fork ? fake_fork_ret : fork(__VA_ARGS__))
+
+extern int_t fake_fstat;
+extern int fake_fstat_ret;
+#define FSTAT(...) (fake_fstat ? fake_fstat_ret : fstat(__VA_ARGS__))
+
+extern int_t fake_fsync;
+extern int fake_fsync_ret;
+#define FSYNC(...) (fake_fsync ? fake_fsync_ret : fsync(__VA_ARGS__))
+
+extern int_t fake_getaddrinfo;
+extern int fake_getaddrinfo_ret;
+#define GETADDRINFO(...) (fake_getaddrinfo ? fake_getaddrinfo_ret : getaddrinfo(__VA_ARGS__))
+
+extern int_t fake_getdtablesize;
+extern int fake_getdtablesize_ret;
+#define GETDTABLESIZE(...) (fake_getdtablesize ? fake_getdtablesize_ret : getdtablesize(__VA_ARGS__))
+
+extern int_t fake_getegid;
+extern int fake_getegid_ret;
+#define GETEGID(...) (fake_getegid ? fake_getegid_ret : getegid(__VA_ARGS__))
+
+extern int_t fake_geteuid;
+extern int fake_geteuid_ret;
+#define GETEUID(...) (fake_geteuid ? fake_geteuid_ret : geteuid(__VA_ARGS__))
+
+extern int_t fake_getgid;
+extern int fake_getgid_ret;
+#define GETGID(...) (fake_getgid ? fake_getgid_ret : getgid(__VA_ARGS__))
+
+extern int_t fake_getgroups;
+extern int fake_getgroups_ret;
+#define GETGROUPS(...) (fake_getgroups ? fake_getgroups_ret : getgroups(__VA_ARGS__))
+
+extern int_t fake_getuid;
+extern int fake_getuid_ret;
+#define GETUID(...) (fake_getuid ? fake_getuid_ret : getuid(__VA_ARGS__))
+
+extern int_t fake_ioctl;
+extern int fake_ioctl_ret;
+#define IOCTL(...) (fake_ioctl ? fake_ioctl_ret : ioctl(__VA_ARGS__))
+
+extern int_t fake_listen;
+extern int fake_listen_ret;
+#define LISTEN(...) (fake_listen ? fake_listen_ret : listen(__VA_ARGS__))
+
+extern int_t fake_pipe;
+extern int fake_pipe_ret;
+#define PIPE(...) (fake_pipe ? fake_pipe_ret : pipe(__VA_ARGS__))
+
+extern int_t fake_read;
+extern ssize_t fake_read_ret;
+#define READ(...) (fake_read ? fake_read_ret : read(__VA_ARGS__))
+
+extern int_t fake_readv;
+extern ssize_t fake_readv_ret;
+#define READV(...) (fake_readv ? fake_readv_ret : readv(__VA_ARGS__))
+
+extern int_t fake_recv;
+extern ssize_t fake_recv;
+#define RECV(...) (fake_recv ? fake_recv_ret : recv(__VA_ARGS__))
+
+extern int_t fake_recvfrom;
+extern ssize_t fake_recvfrom_ret;
+#define RECVFROM(...) (fake_recvfrom ? fake_recvfrom_ret : recvfrom(__VA_ARGS__))
+
+extern int_t fake_recvmsg;
+extern ssize_t fake_recvmsg_ret;
+#define RECVMSG(...) (fake_recvmsg ? fake_recvmsg_ret : recvmsg(__VA_ARGS__))
+
+extern int_t fake_send;
+extern ssize_t fake_send_ret;
+#define SEND(...) (fake_send ? fake_send_ret : send(__VA_ARGS__))
+
+extern int_t fake_sendmsg;
+extern ssize_t fake_sendmsg_ret;
+#define SENDMSG(...) (fake_sendmsg ? fake_sendmsg_ret : sendmsg(__VA_ARGS__))
+
+extern int_t fake_sendto;
+extern ssize_t fake_sendto_ret;
+#define SENDTO(...) (fake_sendto ? fake_sendto_ret : sendto(__VA_ARGS__))
+
+extern int_t fake_setegid;
+extern int fake_setegid_ret;
+#define SETEGID(...) (fake_setegid ? fake_setegid_ret : setegid(__VA_ARGS__))
+
+extern int_t fake_seteuid;
+extern int fake_seteuid_ret;
+#define SETEUID(...) (fake_seteuid ? fake_seteuid_ret : seteuid(__VA_ARGS__))
+
+extern int_t fake_setgroups;
+extern int fake_setgroups_ret;
+#define SETGROUPS(...) (fake_setgroups ? fake_setgroups_ret : setgroups(__VA_ARGS__))
+
+extern int_t fake_setregid;
+extern int fake_setregid_ret;
+#define SETREGID(...) (fake_setregid ? fake_setregid_ret : setregid(__VA_ARGS__))
+
+extern int_t fake_setreuid;
+extern int fake_setreuid_ret;
+#define SETREUID(...) (fake_setreuid ? fake_setreuid_ret : setreuid(__VA_ARGS__))
+
+extern int_t fake_setsockopt;
+extern int fake_setsockopt_ret;
+#define SETSOCKOPT(...) (fake_setsockopt ? fake_setsockopt_ret : setsockopt(__VA_ARGS__))
+
+extern int_t fake_socket;
+extern int fake_socket_ret;
+#define SOCKET(...) (fake_socket ? fake_socket_ret : socket(__VA_ARGS__))
+
+extern int_t fake_stat;
+extern int fake_stat_ret;
+#define STAT(...) (fake_stat ? fake_stat_ret : stat(__VA_ARGS__))
+
+extern int_t fake_strcmp;
+extern int fake_strcmp_ret;
+#define STRCMP(...) (fake_strcmp ? fake_strcmp_ret : strcmp(__VA_ARGS__))
+
+extern int_t fake_strdup;
+extern char* fake_strdup_ret;
+#define STRDUP(...) (fake_strdup ? fake_strdup_ret : strdup(__VA_ARGS__))
+
+extern int_t fake_strtol;
+extern uint_t fake_strtol_ret;
+#define STRTOL(...) (fake_strtol ? fake_strtol_ret : strtol(__VA_ARGS__))
+
+extern int_t fake_unlink;
+extern int fake_unlink_ret;
+#define UNLINK(...) (fake_unlink ? fake_unlink_ret : unlink(__VA_ARGS__))
+
+extern int_t fake_write;
+extern ssize_t fake_write_ret;
+#define WRITE(...) (fake_write ? fake_write_ret : write(__VA_ARGS__))
+
+extern int_t fake_writev;
+extern ssize_t fake_writev_ret;
+#define WRITEV(...) (fake_writev ? fake_writev_ret : writev(__VA_ARGS__))
+
+/* event */
+extern int_t fake_ev_default_loop;
+extern void* fake_ev_default_loop_ret;
+#define EV_DEFAULT_LOOP(...) (fake_ev_default_loop ? fake_ev_default_loop_ret : ev_default_loop(__VA_ARGS__))
+
+#else /* UNIT_TESTING */
+
+/* abstractions of system functions */
 #if !defined(ACCEPT)
 #define ACCEPT accept
 #endif
@@ -120,6 +299,10 @@ uint8_t * check_err_str_;
 
 #if !defined(FSTAT)
 #define FSTAT fstat
+#endif
+
+#if !defined(FSYNC)
+#define FSYNC fsync
 #endif
 
 #if !defined(GETADDRINFO)
@@ -186,6 +369,30 @@ uint8_t * check_err_str_;
 #define REALLOC realloc
 #endif
 
+#if !defined(RECV)
+#define RECV recv
+#endif
+
+#if !defined(RECVFROM)
+#define RECVFROM recvfrom
+#endif
+
+#if !defined(RECVMSG)
+#define RECVMSG recvmsg
+#endif
+
+#if !defined(SEND)
+#define SEND send
+#endif
+
+#if !defined(SENDMSG)
+#define SENDMSG sendmsg
+#endif
+
+#if !defined(SENDTO)
+#define SENDTO sendto
+#endif
+
 #if !defined(SETEGID)
 #define SETEGID setegid
 #endif
@@ -247,158 +454,6 @@ uint8_t * check_err_str_;
 /* define these to be nothing when not unit testing */
 #define UNIT_TEST_RET
 #define UNIT_TEST_FAIL
-
-#else /* UNIT_TESTING */
-
-#define UNIT_TEST_RET(x) do { if( fake_##x ) return ( fake_##x##_ret ); } while(0)
-#define UNIT_TEST_FAIL(x) do { if( fail_##x ) return FALSE; } while(0)
-
-/* system calls */
-extern int_t fail_alloc;
-#define MALLOC(...) (fail_alloc ? NULL : malloc(__VA_ARGS__))
-#define CALLOC(...) (fail_alloc ? NULL : calloc(__VA_ARGS__))
-#define REALLOC(...) (fail_alloc ? NULL : realloc(__VA_ARGS__))
-#define FREE free
-#define MEMSET memset
-#define MEMCMP memcmp
-#define MEMCPY memcpy
-
-extern int_t fake_accept;
-extern int fake_accept_ret;
-#define ACCEPT(...) (fake_accept ? fake_accept_ret : accept(__VA_ARGS__))
-
-extern int_t fake_bind;
-extern int fake_bind_ret;
-#define BIND(...) (fake_bind ? fake_bind_ret : bind(__VA_ARGS__))
-
-extern int_t fake_connect;
-extern int fake_connect_ret;
-#define CONNECT(...) (fake_connect ? fake_connect_ret : connect(__VA_ARGS__))
-
-extern int_t fake_errno;
-extern int fake_errno_value;
-#define ERRNO (fake_errno ? fake_errno_value : errno)
-
-extern int_t fake_fcntl;
-extern int fake_fcntl_ret;
-#define FCNTL(...) (fake_fcntl ? fake_fcntl_ret : fcntl(__VA_ARGS__))
-
-extern int_t fake_fork;
-extern int fake_fork_ret;
-#define FORK(...) (fake_fork ? fake_fork_ret : fork(__VA_ARGS__))
-
-extern int_t fake_fstat;
-extern int fake_fstat_ret;
-#define FSTAT(...) (fake_fstat ? fake_fstat_ret : fstat(__VA_ARGS__))
-
-extern int_t fake_getaddrinfo;
-extern int fake_getaddrinfo_ret;
-#define GETADDRINFO(...) (fake_getaddrinfo ? fake_getaddrinfo_ret : getaddrinfo(__VA_ARGS__))
-
-extern int_t fake_getdtablesize;
-extern int fake_getdtablesize_ret;
-#define GETDTABLESIZE(...) (fake_getdtablesize ? fake_getdtablesize_ret : getdtablesize(__VA_ARGS__))
-
-extern int_t fake_getegid;
-extern int fake_getegid_ret;
-#define GETEGID(...) (fake_getegid ? fake_getegid_ret : getegid(__VA_ARGS__))
-
-extern int_t fake_geteuid;
-extern int fake_geteuid_ret;
-#define GETEUID(...) (fake_geteuid ? fake_geteuid_ret : geteuid(__VA_ARGS__))
-
-extern int_t fake_getgid;
-extern int fake_getgid_ret;
-#define GETGID(...) (fake_getgid ? fake_getgid_ret : getgid(__VA_ARGS__))
-
-extern int_t fake_getgroups;
-extern int fake_getgroups_ret;
-#define GETGROUPS(...) (fake_getgroups ? fake_getgroups_ret : getgroups(__VA_ARGS__))
-
-extern int_t fake_getuid;
-extern int fake_getuid_ret;
-#define GETUID(...) (fake_getuid ? fake_getuid_ret : getuid(__VA_ARGS__))
-
-extern int_t fake_ioctl;
-extern int fake_ioctl_ret;
-#define IOCTL(...) (fake_ioctl ? fake_ioctl_ret : ioctl(__VA_ARGS__))
-
-extern int_t fake_listen;
-extern int fake_listen_ret;
-#define LISTEN(...) (fake_listen ? fake_listen_ret : listen(__VA_ARGS__))
-
-extern int_t fake_pipe;
-extern int fake_pipe_ret;
-#define PIPE(...) (fake_pipe ? fake_pipe_ret : pipe(__VA_ARGS__))
-
-extern int_t fake_read;
-extern ssize_t fake_read_ret;
-#define READ(...) (fake_read ? fake_read_ret : read(__VA_ARGS__))
-
-extern int_t fake_readv;
-extern ssize_t fake_readv_ret;
-#define READV(...) (fake_readv ? fake_readv_ret : readv(__VA_ARGS__))
-
-extern int_t fake_setegid;
-extern int fake_setegid_ret;
-#define SETEGID(...) (fake_setegid ? fake_setegid_ret : setegid(__VA_ARGS__))
-
-extern int_t fake_seteuid;
-extern int fake_seteuid_ret;
-#define SETEUID(...) (fake_seteuid ? fake_seteuid_ret : seteuid(__VA_ARGS__))
-
-extern int_t fake_setgroups;
-extern int fake_setgroups_ret;
-#define SETGROUPS(...) (fake_setgroups ? fake_setgroups_ret : setgroups(__VA_ARGS__))
-
-extern int_t fake_setregid;
-extern int fake_setregid_ret;
-#define SETREGID(...) (fake_setregid ? fake_setregid_ret : setregid(__VA_ARGS__))
-
-extern int_t fake_setreuid;
-extern int fake_setreuid_ret;
-#define SETREUID(...) (fake_setreuid ? fake_setreuid_ret : setreuid(__VA_ARGS__))
-
-extern int_t fake_setsockopt;
-extern int fake_setsockopt_ret;
-#define SETSOCKOPT(...) (fake_setsockopt ? fake_setsockopt_ret : setsockopt(__VA_ARGS__))
-
-extern int_t fake_socket;
-extern int fake_socket_ret;
-#define SOCKET(...) (fake_socket ? fake_socket_ret : socket(__VA_ARGS__))
-
-extern int_t fake_stat;
-extern int fake_stat_ret;
-#define STAT(...) (fake_stat ? fake_stat_ret : stat(__VA_ARGS__))
-
-extern int_t fake_strcmp;
-extern int fake_strcmp_ret;
-#define STRCMP(...) (fake_strcmp ? fake_strcmp_ret : strcmp(__VA_ARGS__))
-
-extern int_t fake_strdup;
-extern char* fake_strdup_ret;
-#define STRDUP(...) (fake_strdup ? fake_strdup_ret : strdup(__VA_ARGS__))
-
-extern int_t fake_strtol;
-extern uint_t fake_strtol_ret;
-#define STRTOL(...) (fake_strtol ? fake_strtol_ret : strtol(__VA_ARGS__))
-
-extern int_t fake_unlink;
-extern int fake_unlink_ret;
-#define UNLINK(...) (fake_unlink ? fake_unlink_ret : unlink(__VA_ARGS__))
-
-extern int_t fake_write;
-extern ssize_t fake_write_ret;
-#define WRITE(...) (fake_write ? fake_write_ret : write(__VA_ARGS__))
-
-extern int_t fake_writev;
-extern ssize_t fake_writev_ret;
-#define WRITEV(...) (fake_writev ? fake_writev_ret : writev(__VA_ARGS__))
-
-/* event */
-extern int_t fake_ev_default_loop;
-extern void* fake_ev_default_loop_ret;
-#define EV_DEFAULT_LOOP(...) (fake_ev_default_loop ? fake_ev_default_loop_ret : ev_default_loop(__VA_ARGS__))
 
 #endif /* UNIT_TESTING */
 

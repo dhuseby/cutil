@@ -53,6 +53,17 @@ struct child_process_s
     void *          user_data;      /* passed to ops callbacks */
 };
 
+static void child_atfork(void)
+{
+    /* this gets called in the context of the child process, immediately
+     * after the fork() call completes. this unblocks all signals so that
+     * the execve doesn't run an application with any signals blocked. */
+    LOG("child atfork called\n");
+    sigset_t mask;
+    sigfillset( &mask );
+    sigprocmask( SIG_UNBLOCK, &mask, NULL );
+}
+
 static evt_ret_t sigchld_cb( evt_loop_t * const el,
                              evt_t * const evt,
                              evt_params_t * const params,
@@ -83,7 +94,8 @@ static evt_ret_t sigchld_cb( evt_loop_t * const el,
 
 static int_t child_aiofd_write_evt_fn( aiofd_t * const aiofd,
                                        uint8_t const * const buffer,
-                                       void * user_data )
+                                       void * user_data,
+                                       void * per_write_data )
 {
     child_process_t * child = (child_process_t*)user_data;
     CHECK_PTR_RET( aiofd, FALSE );
@@ -226,6 +238,8 @@ static int child_process_initialize( child_process_t * const child,
     CHECK_PTR_RET( environ, FALSE );
     CHECK_PTR_RET( ops, FALSE );
 
+    pthread_atfork( NULL, NULL, &child_atfork );
+
     MEMSET( (void*)child, 0, sizeof(child_process_t) );
 
     /* store the user context */
@@ -254,6 +268,7 @@ static int child_process_initialize( child_process_t * const child,
     child->pid = safe_fork( keepfds, 4, drop_privileges );
     if ( child->pid == -1 )
     {
+        /* fork failed, close pipe fd's */
         close( p2c_pipe[PIPE_WRITE_FD] );
         close( p2c_pipe[PIPE_READ_FD] );
         close( c2p_pipe[PIPE_WRITE_FD] );
@@ -264,6 +279,7 @@ static int child_process_initialize( child_process_t * const child,
     if ( child->pid == 0 )
     {
         /* CHILD PROCESS */
+        LOG("child process running\n");
 
         /* close the child's STDIN and STDOUT file descriptors */
         close( STDIN_FILENO );
@@ -313,7 +329,8 @@ static int child_process_initialize( child_process_t * const child,
     evt_start_event_handler( el, &(child->sigchld) );
 
     /* initialize the aiofd to monitor the parent side of the pipes */
-    aiofd_initialize( &(child->aiofd), p2c_pipe[PIPE_WRITE_FD], c2p_pipe[PIPE_READ_FD], &aiofd_ops, el, (void*)child );
+    aiofd_initialize( &(child->aiofd), p2c_pipe[PIPE_WRITE_FD], 
+                      c2p_pipe[PIPE_READ_FD], &aiofd_ops, el, (void*)child );
 
     /* start listening for incoming data from the child */
     aiofd_enable_read_evt( &(child->aiofd), TRUE );
@@ -340,7 +357,9 @@ child_process_t * child_process_new( uint8_t const * const path,
     child = (child_process_t*)CALLOC( 1, sizeof(child_process_t) );
     CHECK_PTR_RET_MSG( child, NULL, "failed to allocate child_process_t\n" );
 
-    if ( child_process_initialize( child, path, argv, environ, ops, el, drop_privileges, user_data ) == FALSE )
+    if ( child_process_initialize( child, path, argv, 
+                                   environ, ops, el, 
+                                   drop_privileges, user_data ) == FALSE )
     {
         FREE( child );
         return NULL;
@@ -404,7 +423,7 @@ int_t child_process_write( child_process_t * const cp,
                            size_t const n )
 {
     CHECK_PTR_RET( cp, FALSE );
-    return aiofd_write( &(cp->aiofd), buffer, n );
+    return aiofd_write( &(cp->aiofd), buffer, n, NULL );
 }
 
 ssize_t child_process_readv( child_process_t * const cp,
@@ -424,7 +443,7 @@ int_t child_process_writev( child_process_t * const cp,
     CHECK_PTR_RET( cp, FALSE );
     CHECK_PTR_RET( iov, FALSE );
     CHECK_RET( iovcnt > 0, FALSE );
-    return aiofd_writev( &(cp->aiofd), iov, iovcnt );
+    return aiofd_writev( &(cp->aiofd), iov, iovcnt, NULL );
 }
 
 int_t child_process_flush( child_process_t * const cp )
@@ -497,23 +516,23 @@ static void test_child_aiofd_write_evt_fn( void )
     MEMSET( &aiofd, 0, sizeof(aiofd_t));
     MEMSET( &child, 0, sizeof(child_process_t) );
 
-    CU_ASSERT_FALSE( child_aiofd_write_evt_fn( NULL, NULL, NULL ) );
-    CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &aiofd, NULL, NULL ) );
+    CU_ASSERT_FALSE( child_aiofd_write_evt_fn( NULL, NULL, NULL, NULL ) );
+    CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &aiofd, NULL, NULL, NULL ) );
     child.aiofd.rfd = -1;
-    CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &aiofd, NULL, &child ) );
+    CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &aiofd, NULL, &child, NULL ) );
     child.aiofd.rfd = 0;
     fake_list_count = TRUE;
     fake_list_count_ret = 0;
-    CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &aiofd, NULL, &child ) );
+    CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &aiofd, NULL, &child, NULL ) );
     fake_list_count_ret = 1;
-    CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &aiofd, NULL, &child ) );
+    CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &aiofd, NULL, &child, NULL ) );
     fake_list_count = FALSE;
 
-    CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &aiofd, buf, &child ) );
+    CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &aiofd, buf, &child, NULL ) );
     child.ops.write_evt_fn = &test_write_evt_fn;
     test_flag = FALSE;
     child.user_data = &test_flag;
-    CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &aiofd, buf, &child ) );
+    CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &aiofd, buf, &child, NULL ) );
     CU_ASSERT_TRUE( test_flag );
 }
 

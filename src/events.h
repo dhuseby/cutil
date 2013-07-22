@@ -47,8 +47,8 @@ typedef enum evt_type_e
 
 typedef enum evt_io_type_e
 {
-    EVT_IO_READ =  0x01,
-    EVT_IO_WRITE = 0x02
+    EVT_IO_READ =  EV_READ,
+    EVT_IO_WRITE = EV_WRITE
 } evt_io_type_t;
 
 typedef union evt_params_u
@@ -56,14 +56,20 @@ typedef union evt_params_u
     struct
     {
         int signum;
+
+        sigset_t oldset;        /* old mask value for specified signal */
+        struct sigaction oldact;/* old action value for specified signal */
     } signal_params;
 
     struct
     {
         int pid;    /* pid to watch */
-        int trace;  /* 0 == only signal upon termination, 1 == also signal when stopped/continued */
+        int trace;  /* 0 == only signal upon term, 1 == also signal when stopped/continued */
         int rpid;   /* pid of process causing change */
         int rstatus;/* status word of process, use macros from sys/wait.h, waitpid */
+
+        sigset_t oldset;        /* old mask value for specified signal */
+        struct sigaction oldact;/* old action value for specified signal */
     } child_params;
 
     struct
@@ -135,5 +141,8 @@ evt_ret_t evt_run( evt_loop_t * const el );
 
 /* stops the event loop */
 evt_ret_t evt_stop( evt_loop_t * const el, int_t once );
+
+size_t get_signals_debug_string( sigset_t const * const sigs, uint8_t ** p );
+void debug_signals_dump(uint8_t const * const prefix);
 
 #endif/*__EVENTS_H__*/

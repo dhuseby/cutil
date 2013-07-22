@@ -57,6 +57,8 @@ static void test_initialize_event_handler( void )
 	evt_params_t params;
 	MEMSET( &evt, 0, sizeof(evt_t) );
 	MEMSET( &params, 0, sizeof(evt_params_t) );
+    
+    debug_signals_dump("event");
 
 	CU_ASSERT_FALSE( evt_initialize_event_handler( NULL, (evt_type_t)50, NULL, NULL, NULL ) );
 	CU_ASSERT_FALSE( evt_initialize_event_handler( &evt, (evt_type_t)50, NULL, NULL, NULL ) );
@@ -82,6 +84,8 @@ static void test_initialize_event_handler( void )
 	CU_ASSERT_PTR_NULL( evt.user_data );
 	CU_ASSERT_PTR_NULL( evt.el );
 	CU_ASSERT_EQUAL( evt.evt_type, EVT_IO );
+    
+    debug_signals_dump("event");
 }
 
 static void test_new_event_handler( void )
@@ -110,14 +114,16 @@ static void test_delete_event_handler( void )
 }
 
 
-static int test_flag = FALSE;
+static int_t test_flag = FALSE;
 
 static evt_ret_t test_event_callback( evt_loop_t * const el, evt_t * const evt,
 									  evt_params_t * const params, void * user_data )
 {
-	*((int*)user_data) = TRUE;
+	*((int_t*)user_data) = TRUE;
+    debug_signals_dump("start event 4 (cb)");
 	evt_stop_event_handler( el, evt );
 	evt_stop( el, FALSE );
+    debug_signals_dump("start event 5 (cb)");
 }
 
 static void test_start_event_handler( void )
@@ -129,6 +135,8 @@ static void test_start_event_handler( void )
 	MEMSET( &params, 0, sizeof( evt_params_t ) );
 	MEMSET( &timer_value, 0, sizeof( struct itimerval ) );
 
+    debug_signals_dump("start event 0");
+
 	CU_ASSERT_EQUAL( evt_start_event_handler( NULL, NULL ), EVT_BADPTR );
 	CU_ASSERT_EQUAL( evt_start_event_handler( el, NULL ), EVT_BADPTR );
 	evt.evt_type = (evt_type_t)50;
@@ -138,15 +146,21 @@ static void test_start_event_handler( void )
 	params.signal_params.signum = SIGALRM;
 	test_flag = FALSE;
 	CU_ASSERT_TRUE( evt_initialize_event_handler( &evt, EVT_SIGNAL, &params, &test_event_callback, &test_flag ) );
+    debug_signals_dump("start event 1");
 	CU_ASSERT_EQUAL( evt_start_event_handler( el, &evt), EVT_OK );
+    debug_signals_dump("start event 2");
+    /* we'll receive a SIGALRM in 1 second */
 	timer_value.it_value.tv_sec = 1;
 	timer_value.it_interval.tv_sec = 1;
 	CU_ASSERT_EQUAL( setitimer( ITIMER_REAL, &timer_value, NULL ), 0 );
+    debug_signals_dump("start event 3");
 	evt_run( el );
+    debug_signals_dump("start event 6");
 	CU_ASSERT_TRUE( test_flag );
 	test_flag = FALSE;
 	MEMSET( &timer_value, 0, sizeof( struct itimerval ) );
 	CU_ASSERT_EQUAL( setitimer( ITIMER_REAL, &timer_value, NULL ), 0 );
+    debug_signals_dump("start event 7");
 }
 
 static void test_stop_event_handler( void )

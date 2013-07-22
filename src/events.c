@@ -194,16 +194,34 @@ int_t evt_initialize_event_handler( evt_t * const evt,
     {
         case EVT_SIGNAL:
         {
+            /* get the current signal mask value */
+            sigemptyset( &(evt->evt_params.signal_params.oldset) );
+            sigprocmask( SIG_BLOCK, NULL, &(evt->evt_params.signal_params.oldset) );
+
+            /* get the current sigaction */
+            MEMSET( &(evt->evt_params.signal_params.oldact), 0, sizeof(struct sigaction) );
+            sigaction( evt->evt_params.signal_params.signum,
+                       NULL,
+                       &(evt->evt_params.signal_params.oldact) );
+
             /* initialize a libev signal event */
-            ev_signal_init( (struct ev_signal*)&(evt->ev.sig), 
+            ev_signal_init( (struct ev_signal*)evt, 
                             evt_signal_callback, 
                             evt->evt_params.signal_params.signum );
             return TRUE;
         }
         case EVT_CHILD:
         {
+            /* get the current signal mask value */
+            sigemptyset( &(evt->evt_params.child_params.oldset) );
+            sigprocmask( 0, NULL, &(evt->evt_params.child_params.oldset) );
+
+            /* get the current sigaction */
+            MEMSET( &(evt->evt_params.child_params.oldact), 0, sizeof(struct sigaction) );
+            sigaction( SIGCHLD, NULL, &(evt->evt_params.signal_params.oldact) );
+
             /* initialize a libev child event */
-            ev_child_init( (struct ev_child*)&(evt->ev.child),
+            ev_child_init( (struct ev_child*)evt,
                            evt_child_callback,
                            evt->evt_params.child_params.pid,
                            evt->evt_params.child_params.trace );
@@ -212,7 +230,7 @@ int_t evt_initialize_event_handler( evt_t * const evt,
         case EVT_IO:
         {
             /* initialize a libev io event */
-            ev_io_init( (struct ev_io*)&(evt->ev.io),
+            ev_io_init( (struct ev_io*)evt,
                         evt_io_callback,
                         evt->evt_params.io_params.fd,
                         evt->evt_params.io_params.types );
@@ -246,10 +264,57 @@ evt_t * evt_new_event_handler( evt_type_t const t,
 
 void evt_deinitialize_event_handler( evt_t * const evt )
 {
+    sigset_t mask;
+
     /* stop the event handler if needed */
     if ( evt->el != NULL )
     {
         evt_stop_event_handler( evt->el, evt );
+    }
+
+    switch( evt->evt_type )
+    {
+        case EVT_SIGNAL:
+
+            sigemptyset( &mask );
+
+            /* if the oldset had the signal asserted, it was blocked before
+             * so add it to our new mask...*/
+            if ( sigismember( &(evt->evt_params.signal_params.oldset),
+                              evt->evt_params.signal_params.signum ) )
+            {
+                sigaddset( &mask, evt->evt_params.signal_params.signum );
+            }
+
+            /*...and now we can block it again */
+            sigprocmask( SIG_BLOCK, &mask, NULL );
+
+            /* now restore the old sigaction */
+            sigaction( evt->evt_params.signal_params.signum,
+                       &(evt->evt_params.signal_params.oldact),
+                       NULL );
+            
+            break;
+
+        case EVT_CHILD:
+            sigemptyset( &mask );
+
+            /* if SIGCHLD was asserted in the old set... */
+            if ( sigismember( &(evt->evt_params.child_params.oldset), SIGCHLD ) )
+            {
+                /* ...we add it to our new mask... */
+                sigaddset( &mask, SIGCHLD );
+            }
+
+            /*...and now we can block it again */
+            sigprocmask( SIG_BLOCK, &mask, NULL );
+
+            /* now restore the old SIGCHLD sigaction */
+            sigaction( SIGCHLD, &(evt->evt_params.signal_params.oldact), NULL );
+            break;
+
+        case EVT_IO:
+            break;
     }
 }
 
@@ -281,22 +346,22 @@ evt_ret_t evt_start_event_handler( evt_loop_t * const el,
         case EVT_SIGNAL:
         {
             /* start the libev signal event */
-            DEBUG("starting signal event\n");
-            ev_signal_start( (struct ev_loop*)el, (struct ev_signal*)&(evt->ev.sig) );
+            LOG("starting signal event\n");
+            ev_signal_start( (struct ev_loop*)el, (struct ev_signal*)evt );
             break;
         }
         case EVT_CHILD:
         {
             /* start the libevn child event */
-            DEBUG("staring child event\n");
-            ev_child_start( (struct ev_loop*)el, (struct ev_child*)&(evt->ev.child) );
+            LOG("staring child event\n");
+            ev_child_start( (struct ev_loop*)el, (struct ev_child*)evt );
             break;
         }
         case EVT_IO:
         {
             /* start the libev io event */
             DEBUG("starting io event\n");
-            ev_io_start( (struct ev_loop*)el, (struct ev_io*)&(evt->ev.io) );
+            ev_io_start( (struct ev_loop*)el, (struct ev_io*)evt );
             break;
         }
     }
@@ -317,12 +382,14 @@ evt_ret_t evt_stop_event_handler( evt_loop_t * const el,
         case EVT_SIGNAL:
         {
             /* stop the libev signal event */
+            LOG("stopping signal event\n");
             ev_signal_stop( (struct ev_loop*)el, (struct ev_signal*)evt );
             break;
         }
         case EVT_CHILD:
         {
             /* stop the libev child event */
+            LOG("stopping child event\n");
             ev_child_stop( (struct ev_loop*)el, (struct ev_child*)evt );
             break;
         }
@@ -346,7 +413,10 @@ evt_ret_t evt_run( evt_loop_t * const el )
     CHECK_PTR_RET( el, EVT_BADPTR );
 
     /* start the libev event loop */
-    ev_run( (struct ev_loop*)el, 0 );
+    if( !ev_run( (struct ev_loop*)el, 0 ) )
+    {
+        DEBUG("ev loop returned immeidately: no event handlers are active!\n");
+    }
 
     return EVT_OK;
 }
@@ -362,6 +432,50 @@ evt_ret_t evt_stop( evt_loop_t * const el, int_t once )
         ev_break( (struct ev_loop*)el, EVBREAK_ALL );
 
     return EVT_OK;
+}
+
+#define SIGMIN (1)
+#define SIGMAX (64)
+size_t get_signals_debug_string( sigset_t const * const sigs, uint8_t ** out )
+{
+    static uint8_t buf[4096];
+    uint8_t * p;
+    int i;
+
+    MEMSET(buf, 0, 4096);
+    p = &buf[0];
+    for ( i = SIGMIN; (i < SIGMAX) && (p < &buf[4095]); ++i )
+    {
+        if ( sigismember( sigs, i ) )
+        {
+            p += sprintf( buf, "\t%s\n", strsignal( i ) );
+        }
+    }
+
+    (*out) = &buf[0];
+
+    return (size_t)(p - &buf[0]);
+}
+
+void debug_signals_dump(uint8_t const * const prefix)
+{
+    sigset_t s;
+    uint8_t * p;
+
+    sigemptyset( &s );
+    sigprocmask( SIG_BLOCK, NULL, &s );
+    if ( get_signals_debug_string( &s, &p ) )
+        LOG( "%s Blocked Signals:\n%s", prefix, p );
+
+    sigemptyset( &s );
+    sigprocmask( SIG_UNBLOCK, NULL, &s );
+    if ( get_signals_debug_string( &s, &p ) )
+        LOG( "%s Unblocked Signals:\n%s", prefix, p );
+
+    sigemptyset( &s );
+    sigpending( &s );
+    if ( get_signals_debug_string( &s, &p ) )
+        LOG( "%s Pending Signals:\n%s", prefix, p );
 }
 
 #if defined(UNIT_TESTING)

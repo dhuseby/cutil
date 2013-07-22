@@ -38,14 +38,14 @@ struct aiofd_s
     struct aiofd_ops_s
     {
         int_t (*read_evt_fn)( aiofd_t * const aiofd, size_t nread, void * user_data );
-        int_t (*write_evt_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data );
+        int_t (*write_evt_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data, void * per_write_data );
         int_t (*error_evt_fn)( aiofd_t * const aiofd, int err, void * user_data );
 
         /* user definable low-level read/write/readv/writev functions to use */
         ssize_t (*read_fn)(int fd, void * const buf, size_t const count, void * user_data);
-        ssize_t (*write_fn)(int fd, void const * const buf, size_t const count, void * user_data);
+        ssize_t (*write_fn)(int fd, void const * const buf, size_t const count, void * user_data, void * per_write_data );
         ssize_t (*readv_fn)(int fd, struct iovec * const iov, size_t const iovcnt, void * user_data);
-        ssize_t (*writev_fn)(int fd, struct iovec const * const iov, size_t const iovcnt, void * user_data);
+        ssize_t (*writev_fn)(int fd, struct iovec const * const iov, size_t const iovcnt, void * user_data, void * per_write_data );
     }           ops;
 };
 
@@ -82,19 +82,21 @@ ssize_t aiofd_readv( aiofd_t * const aiofd,
 /* write data to the fd */
 int_t aiofd_write( aiofd_t * const aiofd, 
                  uint8_t const * const buffer, 
-                 size_t const n );
+                 size_t const n,
+                 void * per_write_data );
 
 /* write iovec to the fd (gather output) */
 int_t aiofd_writev( aiofd_t * const aiofd,
                   struct iovec const * const iov,
-                  size_t const iovcnt );
+                  size_t const iovcnt,
+                  void * per_write_data );
 
 /* flush the fd output */
 int_t aiofd_flush( aiofd_t * const aiofd );
 
 /* get/set the listening fd flag, used for bound and listening socket fd's */
 int_t aiofd_set_listen( aiofd_t * const aiofd, int_t listen );
-int_t aiofd_get_listen( aiofd_t * const aiofd );
+int_t aiofd_get_listen( aiofd_t const * const aiofd );
 
 #endif/*__AIOFD_H__*/
 

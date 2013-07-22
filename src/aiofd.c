@@ -37,25 +37,40 @@ typedef struct aiofd_write_s
     size_t size;
     int_t iov;
     size_t nleft;
+    void * per_write_data;
 
 } aiofd_write_t;
 
-static ssize_t aiofd_do_read( int fd, void * const buf, size_t const count, void * user_data )
+static ssize_t aiofd_do_read( int fd, 
+                              void * const buf, 
+                              size_t const count, 
+                              void * user_data )
 {
     return READ( fd, buf, count );
 }
 
-static ssize_t aiofd_do_write( int fd, void const * const buf, size_t const count, void * user_data )
-{
-    return WRITE( fd, buf, count );
-}
-
-static ssize_t aiofd_do_readv( int fd, struct iovec * const iov, size_t const iovcnt, void * user_data )
+static ssize_t aiofd_do_readv( int fd, 
+                               struct iovec * const iov, 
+                               size_t const iovcnt, 
+                               void * user_data )
 {
     return READV( fd, iov, iovcnt );
 }
 
-static ssize_t aiofd_do_writev( int fd, struct iovec const * const iov, size_t const iovcnt, void * user_data )
+static ssize_t aiofd_do_write( int fd, 
+                               void const * const buf, 
+                               size_t const count, 
+                               void * user_data,
+                               void * per_write_data )
+{
+    return WRITE( fd, buf, count );
+}
+
+static ssize_t aiofd_do_writev( int fd, 
+                                struct iovec const * const iov, 
+                                size_t const iovcnt, 
+                                void * user_data,
+                                void * per_write_data )
 {
     return WRITEV( fd, iov, iovcnt );
 }
@@ -94,12 +109,12 @@ static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
         if ( wb->iov )
         {
             /* call the low-level writev function */
-            written = (*(aiofd->ops.writev_fn))( aiofd->wfd, (struct iovec const *)wb->data, (int)wb->size, aiofd->user_data );
+            written = (*(aiofd->ops.writev_fn))( aiofd->wfd, (struct iovec const *)wb->data, (int)wb->size, aiofd->user_data, wb->per_write_data );
         }
         else
         {
             /* call the low-level write function */
-            written = (*(aiofd->ops.write_fn))( aiofd->wfd, wb->data, wb->size, aiofd->user_data );
+            written = (*(aiofd->ops.write_fn))( aiofd->wfd, wb->data, wb->size, aiofd->user_data, wb->per_write_data );
         }
 
         /* try to write the data to the socket */
@@ -112,7 +127,7 @@ static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
             }
             else
             {
-                DEBUG( "write error: %d\n", ERRNO );
+                DEBUG( "write error: %s (%d)\n", strerror(ERRNO), ERRNO );
                 if ( aiofd->ops.error_evt_fn != NULL )
                 {
                     DEBUG( "calling error callback\n" );
@@ -137,7 +152,7 @@ static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
                 if ( aiofd->ops.write_evt_fn != NULL )
                 {
                     DEBUG( "calling write complete callback\n" );
-                    keep_evt_on = (*(aiofd->ops.write_evt_fn))( aiofd, wb->data, aiofd->user_data );
+                    keep_evt_on = (*(aiofd->ops.write_evt_fn))( aiofd, wb->data, aiofd->user_data, wb->per_write_data );
                 }
 
                 /* free it */
@@ -150,7 +165,7 @@ static evt_ret_t aiofd_write_fn( evt_loop_t * const el,
     if ( aiofd->ops.write_evt_fn != NULL )
     {
         DEBUG( "calling write complete callback with null buffer\n" );
-        keep_evt_on = (*(aiofd->ops.write_evt_fn))( aiofd, NULL, aiofd->user_data );
+        keep_evt_on = (*(aiofd->ops.write_evt_fn))( aiofd, NULL, aiofd->user_data, NULL );
     }
     
     if ( ! keep_evt_on )
@@ -439,7 +454,8 @@ static int_t aiofd_write_common( aiofd_t* const aiofd,
                                  void * buffer,
                                  size_t const cnt,
                                  size_t const total,
-                                 int_t iov )
+                                 int_t iov,
+                                 void * per_write_data )
 {
     int32_t asize = 0;
     ssize_t res = 0;
@@ -464,6 +480,7 @@ static int_t aiofd_write_common( aiofd_t* const aiofd,
     wb->size = cnt;
     wb->iov = iov;
     wb->nleft = total;
+    wb->per_write_data = per_write_data;
 
     /* queue the write */
     if ( !list_push_tail( &(aiofd->wbuf), wb ) )
@@ -485,15 +502,17 @@ static int_t aiofd_write_common( aiofd_t* const aiofd,
 
 int_t aiofd_write( aiofd_t * const aiofd, 
                    uint8_t const * const buffer, 
-                   size_t const n )
+                   size_t const n,
+                   void * per_write_data )
 {
     UNIT_TEST_RET( aiofd_write );
-    return aiofd_write_common( aiofd, (void*)buffer, n, n, FALSE );
+    return aiofd_write_common( aiofd, (void*)buffer, n, n, FALSE, per_write_data );
 }
 
 int_t aiofd_writev( aiofd_t * const aiofd,
                     struct iovec const * const iov,
-                    size_t const iovcnt )
+                    size_t const iovcnt,
+                    void * per_write_data )
 {
     size_t i;
     size_t total = 0;
@@ -506,7 +525,7 @@ int_t aiofd_writev( aiofd_t * const aiofd,
         total += iov[i].iov_len;
     }
 
-    return aiofd_write_common( aiofd, (void*)iov, iovcnt, total, TRUE );
+    return aiofd_write_common( aiofd, (void*)iov, iovcnt, total, TRUE, per_write_data );
 }
 
 int_t aiofd_flush( aiofd_t * const aiofd )
@@ -515,8 +534,8 @@ int_t aiofd_flush( aiofd_t * const aiofd )
 
     CHECK_PTR_RET(aiofd, FALSE);
     
-    fsync( aiofd->wfd );
-    fsync( aiofd->rfd );
+    CHECK_RET( FSYNC( aiofd->wfd ) == 0, FALSE );
+    CHECK_RET( FSYNC( aiofd->rfd ) == 0, FALSE );
     
     return TRUE;
 }
@@ -530,7 +549,7 @@ int_t aiofd_set_listen( aiofd_t * const aiofd, int_t listen )
     return TRUE;
 }
 
-int_t aiofd_get_listen( aiofd_t * const aiofd )
+int_t aiofd_get_listen( aiofd_t const * const aiofd )
 {
     CHECK_PTR_RET( aiofd, FALSE );
     return aiofd->listen;
@@ -556,7 +575,7 @@ static int_t read_callback_fn( aiofd_t * const aiofd, size_t nread, void * user_
     return read_callback_ret;
 }
 
-static int_t write_callback_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data )
+static int_t write_callback_fn( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data, void * per_write_data )
 {
     ((cb_count_t*)user_data)->w++;
     return write_callback_ret;
@@ -876,23 +895,23 @@ void test_aiofd_write_common( void )
     MEMSET( &aiofd, 0, sizeof( aiofd_t ) );
     MEMSET( &iov, 0, sizeof( struct iovec) );
 
-    CU_ASSERT_FALSE( aiofd_write_common( NULL, NULL, 0, 0, FALSE ) );
-    CU_ASSERT_FALSE( aiofd_write_common( &aiofd, NULL, 0, 0, FALSE ) );
-    CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, 0, 0, FALSE ) );
-    CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, size, 0, FALSE ) );
+    CU_ASSERT_FALSE( aiofd_write_common( NULL, NULL, 0, 0, FALSE, NULL ) );
+    CU_ASSERT_FALSE( aiofd_write_common( &aiofd, NULL, 0, 0, FALSE, NULL ) );
+    CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, 0, 0, FALSE, NULL ) );
+    CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, size, 0, FALSE, NULL ) );
 
     fail_alloc = TRUE;
-    CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, size, size, FALSE ) );
+    CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, size, size, FALSE, NULL ) );
     fail_alloc = FALSE;
 
     fake_list_push = TRUE;
     fake_list_push_ret = FALSE;
-    CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, size, size, FALSE ) );
+    CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, size, size, FALSE, NULL ) );
     fake_list_push = FALSE;
 
     fake_event_start_handler = TRUE;
     fake_event_start_handler_ret = FALSE;
-    CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, size, size, FALSE ) );
+    CU_ASSERT_FALSE( aiofd_write_common( &aiofd, buf, size, size, FALSE, NULL ) );
     fake_event_start_handler = FALSE;
 }
 
