@@ -301,6 +301,7 @@ static void test_aiofd_read( void )
 	fake_errno_value = 0;
 	fake_errno = FALSE;
 	fake_read = FALSE;
+    aiofd_deinitialize( &aiofd );
 }
 
 static void test_aiofd_flush_null( void )

@@ -34,6 +34,8 @@
 #include <sys/un.h>
 #include <netinet/tcp.h>
 
+#define DEBUG_ON
+
 #include "debug.h"
 #include "macros.h"
 #include "events.h"
@@ -878,16 +880,17 @@ socket_t* socket_new( socket_type_t const type,
     CHECK_PTR_RET(s, NULL);
 
     /* initlialize the socket */
-    if ( socket_initialize( s, type, host, port, ops, user_data ) == FALSE )
-    {
-        socket_delete( s );
-        return NULL;
-    }
-
+    CHECK_GOTO( socket_initialize( s, type, host, port, ops, user_data ), socket_new_fail );
+    
     /* open the socket and initialize everything */
-    CHECK_RET( socket_open_socket( s, el, ai_flags, ai_family ), FALSE );
+    CHECK_GOTO( socket_open_socket( s, el, ai_flags, ai_family ), socket_new_fail );
 
     return s;
+
+socket_new_fail:
+    DEBUG( "socket_new failure: %s\n", check_err_str_ );
+    socket_delete( s );
+    return NULL;
 }
 
 static void socket_deinitialize( socket_t * const s )
@@ -898,13 +901,17 @@ static void socket_deinitialize( socket_t * const s )
 
     /* clean up the host name */
     if ( s->host != NULL )
-        FREE ( s->host );
+        FREE( s->host );
+
+    /* clean up the port number */
+    if ( s->port != NULL )
+        FREE( s->port );
 }
 
 void socket_delete( void * s )
 {
     socket_t * sock = (socket_t*)s;
-    CHECK_PTR( s );
+    CHECK_PTR( sock );
 
     socket_deinitialize( sock );
 
@@ -1152,19 +1159,10 @@ socket_t * socket_accept( socket_t * const s,
     CHECK_PTR_RET_MSG( client, NULL, "failed to allocate new socket struct\n" );
 
     /* initlialize the socket */
-    if ( socket_initialize( client, s->type, NULL, NULL, ops, user_data ) == FALSE )
-    {
-        socket_delete( s );
-        return NULL;
-    }
+    CHECK_GOTO( socket_initialize( client, s->type, NULL, NULL, ops, user_data ), socket_accept_fail );
 
-    if ( (fd = ACCEPT( s->aiofd.rfd, (struct sockaddr *)&(client->addr), &client->addrlen ) ) < 0 )
-    {
-        DEBUG( "failed to accept incoming connection\n" );
-        socket_delete( client );
-        return NULL;
-    }
-
+    CHECK_GOTO( (fd = ACCEPT( s->aiofd.rfd, (struct sockaddr *)&(client->addr), &client->addrlen ) ) < 0, socket_accept_fail );
+    
     /* do the connect based on the type */
     switch(s->type)
     {
@@ -1174,47 +1172,23 @@ socket_t * socket_accept( socket_t * const s,
 
             /* turn off TCP naggle algorithm */
             flags = 1;
-            if ( SETSOCKOPT( fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags) ) < 0 )
-            {
-                DEBUG( "failed to turn on TCP no delay\n" );
-            }
-            else
-            {
-                DEBUG("turned on TCP no delay\n");
-            }
+            CHECK_GOTO(SETSOCKOPT( fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags) ) < 0, socket_accept_fail );
+            DEBUG("turned on TCP no delay\n");
 
             /* fill in the host string */
-            if ( client->host != NULL )
-            {
-                FREE( client->host );
-            }
+            FREE( client->host );
             client->host = CALLOC( HOSTNAME_BUFFER_LEN, sizeof(uint8_t) );
-            if ( client->host == NULL )
-            {
-                DEBUG("failed to allocate host buffer for incoming connection\n");
-            }
-            else
-            {
-                inet_ntop( client->addr.ss_family,
-                           socket_in_addr( &client->addr ),
-                           client->host,
-                           HOSTNAME_BUFFER_LEN );
-            }
+            CHECK_PTR_GOTO( client->host, socket_accept_fail );
+            inet_ntop( client->addr.ss_family,
+                       socket_in_addr( &client->addr ),
+                       client->host,
+                       HOSTNAME_BUFFER_LEN );
 
             /* fill in the port string */
-            if ( client->port != NULL )
-            {
-                FREE( client->port );
-            }
+            FREE( client->port );
             client->port = CALLOC( PORT_BUFFER_LEN, sizeof(uint8_t) );
-            if ( client->port == NULL )
-            {
-                DEBUG("failed to allocate port buffer for incoming connection\n");
-            }
-            else
-            {
-                snprintf( client->port, PORT_BUFFER_LEN, "%hu", socket_in_port( &client->addr ) );
-            }
+            CHECK_PTR_GOTO( client->port, socket_accept_fail );
+            snprintf( client->port, PORT_BUFFER_LEN, "%hu", socket_in_port( &client->addr ) );
 
             break;
     
@@ -1223,25 +1197,19 @@ socket_t * socket_accept( socket_t * const s,
             /* store the connection information */
             client->host = STRDUP( ((struct sockaddr_un*)&(client->addr))->sun_path );
 
+            /* make sure the copy succeeded */
+            CHECK_PTR_GOTO( client->host, socket_accept_fail );
+
             break;
     }
 
     /* set the socket to non blocking mode */
     flags = FCNTL( fd, F_GETFL );
-    if( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0 )
-    {
-        DEBUG("failed to set socket to non-blocking\n");
-    }
-    
+    CHECK_GOTO( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0, socket_accept_fail );
     DEBUG("socket is now non-blocking\n");
 
     /* initialize the aiofd to manage the socket */
-    if ( !aiofd_initialize( &(client->aiofd), fd, fd, &aiofd_ops, el, (void*)client ) )
-    {
-        DEBUG("failed to initialize the aiofd for the socket\n");
-        socket_delete( (void*)client );
-        return NULL;
-    }
+    CHECK_GOTO( aiofd_initialize( &(client->aiofd), fd, fd, &aiofd_ops, el, (void*)client ), socket_accept_fail );
     
     DEBUG("aiofd initialized\n");
     
@@ -1256,14 +1224,14 @@ socket_t * socket_accept( socket_t * const s,
     }
 
     /* we're connected so start read event */
-    if ( !aiofd_enable_read_evt( &(client->aiofd), TRUE ) )
-    {
-        DEBUG( "failed to enable read event\n" );
-        socket_delete( (void*)client );
-        return NULL;
-    }
+    CHECK_GOTO( aiofd_enable_read_evt( &(client->aiofd), TRUE ), socket_accept_fail );
 
     return client;
+
+socket_accept_fail:
+    DEBUG( "socket_accept failure: %s\n", check_err_str_ );
+    socket_delete( (void*)client );
+    return NULL;
 }
 
 socket_ret_t socket_disconnect( socket_t* const s )

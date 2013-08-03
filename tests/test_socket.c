@@ -70,7 +70,7 @@ static void test_socket_newdel( void )
 {
     int i;
     socket_t * s;
-    socket_type_t type;
+    socket_type_t type = SOCKET_TCP;
     socket_ops_t ops =
     {
         &connect_fn,
@@ -84,7 +84,7 @@ static void test_socket_newdel( void )
     {
         s = NULL;
         /* randomly select from SOCKET_TCP, SOCKET_UDP, and SOCKET_UNIX */
-        type = ((rand() % 2) + SOCKET_FIRST);
+        /*type = ((rand() % 2) + SOCKET_FIRST);*/
 
         switch( type )
         {

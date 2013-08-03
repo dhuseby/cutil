@@ -293,6 +293,8 @@ extern void* fake_ev_default_loop_ret;
 
 #else /* UNIT_TESTING */
 
+/* UNIT_TESTING IS NOT DEFINED */
+
 /* abstractions of system functions */
 #if !defined(ACCEPT)
 #define ACCEPT accept
@@ -481,8 +483,8 @@ extern void* fake_ev_default_loop_ret;
 #define EV_DEFAULT_LOOP ev_default_loop
 
 /* define these to be nothing when not unit testing */
-#define UNIT_TEST_RET
-#define UNIT_TEST_FAIL
+#define UNIT_TEST_RET(x) {;}
+#define UNIT_TEST_FAIL(x) {;}
 
 #endif /* UNIT_TESTING */
 
