@@ -232,7 +232,9 @@ static ssize_t t_server_read_fn( socket_t * const s, size_t const nread, void * 
     socket_read( s, UT(ping), 6 );
 
     CU_ASSERT_EQUAL( strcmp( C(ping), "PING!" ), 0 );
+    DEBUG("TCP server received %s\n", ping);
 
+    DEBUG("TCP server writing PONG!");
     socket_write( s, pong, 6 );
 
     /* tell the server to disconnect after the next write completes */
@@ -269,7 +271,7 @@ static socket_ret_t t_incoming_fn( socket_t * const s, void * user_data )
     CHECK_RET( socket_get_type( s ) == SOCKET_TCP, SOCKET_ERROR );
     CHECK_RET( socket_is_bound( s ), SOCKET_ERROR );
 
-    DEBUG("listen socket incoming callback...calling socket_accept\n");
+    DEBUG("listen socket incoming callback...calling socket_accept %p\n", (void*)s);
 
     (*server) = socket_accept( s, &sops, el, NULL );
     DEBUG("server socket %p\n", (void*)(*server));
@@ -284,7 +286,7 @@ static socket_ret_t t_client_connect_fn( socket_t * const s, void * user_data )
 {
     uint8_t const * const ping = UT("PING!");
 
-    DEBUG("client socket connect callback\n");
+    DEBUG("client socket connect callback, server sending PING!\n");
     socket_write( s, ping, 6 );
 
     return SOCKET_OK;
@@ -319,6 +321,8 @@ static ssize_t t_client_read_fn( socket_t * const s, size_t const nread, void * 
 
     CU_ASSERT_EQUAL( strcmp( C(pong), "PONG!" ), 0 );
 
+    DEBUG("TCP client received %s\n", pong);
+
     socket_disconnect( s );
 
     return 6;
@@ -347,8 +351,7 @@ static void test_tcp_socket( void )
     };
 
     /* create the listening socket */
-    lsock = socket_new( SOCKET_TCP, NULL, "12121", AI_PASSIVE, AF_INET, &lops, el, (void*)&ssock );
-    DEBUG("listening socket %p\n", (void*)lsock);
+    lsock = socket_new( SOCKET_TCP, NULL, "12121", AI_PASSIVE, AF_UNSPEC, &lops, el, (void*)&ssock );
     CU_ASSERT_PTR_NOT_NULL_FATAL( lsock );
     
     /* bind it */
@@ -356,6 +359,7 @@ static void test_tcp_socket( void )
     CU_ASSERT_TRUE( socket_is_bound( lsock ) );
 
     /* set it to listen */
+    DEBUG("listening socket %p\n", (void*)lsock);
     CU_ASSERT_EQUAL( socket_listen( lsock, 5 ), SOCKET_OK );
     CU_ASSERT_TRUE( socket_is_listening( lsock ) );
 

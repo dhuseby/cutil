@@ -162,8 +162,8 @@ static CU_pSuite add_sanitize_tests( CU_pSuite pSuite )
 	ADD_TEST( "sanitize environment w/preserve test", test_sanitize_environment_preserve);
 	ADD_TEST( "sanitize environment w/add test", test_sanitize_environment_add);
 	ADD_TEST( "close open files sanitize files test", test_sanitize_open_files);
-	ADD_TEST( "open closed std file descriptors sanitize files test", test_sanitize_closed_std_descriptors);
 	ADD_TEST( "sanitize private functions", test_sanitize_private_functions );
+	ADD_TEST( "open closed std file descriptors sanitize files test", test_sanitize_closed_std_descriptors);
 
 	return pSuite;
 }

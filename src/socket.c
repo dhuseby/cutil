@@ -34,8 +34,6 @@
 #include <sys/un.h>
 #include <netinet/tcp.h>
 
-#define DEBUG_ON
-
 #include "debug.h"
 #include "macros.h"
 #include "events.h"
@@ -1082,7 +1080,7 @@ socket_ret_t socket_bind( socket_t * const s )
         return SOCKET_ERROR;
     }
     
-    DEBUG( "socket is bound %p\n", (void*)s);
+    DEBUG( "socket is bound %p fd: %d\n", (void*)s, s->aiofd.rfd );
 
     /* flag the socket as bound */
     s->bound = TRUE;
@@ -1096,6 +1094,7 @@ socket_ret_t socket_bind( socket_t * const s )
 
 socket_ret_t socket_listen( socket_t * const s, int const backlog )
 {
+    static uint8_t buf[1024];
     CHECK_PTR_RET( s, SOCKET_BADPARAM );
     CHECK_RET( socket_is_bound( s ), SOCKET_BOUND );
     CHECK_RET( !socket_is_connected( s ), SOCKET_CONNECTED );
@@ -1112,6 +1111,10 @@ socket_ret_t socket_listen( socket_t * const s, int const backlog )
         DEBUG( "failed to listen (errno: %d)\n", errno );
         return SOCKET_ERROR;
     }
+
+    MEMSET( buf, 0, 1024 );
+    socket_get_addr_string( &(s->addr), buf, 1024 );
+    DEBUG( "socket is listening %p fd: %d -- %s\n", (void*)s, s->aiofd.rfd, buf );
 
     /* set the listen flag so that it doesn't error on 0 size read callbacks */
     aiofd_set_listen( &(s->aiofd), TRUE );
@@ -1160,8 +1163,10 @@ socket_t * socket_accept( socket_t * const s,
 
     /* initlialize the socket */
     CHECK_GOTO( socket_initialize( client, s->type, NULL, NULL, ops, user_data ), socket_accept_fail );
+    s->addrlen = sizeof(s->addr);
 
-    CHECK_GOTO( (fd = ACCEPT( s->aiofd.rfd, (struct sockaddr *)&(client->addr), &client->addrlen ) ) < 0, socket_accept_fail );
+    /* accept the incoming connection */
+    CHECK_GOTO( (fd = ACCEPT( s->aiofd.rfd, (struct sockaddr *)&(s->addr), &(s->addrlen) ) ) >= 0, socket_accept_fail );
     
     /* do the connect based on the type */
     switch(s->type)
@@ -1172,7 +1177,7 @@ socket_t * socket_accept( socket_t * const s,
 
             /* turn off TCP naggle algorithm */
             flags = 1;
-            CHECK_GOTO(SETSOCKOPT( fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags) ) < 0, socket_accept_fail );
+            CHECK_GOTO(SETSOCKOPT( fd, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags) ) == 0, socket_accept_fail );
             DEBUG("turned on TCP no delay\n");
 
             /* fill in the host string */
@@ -1205,7 +1210,7 @@ socket_t * socket_accept( socket_t * const s,
 
     /* set the socket to non blocking mode */
     flags = FCNTL( fd, F_GETFL );
-    CHECK_GOTO( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) < 0, socket_accept_fail );
+    CHECK_GOTO( FCNTL( fd, F_SETFL, (flags | O_NONBLOCK) ) == 0, socket_accept_fail );
     DEBUG("socket is now non-blocking\n");
 
     /* initialize the aiofd to manage the socket */
@@ -1230,6 +1235,7 @@ socket_t * socket_accept( socket_t * const s,
 
 socket_accept_fail:
     DEBUG( "socket_accept failure: %s\n", check_err_str_ );
+    DEBUG( "ERRNO is: %d -- %s\n", ERRNO, strerror(ERRNO));
     socket_delete( (void*)client );
     return NULL;
 }
