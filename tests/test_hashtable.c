@@ -35,7 +35,7 @@
 #define SIZEMAX (128)
 #define MULTIPLE (8)
 
-ht_itr_t fake_ht_find_ret;
+extern ht_itr_t fake_ht_find_ret;
 extern void test_hashtable_private_functions( void );
 
 static uint_t hash_fn( void const * const key )

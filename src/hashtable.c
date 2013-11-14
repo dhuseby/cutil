@@ -27,7 +27,7 @@
 
 #if defined(UNIT_TESTING)
 #include "test_flags.h"
-extern ht_itr_t fake_ht_find_ret;
+ht_itr_t fake_ht_find_ret;
 #endif
 
 #define LIST_AT( lists, index )  (&(lists[index]))
