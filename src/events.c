@@ -413,10 +413,7 @@ evt_ret_t evt_run( evt_loop_t * const el )
     CHECK_PTR_RET( el, EVT_BADPTR );
 
     /* start the libev event loop */
-    if( !ev_run( (struct ev_loop*)el, 0 ) )
-    {
-        DEBUG("ev loop returned immeidately: no event handlers are active!\n");
-    }
+    ev_run( el, 0 );
 
     return EVT_OK;
 }
