@@ -114,6 +114,13 @@ int_t list_deinitialize( list_t * const list )
         }
     }
 
+    /* reset the meta data */
+    list->dfn = NULL;
+    list->size = 0;
+    list->count = 0;
+    list->used_head = list_itr_end_t;
+    list->free_head = list_itr_end_t;
+
     /* free the items array */
     if ( list->items != NULL )
     {
