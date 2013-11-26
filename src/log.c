@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <syslog.h>
+#include <paths.h>
 
 #include "macros.h"
 #include "list.h"
@@ -147,10 +148,10 @@ log_t * start_logging( log_type_t type, void * param, int append )
             CHECK_PTR_GOTO( log->cookie, _start_logging_fail );
 
 #if defined linux
-            /* redirect stderr writes to our custom writer function that outputs to syslog */
+            /* redirect stderr writes to our custom writer function that outputs to a file */
             setvbuf(stderr = fopencookie( log->cookie, "w", filelog_fns), NULL, _IOLBF, 0);
 #elif defined __APPLE__
-            /* redirect stderr writes to our custom writer function that outputs to syslog */
+            /* redirect stderr writes to our custom writer function that outputs to a file */
             setvbuf(stderr = fwopen( log->cookie, (writefn)filelog_writer ), NULL, _IOLBF, 0);
 #endif
             break;
@@ -170,10 +171,10 @@ log_t * start_logging( log_type_t type, void * param, int append )
             log->cookie = param;
 
 #if defined linux
-            /* redirect stderr writes to our custom writer function that outputs to syslog */
+            /* redirect stderr writes to our custom writer function that outputs to a list */
             setvbuf(stderr = fopencookie( log->cookie, "w", listlog_fns), NULL, _IOLBF, 0);
 #elif defined __APPLE__
-            /* redirect stderr writes to our custom writer function that outputs to syslog */
+            /* redirect stderr writes to our custom writer function that outputs to a list */
             setvbuf(stderr = fwopen( log->cookie, (writefn)listlog_writer ), NULL, _IOLBF, 0);
 #endif
             break;
@@ -198,10 +199,14 @@ void stop_logging( log_t * log )
     {
         case LOG_TYPE_SYSLOG:
             closelog();
+            /* reset stderr stream by opening /dev/null */
+            freopen( _PATH_DEVNULL, "wb", stderr );
             break;
 
         case LOG_TYPE_FILE:
             fclose( (FILE*)log->cookie );
+            /* reset stderr stream by opening /dev/null */
+            freopen( _PATH_DEVNULL, "wb", stderr );
             break;
 
         case LOG_TYPE_STDERR:
@@ -209,7 +214,8 @@ void stop_logging( log_t * log )
             break;
 
         case LOG_TYPE_LIST:
-            /* do nothing */
+            /* reset stderr stream by opening /dev/null */
+            freopen( _PATH_DEVNULL, "wb", stderr );
             break;
     }
     FREE( log );
