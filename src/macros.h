@@ -396,6 +396,10 @@ extern void* fake_ev_default_loop_ret;
 #define READ read
 #endif
 
+#if !defined(READV)
+#define READV readv
+#endif
+
 #if !defined(REALLOC)
 #define REALLOC realloc
 #endif

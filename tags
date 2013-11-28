@@ -294,7 +294,7 @@ EVT_TYPE_COUNT	src/events.h	/^    EVT_TYPE_COUNT = EVT_TYPE_LAST - EVT_TYPE_FIRS
 EVT_TYPE_FIRST	src/events.h	/^    EVT_TYPE_FIRST = EVT_SIGNAL,$/;"	e	enum:evt_type_e
 EVT_TYPE_LAST	src/events.h	/^    EVT_TYPE_LAST,$/;"	e	enum:evt_type_e
 EV_DEFAULT_LOOP	src/macros.h	292;"	d
-EV_DEFAULT_LOOP	src/macros.h	483;"	d
+EV_DEFAULT_LOOP	src/macros.h	487;"	d
 EV_MULTIPLICITY	src/events.c	18;"	d	file:
 EV_NSIG	src/macros.h	67;"	d
 EV_NSIG	src/macros.h	69;"	d
@@ -406,14 +406,15 @@ PRIMES	src/hashtable.c	/^uint_t const PRIMES[] =$/;"	v
 READ	src/macros.h	203;"	d
 READ	src/macros.h	396;"	d
 READV	src/macros.h	207;"	d
+READV	src/macros.h	400;"	d
 REALLOC	src/macros.h	123;"	d
-REALLOC	src/macros.h	400;"	d
+REALLOC	src/macros.h	404;"	d
 RECV	src/macros.h	211;"	d
-RECV	src/macros.h	404;"	d
+RECV	src/macros.h	408;"	d
 RECVFROM	src/macros.h	215;"	d
-RECVFROM	src/macros.h	408;"	d
+RECVFROM	src/macros.h	412;"	d
 RECVMSG	src/macros.h	219;"	d
-RECVMSG	src/macros.h	412;"	d
+RECVMSG	src/macros.h	416;"	d
 REPEAT	tests/test_aiofd.c	34;"	d	file:
 REPEAT	tests/test_child.c	34;"	d	file:
 REPEAT	tests/test_events.c	35;"	d	file:
@@ -424,23 +425,23 @@ REPEAT	tests/test_socket.c	37;"	d	file:
 REPORTDIRS	Makefile	/^REPORTDIRS = $(DIRS:%=report-%)$/;"	m
 ROOT_UID	src/privileges.h	24;"	d
 SEND	src/macros.h	223;"	d
-SEND	src/macros.h	416;"	d
+SEND	src/macros.h	420;"	d
 SENDMSG	src/macros.h	227;"	d
-SENDMSG	src/macros.h	420;"	d
+SENDMSG	src/macros.h	424;"	d
 SENDTO	src/macros.h	231;"	d
-SENDTO	src/macros.h	424;"	d
+SENDTO	src/macros.h	428;"	d
 SETEGID	src/macros.h	235;"	d
-SETEGID	src/macros.h	428;"	d
+SETEGID	src/macros.h	432;"	d
 SETEUID	src/macros.h	239;"	d
-SETEUID	src/macros.h	432;"	d
+SETEUID	src/macros.h	436;"	d
 SETGROUPS	src/macros.h	243;"	d
-SETGROUPS	src/macros.h	436;"	d
+SETGROUPS	src/macros.h	440;"	d
 SETREGID	src/macros.h	247;"	d
-SETREGID	src/macros.h	440;"	d
+SETREGID	src/macros.h	444;"	d
 SETREUID	src/macros.h	251;"	d
-SETREUID	src/macros.h	444;"	d
+SETREUID	src/macros.h	448;"	d
 SETSOCKOPT	src/macros.h	255;"	d
-SETSOCKOPT	src/macros.h	448;"	d
+SETSOCKOPT	src/macros.h	452;"	d
 SHELL	Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL=\/bin\/sh$/;"	m
 SHELL	tests/Makefile	/^SHELL=\/bin\/sh$/;"	m
@@ -452,7 +453,7 @@ SIZEMAX	tests/test_list.c	35;"	d	file:
 SIZEMAX	tests/test_privileges.c	34;"	d	file:
 SIZEMAX	tests/test_socket.c	38;"	d	file:
 SOCKET	src/macros.h	259;"	d
-SOCKET	src/macros.h	452;"	d
+SOCKET	src/macros.h	456;"	d
 SOCKET_BADHOSTNAME	src/socket.h	/^    SOCKET_BADHOSTNAME  = -3,$/;"	e	enum:socket_ret_e
 SOCKET_BADPARAM	src/socket.h	/^    SOCKET_BADPARAM     = -2,$/;"	e	enum:socket_ret_e
 SOCKET_BIND_FAIL	src/socket.h	/^    SOCKET_BIND_FAIL    = -11,$/;"	e	enum:socket_ret_e
@@ -479,13 +480,13 @@ SRC	src/Makefile	/^SRC=aiofd.c bitset.c btree.c buffer.c child.c daemon.c events
 SRC	tests/Makefile	/^SRC=test_all.c test_aiofd.c test_bitset.c test_btree.c test_buffer.c test_child.c test_events.c test_flags.c test_hashtable.c test_list.c test_pair.c test_privileges.c test_sanitize.c test_socket.c$/;"	m
 SRCDIR	Makefile	/^SRCDIR = src$/;"	m
 STAT	src/macros.h	263;"	d
-STAT	src/macros.h	456;"	d
+STAT	src/macros.h	460;"	d
 STRCMP	src/macros.h	267;"	d
-STRCMP	src/macros.h	460;"	d
+STRCMP	src/macros.h	464;"	d
 STRDUP	src/macros.h	271;"	d
-STRDUP	src/macros.h	464;"	d
+STRDUP	src/macros.h	468;"	d
 STRTOL	src/macros.h	275;"	d
-STRTOL	src/macros.h	468;"	d
+STRTOL	src/macros.h	472;"	d
 SUITE	tests/test_macros.h	20;"	d
 T	src/macros.h	35;"	d
 TESTDIR	Makefile	/^TESTDIR = tests$/;"	m
@@ -494,19 +495,19 @@ TESTNRDIRS	Makefile	/^TESTNRDIRS = $(DIRS:%=testnr-%)$/;"	m
 TRUE	src/macros.h	52;"	d
 UNINSTALLDIRS	Makefile	/^UNINSTALLDIRS = $(DIRS:%=uninstall-%)$/;"	m
 UNIT_TEST_FAIL	src/macros.h	117;"	d
-UNIT_TEST_FAIL	src/macros.h	487;"	d
+UNIT_TEST_FAIL	src/macros.h	491;"	d
 UNIT_TEST_RET	src/macros.h	116;"	d
-UNIT_TEST_RET	src/macros.h	486;"	d
+UNIT_TEST_RET	src/macros.h	490;"	d
 UNLINK	src/macros.h	279;"	d
-UNLINK	src/macros.h	472;"	d
+UNLINK	src/macros.h	476;"	d
 UT	src/macros.h	36;"	d
 VALID_EVENT_TYPE	src/events.h	46;"	d
 VALID_SOCKET_TYPE	src/socket.h	61;"	d
 WARN	src/macros.h	93;"	d
 WRITE	src/macros.h	283;"	d
-WRITE	src/macros.h	476;"	d
+WRITE	src/macros.h	480;"	d
 WRITEV	src/macros.h	287;"	d
-WRITEV	src/macros.h	480;"	d
+WRITEV	src/macros.h	484;"	d
 _GNU_SOURCE	src/log.c	17;"	d	file:
 __AIOFD_H__	src/aiofd.h	18;"	d
 __BITSET_H__	src/bitset.h	18;"	d
