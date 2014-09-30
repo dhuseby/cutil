@@ -1,0 +1,641 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - cutil test coverage - src/events.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - events.c<span style="font-size: 80%;"> (source / <a href="events.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">cutil test coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">222</td>
+            <td class="headerCovTableEntry">228</td>
+            <td class="headerCovTableEntryHi">97.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2014-09-29</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  * This program is free software; you can redistribute it and/or modify
+<span class="lineNum">       3 </span>            :  * it under the terms of the GNU General Public License as published by
+<span class="lineNum">       4 </span>            :  * the Free Software Foundation; either version 2 of the License, or
+<span class="lineNum">       5 </span>            :  * (at your option) any later version.
+<span class="lineNum">       6 </span>            :  * 
+<span class="lineNum">       7 </span>            :  * This program is distributed in the hope that it will be useful,
+<span class="lineNum">       8 </span>            :  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+<span class="lineNum">       9 </span>            :  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+<span class="lineNum">      10 </span>            :  * GNU Library General Public License for more details.
+<span class="lineNum">      11 </span>            :  * 
+<span class="lineNum">      12 </span>            :  * You should have received a copy of the GNU General Public License
+<span class="lineNum">      13 </span>            :  * along with this program; if not, write to the Free Software
+<span class="lineNum">      14 </span>            :  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+<span class="lineNum">      15 </span>            :  */
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : #define EV_STANDALONE   1       /* we don't use autoconf */
+<span class="lineNum">      18 </span>            : #define EV_MULTIPLICITY 1       /* must pass event loop pointer to all fucntions */
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      21 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      22 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      23 </span>            : #include &lt;assert.h&gt;
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span>            : #include &quot;debug.h&quot;
+<span class="lineNum">      26 </span>            : #include &quot;macros.h&quot;
+<span class="lineNum">      27 </span>            : #include &quot;events.h&quot;
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : #if defined(UNIT_TESTING)
+<span class="lineNum">      30 </span>            : #include &quot;test_flags.h&quot;
+<span class="lineNum">      31 </span>            : extern evt_loop_t * el;
+<span class="lineNum">      32 </span>            : #endif
+<a name="33"><span class="lineNum">      33 </span>            : </a>
+<span class="lineNum">      34 </span>            : /* libev signal event callback */
+<span class="lineNum">      35 </span><span class="lineCov">         14 : static void evt_signal_callback( struct ev_loop * loop,</span>
+<span class="lineNum">      36 </span>            :                                  struct ev_signal * w,
+<span class="lineNum">      37 </span>            :                                  int revents )
+<span class="lineNum">      38 </span>            : {
+<span class="lineNum">      39 </span><span class="lineCov">         14 :     CHECK_PTR( loop );</span>
+<span class="lineNum">      40 </span><span class="lineCov">         12 :     CHECK_PTR( w );</span>
+<span class="lineNum">      41 </span><span class="lineCov">         10 :     CHECK( revents == EV_SIGNAL );</span>
+<span class="lineNum">      42 </span>            :     DEBUG(&quot;received signal event\n&quot;);
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            :     /* get the pointer to our own struct */
+<span class="lineNum">      45 </span><span class="lineCov">          8 :     evt_t * evt = (evt_t*)w;</span>
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span><span class="lineCov">          8 :     CHECK( evt-&gt;el == loop );</span>
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span><span class="lineCov">          6 :     if ( evt-&gt;callback != NULL )</span>
+<span class="lineNum">      50 </span>            :     {
+<span class="lineNum">      51 </span>            :         /* initialize the params with signal event data */
+<span class="lineNum">      52 </span>            :         evt_params_t params;
+<span class="lineNum">      53 </span><span class="lineCov">          4 :         params.signal_params.signum = evt-&gt;ev.sig.signum;</span>
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            :         /* call the callback */
+<span class="lineNum">      56 </span>            :         DEBUG(&quot;calling signal callback\n&quot;);
+<span class="lineNum">      57 </span><span class="lineCov">          4 :         (*(evt-&gt;callback))( (evt_loop_t*)loop, evt, &amp;params, evt-&gt;user_data );</span>
+<span class="lineNum">      58 </span>            :     }
+<span class="lineNum">      59 </span>            : }
+<a name="60"><span class="lineNum">      60 </span>            : </a>
+<span class="lineNum">      61 </span>            : /* libev child event callback */
+<span class="lineNum">      62 </span><span class="lineCov">         24 : static void evt_child_callback( struct ev_loop * loop,</span>
+<span class="lineNum">      63 </span>            :                                 struct ev_child * w,
+<span class="lineNum">      64 </span>            :                                 int revents )
+<span class="lineNum">      65 </span>            : {
+<span class="lineNum">      66 </span><span class="lineCov">         24 :     CHECK_PTR( loop );</span>
+<span class="lineNum">      67 </span><span class="lineCov">         22 :     CHECK_PTR( w );</span>
+<span class="lineNum">      68 </span><span class="lineCov">         20 :     CHECK( revents == EV_CHILD );</span>
+<span class="lineNum">      69 </span>            :     DEBUG(&quot;received child event\n&quot;);
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span>            :     /* get the pointer to our own struct */
+<span class="lineNum">      72 </span><span class="lineCov">         18 :     evt_t * evt = (evt_t*)w;</span>
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span><span class="lineCov">         18 :     CHECK( evt-&gt;el == loop );</span>
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span><span class="lineCov">         16 :     if ( evt-&gt;callback != NULL )</span>
+<span class="lineNum">      77 </span>            :     {
+<span class="lineNum">      78 </span>            :         /* initialize the params with signal event data */
+<span class="lineNum">      79 </span>            :         evt_params_t params;
+<span class="lineNum">      80 </span><span class="lineCov">         14 :         params.child_params.pid = evt-&gt;ev.child.pid;</span>
+<span class="lineNum">      81 </span><span class="lineCov">         14 :         params.child_params.rpid = evt-&gt;ev.child.rpid;</span>
+<span class="lineNum">      82 </span><span class="lineCov">         14 :         params.child_params.rstatus = evt-&gt;ev.child.rstatus;</span>
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span>            :         /* call the callback */
+<span class="lineNum">      85 </span>            :         DEBUG(&quot;calling child callback\n&quot;);
+<span class="lineNum">      86 </span><span class="lineCov">         14 :         (*(evt-&gt;callback))( (evt_loop_t*)loop, evt, &amp;params, evt-&gt;user_data );</span>
+<span class="lineNum">      87 </span>            :     }
+<span class="lineNum">      88 </span>            : }
+<a name="89"><span class="lineNum">      89 </span>            : </a>
+<span class="lineNum">      90 </span>            : /* livev io event callback */
+<span class="lineNum">      91 </span><span class="lineCov">         58 : static void evt_io_callback( struct ev_loop * loop,</span>
+<span class="lineNum">      92 </span>            :                              struct ev_io * w,
+<span class="lineNum">      93 </span>            :                              int revents )
+<span class="lineNum">      94 </span>            : {
+<span class="lineNum">      95 </span><span class="lineCov">         58 :     CHECK_PTR( loop );</span>
+<span class="lineNum">      96 </span><span class="lineCov">         56 :     CHECK_PTR( w );</span>
+<span class="lineNum">      97 </span><span class="lineCov">         54 :     CHECK( (revents &amp; EV_READ) || (revents &amp; EV_WRITE) );</span>
+<span class="lineNum">      98 </span>            :     DEBUG(&quot;receive io event\n&quot;);
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span>            :     /* get the pointer to our own struct */
+<span class="lineNum">     101 </span><span class="lineCov">         52 :     evt_t * evt = (evt_t*)w;</span>
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span><span class="lineCov">         52 :     CHECK( evt-&gt;el == loop );</span>
+<span class="lineNum">     104 </span>            : 
+<span class="lineNum">     105 </span><span class="lineCov">         50 :     if ( evt-&gt;callback != NULL )</span>
+<span class="lineNum">     106 </span>            :     {
+<span class="lineNum">     107 </span>            :         /* initialize the params with io event data */
+<span class="lineNum">     108 </span>            :         evt_params_t params;
+<span class="lineNum">     109 </span><span class="lineCov">         48 :         params.io_params.fd = evt-&gt;ev.io.fd;</span>
+<span class="lineNum">     110 </span><span class="lineCov">         48 :         params.io_params.types = (evt_io_type_t)evt-&gt;ev.io.events;</span>
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span>            :         /* call the callback */
+<span class="lineNum">     113 </span>            :         DEBUG(&quot;calling io callback\n&quot;);
+<span class="lineNum">     114 </span><span class="lineCov">         48 :         (*(evt-&gt;callback))( (evt_loop_t*)loop, evt, &amp;params, evt-&gt;user_data );</span>
+<span class="lineNum">     115 </span>            :     }
+<a name="116"><span class="lineNum">     116 </span>            : }</a>
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span><span class="lineCov">          4 : static void evt_log_backend( evt_loop_t * const el )</span>
+<span class="lineNum">     119 </span>            : {
+<span class="lineNum">     120 </span><span class="lineCov">          4 :     unsigned int flags = 0;</span>
+<span class="lineNum">     121 </span>            : 
+<span class="lineNum">     122 </span><span class="lineCov">          8 :     CHECK_PTR( el );</span>
+<span class="lineNum">     123 </span>            : 
+<span class="lineNum">     124 </span>            :     /* get the flag specifying which backend is being used */
+<span class="lineNum">     125 </span><span class="lineCov">          2 :     flags = ev_backend( (struct ev_loop*)el );</span>
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span><span class="lineCov">          2 :     if ( flags &amp; EVBACKEND_SELECT )</span>
+<span class="lineNum">     128 </span>            :         DEBUG( &quot;using SELECT backend\n&quot; );
+<span class="lineNum">     129 </span><span class="lineCov">          2 :     if ( flags &amp; EVBACKEND_POLL )</span>
+<span class="lineNum">     130 </span>            :         DEBUG( &quot;using POLL backend\n&quot; );
+<span class="lineNum">     131 </span><span class="lineCov">          2 :     if ( flags &amp; EVBACKEND_EPOLL )</span>
+<span class="lineNum">     132 </span>            :         DEBUG( &quot;using EPOLL backend\n&quot; );
+<span class="lineNum">     133 </span><span class="lineCov">          2 :     if ( flags &amp; EVBACKEND_KQUEUE )</span>
+<span class="lineNum">     134 </span>            :         DEBUG( &quot;using KQUEUE backend\n&quot; );
+<span class="lineNum">     135 </span><span class="lineCov">          2 :     if ( flags &amp; EVBACKEND_DEVPOLL )</span>
+<span class="lineNum">     136 </span>            :         DEBUG( &quot;using DEVPOLL backend\n&quot; );
+<span class="lineNum">     137 </span><span class="lineCov">          2 :     if ( flags &amp; EVBACKEND_PORT )</span>
+<span class="lineNum">     138 </span>            :         DEBUG( &quot;using PORT backend\n&quot; );
+<a name="139"><span class="lineNum">     139 </span>            : }</a>
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span><span class="lineCov">          4 : evt_loop_t* evt_new( void )</span>
+<span class="lineNum">     142 </span>            : {
+<span class="lineNum">     143 </span><span class="lineCov">          4 :     evt_loop_t* el = NULL;</span>
+<span class="lineNum">     144 </span>            :     
+<span class="lineNum">     145 </span>            :     /* initialize the event loop, auto-selecting backend */
+<span class="lineNum">     146 </span><span class="lineCov">          4 :     el = (evt_loop_t*)EV_DEFAULT_LOOP( EVFLAG_AUTO | EVFLAG_NOENV );</span>
+<span class="lineNum">     147 </span><span class="lineCov">          4 :     CHECK_PTR_RET_MSG( el, NULL, &quot;failed to start event loop\n&quot; );</span>
+<span class="lineNum">     148 </span>            : 
+<span class="lineNum">     149 </span>            :     // log which backend was chosen
+<span class="lineNum">     150 </span><span class="lineCov">          2 :     evt_log_backend( el );</span>
+<span class="lineNum">     151 </span>            :     
+<span class="lineNum">     152 </span><span class="lineCov">          2 :     return el;</span>
+<a name="153"><span class="lineNum">     153 </span>            : }</a>
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span><span class="lineCov">          4 : void evt_delete(void * e)</span>
+<span class="lineNum">     156 </span>            : {
+<span class="lineNum">     157 </span><span class="lineCov">          4 :     evt_loop_t* el = (evt_loop_t*)e;</span>
+<span class="lineNum">     158 </span>            :     
+<span class="lineNum">     159 </span><span class="lineCov">          8 :     CHECK_PTR( el );</span>
+<span class="lineNum">     160 </span>            : 
+<span class="lineNum">     161 </span>            :     /* clean up the default event loop */
+<span class="lineNum">     162 </span><span class="lineCov">          2 :     ev_loop_destroy( EV_DEFAULT_UC );</span>
+<span class="lineNum">     163 </span>            : }
+<a name="164"><span class="lineNum">     164 </span>            : </a>
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span><span class="lineCov">       2414 : int_t evt_initialize_event_handler( evt_t * const evt,</span>
+<span class="lineNum">     167 </span>            :                                   evt_type_t const t,
+<span class="lineNum">     168 </span>            :                                   evt_params_t * const params,
+<span class="lineNum">     169 </span>            :                                   evt_fn callback,
+<span class="lineNum">     170 </span>            :                                   void * user_data )
+<span class="lineNum">     171 </span>            : {
+<span class="lineNum">     172 </span>            : #if defined(UNIT_TESTING)
+<span class="lineNum">     173 </span><span class="lineCov">       2414 :     if ( fake_event_handler_init )</span>
+<span class="lineNum">     174 </span>            :     {
+<span class="lineNum">     175 </span><span class="lineCov">        772 :         if ( fake_event_handler_init_count == 0 )</span>
+<span class="lineNum">     176 </span><span class="lineCov">        516 :             return fake_event_handler_init_ret;</span>
+<span class="lineNum">     177 </span><span class="lineCov">        256 :         fake_event_handler_init_count--;</span>
+<span class="lineNum">     178 </span>            :     }
+<span class="lineNum">     179 </span>            : #endif
+<span class="lineNum">     180 </span><span class="lineCov">       1898 :     CHECK_PTR_RET( evt, FALSE );</span>
+<span class="lineNum">     181 </span><span class="lineCov">       1896 :     CHECK_RET( VALID_EVENT_TYPE( t ), FALSE );</span>
+<span class="lineNum">     182 </span><span class="lineCov">       1894 :     CHECK_PTR_RET( params, FALSE );</span>
+<span class="lineNum">     183 </span>            : 
+<span class="lineNum">     184 </span><span class="lineCov">       1892 :     MEMSET( (void*)evt, 0, sizeof(evt_t) );</span>
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span>            :     /* initialize the event handler struct */
+<span class="lineNum">     187 </span><span class="lineCov">       1892 :     evt-&gt;evt_type = t;</span>
+<span class="lineNum">     188 </span><span class="lineCov">       1892 :     MEMCPY( &amp;(evt-&gt;evt_params), params, sizeof( evt_params_t ) );</span>
+<span class="lineNum">     189 </span><span class="lineCov">       1892 :     evt-&gt;callback = callback;</span>
+<span class="lineNum">     190 </span><span class="lineCov">       1892 :     evt-&gt;user_data = user_data;</span>
+<span class="lineNum">     191 </span><span class="lineCov">       1892 :     evt-&gt;el = NULL;</span>
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span><span class="lineCov">       1892 :     switch ( t )</span>
+<span class="lineNum">     194 </span>            :     {
+<span class="lineNum">     195 </span>            :         case EVT_SIGNAL:
+<span class="lineNum">     196 </span>            :         {
+<span class="lineNum">     197 </span>            :             /* get the current signal mask value */
+<span class="lineNum">     198 </span><span class="lineCov">          4 :             sigemptyset( &amp;(evt-&gt;evt_params.signal_params.oldset) );</span>
+<span class="lineNum">     199 </span><span class="lineCov">          4 :             sigprocmask( SIG_BLOCK, NULL, &amp;(evt-&gt;evt_params.signal_params.oldset) );</span>
+<span class="lineNum">     200 </span>            : 
+<span class="lineNum">     201 </span>            :             /* get the current sigaction */
+<span class="lineNum">     202 </span><span class="lineCov">          4 :             MEMSET( &amp;(evt-&gt;evt_params.signal_params.oldact), 0, sizeof(struct sigaction) );</span>
+<span class="lineNum">     203 </span><span class="lineCov">          4 :             sigaction( evt-&gt;evt_params.signal_params.signum,</span>
+<span class="lineNum">     204 </span>            :                        NULL,
+<span class="lineNum">     205 </span>            :                        &amp;(evt-&gt;evt_params.signal_params.oldact) );
+<span class="lineNum">     206 </span>            : 
+<span class="lineNum">     207 </span>            :             /* initialize a libev signal event */
+<span class="lineNum">     208 </span><span class="lineCov">          4 :             ev_signal_init( (struct ev_signal*)evt, </span>
+<span class="lineNum">     209 </span>            :                             evt_signal_callback, 
+<span class="lineNum">     210 </span>            :                             evt-&gt;evt_params.signal_params.signum );
+<span class="lineNum">     211 </span><span class="lineCov">          4 :             return TRUE;</span>
+<span class="lineNum">     212 </span>            :         }
+<span class="lineNum">     213 </span>            :         case EVT_CHILD:
+<span class="lineNum">     214 </span>            :         {
+<span class="lineNum">     215 </span>            :             /* get the current signal mask value */
+<span class="lineNum">     216 </span><span class="lineCov">         14 :             sigemptyset( &amp;(evt-&gt;evt_params.child_params.oldset) );</span>
+<span class="lineNum">     217 </span><span class="lineCov">         14 :             sigprocmask( 0, NULL, &amp;(evt-&gt;evt_params.child_params.oldset) );</span>
+<span class="lineNum">     218 </span>            : 
+<span class="lineNum">     219 </span>            :             /* get the current sigaction */
+<span class="lineNum">     220 </span><span class="lineCov">         14 :             MEMSET( &amp;(evt-&gt;evt_params.child_params.oldact), 0, sizeof(struct sigaction) );</span>
+<span class="lineNum">     221 </span><span class="lineCov">         14 :             sigaction( SIGCHLD, NULL, &amp;(evt-&gt;evt_params.signal_params.oldact) );</span>
+<span class="lineNum">     222 </span>            : 
+<span class="lineNum">     223 </span>            :             /* initialize a libev child event */
+<span class="lineNum">     224 </span><span class="lineCov">         14 :             ev_child_init( (struct ev_child*)evt,</span>
+<span class="lineNum">     225 </span>            :                            evt_child_callback,
+<span class="lineNum">     226 </span>            :                            evt-&gt;evt_params.child_params.pid,
+<span class="lineNum">     227 </span>            :                            evt-&gt;evt_params.child_params.trace );
+<span class="lineNum">     228 </span><span class="lineCov">         14 :             return TRUE;</span>
+<span class="lineNum">     229 </span>            :         }
+<span class="lineNum">     230 </span>            :         case EVT_IO:
+<span class="lineNum">     231 </span>            :         {
+<span class="lineNum">     232 </span>            :             /* initialize a libev io event */
+<span class="lineNum">     233 </span><span class="lineCov">       1874 :             ev_io_init( (struct ev_io*)evt,</span>
+<span class="lineNum">     234 </span>            :                         evt_io_callback,
+<span class="lineNum">     235 </span>            :                         evt-&gt;evt_params.io_params.fd,
+<span class="lineNum">     236 </span>            :                         evt-&gt;evt_params.io_params.types );
+<span class="lineNum">     237 </span><span class="lineCov">       1874 :             return TRUE;</span>
+<span class="lineNum">     238 </span>            :         }
+<span class="lineNum">     239 </span>            :     }
+<span class="lineNum">     240 </span>            : 
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :     return FALSE;</span>
+<span class="lineNum">     242 </span>            : }
+<a name="243"><span class="lineNum">     243 </span>            : </a>
+<span class="lineNum">     244 </span>            : 
+<span class="lineNum">     245 </span><span class="lineCov">          6 : evt_t * evt_new_event_handler( evt_type_t const t,</span>
+<span class="lineNum">     246 </span>            :                                evt_params_t * const params,
+<span class="lineNum">     247 </span>            :                                evt_fn callback,
+<span class="lineNum">     248 </span>            :                                void * user_data )
+<span class="lineNum">     249 </span>            : {
+<span class="lineNum">     250 </span><span class="lineCov">          6 :     evt_t * evt = NULL;</span>
+<span class="lineNum">     251 </span>            : 
+<span class="lineNum">     252 </span><span class="lineCov">          6 :     evt = CALLOC( 1, sizeof(evt_t) );</span>
+<span class="lineNum">     253 </span><span class="lineCov">          6 :     CHECK_PTR_RET( evt, NULL );</span>
+<span class="lineNum">     254 </span>            : 
+<span class="lineNum">     255 </span>            :     /* initialize it */
+<span class="lineNum">     256 </span><span class="lineCov">          4 :     if ( !evt_initialize_event_handler( evt, t, params, callback, user_data ) )</span>
+<span class="lineNum">     257 </span>            :     {
+<span class="lineNum">     258 </span><span class="lineCov">          2 :         FREE( evt );</span>
+<span class="lineNum">     259 </span><span class="lineCov">          2 :         return NULL;</span>
+<span class="lineNum">     260 </span>            :     }
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span><span class="lineCov">          2 :     return evt;</span>
+<a name="263"><span class="lineNum">     263 </span>            : }</a>
+<span class="lineNum">     264 </span>            : 
+<span class="lineNum">     265 </span><span class="lineCov">       1680 : void evt_deinitialize_event_handler( evt_t * const evt )</span>
+<span class="lineNum">     266 </span>            : {
+<span class="lineNum">     267 </span>            :     sigset_t mask;
+<span class="lineNum">     268 </span>            : 
+<span class="lineNum">     269 </span>            :     /* stop the event handler if needed */
+<span class="lineNum">     270 </span><span class="lineCov">       1680 :     if ( evt-&gt;el != NULL )</span>
+<span class="lineNum">     271 </span>            :     {
+<span class="lineNum">     272 </span><span class="lineCov">         44 :         evt_stop_event_handler( evt-&gt;el, evt );</span>
+<span class="lineNum">     273 </span>            :     }
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span><span class="lineCov">       1680 :     switch( evt-&gt;evt_type )</span>
+<span class="lineNum">     276 </span>            :     {
+<span class="lineNum">     277 </span>            :         case EVT_SIGNAL:
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span><span class="lineCov">         52 :             sigemptyset( &amp;mask );</span>
+<span class="lineNum">     280 </span>            : 
+<span class="lineNum">     281 </span>            :             /* if the oldset had the signal asserted, it was blocked before
+<span class="lineNum">     282 </span>            :              * so add it to our new mask...*/
+<span class="lineNum">     283 </span><span class="lineCov">         52 :             if ( sigismember( &amp;(evt-&gt;evt_params.signal_params.oldset),</span>
+<span class="lineNum">     284 </span>            :                               evt-&gt;evt_params.signal_params.signum ) )
+<span class="lineNum">     285 </span>            :             {
+<span class="lineNum">     286 </span><span class="lineCov">         52 :                 sigaddset( &amp;mask, evt-&gt;evt_params.signal_params.signum );</span>
+<span class="lineNum">     287 </span>            :             }
+<span class="lineNum">     288 </span>            : 
+<span class="lineNum">     289 </span>            :             /*...and now we can block it again */
+<span class="lineNum">     290 </span><span class="lineCov">         52 :             sigprocmask( SIG_BLOCK, &amp;mask, NULL );</span>
+<span class="lineNum">     291 </span>            : 
+<span class="lineNum">     292 </span>            :             /* now restore the old sigaction */
+<span class="lineNum">     293 </span><span class="lineCov">         52 :             sigaction( evt-&gt;evt_params.signal_params.signum,</span>
+<span class="lineNum">     294 </span><span class="lineCov">         52 :                        &amp;(evt-&gt;evt_params.signal_params.oldact),</span>
+<span class="lineNum">     295 </span>            :                        NULL );
+<span class="lineNum">     296 </span>            :             
+<span class="lineNum">     297 </span><span class="lineCov">         52 :             break;</span>
+<span class="lineNum">     298 </span>            : 
+<span class="lineNum">     299 </span>            :         case EVT_CHILD:
+<span class="lineNum">     300 </span><span class="lineCov">         12 :             sigemptyset( &amp;mask );</span>
+<span class="lineNum">     301 </span>            : 
+<span class="lineNum">     302 </span>            :             /* if SIGCHLD was asserted in the old set... */
+<span class="lineNum">     303 </span><span class="lineCov">         12 :             if ( sigismember( &amp;(evt-&gt;evt_params.child_params.oldset), SIGCHLD ) )</span>
+<span class="lineNum">     304 </span>            :             {
+<span class="lineNum">     305 </span>            :                 /* ...we add it to our new mask... */
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :                 sigaddset( &amp;mask, SIGCHLD );</span>
+<span class="lineNum">     307 </span>            :             }
+<span class="lineNum">     308 </span>            : 
+<span class="lineNum">     309 </span>            :             /*...and now we can block it again */
+<span class="lineNum">     310 </span><span class="lineCov">         12 :             sigprocmask( SIG_BLOCK, &amp;mask, NULL );</span>
+<span class="lineNum">     311 </span>            : 
+<span class="lineNum">     312 </span>            :             /* now restore the old SIGCHLD sigaction */
+<span class="lineNum">     313 </span><span class="lineCov">         12 :             sigaction( SIGCHLD, &amp;(evt-&gt;evt_params.signal_params.oldact), NULL );</span>
+<span class="lineNum">     314 </span><span class="lineCov">         12 :             break;</span>
+<span class="lineNum">     315 </span>            : 
+<span class="lineNum">     316 </span>            :         case EVT_IO:
+<span class="lineNum">     317 </span><span class="lineCov">       1616 :             break;</span>
+<span class="lineNum">     318 </span>            :     }
+<a name="319"><span class="lineNum">     319 </span><span class="lineCov">       1680 : }</span></a>
+<span class="lineNum">     320 </span>            : 
+<span class="lineNum">     321 </span><span class="lineCov">          6 : void evt_delete_event_handler( void * e )</span>
+<span class="lineNum">     322 </span>            : {
+<span class="lineNum">     323 </span><span class="lineCov">          6 :     evt_t * evt = (evt_t*)e;</span>
+<span class="lineNum">     324 </span>            : 
+<span class="lineNum">     325 </span><span class="lineCov">         12 :     CHECK_PTR( evt );</span>
+<span class="lineNum">     326 </span>            : 
+<span class="lineNum">     327 </span><span class="lineCov">          4 :     evt_deinitialize_event_handler( evt );</span>
+<span class="lineNum">     328 </span>            : 
+<span class="lineNum">     329 </span><span class="lineCov">          4 :     FREE( evt );</span>
+<a name="330"><span class="lineNum">     330 </span>            : };</a>
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span><span class="lineCov">         82 : evt_ret_t evt_start_event_handler( evt_loop_t * const el,</span>
+<span class="lineNum">     333 </span>            :                                    evt_t * const evt )
+<span class="lineNum">     334 </span>            : {
+<span class="lineNum">     335 </span><span class="lineCov">         82 :     UNIT_TEST_RET( event_start_handler );</span>
+<span class="lineNum">     336 </span>            : 
+<span class="lineNum">     337 </span><span class="lineCov">         80 :     CHECK_PTR_RET_MSG( el, EVT_BADPTR, &quot;bad event loop pointer\n&quot; );</span>
+<span class="lineNum">     338 </span><span class="lineCov">         72 :     CHECK_PTR_RET_MSG( evt, EVT_BADPTR, &quot;bad event pointer\n&quot; );</span>
+<span class="lineNum">     339 </span><span class="lineCov">         70 :     CHECK_RET( VALID_EVENT_TYPE( evt-&gt;evt_type ), EVT_BADPARAM );</span>
+<span class="lineNum">     340 </span>            : 
+<span class="lineNum">     341 </span>            :     /* store the pointer to the loop we're hooking into */
+<span class="lineNum">     342 </span><span class="lineCov">         68 :     evt-&gt;el = el;</span>
+<span class="lineNum">     343 </span>            : 
+<span class="lineNum">     344 </span><span class="lineCov">         68 :     switch ( evt-&gt;evt_type )</span>
+<span class="lineNum">     345 </span>            :     {
+<span class="lineNum">     346 </span>            :         case EVT_SIGNAL:
+<span class="lineNum">     347 </span>            :         {
+<span class="lineNum">     348 </span>            :             /* start the libev signal event */
+<span class="lineNum">     349 </span>            :             DEBUG(&quot;starting signal event\n&quot;);
+<span class="lineNum">     350 </span><span class="lineCov">          2 :             ev_signal_start( (struct ev_loop*)el, (struct ev_signal*)evt );</span>
+<span class="lineNum">     351 </span><span class="lineCov">          2 :             break;</span>
+<span class="lineNum">     352 </span>            :         }
+<span class="lineNum">     353 </span>            :         case EVT_CHILD:
+<span class="lineNum">     354 </span>            :         {
+<span class="lineNum">     355 </span>            :             /* start the libevn child event */
+<span class="lineNum">     356 </span>            :             DEBUG(&quot;staring child event\n&quot;);
+<span class="lineNum">     357 </span><span class="lineCov">         12 :             ev_child_start( (struct ev_loop*)el, (struct ev_child*)evt );</span>
+<span class="lineNum">     358 </span><span class="lineCov">         12 :             break;</span>
+<span class="lineNum">     359 </span>            :         }
+<span class="lineNum">     360 </span>            :         case EVT_IO:
+<span class="lineNum">     361 </span>            :         {
+<span class="lineNum">     362 </span>            :             /* start the libev io event */
+<span class="lineNum">     363 </span>            :             DEBUG(&quot;starting io event\n&quot;);
+<span class="lineNum">     364 </span><span class="lineCov">         54 :             ev_io_start( (struct ev_loop*)el, (struct ev_io*)evt );</span>
+<span class="lineNum">     365 </span><span class="lineCov">         54 :             break;</span>
+<span class="lineNum">     366 </span>            :         }
+<span class="lineNum">     367 </span>            :     }
+<span class="lineNum">     368 </span>            : 
+<span class="lineNum">     369 </span><span class="lineCov">         68 :     return EVT_OK;</span>
+<a name="370"><span class="lineNum">     370 </span>            : }</a>
+<span class="lineNum">     371 </span>            : 
+<span class="lineNum">     372 </span><span class="lineCov">         72 : evt_ret_t evt_stop_event_handler( evt_loop_t * const el,</span>
+<span class="lineNum">     373 </span>            :                                   evt_t * const evt )
+<span class="lineNum">     374 </span>            : {
+<span class="lineNum">     375 </span><span class="lineCov">         72 :     UNIT_TEST_RET( event_stop_handler );</span>
+<span class="lineNum">     376 </span>            : 
+<span class="lineNum">     377 </span><span class="lineCov">         68 :     CHECK_PTR_RET( el, EVT_BADPTR );</span>
+<span class="lineNum">     378 </span><span class="lineCov">         64 :     CHECK_PTR_RET( evt, EVT_BADPTR );</span>
+<span class="lineNum">     379 </span>            : 
+<span class="lineNum">     380 </span><span class="lineCov">         62 :     switch ( evt-&gt;evt_type )</span>
+<span class="lineNum">     381 </span>            :     {
+<span class="lineNum">     382 </span>            :         case EVT_SIGNAL:
+<span class="lineNum">     383 </span>            :         {
+<span class="lineNum">     384 </span>            :             /* stop the libev signal event */
+<span class="lineNum">     385 </span>            :             DEBUG(&quot;stopping signal event\n&quot;);
+<span class="lineNum">     386 </span><span class="lineCov">          2 :             ev_signal_stop( (struct ev_loop*)el, (struct ev_signal*)evt );</span>
+<span class="lineNum">     387 </span><span class="lineCov">          2 :             break;</span>
+<span class="lineNum">     388 </span>            :         }
+<span class="lineNum">     389 </span>            :         case EVT_CHILD:
+<span class="lineNum">     390 </span>            :         {
+<span class="lineNum">     391 </span>            :             /* stop the libev child event */
+<span class="lineNum">     392 </span>            :             DEBUG(&quot;stopping child event\n&quot;);
+<span class="lineNum">     393 </span><span class="lineCov">         12 :             ev_child_stop( (struct ev_loop*)el, (struct ev_child*)evt );</span>
+<span class="lineNum">     394 </span><span class="lineCov">         12 :             break;</span>
+<span class="lineNum">     395 </span>            :         }
+<span class="lineNum">     396 </span>            :         case EVT_IO:
+<span class="lineNum">     397 </span>            :         {
+<span class="lineNum">     398 </span>            :             /* stop the libev io event */
+<span class="lineNum">     399 </span><span class="lineCov">         48 :             ev_io_stop( (struct ev_loop*)el, (struct ev_io*)evt );</span>
+<span class="lineNum">     400 </span><span class="lineCov">         48 :             break;</span>
+<span class="lineNum">     401 </span>            :         }
+<span class="lineNum">     402 </span>            :     }
+<span class="lineNum">     403 </span>            : 
+<span class="lineNum">     404 </span>            :     /* clear our pointer to the event loop */
+<span class="lineNum">     405 </span><span class="lineCov">         62 :     evt-&gt;el = NULL;</span>
+<span class="lineNum">     406 </span>            : 
+<span class="lineNum">     407 </span><span class="lineCov">         62 :     return EVT_OK;</span>
+<span class="lineNum">     408 </span>            : }
+<a name="409"><span class="lineNum">     409 </span>            : </a>
+<span class="lineNum">     410 </span>            : 
+<span class="lineNum">     411 </span><span class="lineCov">         24 : evt_ret_t evt_run( evt_loop_t * const el )</span>
+<span class="lineNum">     412 </span>            : {
+<span class="lineNum">     413 </span><span class="lineCov">         24 :     CHECK_PTR_RET( el, EVT_BADPTR );</span>
+<span class="lineNum">     414 </span>            : 
+<span class="lineNum">     415 </span>            :     /* start the libev event loop */
+<span class="lineNum">     416 </span><span class="lineCov">         22 :     ev_run( el, 0 );</span>
+<span class="lineNum">     417 </span>            : 
+<span class="lineNum">     418 </span><span class="lineCov">         22 :     return EVT_OK;</span>
+<a name="419"><span class="lineNum">     419 </span>            : }</a>
+<span class="lineNum">     420 </span>            : 
+<span class="lineNum">     421 </span><span class="lineCov">         24 : evt_ret_t evt_stop( evt_loop_t * const el, int_t once )</span>
+<span class="lineNum">     422 </span>            : {
+<span class="lineNum">     423 </span><span class="lineCov">         24 :     CHECK_PTR_RET( el, EVT_BADPTR );</span>
+<span class="lineNum">     424 </span>            : 
+<span class="lineNum">     425 </span>            :     /* stop the libev event loop */
+<span class="lineNum">     426 </span><span class="lineCov">         22 :     if ( once )</span>
+<span class="lineNum">     427 </span><span class="lineCov">          4 :         ev_break( (struct ev_loop*)el, EVBREAK_ONE );</span>
+<span class="lineNum">     428 </span>            :     else
+<span class="lineNum">     429 </span><span class="lineCov">         18 :         ev_break( (struct ev_loop*)el, EVBREAK_ALL );</span>
+<span class="lineNum">     430 </span>            : 
+<span class="lineNum">     431 </span><span class="lineCov">         22 :     return EVT_OK;</span>
+<a name="432"><span class="lineNum">     432 </span>            : }</a>
+<span class="lineNum">     433 </span>            : 
+<span class="lineNum">     434 </span><span class="lineCov">        168 : size_t get_signals_debug_string( sigset_t const * const sigs, uint8_t ** out )</span>
+<span class="lineNum">     435 </span>            : {
+<span class="lineNum">     436 </span>            :     static uint8_t buf[4096];
+<span class="lineNum">     437 </span>            :     uint8_t * p;
+<span class="lineNum">     438 </span>            :     int i;
+<span class="lineNum">     439 </span>            : 
+<span class="lineNum">     440 </span><span class="lineCov">        168 :     MEMSET(buf, 0, 4096);</span>
+<span class="lineNum">     441 </span><span class="lineCov">        168 :     p = &amp;buf[0];</span>
+<span class="lineNum">     442 </span><span class="lineCov">      10920 :     for ( i = 1; (i &lt; EV_NSIG) &amp;&amp; (p &lt; &amp;buf[4095]); ++i )</span>
+<span class="lineNum">     443 </span>            :     {
+<span class="lineNum">     444 </span><span class="lineCov">      10752 :         if ( sigismember( sigs, i ) )</span>
+<span class="lineNum">     445 </span>            :         {
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :             p += sprintf( buf, &quot;\t%s\n&quot;, strsignal( i ) );</span>
+<span class="lineNum">     447 </span>            :         }
+<span class="lineNum">     448 </span>            :     }
+<span class="lineNum">     449 </span>            : 
+<span class="lineNum">     450 </span><span class="lineCov">        168 :     (*out) = &amp;buf[0];</span>
+<span class="lineNum">     451 </span>            : 
+<span class="lineNum">     452 </span><span class="lineCov">        168 :     return (size_t)(p - &amp;buf[0]);</span>
+<a name="453"><span class="lineNum">     453 </span>            : }</a>
+<span class="lineNum">     454 </span>            : 
+<span class="lineNum">     455 </span><span class="lineCov">         56 : void debug_signals_dump(uint8_t const * const prefix)</span>
+<span class="lineNum">     456 </span>            : {
+<span class="lineNum">     457 </span>            :     sigset_t s;
+<span class="lineNum">     458 </span>            :     uint8_t * p;
+<span class="lineNum">     459 </span>            : 
+<span class="lineNum">     460 </span><span class="lineCov">         56 :     sigemptyset( &amp;s );</span>
+<span class="lineNum">     461 </span><span class="lineCov">         56 :     sigprocmask( SIG_BLOCK, NULL, &amp;s );</span>
+<span class="lineNum">     462 </span><span class="lineCov">         56 :     if ( get_signals_debug_string( &amp;s, &amp;p ) )</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :         LOG( &quot;%s Blocked Signals:\n%s&quot;, prefix, p );</span>
+<span class="lineNum">     464 </span>            : 
+<span class="lineNum">     465 </span><span class="lineCov">         56 :     sigemptyset( &amp;s );</span>
+<span class="lineNum">     466 </span><span class="lineCov">         56 :     sigprocmask( SIG_UNBLOCK, NULL, &amp;s );</span>
+<span class="lineNum">     467 </span><span class="lineCov">         56 :     if ( get_signals_debug_string( &amp;s, &amp;p ) )</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :         LOG( &quot;%s Unblocked Signals:\n%s&quot;, prefix, p );</span>
+<span class="lineNum">     469 </span>            : 
+<span class="lineNum">     470 </span><span class="lineCov">         56 :     sigemptyset( &amp;s );</span>
+<span class="lineNum">     471 </span><span class="lineCov">         56 :     sigpending( &amp;s );</span>
+<span class="lineNum">     472 </span><span class="lineCov">         56 :     if ( get_signals_debug_string( &amp;s, &amp;p ) )</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :         LOG( &quot;%s Pending Signals:\n%s&quot;, prefix, p );</span>
+<span class="lineNum">     474 </span><span class="lineCov">         56 : }</span>
+<span class="lineNum">     475 </span>            : 
+<span class="lineNum">     476 </span>            : #if defined(UNIT_TESTING)
+<span class="lineNum">     477 </span>            : 
+<span class="lineNum">     478 </span>            : #include &lt;CUnit/Basic.h&gt;
+<span class="lineNum">     479 </span>            : 
+<a name="480"><span class="lineNum">     480 </span>            : static int_t test_flag = FALSE;</a>
+<span class="lineNum">     481 </span>            : 
+<span class="lineNum">     482 </span><span class="lineCov">          6 : evt_ret_t test_evt_callback( evt_loop_t * const el, evt_t * const evt, evt_params_t * const params, void * user_data )</span>
+<span class="lineNum">     483 </span>            : {
+<span class="lineNum">     484 </span><span class="lineCov">          6 :     *((int*)user_data) = TRUE;</span>
+<a name="485"><span class="lineNum">     485 </span><span class="lineCov">          6 : }</span></a>
+<span class="lineNum">     486 </span>            : 
+<span class="lineNum">     487 </span><span class="lineCov">          2 : void test_evt_signal_callback( void )</span>
+<span class="lineNum">     488 </span>            : {
+<span class="lineNum">     489 </span>            :     evt_t evt;
+<span class="lineNum">     490 </span><span class="lineCov">          2 :     MEMSET( &amp;evt, 0, sizeof(evt_t) );</span>
+<span class="lineNum">     491 </span>            : 
+<span class="lineNum">     492 </span><span class="lineCov">          2 :     evt_signal_callback( NULL, NULL, 0 );</span>
+<span class="lineNum">     493 </span><span class="lineCov">          2 :     evt_signal_callback( (struct ev_loop*)el, NULL, 0 );</span>
+<span class="lineNum">     494 </span><span class="lineCov">          2 :     evt_signal_callback( (struct ev_loop*)el, (struct ev_signal*)&amp;evt, 0 );</span>
+<span class="lineNum">     495 </span><span class="lineCov">          2 :     evt_signal_callback( (struct ev_loop*)el, (struct ev_signal*)&amp;evt, EV_SIGNAL );</span>
+<span class="lineNum">     496 </span>            : 
+<span class="lineNum">     497 </span><span class="lineCov">          2 :     evt.el = el;</span>
+<span class="lineNum">     498 </span><span class="lineCov">          2 :     evt_signal_callback( (struct ev_loop*)el, (struct ev_signal*)&amp;evt, EV_SIGNAL );</span>
+<span class="lineNum">     499 </span>            :     
+<span class="lineNum">     500 </span><span class="lineCov">          2 :     evt.callback = &amp;test_evt_callback;</span>
+<span class="lineNum">     501 </span><span class="lineCov">          2 :     evt.user_data = &amp;test_flag;</span>
+<span class="lineNum">     502 </span><span class="lineCov">          2 :     test_flag = FALSE;</span>
+<span class="lineNum">     503 </span><span class="lineCov">          2 :     evt_signal_callback( (struct ev_loop*)el, (struct ev_signal*)&amp;evt, EV_SIGNAL );</span>
+<span class="lineNum">     504 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( test_flag );</span>
+<span class="lineNum">     505 </span><span class="lineCov">          2 :     test_flag = FALSE;</span>
+<a name="506"><span class="lineNum">     506 </span><span class="lineCov">          2 : }</span></a>
+<span class="lineNum">     507 </span>            : 
+<span class="lineNum">     508 </span><span class="lineCov">          2 : void test_evt_child_callback( void )</span>
+<span class="lineNum">     509 </span>            : {
+<span class="lineNum">     510 </span>            :     evt_t evt;
+<span class="lineNum">     511 </span><span class="lineCov">          2 :     MEMSET( &amp;evt, 0, sizeof(evt_t) );</span>
+<span class="lineNum">     512 </span>            : 
+<span class="lineNum">     513 </span><span class="lineCov">          2 :     evt_child_callback( NULL, NULL, 0 );</span>
+<span class="lineNum">     514 </span><span class="lineCov">          2 :     evt_child_callback( (struct ev_loop*)el, NULL, 0 );</span>
+<span class="lineNum">     515 </span><span class="lineCov">          2 :     evt_child_callback( (struct ev_loop*)el, (struct ev_child*)&amp;evt, 0 );</span>
+<span class="lineNum">     516 </span><span class="lineCov">          2 :     evt_child_callback( (struct ev_loop*)el, (struct ev_child*)&amp;evt, EV_CHILD );</span>
+<span class="lineNum">     517 </span>            : 
+<span class="lineNum">     518 </span><span class="lineCov">          2 :     evt.el = el;</span>
+<span class="lineNum">     519 </span><span class="lineCov">          2 :     evt_child_callback( (struct ev_loop*)el, (struct ev_child*)&amp;evt, EV_CHILD );</span>
+<span class="lineNum">     520 </span>            :     
+<span class="lineNum">     521 </span><span class="lineCov">          2 :     evt.callback = &amp;test_evt_callback;</span>
+<span class="lineNum">     522 </span><span class="lineCov">          2 :     evt.user_data = &amp;test_flag;</span>
+<span class="lineNum">     523 </span><span class="lineCov">          2 :     test_flag = FALSE;</span>
+<span class="lineNum">     524 </span><span class="lineCov">          2 :     evt_child_callback( (struct ev_loop*)el, (struct ev_child*)&amp;evt, EV_CHILD );</span>
+<span class="lineNum">     525 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( test_flag );</span>
+<span class="lineNum">     526 </span><span class="lineCov">          2 :     test_flag = FALSE;</span>
+<a name="527"><span class="lineNum">     527 </span><span class="lineCov">          2 : }</span></a>
+<span class="lineNum">     528 </span>            : 
+<span class="lineNum">     529 </span><span class="lineCov">          2 : void test_evt_io_callback( void )</span>
+<span class="lineNum">     530 </span>            : {
+<span class="lineNum">     531 </span>            :     evt_t evt;
+<span class="lineNum">     532 </span><span class="lineCov">          2 :     MEMSET( &amp;evt, 0, sizeof(evt_t) );</span>
+<span class="lineNum">     533 </span>            : 
+<span class="lineNum">     534 </span><span class="lineCov">          2 :     evt_io_callback( NULL, NULL, 0 );</span>
+<span class="lineNum">     535 </span><span class="lineCov">          2 :     evt_io_callback( (struct ev_loop*)el, NULL, 0 );</span>
+<span class="lineNum">     536 </span><span class="lineCov">          2 :     evt_io_callback( (struct ev_loop*)el, (struct ev_io*)&amp;evt, 0 );</span>
+<span class="lineNum">     537 </span><span class="lineCov">          2 :     evt_io_callback( (struct ev_loop*)el, (struct ev_io*)&amp;evt, EV_READ );</span>
+<span class="lineNum">     538 </span>            : 
+<span class="lineNum">     539 </span><span class="lineCov">          2 :     evt.el = el;</span>
+<span class="lineNum">     540 </span><span class="lineCov">          2 :     evt_io_callback( (struct ev_loop*)el, (struct ev_io*)&amp;evt, EV_READ );</span>
+<span class="lineNum">     541 </span>            :     
+<span class="lineNum">     542 </span><span class="lineCov">          2 :     evt.callback = &amp;test_evt_callback;</span>
+<span class="lineNum">     543 </span><span class="lineCov">          2 :     evt.user_data = &amp;test_flag;</span>
+<span class="lineNum">     544 </span><span class="lineCov">          2 :     test_flag = FALSE;</span>
+<span class="lineNum">     545 </span><span class="lineCov">          2 :     evt_io_callback( (struct ev_loop*)el, (struct ev_io*)&amp;evt, EV_READ );</span>
+<span class="lineNum">     546 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( test_flag );</span>
+<span class="lineNum">     547 </span><span class="lineCov">          2 :     test_flag = FALSE;</span>
+<a name="548"><span class="lineNum">     548 </span><span class="lineCov">          2 : }</span></a>
+<span class="lineNum">     549 </span>            : 
+<span class="lineNum">     550 </span><span class="lineCov">          2 : void test_evt_log_backend( void )</span>
+<span class="lineNum">     551 </span>            : {
+<span class="lineNum">     552 </span><span class="lineCov">          2 :     evt_log_backend( NULL );</span>
+<span class="lineNum">     553 </span><span class="lineCov">          2 : }</span>
+<a name="554"><span class="lineNum">     554 </span>            : </a>
+<span class="lineNum">     555 </span>            : 
+<span class="lineNum">     556 </span><span class="lineCov">          2 : void test_events_private_functions( void )</span>
+<span class="lineNum">     557 </span>            : {
+<span class="lineNum">     558 </span><span class="lineCov">          2 :     test_evt_signal_callback();</span>
+<span class="lineNum">     559 </span><span class="lineCov">          2 :     test_evt_child_callback();</span>
+<span class="lineNum">     560 </span><span class="lineCov">          2 :     test_evt_io_callback();</span>
+<span class="lineNum">     561 </span><span class="lineCov">          2 :     test_evt_log_backend();</span>
+<span class="lineNum">     562 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">     563 </span>            : 
+<span class="lineNum">     564 </span>            : #endif
+<span class="lineNum">     565 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -61,8 +61,8 @@ coverage: all
 debug: all
 
 report:
-	lcov --base-directory . --directory . -c -o $(NAME).info
-	lcov --remove $(NAME).info "/usr*" -o $(NAME).info
+	lcov --compat split_crc=on --base-directory . --directory . -c -o $(NAME).info
+	lcov --compat split_crc=on --remove $(NAME).info "/usr*" -o $(NAME).info
 	rm -rf $(COVERAGE)
 	genhtml -o $(COVERAGE) -t "$(NAME) test coverage" --num-spaces 4 $(NAME).info
 
