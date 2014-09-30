@@ -184,6 +184,9 @@ log_t * start_logging( log_type_t type, void * param, int append )
         /* case UDP_LOG: */
     }
 
+    /* record the type */
+    log->type = type;
+
     return log;
 
 _start_logging_fail:
