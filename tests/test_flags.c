@@ -129,6 +129,8 @@ int_t fail_buffer_init = FALSE;
 int_t fail_buffer_deinit = FALSE;
 int_t fail_buffer_init_alloc = FALSE;
 
+/* cb */
+
 /* child */
 
 /* event */

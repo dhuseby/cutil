@@ -128,6 +128,8 @@ extern int_t fail_buffer_init;
 extern int_t fail_buffer_deinit;
 extern int_t fail_buffer_init_alloc;
 
+/* cb */
+
 /* child */
 
 /* event */

@@ -6,7 +6,7 @@ EXTRA_LIBS_ROOT?=/usr/local
 
 # other variables
 SHELL=/bin/sh
-SRC=test_all.c test_aiofd.c test_bitset.c test_btree.c test_buffer.c test_child.c test_events.c test_flags.c test_hashtable.c test_list.c test_pair.c test_privileges.c test_sanitize.c test_socket.c
+SRC=test_all.c test_aiofd.c test_bitset.c test_btree.c test_buffer.c test_cb.c test_child.c test_events.c test_flags.c test_hashtable.c test_list.c test_pair.c test_privileges.c test_sanitize.c test_socket.c
 OBJ=$(SRC:.c=.o)
 GCDA=$(SRC:.c=.gcda)
 GCNO=$(SRC:.c=.gcno)

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-29</td>
+            <td class="headerValue">2015-03-13</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">10</td>
@@ -88,115 +88,115 @@
 <span class="lineNum">      26 </span>            : #define DWORD_INDEX(x) (x &amp; ~0x1f)
 <a name="27"><span class="lineNum">      27 </span>            : #define BIT(x) ((uint32_t)(1 &lt;&lt; (x &amp; 0x1f)))</a>
 <span class="lineNum">      28 </span>            : 
-<span class="lineNum">      29 </span><span class="lineCov">       2056 : bitset_t * bset_new( size_t const num_bits )</span>
+<span class="lineNum">      29 </span><span class="lineCov">       1028 : bitset_t * bset_new( size_t const num_bits )</span>
 <span class="lineNum">      30 </span>            : {
-<span class="lineNum">      31 </span><span class="lineCov">       2056 :     bitset_t * bset = NULL;</span>
-<span class="lineNum">      32 </span><span class="lineCov">       2056 :     CHECK_RET( num_bits &gt; 0, NULL );</span>
+<span class="lineNum">      31 </span><span class="lineCov">       1028 :     bitset_t * bset = NULL;</span>
+<span class="lineNum">      32 </span><span class="lineCov">       1028 :     CHECK_RET( num_bits &gt; 0, NULL );</span>
 <span class="lineNum">      33 </span>            : 
-<span class="lineNum">      34 </span><span class="lineCov">       2050 :     bset = (bitset_t*)CALLOC(1, sizeof(bitset_t));</span>
-<span class="lineNum">      35 </span><span class="lineCov">       2050 :     CHECK_PTR_RET( bset, NULL );</span>
+<span class="lineNum">      34 </span><span class="lineCov">       1025 :     bset = (bitset_t*)CALLOC(1, sizeof(bitset_t));</span>
+<span class="lineNum">      35 </span><span class="lineCov">       1025 :     CHECK_PTR_RET( bset, NULL );</span>
 <span class="lineNum">      36 </span>            : 
-<span class="lineNum">      37 </span><span class="lineCov">       2048 :     if ( !bset_initialize( bset, num_bits ) )</span>
+<span class="lineNum">      37 </span><span class="lineCov">       1024 :     if ( !bset_initialize( bset, num_bits ) )</span>
 <span class="lineNum">      38 </span>            :     {
-<span class="lineNum">      39 </span><span class="lineCov">          2 :         FREE( bset );</span>
-<span class="lineNum">      40 </span><span class="lineCov">          2 :         bset = NULL;</span>
+<span class="lineNum">      39 </span><span class="lineCov">          1 :         FREE( bset );</span>
+<span class="lineNum">      40 </span><span class="lineCov">          1 :         bset = NULL;</span>
 <span class="lineNum">      41 </span>            :     }
 <span class="lineNum">      42 </span>            : 
-<span class="lineNum">      43 </span><span class="lineCov">       2048 :     return bset;</span>
+<span class="lineNum">      43 </span><span class="lineCov">       1024 :     return bset;</span>
 <a name="44"><span class="lineNum">      44 </span>            : }</a>
 <span class="lineNum">      45 </span>            : 
-<span class="lineNum">      46 </span><span class="lineCov">       2048 : void bset_delete( void * bset )</span>
+<span class="lineNum">      46 </span><span class="lineCov">       1024 : void bset_delete( void * bset )</span>
 <span class="lineNum">      47 </span>            : {
-<span class="lineNum">      48 </span><span class="lineCov">       2048 :     bitset_t * bitset = (bitset_t*)bset;</span>
-<span class="lineNum">      49 </span><span class="lineCov">       4096 :     CHECK_PTR( bitset );</span>
-<span class="lineNum">      50 </span><span class="lineCov">       2046 :     bset_deinitialize( bitset );</span>
-<span class="lineNum">      51 </span><span class="lineCov">       2046 :     FREE( bitset );</span>
+<span class="lineNum">      48 </span><span class="lineCov">       1024 :     bitset_t * bitset = (bitset_t*)bset;</span>
+<span class="lineNum">      49 </span><span class="lineCov">       2048 :     CHECK_PTR( bitset );</span>
+<span class="lineNum">      50 </span><span class="lineCov">       1023 :     bset_deinitialize( bitset );</span>
+<span class="lineNum">      51 </span><span class="lineCov">       1023 :     FREE( bitset );</span>
 <a name="52"><span class="lineNum">      52 </span>            : }</a>
 <span class="lineNum">      53 </span>            : 
-<span class="lineNum">      54 </span><span class="lineCov">       4124 : int_t bset_initialize( bitset_t * const bset, size_t const num_bits )</span>
+<span class="lineNum">      54 </span><span class="lineCov">       2062 : int_t bset_initialize( bitset_t * const bset, size_t const num_bits )</span>
 <span class="lineNum">      55 </span>            : {
-<span class="lineNum">      56 </span><span class="lineCov">       4124 :     UNIT_TEST_FAIL( bitset_init );</span>
-<span class="lineNum">      57 </span><span class="lineCov">       4122 :     CHECK_PTR_RET( bset, FALSE );</span>
+<span class="lineNum">      56 </span><span class="lineCov">       2062 :     UNIT_TEST_FAIL( bitset_init );</span>
+<span class="lineNum">      57 </span><span class="lineCov">       2061 :     CHECK_PTR_RET( bset, FALSE );</span>
 <span class="lineNum">      58 </span>            : 
-<span class="lineNum">      59 </span><span class="lineCov">       4120 :     bset-&gt;bits = NULL;</span>
-<span class="lineNum">      60 </span><span class="lineCov">       4120 :     if ( num_bits &gt; 0 )</span>
+<span class="lineNum">      59 </span><span class="lineCov">       2060 :     bset-&gt;bits = NULL;</span>
+<span class="lineNum">      60 </span><span class="lineCov">       2060 :     if ( num_bits &gt; 0 )</span>
 <span class="lineNum">      61 </span>            :     {
-<span class="lineNum">      62 </span><span class="lineCov">       4118 :         bset-&gt;bits = CALLOC( DWORDS_NEEDED( num_bits ), sizeof(uint32_t) );</span>
-<span class="lineNum">      63 </span><span class="lineCov">       4118 :         CHECK_PTR_RET( bset-&gt;bits, FALSE );</span>
+<span class="lineNum">      62 </span><span class="lineCov">       2059 :         bset-&gt;bits = CALLOC( DWORDS_NEEDED( num_bits ), sizeof(uint32_t) );</span>
+<span class="lineNum">      63 </span><span class="lineCov">       2059 :         CHECK_PTR_RET( bset-&gt;bits, FALSE );</span>
 <span class="lineNum">      64 </span>            :     }
-<span class="lineNum">      65 </span><span class="lineCov">       4118 :     bset-&gt;num_bits = num_bits;</span>
-<span class="lineNum">      66 </span><span class="lineCov">       4118 :     return TRUE;</span>
+<span class="lineNum">      65 </span><span class="lineCov">       2059 :     bset-&gt;num_bits = num_bits;</span>
+<span class="lineNum">      66 </span><span class="lineCov">       2059 :     return TRUE;</span>
 <a name="67"><span class="lineNum">      67 </span>            : }</a>
 <span class="lineNum">      68 </span>            : 
-<span class="lineNum">      69 </span><span class="lineCov">       4124 : int_t bset_deinitialize( bitset_t * const bset )</span>
+<span class="lineNum">      69 </span><span class="lineCov">       2062 : int_t bset_deinitialize( bitset_t * const bset )</span>
 <span class="lineNum">      70 </span>            : {
-<span class="lineNum">      71 </span><span class="lineCov">       4124 :     UNIT_TEST_FAIL( bitset_deinit );</span>
-<span class="lineNum">      72 </span><span class="lineCov">       4122 :     CHECK_PTR_RET( bset, FALSE );</span>
-<span class="lineNum">      73 </span><span class="lineCov">       4120 :     CHECK_RET( bset-&gt;num_bits &gt; 0, FALSE );</span>
-<span class="lineNum">      74 </span><span class="lineCov">       4118 :     CHECK_PTR_RET( bset-&gt;bits, FALSE );</span>
+<span class="lineNum">      71 </span><span class="lineCov">       2062 :     UNIT_TEST_FAIL( bitset_deinit );</span>
+<span class="lineNum">      72 </span><span class="lineCov">       2061 :     CHECK_PTR_RET( bset, FALSE );</span>
+<span class="lineNum">      73 </span><span class="lineCov">       2060 :     CHECK_RET( bset-&gt;num_bits &gt; 0, FALSE );</span>
+<span class="lineNum">      74 </span><span class="lineCov">       2059 :     CHECK_PTR_RET( bset-&gt;bits, FALSE );</span>
 <span class="lineNum">      75 </span>            : 
-<span class="lineNum">      76 </span><span class="lineCov">       4116 :     FREE( bset-&gt;bits );</span>
-<span class="lineNum">      77 </span><span class="lineCov">       4116 :     bset-&gt;bits = NULL;</span>
-<span class="lineNum">      78 </span><span class="lineCov">       4116 :     bset-&gt;num_bits = 0;</span>
-<span class="lineNum">      79 </span><span class="lineCov">       4116 :     return TRUE;</span>
+<span class="lineNum">      76 </span><span class="lineCov">       2058 :     FREE( bset-&gt;bits );</span>
+<span class="lineNum">      77 </span><span class="lineCov">       2058 :     bset-&gt;bits = NULL;</span>
+<span class="lineNum">      78 </span><span class="lineCov">       2058 :     bset-&gt;num_bits = 0;</span>
+<span class="lineNum">      79 </span><span class="lineCov">       2058 :     return TRUE;</span>
 <a name="80"><span class="lineNum">      80 </span>            : }</a>
 <span class="lineNum">      81 </span>            : 
-<span class="lineNum">      82 </span><span class="lineCov">      49876 : int_t bset_set( bitset_t * const bset, size_t const bit )</span>
+<span class="lineNum">      82 </span><span class="lineCov">      24938 : int_t bset_set( bitset_t * const bset, size_t const bit )</span>
 <span class="lineNum">      83 </span>            : {
-<span class="lineNum">      84 </span><span class="lineCov">      49876 :     CHECK_PTR_RET( bset, FALSE );</span>
-<span class="lineNum">      85 </span><span class="lineCov">      49874 :     CHECK_RET( (bit &lt; bset-&gt;num_bits), FALSE );</span>
-<span class="lineNum">      86 </span><span class="lineCov">      49872 :     bset-&gt;bits[ DWORD_INDEX(bit) ] |= BIT(bit);</span>
-<span class="lineNum">      87 </span><span class="lineCov">      49872 :     return TRUE;</span>
+<span class="lineNum">      84 </span><span class="lineCov">      24938 :     CHECK_PTR_RET( bset, FALSE );</span>
+<span class="lineNum">      85 </span><span class="lineCov">      24937 :     CHECK_RET( (bit &lt; bset-&gt;num_bits), FALSE );</span>
+<span class="lineNum">      86 </span><span class="lineCov">      24936 :     bset-&gt;bits[ DWORD_INDEX(bit) ] |= BIT(bit);</span>
+<span class="lineNum">      87 </span><span class="lineCov">      24936 :     return TRUE;</span>
 <a name="88"><span class="lineNum">      88 </span>            : }</a>
 <span class="lineNum">      89 </span>            : 
-<span class="lineNum">      90 </span><span class="lineCov">      24342 : int_t bset_clear( bitset_t * const bset, size_t const bit )</span>
+<span class="lineNum">      90 </span><span class="lineCov">      12171 : int_t bset_clear( bitset_t * const bset, size_t const bit )</span>
 <span class="lineNum">      91 </span>            : {
-<span class="lineNum">      92 </span><span class="lineCov">      24342 :     CHECK_PTR_RET( bset, FALSE );</span>
-<span class="lineNum">      93 </span><span class="lineCov">      24340 :     CHECK_RET( (bit &lt; bset-&gt;num_bits), FALSE );</span>
-<span class="lineNum">      94 </span><span class="lineCov">      24338 :     bset-&gt;bits[ DWORD_INDEX(bit) ] &amp;= ~BIT(bit);</span>
-<span class="lineNum">      95 </span><span class="lineCov">      24338 :     return TRUE;</span>
+<span class="lineNum">      92 </span><span class="lineCov">      12171 :     CHECK_PTR_RET( bset, FALSE );</span>
+<span class="lineNum">      93 </span><span class="lineCov">      12170 :     CHECK_RET( (bit &lt; bset-&gt;num_bits), FALSE );</span>
+<span class="lineNum">      94 </span><span class="lineCov">      12169 :     bset-&gt;bits[ DWORD_INDEX(bit) ] &amp;= ~BIT(bit);</span>
+<span class="lineNum">      95 </span><span class="lineCov">      12169 :     return TRUE;</span>
 <a name="96"><span class="lineNum">      96 </span>            : }</a>
 <span class="lineNum">      97 </span>            : 
-<span class="lineNum">      98 </span><span class="lineCov">     248816 : int_t bset_test( bitset_t const * const bset, size_t const bit )</span>
+<span class="lineNum">      98 </span><span class="lineCov">     124408 : int_t bset_test( bitset_t const * const bset, size_t const bit )</span>
 <span class="lineNum">      99 </span>            : {
-<span class="lineNum">     100 </span><span class="lineCov">     248816 :     CHECK_PTR_RET( bset, FALSE );</span>
-<span class="lineNum">     101 </span><span class="lineCov">     248814 :     CHECK_RET( (bit &lt; bset-&gt;num_bits), FALSE );</span>
-<span class="lineNum">     102 </span><span class="lineCov">     248812 :     return (bset-&gt;bits[ DWORD_INDEX(bit) ] &amp; BIT(bit) ? TRUE : FALSE);</span>
+<span class="lineNum">     100 </span><span class="lineCov">     124408 :     CHECK_PTR_RET( bset, FALSE );</span>
+<span class="lineNum">     101 </span><span class="lineCov">     124407 :     CHECK_RET( (bit &lt; bset-&gt;num_bits), FALSE );</span>
+<span class="lineNum">     102 </span><span class="lineCov">     124406 :     return (bset-&gt;bits[ DWORD_INDEX(bit) ] &amp; BIT(bit) ? TRUE : FALSE);</span>
 <a name="103"><span class="lineNum">     103 </span>            : }</a>
 <span class="lineNum">     104 </span>            : 
-<span class="lineNum">     105 </span><span class="lineCov">         12 : int_t bset_clear_all( bitset_t * const bset )</span>
+<span class="lineNum">     105 </span><span class="lineCov">          6 : int_t bset_clear_all( bitset_t * const bset )</span>
 <span class="lineNum">     106 </span>            : {
 <span class="lineNum">     107 </span>            :     size_t i;
-<span class="lineNum">     108 </span><span class="lineCov">         12 :     CHECK_PTR_RET( bset, FALSE );</span>
-<span class="lineNum">     109 </span><span class="lineCov">         10 :     CHECK_RET( bset-&gt;num_bits &gt; 0, FALSE );</span>
-<span class="lineNum">     110 </span><span class="lineCov">          8 :     CHECK_PTR_RET( bset-&gt;bits, FALSE );</span>
-<span class="lineNum">     111 </span><span class="lineCov">      92230 :     for ( i = 0; i &lt; DWORDS_NEEDED( bset-&gt;num_bits ); i++ )</span>
+<span class="lineNum">     108 </span><span class="lineCov">          6 :     CHECK_PTR_RET( bset, FALSE );</span>
+<span class="lineNum">     109 </span><span class="lineCov">          5 :     CHECK_RET( bset-&gt;num_bits &gt; 0, FALSE );</span>
+<span class="lineNum">     110 </span><span class="lineCov">          4 :     CHECK_PTR_RET( bset-&gt;bits, FALSE );</span>
+<span class="lineNum">     111 </span><span class="lineCov">      46115 :     for ( i = 0; i &lt; DWORDS_NEEDED( bset-&gt;num_bits ); i++ )</span>
 <span class="lineNum">     112 </span>            :     {
-<span class="lineNum">     113 </span><span class="lineCov">      92224 :         bset-&gt;bits[i] = 0;</span>
+<span class="lineNum">     113 </span><span class="lineCov">      46112 :         bset-&gt;bits[i] = 0;</span>
 <span class="lineNum">     114 </span>            :     }
-<span class="lineNum">     115 </span><span class="lineCov">          6 :     return TRUE;</span>
+<span class="lineNum">     115 </span><span class="lineCov">          3 :     return TRUE;</span>
 <a name="116"><span class="lineNum">     116 </span>            : }</a>
 <span class="lineNum">     117 </span>            : 
-<span class="lineNum">     118 </span><span class="lineCov">         12 : int_t bset_set_all( bitset_t * const bset )</span>
+<span class="lineNum">     118 </span><span class="lineCov">          6 : int_t bset_set_all( bitset_t * const bset )</span>
 <span class="lineNum">     119 </span>            : {
 <span class="lineNum">     120 </span>            :     size_t i;
-<span class="lineNum">     121 </span><span class="lineCov">         12 :     CHECK_PTR_RET( bset, FALSE );</span>
-<span class="lineNum">     122 </span><span class="lineCov">         10 :     CHECK_RET( bset-&gt;num_bits &gt; 0, FALSE );</span>
-<span class="lineNum">     123 </span><span class="lineCov">          8 :     CHECK_PTR_RET( bset-&gt;bits, FALSE );</span>
-<span class="lineNum">     124 </span><span class="lineCov">     108294 :     for ( i = 0; i &lt; DWORDS_NEEDED( bset-&gt;num_bits ); i++ )</span>
+<span class="lineNum">     121 </span><span class="lineCov">          6 :     CHECK_PTR_RET( bset, FALSE );</span>
+<span class="lineNum">     122 </span><span class="lineCov">          5 :     CHECK_RET( bset-&gt;num_bits &gt; 0, FALSE );</span>
+<span class="lineNum">     123 </span><span class="lineCov">          4 :     CHECK_PTR_RET( bset-&gt;bits, FALSE );</span>
+<span class="lineNum">     124 </span><span class="lineCov">      54147 :     for ( i = 0; i &lt; DWORDS_NEEDED( bset-&gt;num_bits ); i++ )</span>
 <span class="lineNum">     125 </span>            :     {
-<span class="lineNum">     126 </span><span class="lineCov">     108288 :         bset-&gt;bits[i] = 0xFFFFFFFF;</span>
+<span class="lineNum">     126 </span><span class="lineCov">      54144 :         bset-&gt;bits[i] = 0xFFFFFFFF;</span>
 <span class="lineNum">     127 </span>            :     }
-<span class="lineNum">     128 </span><span class="lineCov">          6 :     return TRUE;</span>
+<span class="lineNum">     128 </span><span class="lineCov">          3 :     return TRUE;</span>
 <span class="lineNum">     129 </span>            : }
 <span class="lineNum">     130 </span>            : 
 <span class="lineNum">     131 </span>            : #if defined(UNIT_TESTING)
 <span class="lineNum">     132 </span>            : 
 <a name="133"><span class="lineNum">     133 </span>            : #include &lt;CUnit/Basic.h&gt;</a>
 <span class="lineNum">     134 </span>            : 
-<span class="lineNum">     135 </span><span class="lineCov">          2 : void test_bitset_private_functions(void)</span>
+<span class="lineNum">     135 </span><span class="lineCov">          1 : void test_bitset_private_functions(void)</span>
 <span class="lineNum">     136 </span>            : {
-<span class="lineNum">     137 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">     137 </span><span class="lineCov">          1 : }</span>
 <span class="lineNum">     138 </span>            : 
 <span class="lineNum">     139 </span>            : #endif
 <span class="lineNum">     140 </span>            : 

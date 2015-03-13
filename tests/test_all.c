@@ -35,6 +35,7 @@ SUITE( aiofd );
 SUITE( bitset );
 SUITE( btree );
 SUITE( buffer );
+SUITE( cb );
 SUITE( child );
 SUITE( events );
 SUITE( hashtable );
@@ -57,6 +58,7 @@ int main()
 	ADD_SUITE( bitset );
 	ADD_SUITE( btree );
 	ADD_SUITE( buffer );
+  ADD_SUITE( cb );
 	ADD_SUITE( child );
 	ADD_SUITE( events );
 	ADD_SUITE( hashtable );

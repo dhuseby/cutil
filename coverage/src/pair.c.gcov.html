@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-29</td>
+            <td class="headerValue">2015-03-13</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -90,43 +90,43 @@
 <span class="lineNum">      28 </span>            :     void * second;
 <a name="29"><span class="lineNum">      29 </span>            : };</a>
 <span class="lineNum">      30 </span>            : 
-<span class="lineNum">      31 </span><span class="lineCov">       4098 : pair_t * pair_new( void * first, void * second )</span>
+<span class="lineNum">      31 </span><span class="lineCov">       2073 : pair_t * pair_new( void * first, void * second )</span>
 <span class="lineNum">      32 </span>            : {
-<span class="lineNum">      33 </span><span class="lineCov">       4098 :     pair_t * pair = CALLOC( 1, sizeof(pair_t) );</span>
-<span class="lineNum">      34 </span><span class="lineCov">       4098 :     CHECK_PTR_RET( pair, NULL );</span>
+<span class="lineNum">      33 </span><span class="lineCov">       2073 :     pair_t * pair = CALLOC( 1, sizeof(pair_t) );</span>
+<span class="lineNum">      34 </span><span class="lineCov">       2073 :     CHECK_PTR_RET( pair, NULL );</span>
 <span class="lineNum">      35 </span>            : 
-<span class="lineNum">      36 </span><span class="lineCov">       4096 :     pair-&gt;first = first;</span>
-<span class="lineNum">      37 </span><span class="lineCov">       4096 :     pair-&gt;second = second;</span>
-<span class="lineNum">      38 </span><span class="lineCov">       4096 :     return pair;</span>
+<span class="lineNum">      36 </span><span class="lineCov">       2072 :     pair-&gt;first = first;</span>
+<span class="lineNum">      37 </span><span class="lineCov">       2072 :     pair-&gt;second = second;</span>
+<span class="lineNum">      38 </span><span class="lineCov">       2072 :     return pair;</span>
 <a name="39"><span class="lineNum">      39 </span>            : }</a>
 <span class="lineNum">      40 </span>            : 
-<span class="lineNum">      41 </span><span class="lineCov">       4098 : void pair_delete( void * p )</span>
+<span class="lineNum">      41 </span><span class="lineCov">       2073 : void pair_delete( void * p )</span>
 <span class="lineNum">      42 </span>            : {
-<span class="lineNum">      43 </span><span class="lineCov">       4098 :     pair_t * pair = (pair_t*)p;</span>
-<span class="lineNum">      44 </span><span class="lineCov">       8196 :     CHECK_PTR( pair );</span>
+<span class="lineNum">      43 </span><span class="lineCov">       2073 :     pair_t * pair = (pair_t*)p;</span>
+<span class="lineNum">      44 </span><span class="lineCov">       4146 :     CHECK_PTR( pair );</span>
 <span class="lineNum">      45 </span>            : 
-<span class="lineNum">      46 </span><span class="lineCov">       4096 :     FREE( pair );</span>
+<span class="lineNum">      46 </span><span class="lineCov">       2072 :     FREE( pair );</span>
 <a name="47"><span class="lineNum">      47 </span>            : }</a>
 <span class="lineNum">      48 </span>            : 
-<span class="lineNum">      49 </span><span class="lineCov">       8194 : void * pair_first( pair_t const * const pair )</span>
+<span class="lineNum">      49 </span><span class="lineCov">       4156 : void * pair_first( pair_t const * const pair )</span>
 <span class="lineNum">      50 </span>            : {
-<span class="lineNum">      51 </span><span class="lineCov">       8194 :     CHECK_PTR_RET( pair, NULL );</span>
-<span class="lineNum">      52 </span><span class="lineCov">       8192 :     return pair-&gt;first;</span>
+<span class="lineNum">      51 </span><span class="lineCov">       4156 :     CHECK_PTR_RET( pair, NULL );</span>
+<span class="lineNum">      52 </span><span class="lineCov">       4155 :     return pair-&gt;first;</span>
 <a name="53"><span class="lineNum">      53 </span>            : }</a>
 <span class="lineNum">      54 </span>            : 
-<span class="lineNum">      55 </span><span class="lineCov">       8194 : void * pair_second( pair_t const * const pair )</span>
+<span class="lineNum">      55 </span><span class="lineCov">       4125 : void * pair_second( pair_t const * const pair )</span>
 <span class="lineNum">      56 </span>            : {
-<span class="lineNum">      57 </span><span class="lineCov">       8194 :     CHECK_PTR_RET( pair, NULL );</span>
-<span class="lineNum">      58 </span><span class="lineCov">       8192 :     return pair-&gt;second;</span>
+<span class="lineNum">      57 </span><span class="lineCov">       4125 :     CHECK_PTR_RET( pair, NULL );</span>
+<span class="lineNum">      58 </span><span class="lineCov">       4121 :     return pair-&gt;second;</span>
 <span class="lineNum">      59 </span>            : }
 <span class="lineNum">      60 </span>            : 
 <span class="lineNum">      61 </span>            : #if defined(UNIT_TESTING)
 <span class="lineNum">      62 </span>            : 
 <a name="63"><span class="lineNum">      63 </span>            : #include &lt;CUnit/Basic.h&gt;</a>
 <span class="lineNum">      64 </span>            : 
-<span class="lineNum">      65 </span><span class="lineCov">          2 : void test_pair_private_functions( void )</span>
+<span class="lineNum">      65 </span><span class="lineCov">          1 : void test_pair_private_functions( void )</span>
 <span class="lineNum">      66 </span>            : {
-<span class="lineNum">      67 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">      67 </span><span class="lineCov">          1 : }</span>
 <span class="lineNum">      68 </span>            : 
 <span class="lineNum">      69 </span>            : #endif
 <span class="lineNum">      70 </span>            : 

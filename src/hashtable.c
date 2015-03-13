@@ -1,17 +1,26 @@
-/*
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with main.c; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+/* Copyright (c) 2012-2015 David Huseby
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <stdio.h>
@@ -39,7 +48,7 @@ ht_itr_t const ht_itr_end_t = { -1, -1 };
 /* load factor is how full the table will get before a resize is triggered */
 float const default_load_limit = 3.0f;
 
-/* this list of primes are the table size used by the hashtable.  each prime 
+/* this list of primes are the table size used by the hashtable.  each prime
  * is roughly double the size of the previous prime to get amortized resize
  * operations. */
 uint_t const NUM_PRIMES = 30;
@@ -60,7 +69,7 @@ static uint_t ht_get_new_size( uint_t const count, float const limit );
 static int_t ht_grow( ht_t * const htable );
 
 /* heap allocate the hashtable */
-ht_t* ht_new( uint_t const initial_capacity, ht_hash_fn hfn, 
+ht_t* ht_new( uint_t const initial_capacity, ht_hash_fn hfn,
               ht_match_fn mfn, ht_delete_fn dfn )
 {
     ht_t* htable = NULL;
@@ -94,7 +103,7 @@ void ht_delete(void * ht)
 }
 
 /* initializes a hashtable */
-int_t ht_initialize( ht_t * const htable, uint_t const initial_capacity, 
+int_t ht_initialize( ht_t * const htable, uint_t const initial_capacity,
                    ht_hash_fn hfn, ht_match_fn mfn, ht_delete_fn dfn )
 {
     uint_t i = 0;
@@ -298,10 +307,11 @@ ht_itr_t ht_itr_next( ht_t const * const htable, ht_itr_t const itr )
     if ( ret.itr == list_itr_end( LIST_AT( htable->lists, ret.idx ) ) )
     {
         /* we need to scan for the next non-empty list */
-        do 
+        do
         {
             ret.idx++;
-        } while( (ret.idx < htable->size) && (list_count( LIST_AT( htable->lists, ret.idx ) ) == 0) );
+        } while( (ret.idx < htable->size) &&
+                 (list_count( LIST_AT( htable->lists, ret.idx ) ) == 0) );
 
         /* if we didn't find a non-empty list, return end itr */
         CHECK_RET( ret.idx < htable->size, ht_itr_end_t );
@@ -319,7 +329,7 @@ ht_itr_t ht_itr_rnext( ht_t const * const htable, ht_itr_t const itr )
     CHECK_PTR_RET( htable, ht_itr_end_t );
 
     /* advance the iterator */
-    ret.itr = list_itr_rnext( LIST_AT( htable->lists, ret.idx ), ret.itr ); 
+    ret.itr = list_itr_rnext( LIST_AT( htable->lists, ret.idx ), ret.itr );
 
     if ( ret.itr == list_itr_end( LIST_AT( htable->lists, ret.idx ) ) )
     {
@@ -353,7 +363,7 @@ static uint_t ht_get_new_size( uint_t const count, float const limit )
         DEBUG( "%f / %f = %f > %f\n", (float)count, (float)PRIMES[index], ((float)count / (float)PRIMES[index]), limit );
         index++;
     }
-    
+
     DEBUG( "%f / %f = %f > %f\n", (float)count, (float)PRIMES[index], ((float)count / (float)PRIMES[index]), limit );
 
     return PRIMES[index];
@@ -363,7 +373,7 @@ static int_t ht_grow( ht_t * const htable )
 {
     uint_t i, count, new_size, old_size;
     list_t *new_lists, *old_lists;
-    
+
     UNIT_TEST_RET( ht_grow );
 
     CHECK_PTR_RET( htable, FALSE );
@@ -396,7 +406,7 @@ static int_t ht_grow( ht_t * const htable )
     htable->count = 0;
     htable->size = new_size;
     htable->lists = new_lists;
-    
+
     /* hash the old data into the new table */
     for ( i = 0; i < old_size; i++ )
     {

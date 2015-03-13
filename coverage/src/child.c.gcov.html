@@ -31,13 +31,13 @@
             <td class="headerValue">cutil test coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">198</td>
+            <td class="headerCovTableEntry">197</td>
             <td class="headerCovTableEntry">232</td>
-            <td class="headerCovTableEntryMed">85.3 %</td>
+            <td class="headerCovTableEntryMed">84.9 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-09-29</td>
+            <td class="headerValue">2015-03-13</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">22</td>
@@ -116,124 +116,124 @@
 <span class="lineNum">      54 </span>            : };
 <a name="55"><span class="lineNum">      55 </span>            : </a>
 <span class="lineNum">      56 </span>            : 
-<span class="lineNum">      57 </span><span class="lineCov">         20 : static evt_ret_t sigchld_cb( evt_loop_t * const el,</span>
+<span class="lineNum">      57 </span><span class="lineCov">         10 : static evt_ret_t sigchld_cb( evt_loop_t * const el,</span>
 <span class="lineNum">      58 </span>            :                              evt_t * const evt,
 <span class="lineNum">      59 </span>            :                              evt_params_t * const params,
 <span class="lineNum">      60 </span>            :                              void * user_data )
 <span class="lineNum">      61 </span>            : {
-<span class="lineNum">      62 </span><span class="lineCov">         20 :     child_process_t * child = (child_process_t*)user_data;</span>
-<span class="lineNum">      63 </span><span class="lineCov">         20 :     CHECK_PTR_RET( child, EVT_BADPTR );</span>
-<span class="lineNum">      64 </span><span class="lineCov">         18 :     CHECK_RET( (child-&gt;pid == params-&gt;child_params.pid), EVT_ERROR );</span>
+<span class="lineNum">      62 </span><span class="lineCov">         10 :     child_process_t * child = (child_process_t*)user_data;</span>
+<span class="lineNum">      63 </span><span class="lineCov">         10 :     CHECK_PTR_RET( child, EVT_BADPTR );</span>
+<span class="lineNum">      64 </span><span class="lineCov">          9 :     CHECK_RET( (child-&gt;pid == params-&gt;child_params.pid), EVT_ERROR );</span>
 <span class="lineNum">      65 </span>            :     
 <span class="lineNum">      66 </span>            :     DEBUG( &quot;received SIGCHLD\n&quot; );
 <span class="lineNum">      67 </span>            : 
 <span class="lineNum">      68 </span>            :     /* execute the exit_fn callback */
-<span class="lineNum">      69 </span><span class="lineCov">         16 :     if ( child-&gt;ops.exit_evt_fn != NULL )</span>
+<span class="lineNum">      69 </span><span class="lineCov">          8 :     if ( child-&gt;ops.exit_evt_fn != NULL )</span>
 <span class="lineNum">      70 </span>            :     {
 <span class="lineNum">      71 </span>            :         DEBUG( &quot;calling child process exit callback\n&quot; );
-<span class="lineNum">      72 </span><span class="lineCov">         14 :         (*(child-&gt;ops.exit_evt_fn))( child, </span>
+<span class="lineNum">      72 </span><span class="lineCov">          7 :         (*(child-&gt;ops.exit_evt_fn))( child, </span>
 <span class="lineNum">      73 </span>            :                                      params-&gt;child_params.rpid, 
 <span class="lineNum">      74 </span>            :                                      params-&gt;child_params.rstatus,
 <span class="lineNum">      75 </span>            :                                      child-&gt;user_data );
 <span class="lineNum">      76 </span>            :     }
 <span class="lineNum">      77 </span>            : 
 <span class="lineNum">      78 </span>            :     /* record that the child process has exited */
-<span class="lineNum">      79 </span><span class="lineCov">         16 :     child-&gt;exited = TRUE;</span>
+<span class="lineNum">      79 </span><span class="lineCov">          8 :     child-&gt;exited = TRUE;</span>
 <span class="lineNum">      80 </span>            : 
-<span class="lineNum">      81 </span><span class="lineCov">         16 :     return EVT_OK;</span>
+<span class="lineNum">      81 </span><span class="lineCov">          8 :     return EVT_OK;</span>
 <span class="lineNum">      82 </span>            : }
 <a name="83"><span class="lineNum">      83 </span>            : </a>
 <span class="lineNum">      84 </span>            : 
-<span class="lineNum">      85 </span><span class="lineCov">         14 : static int_t child_aiofd_write_evt_fn( aiofd_t * const aiofd,</span>
+<span class="lineNum">      85 </span><span class="lineCov">          7 : static int_t child_aiofd_write_evt_fn( aiofd_t * const aiofd,</span>
 <span class="lineNum">      86 </span>            :                                        uint8_t const * const buffer,
 <span class="lineNum">      87 </span>            :                                        void * user_data,
 <span class="lineNum">      88 </span>            :                                        void * per_write_data )
 <span class="lineNum">      89 </span>            : {
-<span class="lineNum">      90 </span><span class="lineCov">         14 :     child_process_t * child = (child_process_t*)user_data;</span>
-<span class="lineNum">      91 </span><span class="lineCov">         14 :     CHECK_PTR_RET( aiofd, FALSE );</span>
-<span class="lineNum">      92 </span><span class="lineCov">         12 :     CHECK_PTR_RET( child, FALSE );</span>
-<span class="lineNum">      93 </span><span class="lineCov">         10 :     CHECK_RET( child-&gt;aiofd.rfd != -1, FALSE );</span>
+<span class="lineNum">      90 </span><span class="lineCov">          7 :     child_process_t * child = (child_process_t*)user_data;</span>
+<span class="lineNum">      91 </span><span class="lineCov">          7 :     CHECK_PTR_RET( aiofd, FALSE );</span>
+<span class="lineNum">      92 </span><span class="lineCov">          6 :     CHECK_PTR_RET( child, FALSE );</span>
+<span class="lineNum">      93 </span><span class="lineCov">          5 :     CHECK_RET( child-&gt;aiofd.rfd != -1, FALSE );</span>
 <span class="lineNum">      94 </span>            : 
-<span class="lineNum">      95 </span><span class="lineCov">          8 :     if ( buffer == NULL )</span>
+<span class="lineNum">      95 </span><span class="lineCov">          4 :     if ( buffer == NULL )</span>
 <span class="lineNum">      96 </span>            :     {
-<span class="lineNum">      97 </span><span class="lineCov">          4 :         if ( list_count( &amp;(child-&gt;aiofd.wbuf) ) == 0 )</span>
+<span class="lineNum">      97 </span><span class="lineCov">          2 :         if ( list_count( &amp;(child-&gt;aiofd.wbuf) ) == 0 )</span>
 <span class="lineNum">      98 </span>            :         {
 <span class="lineNum">      99 </span>            :             /* stop the write event processing until we have data to write */
-<span class="lineNum">     100 </span><span class="lineCov">          2 :             return FALSE;</span>
+<span class="lineNum">     100 </span><span class="lineCov">          1 :             return FALSE;</span>
 <span class="lineNum">     101 </span>            :         }
 <span class="lineNum">     102 </span>            : 
 <span class="lineNum">     103 </span>            :         /* this will keep the write event processing going */
-<span class="lineNum">     104 </span><span class="lineCov">          2 :         return TRUE;</span>
+<span class="lineNum">     104 </span><span class="lineCov">          1 :         return TRUE;</span>
 <span class="lineNum">     105 </span>            :     }
 <span class="lineNum">     106 </span>            :     else
 <span class="lineNum">     107 </span>            :     {
 <span class="lineNum">     108 </span>            :         /* call the write complete callback to let client know that a particular
 <span class="lineNum">     109 </span>            :          * buffer has been written to the socket. */
-<span class="lineNum">     110 </span><span class="lineCov">          4 :         if ( child-&gt;ops.write_evt_fn != NULL )</span>
+<span class="lineNum">     110 </span><span class="lineCov">          2 :         if ( child-&gt;ops.write_evt_fn != NULL )</span>
 <span class="lineNum">     111 </span>            :         {
 <span class="lineNum">     112 </span>            :             DEBUG( &quot;calling child process write complete callback\n&quot; );
-<span class="lineNum">     113 </span><span class="lineCov">          2 :             return (*(child-&gt;ops.write_evt_fn))( child, buffer, child-&gt;user_data );</span>
+<span class="lineNum">     113 </span><span class="lineCov">          1 :             return (*(child-&gt;ops.write_evt_fn))( child, buffer, child-&gt;user_data );</span>
 <span class="lineNum">     114 </span>            :         }
 <span class="lineNum">     115 </span>            : 
-<span class="lineNum">     116 </span><span class="lineCov">          2 :         return TRUE;</span>
+<span class="lineNum">     116 </span><span class="lineCov">          1 :         return TRUE;</span>
 <span class="lineNum">     117 </span>            :     }
 <span class="lineNum">     118 </span>            : 
 <span class="lineNum">     119 </span>            :     return TRUE;
 <span class="lineNum">     120 </span>            : }
 <a name="121"><span class="lineNum">     121 </span>            : </a>
 <span class="lineNum">     122 </span>            : 
-<span class="lineNum">     123 </span><span class="lineCov">          6 : static int_t child_aiofd_error_evt_fn( aiofd_t * const aiofd,</span>
+<span class="lineNum">     123 </span><span class="lineCov">          3 : static int_t child_aiofd_error_evt_fn( aiofd_t * const aiofd,</span>
 <span class="lineNum">     124 </span>            :                                        int err,
 <span class="lineNum">     125 </span>            :                                        void * user_data )
 <span class="lineNum">     126 </span>            : {
-<span class="lineNum">     127 </span><span class="lineCov">          6 :     child_process_t * child = (child_process_t*)user_data;</span>
-<span class="lineNum">     128 </span><span class="lineCov">          6 :     CHECK_PTR_RET( aiofd, FALSE );</span>
-<span class="lineNum">     129 </span><span class="lineCov">          4 :     CHECK_PTR_RET( child, FALSE );</span>
+<span class="lineNum">     127 </span><span class="lineCov">          3 :     child_process_t * child = (child_process_t*)user_data;</span>
+<span class="lineNum">     128 </span><span class="lineCov">          3 :     CHECK_PTR_RET( aiofd, FALSE );</span>
+<span class="lineNum">     129 </span><span class="lineCov">          2 :     CHECK_PTR_RET( child, FALSE );</span>
 <span class="lineNum">     130 </span>            : 
-<span class="lineNum">     131 </span><span class="lineCov">          2 :     if ( child-&gt;ops.error_evt_fn != NULL )</span>
+<span class="lineNum">     131 </span><span class="lineCov">          1 :     if ( child-&gt;ops.error_evt_fn != NULL )</span>
 <span class="lineNum">     132 </span>            :     {
 <span class="lineNum">     133 </span>            :         DEBUG( &quot;calling child process error callback\n&quot; );
 <span class="lineNum">     134 </span><span class="lineNoCov">          0 :         return (*(child-&gt;ops.error_evt_fn))( child, err, child-&gt;user_data );</span>
 <span class="lineNum">     135 </span>            :     }
 <span class="lineNum">     136 </span>            : 
-<span class="lineNum">     137 </span><span class="lineCov">          2 :     return TRUE;</span>
+<span class="lineNum">     137 </span><span class="lineCov">          1 :     return TRUE;</span>
 <span class="lineNum">     138 </span>            : }
 <a name="139"><span class="lineNum">     139 </span>            : </a>
 <span class="lineNum">     140 </span>            : 
-<span class="lineNum">     141 </span><span class="lineCov">         18 : static int_t child_aiofd_read_evt_fn( aiofd_t * const aiofd,</span>
+<span class="lineNum">     141 </span><span class="lineCov">          9 : static int_t child_aiofd_read_evt_fn( aiofd_t * const aiofd,</span>
 <span class="lineNum">     142 </span>            :                                       size_t const nread,
 <span class="lineNum">     143 </span>            :                                       void * user_data )
 <span class="lineNum">     144 </span>            : {
-<span class="lineNum">     145 </span><span class="lineCov">         18 :     child_process_t * child = (child_process_t*)user_data;</span>
-<span class="lineNum">     146 </span><span class="lineCov">         18 :     CHECK_PTR_RET( aiofd, FALSE );</span>
-<span class="lineNum">     147 </span><span class="lineCov">         16 :     CHECK_PTR_RET( child, FALSE );</span>
+<span class="lineNum">     145 </span><span class="lineCov">          9 :     child_process_t * child = (child_process_t*)user_data;</span>
+<span class="lineNum">     146 </span><span class="lineCov">          9 :     CHECK_PTR_RET( aiofd, FALSE );</span>
+<span class="lineNum">     147 </span><span class="lineCov">          8 :     CHECK_PTR_RET( child, FALSE );</span>
 <span class="lineNum">     148 </span>            : 
-<span class="lineNum">     149 </span><span class="lineCov">         14 :     if ( nread == 0 )</span>
+<span class="lineNum">     149 </span><span class="lineCov">          7 :     if ( nread == 0 )</span>
 <span class="lineNum">     150 </span>            :     {
 <span class="lineNum">     151 </span>            :         /* return FALSE to turn off the read event processing */
-<span class="lineNum">     152 </span><span class="lineCov">          2 :         return FALSE;</span>
+<span class="lineNum">     152 </span><span class="lineCov">          1 :         return FALSE;</span>
 <span class="lineNum">     153 </span>            :     }
 <span class="lineNum">     154 </span>            : 
-<span class="lineNum">     155 </span><span class="lineCov">         12 :     if ( child-&gt;ops.read_evt_fn != NULL )</span>
+<span class="lineNum">     155 </span><span class="lineCov">          6 :     if ( child-&gt;ops.read_evt_fn != NULL )</span>
 <span class="lineNum">     156 </span>            :     {
-<span class="lineNum">     157 </span><span class="lineCov">         10 :         (*(child-&gt;ops.read_evt_fn))( child, nread, child-&gt;user_data );</span>
+<span class="lineNum">     157 </span><span class="lineCov">          5 :         (*(child-&gt;ops.read_evt_fn))( child, nread, child-&gt;user_data );</span>
 <span class="lineNum">     158 </span>            :     }
 <span class="lineNum">     159 </span>            : 
-<span class="lineNum">     160 </span><span class="lineCov">         12 :     return TRUE;</span>
+<span class="lineNum">     160 </span><span class="lineCov">          6 :     return TRUE;</span>
 <span class="lineNum">     161 </span>            : }
 <a name="162"><span class="lineNum">     162 </span>            : </a>
 <span class="lineNum">     163 </span>            : 
-<span class="lineNum">     164 </span><span class="lineCov">         14 : static pid_t safe_fork( int keepfds[], int nfds, int drop )</span>
+<span class="lineNum">     164 </span><span class="lineCov">          7 : static pid_t safe_fork( int keepfds[], int nfds, int drop )</span>
 <span class="lineNum">     165 </span>            : {
 <span class="lineNum">     166 </span>            :     int i;
 <span class="lineNum">     167 </span>            :     sigset_t orig, mask;
-<span class="lineNum">     168 </span><span class="lineCov">         14 :     pid_t childpid = 0;</span>
+<span class="lineNum">     168 </span><span class="lineCov">          7 :     pid_t childpid = 0;</span>
 <span class="lineNum">     169 </span>            :    
 <span class="lineNum">     170 </span>            :     /* block all signals, save current mask in orig */
-<span class="lineNum">     171 </span><span class="lineCov">         14 :     sigfillset( &amp;mask );</span>
-<span class="lineNum">     172 </span><span class="lineCov">         14 :     sigprocmask( SIG_SETMASK, &amp;mask, &amp;orig );</span>
+<span class="lineNum">     171 </span><span class="lineCov">          7 :     sigfillset( &amp;mask );</span>
+<span class="lineNum">     172 </span><span class="lineCov">          7 :     sigprocmask( SIG_SETMASK, &amp;mask, &amp;orig );</span>
 <span class="lineNum">     173 </span>            : 
-<span class="lineNum">     174 </span><span class="lineCov">         14 :     childpid = FORK();</span>
+<span class="lineNum">     174 </span><span class="lineCov">          7 :     childpid = FORK();</span>
 <span class="lineNum">     175 </span>            : 
 <span class="lineNum">     176 </span>            :     /* this is a workaround to a bug in Mac OS X &lt; 10.7 */
 <span class="lineNum">     177 </span>            : #if defined (__APPLE__) &amp;&amp; defined (UNIT_TESTING)
@@ -241,14 +241,14 @@
 <span class="lineNum">     179 </span>            : #endif
 <span class="lineNum">     180 </span>            : 
 <span class="lineNum">     181 </span>            :     /* test for parent process */
-<span class="lineNum">     182 </span><span class="lineCov">         14 :     if ( childpid != 0 )</span>
+<span class="lineNum">     182 </span><span class="lineCov">          7 :     if ( childpid != 0 )</span>
 <span class="lineNum">     183 </span>            :     {
 <span class="lineNum">     184 </span>            :         /* PARENT PROCESS or FORK failed (-1) */
 <span class="lineNum">     185 </span>            : 
 <span class="lineNum">     186 </span>            :         /* restore original signal mask */
-<span class="lineNum">     187 </span><span class="lineCov">         14 :         sigprocmask( SIG_SETMASK, &amp;orig, NULL );</span>
+<span class="lineNum">     187 </span><span class="lineCov">          7 :         sigprocmask( SIG_SETMASK, &amp;orig, NULL );</span>
 <span class="lineNum">     188 </span>            : 
-<span class="lineNum">     189 </span><span class="lineCov">         14 :         return childpid; /* PARENT PROCESS RETURNS */</span>
+<span class="lineNum">     189 </span><span class="lineCov">          7 :         return childpid; /* PARENT PROCESS RETURNS */</span>
 <span class="lineNum">     190 </span>            :     }
 <span class="lineNum">     191 </span>            : 
 <span class="lineNum">     192 </span>            :     /* CHILD PROCESS  */
@@ -277,7 +277,7 @@
 <span class="lineNum">     215 </span>            : #define PIPE_READ_IDX    (0)
 <a name="216"><span class="lineNum">     216 </span>            : #define PIPE_WRITE_IDX   (1)</a>
 <span class="lineNum">     217 </span>            : 
-<span class="lineNum">     218 </span><span class="lineCov">         18 : static int child_process_initialize( child_process_t * const child,</span>
+<span class="lineNum">     218 </span><span class="lineCov">          9 : static int child_process_initialize( child_process_t * const child,</span>
 <span class="lineNum">     219 </span>            :                                      uint8_t const * const path,
 <span class="lineNum">     220 </span>            :                                      uint8_t const * const argv[],
 <span class="lineNum">     221 </span>            :                                      uint8_t const * const environ[],
@@ -303,26 +303,26 @@
 <span class="lineNum">     241 </span>            :         NULL, NULL, NULL, NULL
 <span class="lineNum">     242 </span>            :     };
 <span class="lineNum">     243 </span>            : 
-<span class="lineNum">     244 </span><span class="lineCov">         18 :     CHECK_PTR_RET( child, FALSE );</span>
-<span class="lineNum">     245 </span><span class="lineCov">         18 :     CHECK_PTR_RET( path, FALSE );</span>
-<span class="lineNum">     246 </span><span class="lineCov">         18 :     CHECK_PTR_RET( argv, FALSE );</span>
-<span class="lineNum">     247 </span><span class="lineCov">         18 :     CHECK_PTR_RET( environ, FALSE );</span>
-<span class="lineNum">     248 </span><span class="lineCov">         18 :     CHECK_PTR_RET( ops, FALSE );</span>
+<span class="lineNum">     244 </span><span class="lineCov">          9 :     CHECK_PTR_RET( child, FALSE );</span>
+<span class="lineNum">     245 </span><span class="lineCov">          9 :     CHECK_PTR_RET( path, FALSE );</span>
+<span class="lineNum">     246 </span><span class="lineCov">          9 :     CHECK_PTR_RET( argv, FALSE );</span>
+<span class="lineNum">     247 </span><span class="lineCov">          9 :     CHECK_PTR_RET( environ, FALSE );</span>
+<span class="lineNum">     248 </span><span class="lineCov">          9 :     CHECK_PTR_RET( ops, FALSE );</span>
 <span class="lineNum">     249 </span>            : 
-<span class="lineNum">     250 </span><span class="lineCov">         18 :     MEMSET( (void*)child, 0, sizeof(child_process_t) );</span>
+<span class="lineNum">     250 </span><span class="lineCov">          9 :     MEMSET( (void*)child, 0, sizeof(child_process_t) );</span>
 <span class="lineNum">     251 </span>            : 
 <span class="lineNum">     252 </span>            :     /* store the user context */
-<span class="lineNum">     253 </span><span class="lineCov">         18 :     child-&gt;user_data = user_data;</span>
+<span class="lineNum">     253 </span><span class="lineCov">          9 :     child-&gt;user_data = user_data;</span>
 <span class="lineNum">     254 </span>            : 
 <span class="lineNum">     255 </span>            :     /* copy the ops into place */
-<span class="lineNum">     256 </span><span class="lineCov">         18 :     MEMCPY( (void*)&amp;(child-&gt;ops), ops, sizeof(child_ops_t) );</span>
+<span class="lineNum">     256 </span><span class="lineCov">          9 :     MEMCPY( (void*)&amp;(child-&gt;ops), ops, sizeof(child_ops_t) );</span>
 <span class="lineNum">     257 </span>            : 
 <span class="lineNum">     258 </span>            :     /* set up the pipes */
-<span class="lineNum">     259 </span><span class="lineCov">         18 :     if ( PIPE(c2p_pipe) == -1 )</span>
+<span class="lineNum">     259 </span><span class="lineCov">          9 :     if ( PIPE(c2p_pipe) == -1 )</span>
 <span class="lineNum">     260 </span>            :     {
-<span class="lineNum">     261 </span><span class="lineCov">          4 :         return FALSE;</span>
+<span class="lineNum">     261 </span><span class="lineCov">          2 :         return FALSE;</span>
 <span class="lineNum">     262 </span>            :     }
-<span class="lineNum">     263 </span><span class="lineCov">         14 :     if ( PIPE(p2c_pipe) == -1 )</span>
+<span class="lineNum">     263 </span><span class="lineCov">          7 :     if ( PIPE(p2c_pipe) == -1 )</span>
 <span class="lineNum">     264 </span>            :     {
 <span class="lineNum">     265 </span><span class="lineNoCov">          0 :         close( c2p_pipe[PIPE_WRITE_IDX] );</span>
 <span class="lineNum">     266 </span><span class="lineNoCov">          0 :         close( c2p_pipe[PIPE_READ_IDX] );</span>
@@ -330,22 +330,22 @@
 <span class="lineNum">     268 </span>            :     }
 <span class="lineNum">     269 </span>            : 
 <span class="lineNum">     270 </span>            :     /* fork the child process */
-<span class="lineNum">     271 </span><span class="lineCov">         14 :     keepfds[0] = p2c_pipe[PIPE_READ_IDX];</span>
-<span class="lineNum">     272 </span><span class="lineCov">         14 :     keepfds[1] = p2c_pipe[PIPE_WRITE_IDX];</span>
-<span class="lineNum">     273 </span><span class="lineCov">         14 :     keepfds[2] = c2p_pipe[PIPE_READ_IDX];</span>
-<span class="lineNum">     274 </span><span class="lineCov">         14 :     keepfds[3] = c2p_pipe[PIPE_WRITE_IDX];</span>
-<span class="lineNum">     275 </span><span class="lineCov">         14 :     child-&gt;pid = safe_fork( keepfds, 4, drop_privileges );</span>
-<span class="lineNum">     276 </span><span class="lineCov">         14 :     if ( child-&gt;pid == -1 )</span>
+<span class="lineNum">     271 </span><span class="lineCov">          7 :     keepfds[0] = p2c_pipe[PIPE_READ_IDX];</span>
+<span class="lineNum">     272 </span><span class="lineCov">          7 :     keepfds[1] = p2c_pipe[PIPE_WRITE_IDX];</span>
+<span class="lineNum">     273 </span><span class="lineCov">          7 :     keepfds[2] = c2p_pipe[PIPE_READ_IDX];</span>
+<span class="lineNum">     274 </span><span class="lineCov">          7 :     keepfds[3] = c2p_pipe[PIPE_WRITE_IDX];</span>
+<span class="lineNum">     275 </span><span class="lineCov">          7 :     child-&gt;pid = safe_fork( keepfds, 4, drop_privileges );</span>
+<span class="lineNum">     276 </span><span class="lineCov">          7 :     if ( child-&gt;pid == -1 )</span>
 <span class="lineNum">     277 </span>            :     {
 <span class="lineNum">     278 </span>            :         /* fork failed, close pipe fd's */
-<span class="lineNum">     279 </span><span class="lineCov">          2 :         close( p2c_pipe[PIPE_WRITE_IDX] );</span>
-<span class="lineNum">     280 </span><span class="lineCov">          2 :         close( p2c_pipe[PIPE_READ_IDX] );</span>
-<span class="lineNum">     281 </span><span class="lineCov">          2 :         close( c2p_pipe[PIPE_WRITE_IDX] );</span>
-<span class="lineNum">     282 </span><span class="lineCov">          2 :         close( c2p_pipe[PIPE_READ_IDX] );</span>
-<span class="lineNum">     283 </span><span class="lineCov">          2 :         return FALSE;</span>
+<span class="lineNum">     279 </span><span class="lineCov">          1 :         close( p2c_pipe[PIPE_WRITE_IDX] );</span>
+<span class="lineNum">     280 </span><span class="lineCov">          1 :         close( p2c_pipe[PIPE_READ_IDX] );</span>
+<span class="lineNum">     281 </span><span class="lineCov">          1 :         close( c2p_pipe[PIPE_WRITE_IDX] );</span>
+<span class="lineNum">     282 </span><span class="lineCov">          1 :         close( c2p_pipe[PIPE_READ_IDX] );</span>
+<span class="lineNum">     283 </span><span class="lineCov">          1 :         return FALSE;</span>
 <span class="lineNum">     284 </span>            :     }
 <span class="lineNum">     285 </span>            : 
-<span class="lineNum">     286 </span><span class="lineCov">         12 :     if ( child-&gt;pid == 0 )</span>
+<span class="lineNum">     286 </span><span class="lineCov">          6 :     if ( child-&gt;pid == 0 )</span>
 <span class="lineNum">     287 </span>            :     {
 <span class="lineNum">     288 </span>            :         /* CHILD PROCESS */
 <span class="lineNum">     289 </span>            : 
@@ -381,32 +381,32 @@
 <span class="lineNum">     319 </span>            :     /* PARENT PROCESS */
 <span class="lineNum">     320 </span>            : 
 <span class="lineNum">     321 </span>            :     /* close the read side of the parent-to-child pipe */
-<span class="lineNum">     322 </span><span class="lineCov">         12 :     close( p2c_pipe[PIPE_READ_IDX] );</span>
+<span class="lineNum">     322 </span><span class="lineCov">          6 :     close( p2c_pipe[PIPE_READ_IDX] );</span>
 <span class="lineNum">     323 </span>            : 
 <span class="lineNum">     324 </span>            :     /* close the write side of the child-to-parent pipe */
-<span class="lineNum">     325 </span><span class="lineCov">         12 :     close( p2c_pipe[PIPE_WRITE_IDX] );</span>
+<span class="lineNum">     325 </span><span class="lineCov">          6 :     close( p2c_pipe[PIPE_WRITE_IDX] );</span>
 <span class="lineNum">     326 </span>            : 
 <span class="lineNum">     327 </span>            :     /* initialize our SIGCHLD handler */
-<span class="lineNum">     328 </span><span class="lineCov">         12 :     MEMSET( &amp;chld_params, 0, sizeof(evt_params_t) );</span>
-<span class="lineNum">     329 </span><span class="lineCov">         12 :     chld_params.child_params.pid = child-&gt;pid;</span>
-<span class="lineNum">     330 </span><span class="lineCov">         12 :     chld_params.child_params.trace = FALSE;</span>
-<span class="lineNum">     331 </span><span class="lineCov">         12 :     evt_initialize_event_handler( &amp;(child-&gt;sigchld), EVT_CHILD, </span>
+<span class="lineNum">     328 </span><span class="lineCov">          6 :     MEMSET( &amp;chld_params, 0, sizeof(evt_params_t) );</span>
+<span class="lineNum">     329 </span><span class="lineCov">          6 :     chld_params.child_params.pid = child-&gt;pid;</span>
+<span class="lineNum">     330 </span><span class="lineCov">          6 :     chld_params.child_params.trace = FALSE;</span>
+<span class="lineNum">     331 </span><span class="lineCov">          6 :     evt_initialize_event_handler( &amp;(child-&gt;sigchld), EVT_CHILD, </span>
 <span class="lineNum">     332 </span>            :                                   &amp;chld_params, &amp;sigchld_cb, (void*)child );
 <span class="lineNum">     333 </span>            : 
 <span class="lineNum">     334 </span>            :     /* start the handler */
-<span class="lineNum">     335 </span><span class="lineCov">         12 :     evt_start_event_handler( el, &amp;(child-&gt;sigchld) );</span>
+<span class="lineNum">     335 </span><span class="lineCov">          6 :     evt_start_event_handler( el, &amp;(child-&gt;sigchld) );</span>
 <span class="lineNum">     336 </span>            : 
 <span class="lineNum">     337 </span>            :     /* initialize the aiofd to monitor the parent side of the pipes */
-<span class="lineNum">     338 </span><span class="lineCov">         12 :     aiofd_initialize( &amp;(child-&gt;aiofd), p2c_pipe[PIPE_WRITE_IDX], </span>
+<span class="lineNum">     338 </span><span class="lineCov">          6 :     aiofd_initialize( &amp;(child-&gt;aiofd), p2c_pipe[PIPE_WRITE_IDX], </span>
 <span class="lineNum">     339 </span>            :                       c2p_pipe[PIPE_READ_IDX], &amp;aiofd_ops, el, (void*)child );
 <span class="lineNum">     340 </span>            : 
 <span class="lineNum">     341 </span>            :     /* start listening for incoming data from the child */
-<span class="lineNum">     342 </span><span class="lineCov">         12 :     aiofd_enable_read_evt( &amp;(child-&gt;aiofd), TRUE );</span>
+<span class="lineNum">     342 </span><span class="lineCov">          6 :     aiofd_enable_read_evt( &amp;(child-&gt;aiofd), TRUE );</span>
 <span class="lineNum">     343 </span>            : 
-<span class="lineNum">     344 </span><span class="lineCov">         12 :     return TRUE;</span>
+<span class="lineNum">     344 </span><span class="lineCov">          6 :     return TRUE;</span>
 <a name="345"><span class="lineNum">     345 </span>            : }</a>
 <span class="lineNum">     346 </span>            : 
-<span class="lineNum">     347 </span><span class="lineCov">         18 : child_process_t * child_process_new( uint8_t const * const path,</span>
+<span class="lineNum">     347 </span><span class="lineCov">          9 : child_process_t * child_process_new( uint8_t const * const path,</span>
 <span class="lineNum">     348 </span>            :                                      uint8_t const * const argv[],
 <span class="lineNum">     349 </span>            :                                      uint8_t const * const environ[],
 <span class="lineNum">     350 </span>            :                                      child_ops_t const * const ops,
@@ -414,84 +414,84 @@
 <span class="lineNum">     352 </span>            :                                      int_t const drop_privileges,
 <span class="lineNum">     353 </span>            :                                      void * user_data )
 <span class="lineNum">     354 </span>            : {
-<span class="lineNum">     355 </span><span class="lineCov">         18 :     child_process_t * child = NULL;</span>
+<span class="lineNum">     355 </span><span class="lineCov">          9 :     child_process_t * child = NULL;</span>
 <span class="lineNum">     356 </span>            : 
-<span class="lineNum">     357 </span><span class="lineCov">         18 :     CHECK_PTR_RET( path, NULL );</span>
-<span class="lineNum">     358 </span><span class="lineCov">         18 :     CHECK_PTR_RET( argv, NULL );</span>
-<span class="lineNum">     359 </span><span class="lineCov">         18 :     CHECK_PTR_RET( environ, NULL );</span>
-<span class="lineNum">     360 </span><span class="lineCov">         18 :     CHECK_PTR_RET( ops, NULL );</span>
+<span class="lineNum">     357 </span><span class="lineCov">          9 :     CHECK_PTR_RET( path, NULL );</span>
+<span class="lineNum">     358 </span><span class="lineCov">          9 :     CHECK_PTR_RET( argv, NULL );</span>
+<span class="lineNum">     359 </span><span class="lineCov">          9 :     CHECK_PTR_RET( environ, NULL );</span>
+<span class="lineNum">     360 </span><span class="lineCov">          9 :     CHECK_PTR_RET( ops, NULL );</span>
 <span class="lineNum">     361 </span>            : 
 <span class="lineNum">     362 </span>            :     /* allocate a child struct */
-<span class="lineNum">     363 </span><span class="lineCov">         18 :     child = (child_process_t*)CALLOC( 1, sizeof(child_process_t) );</span>
-<span class="lineNum">     364 </span><span class="lineCov">         18 :     CHECK_PTR_RET_MSG( child, NULL, &quot;failed to allocate child_process_t\n&quot; );</span>
+<span class="lineNum">     363 </span><span class="lineCov">          9 :     child = (child_process_t*)CALLOC( 1, sizeof(child_process_t) );</span>
+<span class="lineNum">     364 </span><span class="lineCov">          9 :     CHECK_PTR_RET_MSG( child, NULL, &quot;failed to allocate child_process_t\n&quot; );</span>
 <span class="lineNum">     365 </span>            : 
-<span class="lineNum">     366 </span><span class="lineCov">         18 :     if ( child_process_initialize( child, path, argv, </span>
+<span class="lineNum">     366 </span><span class="lineCov">          9 :     if ( child_process_initialize( child, path, argv, </span>
 <span class="lineNum">     367 </span>            :                                    environ, ops, el, 
 <span class="lineNum">     368 </span>            :                                    drop_privileges, user_data ) == FALSE )
 <span class="lineNum">     369 </span>            :     {
-<span class="lineNum">     370 </span><span class="lineCov">          6 :         FREE( child );</span>
-<span class="lineNum">     371 </span><span class="lineCov">          6 :         return NULL;</span>
+<span class="lineNum">     370 </span><span class="lineCov">          3 :         FREE( child );</span>
+<span class="lineNum">     371 </span><span class="lineCov">          3 :         return NULL;</span>
 <span class="lineNum">     372 </span>            :     }
 <span class="lineNum">     373 </span>            :     
-<span class="lineNum">     374 </span><span class="lineCov">         12 :     return child;</span>
+<span class="lineNum">     374 </span><span class="lineCov">          6 :     return child;</span>
 <a name="375"><span class="lineNum">     375 </span>            : }</a>
 <span class="lineNum">     376 </span>            : 
-<span class="lineNum">     377 </span><span class="lineCov">         12 : static void child_process_deinitialize( child_process_t * const child, int wait )</span>
+<span class="lineNum">     377 </span><span class="lineCov">          6 : static void child_process_deinitialize( child_process_t * const child, int wait )</span>
 <span class="lineNum">     378 </span>            : {
-<span class="lineNum">     379 </span><span class="lineCov">         24 :     CHECK_PTR( child );</span>
+<span class="lineNum">     379 </span><span class="lineCov">         12 :     CHECK_PTR( child );</span>
 <span class="lineNum">     380 </span>            : 
 <span class="lineNum">     381 </span>            :     /* shut down the aiofd */
-<span class="lineNum">     382 </span><span class="lineCov">         12 :     aiofd_deinitialize( &amp;(child-&gt;aiofd) );</span>
+<span class="lineNum">     382 </span><span class="lineCov">          6 :     aiofd_deinitialize( &amp;(child-&gt;aiofd) );</span>
 <span class="lineNum">     383 </span>            : 
 <span class="lineNum">     384 </span>            :     /* wait if the client wants to */
-<span class="lineNum">     385 </span><span class="lineCov">         24 :     while ( wait &amp;&amp; (child-&gt;exited == FALSE) )</span>
+<span class="lineNum">     385 </span><span class="lineCov">         12 :     while ( wait &amp;&amp; (child-&gt;exited == FALSE) )</span>
 <span class="lineNum">     386 </span>            :     {
 <span class="lineNum">     387 </span><span class="lineNoCov">          0 :         sleep( 1 );</span>
 <span class="lineNum">     388 </span>            :     }
 <span class="lineNum">     389 </span>            : 
 <span class="lineNum">     390 </span>            :     /* shut down the child event handler */
-<span class="lineNum">     391 </span><span class="lineCov">         12 :     evt_deinitialize_event_handler( &amp;(child-&gt;sigchld) );</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :     evt_deinitialize_event_handler( &amp;(child-&gt;sigchld) );</span>
 <span class="lineNum">     392 </span>            : 
 <span class="lineNum">     393 </span>            :     /* close the file descriptors */
-<span class="lineNum">     394 </span><span class="lineCov">         12 :     if ( child-&gt;aiofd.rfd &gt;= 0 )</span>
-<span class="lineNum">     395 </span><span class="lineCov">         12 :         close( child-&gt;aiofd.rfd );</span>
-<span class="lineNum">     396 </span><span class="lineCov">         12 :     if ( child-&gt;aiofd.wfd &gt;= 0 )</span>
-<span class="lineNum">     397 </span><span class="lineCov">         12 :         close( child-&gt;aiofd.wfd );</span>
+<span class="lineNum">     394 </span><span class="lineCov">          6 :     if ( child-&gt;aiofd.rfd &gt;= 0 )</span>
+<span class="lineNum">     395 </span><span class="lineCov">          6 :         close( child-&gt;aiofd.rfd );</span>
+<span class="lineNum">     396 </span><span class="lineCov">          6 :     if ( child-&gt;aiofd.wfd &gt;= 0 )</span>
+<span class="lineNum">     397 </span><span class="lineCov">          6 :         close( child-&gt;aiofd.wfd );</span>
 <a name="398"><span class="lineNum">     398 </span>            : }</a>
 <span class="lineNum">     399 </span>            : 
-<span class="lineNum">     400 </span><span class="lineCov">         12 : void child_process_delete( void * cp, int wait )</span>
+<span class="lineNum">     400 </span><span class="lineCov">          6 : void child_process_delete( void * cp, int wait )</span>
 <span class="lineNum">     401 </span>            : {
-<span class="lineNum">     402 </span><span class="lineCov">         12 :     child_process_t * child = (child_process_t *)cp;</span>
-<span class="lineNum">     403 </span><span class="lineCov">         24 :     CHECK_PTR( child );</span>
+<span class="lineNum">     402 </span><span class="lineCov">          6 :     child_process_t * child = (child_process_t *)cp;</span>
+<span class="lineNum">     403 </span><span class="lineCov">         12 :     CHECK_PTR( child );</span>
 <span class="lineNum">     404 </span>            : 
 <span class="lineNum">     405 </span>            :     /* clean everything up */
-<span class="lineNum">     406 </span><span class="lineCov">         12 :     child_process_deinitialize( child, wait );</span>
+<span class="lineNum">     406 </span><span class="lineCov">          6 :     child_process_deinitialize( child, wait );</span>
 <span class="lineNum">     407 </span>            : 
-<span class="lineNum">     408 </span><span class="lineCov">         12 :     FREE( (void*)cp );</span>
+<span class="lineNum">     408 </span><span class="lineCov">          6 :     FREE( (void*)cp );</span>
 <a name="409"><span class="lineNum">     409 </span>            : }</a>
 <span class="lineNum">     410 </span>            : 
-<span class="lineNum">     411 </span><span class="lineCov">          8 : pid_t child_process_get_pid( child_process_t * const cp )</span>
+<span class="lineNum">     411 </span><span class="lineCov">          4 : pid_t child_process_get_pid( child_process_t * const cp )</span>
 <span class="lineNum">     412 </span>            : {
-<span class="lineNum">     413 </span><span class="lineCov">          8 :     CHECK_PTR_RET( cp, 0 );</span>
-<span class="lineNum">     414 </span><span class="lineCov">          8 :     return cp-&gt;pid;</span>
+<span class="lineNum">     413 </span><span class="lineCov">          4 :     CHECK_PTR_RET( cp, 0 );</span>
+<span class="lineNum">     414 </span><span class="lineCov">          4 :     return cp-&gt;pid;</span>
 <a name="415"><span class="lineNum">     415 </span>            : }</a>
 <span class="lineNum">     416 </span>            : 
-<span class="lineNum">     417 </span><span class="lineCov">          8 : ssize_t child_process_read( child_process_t * const cp, </span>
+<span class="lineNum">     417 </span><span class="lineCov">          4 : ssize_t child_process_read( child_process_t * const cp, </span>
 <span class="lineNum">     418 </span>            :                             uint8_t * const buffer, 
 <span class="lineNum">     419 </span>            :                             size_t const n )
 <span class="lineNum">     420 </span>            : {
-<span class="lineNum">     421 </span><span class="lineCov">          8 :     CHECK_PTR_RET( cp, -1 );</span>
-<span class="lineNum">     422 </span><span class="lineCov">          8 :     CHECK_PTR_RET( buffer, -1 );</span>
-<span class="lineNum">     423 </span><span class="lineCov">          8 :     CHECK_RET( n &gt; 0, -1 );</span>
-<span class="lineNum">     424 </span><span class="lineCov">          8 :     return aiofd_read( &amp;(cp-&gt;aiofd), buffer, n );</span>
+<span class="lineNum">     421 </span><span class="lineCov">          4 :     CHECK_PTR_RET( cp, -1 );</span>
+<span class="lineNum">     422 </span><span class="lineCov">          4 :     CHECK_PTR_RET( buffer, -1 );</span>
+<span class="lineNum">     423 </span><span class="lineCov">          4 :     CHECK_RET( n &gt; 0, -1 );</span>
+<span class="lineNum">     424 </span><span class="lineCov">          4 :     return aiofd_read( &amp;(cp-&gt;aiofd), buffer, n );</span>
 <a name="425"><span class="lineNum">     425 </span>            : }</a>
 <span class="lineNum">     426 </span>            : 
-<span class="lineNum">     427 </span><span class="lineCov">          4 : int_t child_process_write( child_process_t * const cp, </span>
+<span class="lineNum">     427 </span><span class="lineCov">          2 : int_t child_process_write( child_process_t * const cp, </span>
 <span class="lineNum">     428 </span>            :                            uint8_t const * const buffer, 
 <span class="lineNum">     429 </span>            :                            size_t const n )
 <span class="lineNum">     430 </span>            : {
-<span class="lineNum">     431 </span><span class="lineCov">          4 :     CHECK_PTR_RET( cp, FALSE );</span>
-<span class="lineNum">     432 </span><span class="lineCov">          2 :     return aiofd_write( &amp;(cp-&gt;aiofd), buffer, n, NULL );</span>
+<span class="lineNum">     431 </span><span class="lineCov">          2 :     CHECK_PTR_RET( cp, FALSE );</span>
+<span class="lineNum">     432 </span><span class="lineCov">          1 :     return aiofd_write( &amp;(cp-&gt;aiofd), buffer, n, NULL );</span>
 <a name="433"><span class="lineNum">     433 </span>            : }</a>
 <span class="lineNum">     434 </span>            : 
 <span class="lineNum">     435 </span><span class="lineNoCov">          0 : ssize_t child_process_readv( child_process_t * const cp,</span>
@@ -504,20 +504,20 @@
 <span class="lineNum">     442 </span><span class="lineNoCov">          0 :     return aiofd_readv( &amp;(cp-&gt;aiofd), iov, iovcnt );</span>
 <a name="443"><span class="lineNum">     443 </span>            : }</a>
 <span class="lineNum">     444 </span>            : 
-<span class="lineNum">     445 </span><span class="lineCov">          4 : int_t child_process_writev( child_process_t * const cp,</span>
+<span class="lineNum">     445 </span><span class="lineCov">          2 : int_t child_process_writev( child_process_t * const cp,</span>
 <span class="lineNum">     446 </span>            :                             struct iovec * iov,
 <span class="lineNum">     447 </span>            :                             size_t iovcnt )
 <span class="lineNum">     448 </span>            : {
-<span class="lineNum">     449 </span><span class="lineCov">          4 :     CHECK_PTR_RET( cp, FALSE );</span>
-<span class="lineNum">     450 </span><span class="lineCov">          2 :     CHECK_PTR_RET( iov, FALSE );</span>
+<span class="lineNum">     449 </span><span class="lineCov">          2 :     CHECK_PTR_RET( cp, FALSE );</span>
+<span class="lineNum">     450 </span><span class="lineCov">          1 :     CHECK_PTR_RET( iov, FALSE );</span>
 <span class="lineNum">     451 </span><span class="lineNoCov">          0 :     CHECK_RET( iovcnt &gt; 0, FALSE );</span>
 <span class="lineNum">     452 </span><span class="lineNoCov">          0 :     return aiofd_writev( &amp;(cp-&gt;aiofd), iov, iovcnt, NULL );</span>
 <a name="453"><span class="lineNum">     453 </span>            : }</a>
 <span class="lineNum">     454 </span>            : 
-<span class="lineNum">     455 </span><span class="lineCov">          6 : int_t child_process_flush( child_process_t * const cp )</span>
+<span class="lineNum">     455 </span><span class="lineCov">          3 : int_t child_process_flush( child_process_t * const cp )</span>
 <span class="lineNum">     456 </span>            : {
-<span class="lineNum">     457 </span><span class="lineCov">          6 :     CHECK_PTR_RET( cp, FALSE );</span>
-<span class="lineNum">     458 </span><span class="lineCov">          4 :     return aiofd_flush( &amp;(cp-&gt;aiofd) );</span>
+<span class="lineNum">     457 </span><span class="lineCov">          3 :     CHECK_PTR_RET( cp, FALSE );</span>
+<span class="lineNum">     458 </span><span class="lineCov">          2 :     return aiofd_flush( &amp;(cp-&gt;aiofd) );</span>
 <span class="lineNum">     459 </span>            : }
 <span class="lineNum">     460 </span>            : 
 <span class="lineNum">     461 </span>            : #if defined(UNIT_TESTING)
@@ -526,22 +526,22 @@
 <span class="lineNum">     464 </span>            : 
 <a name="465"><span class="lineNum">     465 </span>            : static int_t test_flag = FALSE;</a>
 <span class="lineNum">     466 </span>            : 
-<span class="lineNum">     467 </span><span class="lineCov">          2 : static int_t test_exit_evt_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )</span>
+<span class="lineNum">     467 </span><span class="lineCov">          1 : static int_t test_exit_evt_fn( child_process_t * const cp, int rpid, int rstatus, void * user_data )</span>
 <span class="lineNum">     468 </span>            : {
-<span class="lineNum">     469 </span><span class="lineCov">          2 :     *((int_t*)user_data) = TRUE;</span>
-<span class="lineNum">     470 </span><span class="lineCov">          2 :     return TRUE;</span>
+<span class="lineNum">     469 </span><span class="lineCov">          1 :     *((int_t*)user_data) = TRUE;</span>
+<span class="lineNum">     470 </span><span class="lineCov">          1 :     return TRUE;</span>
 <a name="471"><span class="lineNum">     471 </span>            : }</a>
 <span class="lineNum">     472 </span>            : 
-<span class="lineNum">     473 </span><span class="lineCov">          2 : static ssize_t test_write_evt_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )</span>
+<span class="lineNum">     473 </span><span class="lineCov">          1 : static ssize_t test_write_evt_fn( child_process_t * const cp, uint8_t const * const buffer, void * user_data )</span>
 <span class="lineNum">     474 </span>            : {
-<span class="lineNum">     475 </span><span class="lineCov">          2 :     *((int_t*)user_data) = TRUE;</span>
-<span class="lineNum">     476 </span><span class="lineCov">          2 :     return TRUE;</span>
+<span class="lineNum">     475 </span><span class="lineCov">          1 :     *((int_t*)user_data) = TRUE;</span>
+<span class="lineNum">     476 </span><span class="lineCov">          1 :     return TRUE;</span>
 <a name="477"><span class="lineNum">     477 </span>            : }</a>
 <span class="lineNum">     478 </span>            : 
-<span class="lineNum">     479 </span><span class="lineCov">          2 : static ssize_t test_read_evt_fn( child_process_t * const cp, size_t nread, void * user_data )</span>
+<span class="lineNum">     479 </span><span class="lineCov">          1 : static ssize_t test_read_evt_fn( child_process_t * const cp, size_t nread, void * user_data )</span>
 <span class="lineNum">     480 </span>            : {
-<span class="lineNum">     481 </span><span class="lineCov">          2 :     *((int_t*)user_data) = TRUE;</span>
-<span class="lineNum">     482 </span><span class="lineCov">          2 :     return TRUE;</span>
+<span class="lineNum">     481 </span><span class="lineCov">          1 :     *((int_t*)user_data) = TRUE;</span>
+<span class="lineNum">     482 </span><span class="lineCov">          1 :     return TRUE;</span>
 <a name="483"><span class="lineNum">     483 </span>            : }</a>
 <span class="lineNum">     484 </span>            : 
 <span class="lineNum">     485 </span><span class="lineNoCov">          0 : static int_t test_error_evt_fn( child_process_t * const cp, int err, void * user_data )</span>
@@ -551,99 +551,99 @@
 <span class="lineNum">     489 </span>            : }
 <a name="490"><span class="lineNum">     490 </span>            : </a>
 <span class="lineNum">     491 </span>            : 
-<span class="lineNum">     492 </span><span class="lineCov">          2 : static void test_sigchld_cb( void )</span>
+<span class="lineNum">     492 </span><span class="lineCov">          1 : static void test_sigchld_cb( void )</span>
 <span class="lineNum">     493 </span>            : {
 <span class="lineNum">     494 </span>            :     child_process_t child;
 <span class="lineNum">     495 </span>            :     evt_params_t params;
-<span class="lineNum">     496 </span><span class="lineCov">          2 :     MEMSET( &amp;child, 0, sizeof(child_process_t) );</span>
-<span class="lineNum">     497 </span><span class="lineCov">          2 :     MEMSET( &amp;params, 0, sizeof(evt_params_t) );</span>
-<span class="lineNum">     498 </span><span class="lineCov">          2 :     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, NULL, NULL ), EVT_BADPTR );</span>
+<span class="lineNum">     496 </span><span class="lineCov">          1 :     MEMSET( &amp;child, 0, sizeof(child_process_t) );</span>
+<span class="lineNum">     497 </span><span class="lineCov">          1 :     MEMSET( &amp;params, 0, sizeof(evt_params_t) );</span>
+<span class="lineNum">     498 </span><span class="lineCov">          1 :     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, NULL, NULL ), EVT_BADPTR );</span>
 <span class="lineNum">     499 </span>            : 
-<span class="lineNum">     500 </span><span class="lineCov">          2 :     params.child_params.pid = 1;</span>
-<span class="lineNum">     501 </span><span class="lineCov">          2 :     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &amp;params, &amp;child ), EVT_ERROR );</span>
+<span class="lineNum">     500 </span><span class="lineCov">          1 :     params.child_params.pid = 1;</span>
+<span class="lineNum">     501 </span><span class="lineCov">          1 :     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &amp;params, &amp;child ), EVT_ERROR );</span>
 <span class="lineNum">     502 </span>            : 
-<span class="lineNum">     503 </span><span class="lineCov">          2 :     params.child_params.pid = 0;</span>
-<span class="lineNum">     504 </span><span class="lineCov">          2 :     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &amp;params, &amp;child ), EVT_OK );</span>
-<span class="lineNum">     505 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( child.exited );</span>
+<span class="lineNum">     503 </span><span class="lineCov">          1 :     params.child_params.pid = 0;</span>
+<span class="lineNum">     504 </span><span class="lineCov">          1 :     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &amp;params, &amp;child ), EVT_OK );</span>
+<span class="lineNum">     505 </span><span class="lineCov">          1 :     CU_ASSERT_TRUE( child.exited );</span>
 <span class="lineNum">     506 </span>            : 
-<span class="lineNum">     507 </span><span class="lineCov">          2 :     child.exited = 0;</span>
-<span class="lineNum">     508 </span><span class="lineCov">          2 :     child.ops.exit_evt_fn = &amp;test_exit_evt_fn;</span>
-<span class="lineNum">     509 </span><span class="lineCov">          2 :     child.user_data = &amp;test_flag;</span>
-<span class="lineNum">     510 </span><span class="lineCov">          2 :     test_flag = FALSE;</span>
-<span class="lineNum">     511 </span><span class="lineCov">          2 :     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &amp;params, &amp;child ), EVT_OK );</span>
-<span class="lineNum">     512 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( child.exited );</span>
-<span class="lineNum">     513 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( test_flag );</span>
-<span class="lineNum">     514 </span><span class="lineCov">          2 :     test_flag = FALSE;</span>
-<a name="515"><span class="lineNum">     515 </span><span class="lineCov">          2 : }</span></a>
+<span class="lineNum">     507 </span><span class="lineCov">          1 :     child.exited = 0;</span>
+<span class="lineNum">     508 </span><span class="lineCov">          1 :     child.ops.exit_evt_fn = &amp;test_exit_evt_fn;</span>
+<span class="lineNum">     509 </span><span class="lineCov">          1 :     child.user_data = &amp;test_flag;</span>
+<span class="lineNum">     510 </span><span class="lineCov">          1 :     test_flag = FALSE;</span>
+<span class="lineNum">     511 </span><span class="lineCov">          1 :     CU_ASSERT_EQUAL( sigchld_cb( NULL, NULL, &amp;params, &amp;child ), EVT_OK );</span>
+<span class="lineNum">     512 </span><span class="lineCov">          1 :     CU_ASSERT_TRUE( child.exited );</span>
+<span class="lineNum">     513 </span><span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
+<span class="lineNum">     514 </span><span class="lineCov">          1 :     test_flag = FALSE;</span>
+<a name="515"><span class="lineNum">     515 </span><span class="lineCov">          1 : }</span></a>
 <span class="lineNum">     516 </span>            : 
-<span class="lineNum">     517 </span><span class="lineCov">          2 : static void test_child_aiofd_write_evt_fn( void )</span>
+<span class="lineNum">     517 </span><span class="lineCov">          1 : static void test_child_aiofd_write_evt_fn( void )</span>
 <span class="lineNum">     518 </span>            : {
 <span class="lineNum">     519 </span>            :     aiofd_t aiofd;
 <span class="lineNum">     520 </span>            :     child_process_t child;
-<span class="lineNum">     521 </span><span class="lineCov">          2 :     uint8_t * buf = UT(&quot;foo&quot;);</span>
-<span class="lineNum">     522 </span><span class="lineCov">          2 :     MEMSET( &amp;aiofd, 0, sizeof(aiofd_t));</span>
-<span class="lineNum">     523 </span><span class="lineCov">          2 :     MEMSET( &amp;child, 0, sizeof(child_process_t) );</span>
+<span class="lineNum">     521 </span><span class="lineCov">          1 :     uint8_t * buf = UT(&quot;foo&quot;);</span>
+<span class="lineNum">     522 </span><span class="lineCov">          1 :     MEMSET( &amp;aiofd, 0, sizeof(aiofd_t));</span>
+<span class="lineNum">     523 </span><span class="lineCov">          1 :     MEMSET( &amp;child, 0, sizeof(child_process_t) );</span>
 <span class="lineNum">     524 </span>            : 
-<span class="lineNum">     525 </span><span class="lineCov">          2 :     CU_ASSERT_FALSE( child_aiofd_write_evt_fn( NULL, NULL, NULL, NULL ) );</span>
-<span class="lineNum">     526 </span><span class="lineCov">          2 :     CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &amp;aiofd, NULL, NULL, NULL ) );</span>
-<span class="lineNum">     527 </span><span class="lineCov">          2 :     child.aiofd.rfd = -1;</span>
-<span class="lineNum">     528 </span><span class="lineCov">          2 :     CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &amp;aiofd, NULL, &amp;child, NULL ) );</span>
-<span class="lineNum">     529 </span><span class="lineCov">          2 :     child.aiofd.rfd = 0;</span>
-<span class="lineNum">     530 </span><span class="lineCov">          2 :     fake_list_count = TRUE;</span>
-<span class="lineNum">     531 </span><span class="lineCov">          2 :     fake_list_count_ret = 0;</span>
-<span class="lineNum">     532 </span><span class="lineCov">          2 :     CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &amp;aiofd, NULL, &amp;child, NULL ) );</span>
-<span class="lineNum">     533 </span><span class="lineCov">          2 :     fake_list_count_ret = 1;</span>
-<span class="lineNum">     534 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &amp;aiofd, NULL, &amp;child, NULL ) );</span>
-<span class="lineNum">     535 </span><span class="lineCov">          2 :     fake_list_count = FALSE;</span>
+<span class="lineNum">     525 </span><span class="lineCov">          1 :     CU_ASSERT_FALSE( child_aiofd_write_evt_fn( NULL, NULL, NULL, NULL ) );</span>
+<span class="lineNum">     526 </span><span class="lineCov">          1 :     CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &amp;aiofd, NULL, NULL, NULL ) );</span>
+<span class="lineNum">     527 </span><span class="lineCov">          1 :     child.aiofd.rfd = -1;</span>
+<span class="lineNum">     528 </span><span class="lineCov">          1 :     CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &amp;aiofd, NULL, &amp;child, NULL ) );</span>
+<span class="lineNum">     529 </span><span class="lineCov">          1 :     child.aiofd.rfd = 0;</span>
+<span class="lineNum">     530 </span><span class="lineCov">          1 :     fake_list_count = TRUE;</span>
+<span class="lineNum">     531 </span><span class="lineCov">          1 :     fake_list_count_ret = 0;</span>
+<span class="lineNum">     532 </span><span class="lineCov">          1 :     CU_ASSERT_FALSE( child_aiofd_write_evt_fn( &amp;aiofd, NULL, &amp;child, NULL ) );</span>
+<span class="lineNum">     533 </span><span class="lineCov">          1 :     fake_list_count_ret = 1;</span>
+<span class="lineNum">     534 </span><span class="lineCov">          1 :     CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &amp;aiofd, NULL, &amp;child, NULL ) );</span>
+<span class="lineNum">     535 </span><span class="lineCov">          1 :     fake_list_count = FALSE;</span>
 <span class="lineNum">     536 </span>            : 
-<span class="lineNum">     537 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &amp;aiofd, buf, &amp;child, NULL ) );</span>
-<span class="lineNum">     538 </span><span class="lineCov">          2 :     child.ops.write_evt_fn = &amp;test_write_evt_fn;</span>
-<span class="lineNum">     539 </span><span class="lineCov">          2 :     test_flag = FALSE;</span>
-<span class="lineNum">     540 </span><span class="lineCov">          2 :     child.user_data = &amp;test_flag;</span>
-<span class="lineNum">     541 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &amp;aiofd, buf, &amp;child, NULL ) );</span>
-<span class="lineNum">     542 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( test_flag );</span>
-<a name="543"><span class="lineNum">     543 </span><span class="lineCov">          2 : }</span></a>
+<span class="lineNum">     537 </span><span class="lineCov">          1 :     CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &amp;aiofd, buf, &amp;child, NULL ) );</span>
+<span class="lineNum">     538 </span><span class="lineCov">          1 :     child.ops.write_evt_fn = &amp;test_write_evt_fn;</span>
+<span class="lineNum">     539 </span><span class="lineCov">          1 :     test_flag = FALSE;</span>
+<span class="lineNum">     540 </span><span class="lineCov">          1 :     child.user_data = &amp;test_flag;</span>
+<span class="lineNum">     541 </span><span class="lineCov">          1 :     CU_ASSERT_TRUE( child_aiofd_write_evt_fn( &amp;aiofd, buf, &amp;child, NULL ) );</span>
+<span class="lineNum">     542 </span><span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
+<a name="543"><span class="lineNum">     543 </span><span class="lineCov">          1 : }</span></a>
 <span class="lineNum">     544 </span>            : 
-<span class="lineNum">     545 </span><span class="lineCov">          2 : static void test_child_aiofd_error_evt_fn( void )</span>
+<span class="lineNum">     545 </span><span class="lineCov">          1 : static void test_child_aiofd_error_evt_fn( void )</span>
 <span class="lineNum">     546 </span>            : {
 <span class="lineNum">     547 </span>            :     aiofd_t aiofd;
 <span class="lineNum">     548 </span>            :     child_process_t child;
-<span class="lineNum">     549 </span><span class="lineCov">          2 :     int err = 0;</span>
-<span class="lineNum">     550 </span><span class="lineCov">          2 :     MEMSET( &amp;aiofd, 0, sizeof(aiofd_t));</span>
-<span class="lineNum">     551 </span><span class="lineCov">          2 :     MEMSET( &amp;child, 0, sizeof(child_process_t) );</span>
+<span class="lineNum">     549 </span><span class="lineCov">          1 :     int err = 0;</span>
+<span class="lineNum">     550 </span><span class="lineCov">          1 :     MEMSET( &amp;aiofd, 0, sizeof(aiofd_t));</span>
+<span class="lineNum">     551 </span><span class="lineCov">          1 :     MEMSET( &amp;child, 0, sizeof(child_process_t) );</span>
 <span class="lineNum">     552 </span>            : 
-<span class="lineNum">     553 </span><span class="lineCov">          2 :     CU_ASSERT_FALSE( child_aiofd_error_evt_fn( NULL, 0, NULL ) );</span>
-<span class="lineNum">     554 </span><span class="lineCov">          2 :     CU_ASSERT_FALSE( child_aiofd_error_evt_fn( &amp;aiofd, 0, NULL ) );</span>
-<span class="lineNum">     555 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( child_aiofd_error_evt_fn( &amp;aiofd, 0, &amp;child ) );</span>
-<a name="556"><span class="lineNum">     556 </span><span class="lineCov">          2 : }</span></a>
+<span class="lineNum">     553 </span><span class="lineCov">          1 :     CU_ASSERT_FALSE( child_aiofd_error_evt_fn( NULL, 0, NULL ) );</span>
+<span class="lineNum">     554 </span><span class="lineCov">          1 :     CU_ASSERT_FALSE( child_aiofd_error_evt_fn( &amp;aiofd, 0, NULL ) );</span>
+<span class="lineNum">     555 </span><span class="lineCov">          1 :     CU_ASSERT_TRUE( child_aiofd_error_evt_fn( &amp;aiofd, 0, &amp;child ) );</span>
+<a name="556"><span class="lineNum">     556 </span><span class="lineCov">          1 : }</span></a>
 <span class="lineNum">     557 </span>            : 
-<span class="lineNum">     558 </span><span class="lineCov">          2 : static void test_child_aiofd_read_evt_fn( void )</span>
+<span class="lineNum">     558 </span><span class="lineCov">          1 : static void test_child_aiofd_read_evt_fn( void )</span>
 <span class="lineNum">     559 </span>            : {
 <span class="lineNum">     560 </span>            :     aiofd_t aiofd;
 <span class="lineNum">     561 </span>            :     child_process_t child;
-<span class="lineNum">     562 </span><span class="lineCov">          2 :     size_t nread = 0;</span>
-<span class="lineNum">     563 </span><span class="lineCov">          2 :     MEMSET( &amp;aiofd, 0, sizeof(aiofd_t));</span>
-<span class="lineNum">     564 </span><span class="lineCov">          2 :     MEMSET( &amp;child, 0, sizeof(child_process_t) );</span>
+<span class="lineNum">     562 </span><span class="lineCov">          1 :     size_t nread = 0;</span>
+<span class="lineNum">     563 </span><span class="lineCov">          1 :     MEMSET( &amp;aiofd, 0, sizeof(aiofd_t));</span>
+<span class="lineNum">     564 </span><span class="lineCov">          1 :     MEMSET( &amp;child, 0, sizeof(child_process_t) );</span>
 <span class="lineNum">     565 </span>            : 
-<span class="lineNum">     566 </span><span class="lineCov">          2 :     CU_ASSERT_FALSE( child_aiofd_read_evt_fn( NULL, 0, NULL ) );</span>
-<span class="lineNum">     567 </span><span class="lineCov">          2 :     CU_ASSERT_FALSE( child_aiofd_read_evt_fn( &amp;aiofd, 0, NULL ) );</span>
-<span class="lineNum">     568 </span><span class="lineCov">          2 :     CU_ASSERT_FALSE( child_aiofd_read_evt_fn( &amp;aiofd, 0, &amp;child ) );</span>
-<span class="lineNum">     569 </span><span class="lineCov">          2 :     test_flag = FALSE;</span>
-<span class="lineNum">     570 </span><span class="lineCov">          2 :     child.user_data = &amp;test_flag;</span>
-<span class="lineNum">     571 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( child_aiofd_read_evt_fn( &amp;aiofd, 1, &amp;child ) );</span>
-<span class="lineNum">     572 </span><span class="lineCov">          2 :     CU_ASSERT_FALSE( test_flag );</span>
-<span class="lineNum">     573 </span><span class="lineCov">          2 :     child.ops.read_evt_fn = &amp;test_read_evt_fn;</span>
-<span class="lineNum">     574 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( child_aiofd_read_evt_fn( &amp;aiofd, 1, &amp;child ) );</span>
-<span class="lineNum">     575 </span><span class="lineCov">          2 :     CU_ASSERT_TRUE( test_flag );</span>
-<a name="576"><span class="lineNum">     576 </span><span class="lineCov">          2 : }</span></a>
+<span class="lineNum">     566 </span><span class="lineCov">          1 :     CU_ASSERT_FALSE( child_aiofd_read_evt_fn( NULL, 0, NULL ) );</span>
+<span class="lineNum">     567 </span><span class="lineCov">          1 :     CU_ASSERT_FALSE( child_aiofd_read_evt_fn( &amp;aiofd, 0, NULL ) );</span>
+<span class="lineNum">     568 </span><span class="lineCov">          1 :     CU_ASSERT_FALSE( child_aiofd_read_evt_fn( &amp;aiofd, 0, &amp;child ) );</span>
+<span class="lineNum">     569 </span><span class="lineCov">          1 :     test_flag = FALSE;</span>
+<span class="lineNum">     570 </span><span class="lineCov">          1 :     child.user_data = &amp;test_flag;</span>
+<span class="lineNum">     571 </span><span class="lineCov">          1 :     CU_ASSERT_TRUE( child_aiofd_read_evt_fn( &amp;aiofd, 1, &amp;child ) );</span>
+<span class="lineNum">     572 </span><span class="lineCov">          1 :     CU_ASSERT_FALSE( test_flag );</span>
+<span class="lineNum">     573 </span><span class="lineCov">          1 :     child.ops.read_evt_fn = &amp;test_read_evt_fn;</span>
+<span class="lineNum">     574 </span><span class="lineCov">          1 :     CU_ASSERT_TRUE( child_aiofd_read_evt_fn( &amp;aiofd, 1, &amp;child ) );</span>
+<span class="lineNum">     575 </span><span class="lineCov">          1 :     CU_ASSERT_TRUE( test_flag );</span>
+<a name="576"><span class="lineNum">     576 </span><span class="lineCov">          1 : }</span></a>
 <span class="lineNum">     577 </span>            : 
-<span class="lineNum">     578 </span><span class="lineCov">          2 : void test_child_private_functions( void )</span>
+<span class="lineNum">     578 </span><span class="lineCov">          1 : void test_child_private_functions( void )</span>
 <span class="lineNum">     579 </span>            : {
-<span class="lineNum">     580 </span><span class="lineCov">          2 :     test_sigchld_cb();</span>
-<span class="lineNum">     581 </span><span class="lineCov">          2 :     test_child_aiofd_write_evt_fn();</span>
-<span class="lineNum">     582 </span><span class="lineCov">          2 :     test_child_aiofd_error_evt_fn();</span>
-<span class="lineNum">     583 </span><span class="lineCov">          2 :     test_child_aiofd_read_evt_fn();</span>
-<span class="lineNum">     584 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">     580 </span><span class="lineCov">          1 :     test_sigchld_cb();</span>
+<span class="lineNum">     581 </span><span class="lineCov">          1 :     test_child_aiofd_write_evt_fn();</span>
+<span class="lineNum">     582 </span><span class="lineCov">          1 :     test_child_aiofd_error_evt_fn();</span>
+<span class="lineNum">     583 </span><span class="lineCov">          1 :     test_child_aiofd_read_evt_fn();</span>
+<span class="lineNum">     584 </span><span class="lineCov">          1 : }</span>
 <span class="lineNum">     585 </span>            : 
 <span class="lineNum">     586 </span>            : #endif
 <span class="lineNum">     587 </span>            : 

@@ -203,13 +203,13 @@ void stop_logging( log_t * log )
         case LOG_TYPE_SYSLOG:
             closelog();
             /* reset stderr stream by opening /dev/null */
-            freopen( _PATH_DEVNULL, "wb", stderr );
+            stderr = freopen( _PATH_DEVNULL, "wb", stderr );
             break;
 
         case LOG_TYPE_FILE:
             fclose( (FILE*)log->cookie );
             /* reset stderr stream by opening /dev/null */
-            freopen( _PATH_DEVNULL, "wb", stderr );
+            stderr = freopen( _PATH_DEVNULL, "wb", stderr );
             break;
 
         case LOG_TYPE_STDERR:
@@ -218,7 +218,7 @@ void stop_logging( log_t * log )
 
         case LOG_TYPE_LIST:
             /* reset stderr stream by opening /dev/null */
-            freopen( _PATH_DEVNULL, "wb", stderr );
+            stderr = freopen( _PATH_DEVNULL, "wb", stderr );
             break;
     }
     FREE( log );
