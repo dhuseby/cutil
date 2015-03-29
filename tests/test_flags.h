@@ -1,20 +1,29 @@
-/*
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with main.c; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+/* Copyright (c) 2012-2015 David Huseby
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __TEST_FLAGS_H__
+#ifndef TEST_FLAGS_H
 
 /* malloc/calloc/realloc fail switch */
 extern int_t fail_alloc;
@@ -32,6 +41,8 @@ extern int_t fake_fcntl;
 extern int fake_fcntl_ret;
 extern int_t fake_fork;
 extern int fake_fork_ret;
+extern int_t fake_freeaddrinfo;
+extern int fake_freeaddrinfo_ret;
 extern int_t fake_fstat;
 extern int fake_fstat_ret;
 extern int_t fake_fsync;
@@ -84,6 +95,8 @@ extern int_t fake_setreuid;
 extern int fake_setreuid_ret;
 extern int_t fake_setsockopt;
 extern int fake_setsockopt_ret;
+extern int_t fake_shutdown;
+extern int fake_shutdown_ret;
 extern int_t fake_socket;
 extern int fake_socket_ret;
 extern int_t fake_stat;
@@ -116,8 +129,6 @@ extern int_t fake_aiofd_writev;
 extern int_t fake_aiofd_writev_ret;
 extern int_t fake_aiofd_write_common;
 extern int_t fake_aiofd_write_common_ret;
-extern int_t fake_aiofd_enable_read_evt;
-extern int_t fake_aiofd_enable_read_evt_ret;
 
 /* bitset */
 extern int_t fail_bitset_init;
@@ -129,19 +140,22 @@ extern int_t fail_buffer_deinit;
 extern int_t fail_buffer_init_alloc;
 
 /* cb */
+extern int_t fake_cb_init;
+extern int fake_cb_init_count;
+extern int_t fake_cb_init_ret;
 
 /* child */
 
 /* event */
 extern int_t fake_ev_default_loop;
 extern void* fake_ev_default_loop_ret;
-extern int_t fake_event_handler_init;
-extern int fake_event_handler_init_count;
-extern int_t fake_event_handler_init_ret;
-extern int_t fake_event_start_handler;
-extern int_t fake_event_start_handler_ret;
-extern int_t fake_event_stop_handler;
-extern int_t fake_event_stop_handler_ret;
+extern int_t fake_event_init;
+extern int fake_event_init_count;
+extern int_t fake_event_init_ret;
+extern int_t fake_event_start;
+extern int_t fake_event_start_ret;
+extern int_t fake_event_stop;
+extern int_t fake_event_stop_ret;
 
 /* hashtable */
 extern int_t fake_ht_init;
@@ -154,7 +168,9 @@ extern int_t fake_ht_find;
 
 /* list */
 extern int_t fake_list_count;
-extern int fake_list_count_ret;
+extern uint_t fake_list_count_ret;
+extern int_t fake_list_capacity;
+extern uint_t fake_list_capacity_ret;
 extern int_t fake_list_grow;
 extern int_t fake_list_grow_ret;
 extern int_t fake_list_init;
@@ -174,7 +190,7 @@ extern int_t fake_open_devnull_ret;
 extern int_t fake_socket_getsockopt;
 extern int fake_socket_errval;
 extern int_t fake_socket_get_error_ret;
-extern int_t fail_socket_initialize;
+extern int_t fail_s_init;
 extern int_t fake_socket_connected;
 extern int_t fake_socket_connected_ret;
 extern int_t fake_socket_connect;
@@ -194,5 +210,5 @@ extern int_t fake_socket_create_unix_socket_ret;
 
 void reset_test_flags( void );
 
-#endif/*__TEST_FLAGS_H__*/
+#endif /*TEST_FLAGS_H*/
 

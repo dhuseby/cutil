@@ -1,102 +1,105 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+/* Copyright (c) 2012-2015 David Huseby
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __AIOFD_H__
-#define __AIOFD_H__
+#ifndef AIOFD_H
+#define AIOFD_H
 
 #include <sys/uio.h>
 #include "events.h"
 #include "list.h"
 
-typedef struct aiofd_s aiofd_t;
-typedef struct aiofd_ops_s aiofd_ops_t;
-
-struct aiofd_s
+/*
+ * AIOFD CALLBACKS
+ */
+typedef enum aiofd_cb_e
 {
-    int         wfd;            /* read/write fd, if only one given, write-only otherwise */
-    int         rfd;            /* read fd if two are given */
-    int         listen;         /* is this a bound and listening socket fd? */
-    list_t      wbuf;           /* array of buffers waiting to be written */
-    evt_t       wevt;           /* write event */
-    evt_t       revt;           /* read event */
-    evt_loop_t* el;             /* event loop we registered out evt with */
-    void *      user_data;      /* context to pass to callbacks */
+  AIOFD_READ_EVT,
+  AIOFD_WRITE_EVT,
+  AIOFD_ERROR_EVT,
+  AIOFD_READ_IO,
+  AIOFD_WRITE_IO,
+  AIOFD_READV_IO,
+  AIOFD_WRITEV_IO,
+  AIOFD_NREAD_IO
+} aiofd_cb_t;
 
-    struct aiofd_ops_s
-    {
-        int_t (*read_evt_fn)( aiofd_t * const aiofd, size_t nread, void * user_data );
-        int_t (*write_evt_fn)( aiofd_t * const aiofd, uint8_t const * const buffer, void * user_data, void * per_write_data );
-        int_t (*error_evt_fn)( aiofd_t * const aiofd, int err, void * user_data );
+#define AIOFD_CB_FIRST (AIOFD_READ_EVT)
+#define AIOFD_CB_LAST (AIOFD_NREAD_IO)
+#define AIOFD_CB_COUNT (AIOFD_CB_LAST - AIOFD_CB_FIRST + 1)
+#define VALID_AIOFD_CB(t) ((t >= AIOFD_CB_FIRST) && (t <= AIOFD_CB_LAST))
 
-        /* user definable low-level read/write/readv/writev functions to use */
-        ssize_t (*read_fn)(int fd, void * const buf, size_t const count, void * user_data);
-        ssize_t (*write_fn)(int fd, void const * const buf, size_t const count, void * user_data, void * per_write_data );
-        ssize_t (*readv_fn)(int fd, struct iovec * const iov, size_t const iovcnt, void * user_data);
-        ssize_t (*writev_fn)(int fd, struct iovec const * const iov, size_t const iovcnt, void * user_data, void * per_write_data );
-    }           ops;
-};
+extern uint8_t const * const aiofd_cb[AIOFD_CB_COUNT];
+#define AIOFD_CB_NAME(x) (VALID_AIOFD_CB(x) ? aiofd_cb[x] : NULL)
 
+/* helper macros for declaring and adding aiofd callbacks */
+#define READ_EVT_CB(fn,ctx) CB_2(fn,ctx,aiofd_t*,size_t)
+#define WRITE_EVT_CB(fn,ctx,wd) CB_4(fn,ctx,wd,aiofd_t*,void*,size_t)
+#define ERROR_EVT_CB(fn,ctx,wd) CB_3(fn,ctx,wd,aiofd_t*,int)
 
-aiofd_t * aiofd_new( int const write_fd,
-                     int const read_fd,
-                     aiofd_ops_t * const ops,
-                     evt_loop_t * const el,
-                     void * user_data );
-void aiofd_delete( void * aio );
+#define READ_IO_CB(fn,ctx) CB_5(fn,ctx,aiofd_t*,int,void*,size_t,ssize_t*)
+#define WRITE_IO_CB(fn,ctx,wd) CB_6(fn,ctx,wd,aiofd_t*,int,void const *,size_t,ssize_t*)
+#define READV_IO_CB(fn,ctx) CB_5(fn,ctx,aiofd_t*,int,struct iovec*,size_t,ssize_t*)
+#define WRITEV_IO_CB(fn,ctx,wd) CB_6(fn,ctx,wd,aiofd_t*,int,struct iovec const*,size_t,ssize_t*)
+#define NREAD_IO_CB(fn,ctx) CB_5(fn,ctx,aiofd_t*,int,size_t*,int_t*,int*)
 
-int_t aiofd_initialize( aiofd_t * const aiofd, 
-                      int const write_fd,
-                      int const read_fd,
-                      aiofd_ops_t * const ops,
-                      evt_loop_t * const el,
-                      void * user_data );
-void aiofd_deinitialize( aiofd_t * const aiofd );
+#define ADD_READ_EVT_CB(cb,fn,ctx) ADD_CB(cb,AIOFD_CB_NAME(AIOFD_READ_EVT),fn,ctx)
+#define ADD_WRITE_EVT_CB(cb,fn,ctx) ADD_CB(cb,AIOFD_CB_NAME(AIOFD_WRITE_EVT),fn,ctx)
+#define ADD_ERROR_EVT_CB(cb,fn,ctx) ADD_CB(cb,AIOFD_CB_NAME(AIOFD_ERROR_EVT),fn,ctx)
+
+#define ADD_READ_IO_CB(cb,fn,ctx) ADD_CB(cb,AIOFD_CB_NAME(AIOFD_READ_IO),fn,ctx)
+#define ADD_WRITE_IO_CB(cb,fn,ctx) ADD_CB(cb,AIOFD_CB_NAME(AIOFD_WRITE_IO),fn,ctx)
+#define ADD_READV_IO_CB(cb,fn,ctx) ADD_CB(cb,AIOFD_CB_NAME(AIOFD_READV_IO),fn,ctx)
+#define ADD_WRITEV_IO_CB(cb,fn,ctx) ADD_CB(cb,AIOFD_CB_NAME(AIOFD_WRITEV_IO),fn,ctx)
+#define ADD_NREAD_IO_CB(cb,fn,ctx) ADD_CB(cb,AIOFD_CB_NAME(AIOFD_NREAD_IO),fn,ctx)
+
+typedef struct aiofd_s aiofd_t;
+
+aiofd_t * aiofd_new(int wfd, int rfd, cb_t *cb);
+void aiofd_delete(void *aio);
 
 /* enables/disables processing of the read and write events */
-int_t aiofd_enable_write_evt( aiofd_t * const aiofd, int_t enable );
-int_t aiofd_enable_read_evt( aiofd_t * const aiofd, int_t enable );
+int_t aiofd_enable_write_evt(aiofd_t *aiofd, int_t enable, evt_loop_t *el);
+int_t aiofd_enable_read_evt(aiofd_t *aiofd, int_t enable, evt_loop_t *el);
 
 /* read data from the fd */
-ssize_t aiofd_read( aiofd_t * const aiofd, 
-                    uint8_t * const buffer, 
-                    size_t const n );
+ssize_t aiofd_read(aiofd_t *aiofd, void *buf, size_t n);
 
 /* read from fd into iovec (scatter input) */
-ssize_t aiofd_readv( aiofd_t * const aiofd,
-                     struct iovec * const iov,
-                     size_t const iovcnt );
+ssize_t aiofd_readv(aiofd_t *aiofd, struct iovec *iov, size_t iovcnt);
 
 /* write data to the fd */
-int_t aiofd_write( aiofd_t * const aiofd, 
-                 uint8_t const * const buffer, 
-                 size_t const n,
-                 void * per_write_data );
+int_t aiofd_write(aiofd_t *aiofd, void const *buf, size_t n, void *wd);
 
 /* write iovec to the fd (gather output) */
-int_t aiofd_writev( aiofd_t * const aiofd,
-                  struct iovec const * const iov,
-                  size_t const iovcnt,
-                  void * per_write_data );
+int_t aiofd_writev(aiofd_t *aiofd, struct iovec const *iov, size_t iovcnt, void *wd);
 
 /* flush the fd output */
-int_t aiofd_flush( aiofd_t * const aiofd );
+int_t aiofd_flush(aiofd_t *aiofd);
 
 /* get/set the listening fd flag, used for bound and listening socket fd's */
-int_t aiofd_set_listen( aiofd_t * const aiofd, int_t listen );
-int_t aiofd_get_listen( aiofd_t const * const aiofd );
+int_t aiofd_set_listen(aiofd_t *aiofd, int_t listen);
+int_t aiofd_get_listen(aiofd_t const *aiofd);
 
-#endif/*__AIOFD_H__*/
-
+#endif /*AIOFD_H*/

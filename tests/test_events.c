@@ -1,17 +1,26 @@
-/*
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with main.c; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+/* Copyright (c) 2012-2015 David Huseby
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <errno.h>
@@ -21,12 +30,15 @@
 #include <string.h>
 #include <time.h>
 #include <sys/time.h>
+#include <sys/types.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include <CUnit/Basic.h>
 
 #include <cutil/debug.h>
 #include <cutil/macros.h>
+#include <cutil/cb.h>
 #include <cutil/events.h>
 
 #include "test_macros.h"
@@ -37,188 +49,259 @@
 #define MULTIPLE (8)
 
 extern evt_loop_t * el;
-extern void test_events_private_functions( void );
+extern void test_events_private_functions(void);
 
-static void test_evt_new_failure( void )
+static void test_evt_new_failure(void)
 {
-	fake_ev_default_loop = TRUE;
-	CU_ASSERT_PTR_NULL( evt_new() );
-	fake_ev_default_loop = FALSE;
+  fake_ev_default_loop = TRUE;
+  CU_ASSERT_PTR_NULL(evt_new());
+  fake_ev_default_loop = FALSE;
 }
 
-static void test_evt_delete_null( void )
+static void test_evt_delete_null(void)
 {
-	evt_delete( NULL );
+  evt_delete(NULL);
 }
 
-static void test_initialize_event_handler( void )
+static void test_new_signal_event(void)
 {
-	evt_t evt;
-	evt_params_t params;
-	MEMSET( &evt, 0, sizeof(evt_t) );
-	MEMSET( &params, 0, sizeof(evt_params_t) );
-    
-    debug_signals_dump("event");
+  evt_t * evt = NULL;
+  fail_alloc = TRUE;
+  CU_ASSERT_PTR_NULL(evt_new_signal_event(NULL, SIGUSR1));
+  fail_alloc = FALSE;
 
-	CU_ASSERT_FALSE( evt_initialize_event_handler( NULL, (evt_type_t)50, NULL, NULL, NULL ) );
-	CU_ASSERT_FALSE( evt_initialize_event_handler( &evt, (evt_type_t)50, NULL, NULL, NULL ) );
-	CU_ASSERT_FALSE( evt_initialize_event_handler( &evt, EVT_SIGNAL, NULL, NULL, NULL ) );
-
-	MEMSET( &evt, 0, sizeof(evt_t) );
-	CU_ASSERT_TRUE( evt_initialize_event_handler( &evt, EVT_SIGNAL, &params, NULL, NULL ) );
-	CU_ASSERT_PTR_NULL( evt.callback );
-	CU_ASSERT_PTR_NULL( evt.user_data );
-	CU_ASSERT_PTR_NULL( evt.el );
-	CU_ASSERT_EQUAL( evt.evt_type, EVT_SIGNAL );
-
-	MEMSET( &evt, 0, sizeof(evt_t) );
-	CU_ASSERT_TRUE( evt_initialize_event_handler( &evt, EVT_CHILD, &params, NULL, NULL ) );
-	CU_ASSERT_PTR_NULL( evt.callback );
-	CU_ASSERT_PTR_NULL( evt.user_data );
-	CU_ASSERT_PTR_NULL( evt.el );
-	CU_ASSERT_EQUAL( evt.evt_type, EVT_CHILD );
-
-	MEMSET( &evt, 0, sizeof(evt_t) );
-	CU_ASSERT_TRUE( evt_initialize_event_handler( &evt, EVT_IO, &params, NULL, NULL ) );
-	CU_ASSERT_PTR_NULL( evt.callback );
-	CU_ASSERT_PTR_NULL( evt.user_data );
-	CU_ASSERT_PTR_NULL( evt.el );
-	CU_ASSERT_EQUAL( evt.evt_type, EVT_IO );
-    
-    debug_signals_dump("event");
+  fake_event_init = TRUE;
+  fake_event_init_ret = FALSE;
+  CU_ASSERT_PTR_NULL(evt_new_signal_event(NULL, SIGUSR1));
+  fake_event_init_ret = TRUE;
+  evt = evt_new_signal_event(NULL, SIGUSR1);
+  fake_event_init_ret = FALSE;
+  fake_event_init = FALSE;
+  evt_delete_event(evt);
 }
 
-static void test_new_event_handler( void )
+static void test_new_child_event(void)
 {
-	evt_t * evt = NULL;
-	fail_alloc = TRUE;
-	CU_ASSERT_PTR_NULL( evt_new_event_handler( EVT_SIGNAL, NULL, NULL, NULL ) );
-	fail_alloc = FALSE;
+  evt_t * evt = NULL;
+  fail_alloc = TRUE;
+  CU_ASSERT_PTR_NULL(evt_new_child_event(NULL, (int)getpid(), FALSE));
+  fail_alloc = FALSE;
 
-	fake_event_handler_init = TRUE;
-	fake_event_handler_init_ret = FALSE;
-	CU_ASSERT_PTR_NULL( evt_new_event_handler( EVT_SIGNAL, NULL, NULL, NULL ) );
-	fake_event_handler_init_ret = TRUE;
-	evt = evt_new_event_handler( EVT_SIGNAL, NULL, NULL, NULL );
-	fake_event_handler_init_ret = FALSE;
-	fake_event_handler_init = FALSE;
-	evt_delete_event_handler( evt );
+  fake_event_init = TRUE;
+  fake_event_init_ret = FALSE;
+  CU_ASSERT_PTR_NULL(evt_new_child_event(NULL, (int)getpid(), FALSE));
+  fake_event_init_ret = TRUE;
+  evt = evt_new_child_event(NULL, (int)getpid(), FALSE);
+  fake_event_init_ret = FALSE;
+  fake_event_init = FALSE;
+  evt_delete_event(evt);
 }
 
-static void test_delete_event_handler( void )
+static void test_new_io_event(void)
 {
-	evt_t * evt = NULL;
-	evt_delete_event_handler( NULL );
-	evt = CALLOC( 1, sizeof(evt_t) );
-	evt_delete_event_handler( evt );
+  evt_t * evt = NULL;
+  fail_alloc = TRUE;
+  CU_ASSERT_PTR_NULL(evt_new_io_event(NULL, STDOUT_FILENO, EV_WRITE));
+  fail_alloc = FALSE;
+
+  fake_event_init = TRUE;
+  fake_event_init_ret = FALSE;
+  CU_ASSERT_PTR_NULL(evt_new_io_event(NULL, STDOUT_FILENO, EV_WRITE));
+  fake_event_init_ret = TRUE;
+  evt = evt_new_io_event(NULL, STDOUT_FILENO, EV_WRITE);
+  fake_event_init_ret = FALSE;
+  fake_event_init = FALSE;
+  evt_delete_event(evt);
 }
 
+static void test_delete_event(void)
+{
+  evt_t * evt = NULL;
+  evt_delete_event(NULL);
+  evt = evt_new_signal_event(NULL, SIGUSR1);
+  CU_ASSERT_PTR_NOT_NULL_FATAL(evt);
+  evt_delete_event(evt);
+}
 
 static int_t test_flag = FALSE;
 
-static evt_ret_t test_event_callback( evt_loop_t * const el, evt_t * const evt,
-									  evt_params_t * const params, void * user_data )
+static void test_signal_cb(int_t * p, evt_t * evt, int signum)
 {
-	*((int_t*)user_data) = TRUE;
-    debug_signals_dump("start event 4 (cb)");
-	evt_stop_event_handler( el, evt );
-	evt_stop( el, FALSE );
-    debug_signals_dump("start event 5 (cb)");
+  (*p) = TRUE;
+  debug_signals_dump("start event 4 (cb)");
+  evt_stop_event(evt);
+  evt_stop(el, FALSE);
+  debug_signals_dump("start event 5 (cb)");
 }
 
-static void test_start_event_handler( void )
+SIGNAL_CB(test_signal_cb, int_t*);
+
+static void test_start_event(void)
 {
-	evt_t evt;
-	evt_params_t params;
-	struct itimerval timer_value;
-	MEMSET( &evt, 0, sizeof( evt_t ) );
-	MEMSET( &params, 0, sizeof( evt_params_t ) );
-	MEMSET( &timer_value, 0, sizeof( struct itimerval ) );
+  evt_t * evt = NULL;
+  cb_t * cb = NULL;
+  struct itimerval timer_value;
+  MEMSET(&timer_value, 0, sizeof(struct itimerval));
 
-    debug_signals_dump("start event 0");
+  debug_signals_dump("start event 0");
 
-	CU_ASSERT_EQUAL( evt_start_event_handler( NULL, NULL ), EVT_BADPTR );
-	CU_ASSERT_EQUAL( evt_start_event_handler( el, NULL ), EVT_BADPTR );
-	evt.evt_type = (evt_type_t)50;
-	CU_ASSERT_EQUAL( evt_start_event_handler( el, &evt ), EVT_BADPARAM );
+  CU_ASSERT_EQUAL(evt_start_event(NULL, NULL), EVT_BADPTR);
+  CU_ASSERT_EQUAL(evt_start_event(NULL, el), EVT_BADPTR);
 
-	MEMSET( &evt, 0, sizeof( evt_t ) );
-	params.signal_params.signum = SIGALRM;
-	test_flag = FALSE;
-	CU_ASSERT_TRUE( evt_initialize_event_handler( &evt, EVT_SIGNAL, &params, &test_event_callback, &test_flag ) );
-    debug_signals_dump("start event 1");
-	CU_ASSERT_EQUAL( evt_start_event_handler( el, &evt), EVT_OK );
-    debug_signals_dump("start event 2");
-    /* we'll receive a SIGALRM in 1 second */
-	timer_value.it_value.tv_sec = 1;
-	timer_value.it_interval.tv_sec = 1;
-	CU_ASSERT_EQUAL( setitimer( ITIMER_REAL, &timer_value, NULL ), 0 );
-    debug_signals_dump("start event 3");
-	evt_run( el );
-    debug_signals_dump("start event 6");
-	CU_ASSERT_TRUE( test_flag );
-	test_flag = FALSE;
-	MEMSET( &timer_value, 0, sizeof( struct itimerval ) );
-	CU_ASSERT_EQUAL( setitimer( ITIMER_REAL, &timer_value, NULL ), 0 );
-    debug_signals_dump("start event 7");
+  cb = cb_new();
+  ADD_SIGNAL_CB(cb, test_signal_cb, &test_flag);
+  evt = evt_new_signal_event(cb, SIGALRM);
+
+  test_flag = FALSE;
+  debug_signals_dump("start event 1");
+  CU_ASSERT_EQUAL(evt_start_event(evt, el), EVT_OK);
+  debug_signals_dump("start event 2");
+
+  /* we'll receive a SIGALRM in 1 second */
+  timer_value.it_value.tv_usec = 100000;
+  timer_value.it_interval.tv_usec = 100000;
+  CU_ASSERT_EQUAL(setitimer(ITIMER_REAL, &timer_value, NULL), 0);
+
+  debug_signals_dump("start event 3");
+  evt_run(el);
+  debug_signals_dump("start event 6");
+
+  CU_ASSERT_TRUE(test_flag);
+  test_flag = FALSE;
+  MEMSET(&timer_value, 0, sizeof(struct itimerval));
+  CU_ASSERT_EQUAL(setitimer(ITIMER_REAL, &timer_value, NULL), 0);
+  debug_signals_dump("start event 7");
+  CU_ASSERT_FALSE(test_flag);
+
+  evt_delete_event(evt);
+  cb_delete(cb);
 }
 
-static void test_stop_event_handler( void )
+static int_t test_flag_a = 0;
+static int_t test_flag_b = 0;
+
+static void test_signal_1_cb(int_t * p, evt_t * evt, int signum)
 {
-	CU_ASSERT_EQUAL( evt_stop_event_handler( NULL, NULL ), EVT_BADPTR );
-	CU_ASSERT_EQUAL( evt_stop_event_handler( el, NULL ), EVT_BADPTR );
+  (*p)++;
+  evt_stop_event(evt);
 }
 
-static void test_evt_run_null( void )
+static void test_signal_2_cb(int_t * p, evt_t * evt, int signum)
 {
-	CU_ASSERT_EQUAL( evt_run( NULL ), EVT_BADPTR );
+  struct itimerval timer_value;
+
+  (*p)++;
+
+  if(*p < 2)
+  {
+    /* set another alarm */
+    MEMSET(&timer_value, 0, sizeof(struct itimerval));
+    timer_value.it_value.tv_usec = 100000;
+    timer_value.it_interval.tv_usec = 100000;
+    CU_ASSERT_EQUAL(setitimer(ITIMER_REAL, &timer_value, NULL), 0);
+  }
+  else
+  {
+    /* otherwise we can stop the event loop */
+    evt_stop(el, FALSE);
+  }
 }
 
-static void test_evt_stop_null( void )
+SIGNAL_CB(test_signal_1_cb, int_t*);
+SIGNAL_CB(test_signal_2_cb, int_t*);
+
+static void test_stop_event(void)
 {
-	CU_ASSERT_EQUAL( evt_stop( NULL, FALSE ), EVT_BADPTR );
+  evt_t * evt1 = NULL;
+  evt_t * evt2 = NULL;
+  cb_t * cb1 = NULL;
+  cb_t * cb2 = NULL;
+  struct itimerval timer_value;
+  MEMSET(&timer_value, 0, sizeof(struct itimerval));
+
+  cb1 = cb_new();
+  ADD_SIGNAL_CB(cb1, test_signal_1_cb, &test_flag_a);
+  evt1 = evt_new_signal_event(cb1, SIGALRM);
+  cb2 = cb_new();
+  ADD_SIGNAL_CB(cb2, test_signal_2_cb, &test_flag_b);
+  evt2 = evt_new_signal_event(cb2, SIGALRM);
+
+  test_flag_a = 0;
+  test_flag_b = 0;
+  /* start the event */
+  CU_ASSERT_EQUAL(evt_start_event(evt1, el), EVT_OK);
+  CU_ASSERT_EQUAL(evt_start_event(evt2, el), EVT_OK);
+
+  /* set an alarm */
+  timer_value.it_value.tv_usec = 100000;
+  timer_value.it_interval.tv_usec = 100000;
+  CU_ASSERT_EQUAL(setitimer(ITIMER_REAL, &timer_value, NULL), 0);
+
+  evt_run(el);
+
+  CU_ASSERT_EQUAL(test_flag_a, 1);
+  CU_ASSERT_EQUAL(test_flag_b, 2);
+
+  evt_delete_event(evt1);
+  evt_delete_event(evt2);
+  cb_delete(cb1);
+  cb_delete(cb2);
 }
 
-static int init_events_suite( void )
+#if 0
+static void test_evt_run_null(void)
 {
-	srand(0xDEADBEEF);
-	reset_test_flags();
-	return 0;
+  CU_ASSERT_EQUAL(evt_run(NULL), EVT_BADPTR);
 }
 
-static int deinit_events_suite( void )
+static void test_evt_stop_null(void)
 {
-	reset_test_flags();
-	return 0;
+  CU_ASSERT_EQUAL(evt_stop(NULL, FALSE), EVT_BADPTR);
+}
+#endif
+
+static int init_events_suite(void)
+{
+  srand(0xDEADBEEF);
+  reset_test_flags();
+  return 0;
 }
 
-static CU_pSuite add_events_tests( CU_pSuite pSuite )
+static int deinit_events_suite(void)
 {
-	ADD_TEST( "evt new failure", test_evt_new_failure );
-	ADD_TEST( "evt delete null", test_evt_delete_null );
-	ADD_TEST( "test init event handler", test_initialize_event_handler );
-	ADD_TEST( "test new event handler", test_new_event_handler );
-	ADD_TEST( "test delete event handler", test_delete_event_handler );
-	ADD_TEST( "test start event handler", test_start_event_handler );
-	ADD_TEST( "test stop event handler", test_stop_event_handler );
-	ADD_TEST( "test evt run null", test_evt_run_null );
-	ADD_TEST( "test evt stop null", test_evt_stop_null );
+  reset_test_flags();
+  return 0;
+}
 
-	ADD_TEST( "events private functions", test_events_private_functions );
-	return pSuite;
+static CU_pSuite add_events_tests(CU_pSuite pSuite)
+{
+  ADD_TEST("evt new failure", test_evt_new_failure);
+  ADD_TEST("evt delete null", test_evt_delete_null);
+  ADD_TEST("test new signal event", test_new_signal_event);
+  ADD_TEST("test new child event", test_new_child_event);
+  ADD_TEST("test new io event", test_new_io_event);
+  ADD_TEST("test delete event", test_delete_event);
+  ADD_TEST("test start event", test_start_event);
+  ADD_TEST("test stop event", test_stop_event);
+#if 0
+  ADD_TEST("test evt run null", test_evt_run_null);
+  ADD_TEST("test evt stop null", test_evt_stop_null);
+#endif
+  ADD_TEST("events private functions", test_events_private_functions);
+  return pSuite;
 }
 
 CU_pSuite add_events_test_suite()
 {
-	CU_pSuite pSuite = NULL;
+  CU_pSuite pSuite = NULL;
 
-	/* add the suite to the registry */
-	pSuite = CU_add_suite("Events Tests", init_events_suite, deinit_events_suite);
-	CHECK_PTR_RET( pSuite, NULL );
+  /* add the suite to the registry */
+  pSuite = CU_add_suite("Events Tests", init_events_suite, deinit_events_suite);
+  CHECK_PTR_RET(pSuite, NULL);
 
-	/* add in specific tests */
-	CHECK_PTR_RET( add_events_tests( pSuite ), NULL );
+  /* add in specific tests */
+  CHECK_PTR_RET(add_events_tests(pSuite), NULL);
 
-	return pSuite;
+  return pSuite;
 }
 

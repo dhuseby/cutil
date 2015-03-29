@@ -1,21 +1,30 @@
-/*
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with main.c; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+/* Copyright (c) 2012-2015 David Huseby
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __MACROS_H__
-#define __MACROS_H__
+#ifndef MACROS_H
+#define MACROS_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,11 +32,12 @@
 #include <string.h>
 #include <assert.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <unistd.h>
 #include <limits.h>
 #include <signal.h>
 
-/* 
+/*
  * local definitions for porting purposes
  */
 
@@ -104,17 +114,26 @@ uint8_t * check_err_str_;
 #define CHECK_MSG(x, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return; } } while(0)
 #define CHECK_RET(x, y) do { if(!(x)) return (y); } while(0)
 #define CHECK_RET_MSG(x, y, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return (y); } } while(0)
-#define CHECK_GOTO(x, y) do { if(!(x)) { check_err_str_ = #x; goto y; } } while(0)
+#define CHECK_GOTO(x, y) do { if(!(x)) { check_err_str_ = (uint8_t*)#x; goto y; } } while(0)
 #define CHECK_PTR(x) do { if(!(x)) return; } while(0)
 #define CHECK_PTR_MSG(x, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return; } } while(0)
 #define CHECK_PTR_RET(x, y) do { if(!(x)) return (y); } while(0)
 #define CHECK_PTR_RET_MSG(x, y, ...) do { if(!(x)) { DEBUG(__VA_ARGS__); return (y); } } while(0)
-#define CHECK_PTR_GOTO(x, y) do { if(!(x)) { check_err_str_ = #x; goto y; } } while(0)
+#define CHECK_PTR_GOTO(x, y) do { if(!(x)) { check_err_str_ = (uint8_t*)#x; goto y; } } while(0)
 
 #if defined(UNIT_TESTING)
 
 #define UNIT_TEST_RET(x) do { if( fake_##x ) return ( fake_##x##_ret ); } while(0)
 #define UNIT_TEST_FAIL(x) do { if( fail_##x ) return FALSE; } while(0)
+#define UNIT_TEST_N_RET(x) \
+do { \
+  if( fake_##x ) { \
+    if (fake_##x##_count == 0) { \
+      return ( fake_##x##_ret ); \
+    } \
+    fake_##x##_count--; \
+  } \
+} while(0)
 
 /* system calls */
 extern int_t fail_alloc;
@@ -134,6 +153,10 @@ extern int_t fake_bind;
 extern int fake_bind_ret;
 #define BIND(...) (fake_bind ? fake_bind_ret : bind(__VA_ARGS__))
 
+extern int_t fake_close;
+extern int fake_close_ret;
+#define CLOSE(...) (fake_close ? fake_close_ret : close(__VA_ARGS__))
+
 extern int_t fake_connect;
 extern int fake_connect_ret;
 #define CONNECT(...) (fake_connect ? fake_connect_ret : connect(__VA_ARGS__))
@@ -149,6 +172,10 @@ extern int fake_fcntl_ret;
 extern int_t fake_fork;
 extern int fake_fork_ret;
 #define FORK(...) (fake_fork ? fake_fork_ret : fork(__VA_ARGS__))
+
+extern int_t fake_freeaddrinfo;
+extern int fake_freeaddrinfo_ret;
+#define FREEADDRINFO(...) (fake_freeaddrinfo ? fake_freeaddrinfo_ret : freeaddrinfo(__VA_ARGS__))
 
 extern int_t fake_fstat;
 extern int fake_fstat_ret;
@@ -254,6 +281,10 @@ extern int_t fake_setsockopt;
 extern int fake_setsockopt_ret;
 #define SETSOCKOPT(...) (fake_setsockopt ? fake_setsockopt_ret : setsockopt(__VA_ARGS__))
 
+extern int_t fake_shutdown;
+extern int fake_shutdown_ret;
+#define SHUTDOWN(...) (fake_shutdown ? fake_shutdown_ret : shutdown(__VA_ARGS__))
+
 extern int_t fake_socket;
 extern int fake_socket_ret;
 #define SOCKET(...) (fake_socket ? fake_socket_ret : socket(__VA_ARGS__))
@@ -308,6 +339,10 @@ extern void* fake_ev_default_loop_ret;
 #define CALLOC calloc
 #endif
 
+#if !defined(CLOSE)
+#define CLOSE close
+#endif
+
 #if !defined(CONNECT)
 #define CONNECT connect
 #endif
@@ -326,6 +361,10 @@ extern void* fake_ev_default_loop_ret;
 
 #if !defined(FREE)
 #define FREE free
+#endif
+
+#if !defined(FREEADDRINFO)
+#define FREEADDRINFO freeaddrinfo
 #endif
 
 #if !defined(FSTAT)
@@ -452,6 +491,10 @@ extern void* fake_ev_default_loop_ret;
 #define SETSOCKOPT setsockopt
 #endif
 
+#if !defined(SHUTDOWN)
+#define SHUTDOWN shutdown
+#endif
+
 #if !defined(SOCKET)
 #define SOCKET socket
 #endif
@@ -489,8 +532,8 @@ extern void* fake_ev_default_loop_ret;
 /* define these to be nothing when not unit testing */
 #define UNIT_TEST_RET(x) {;}
 #define UNIT_TEST_FAIL(x) {;}
+#define UNIT_TEST_N_RET(x) {;}
 
 #endif /* UNIT_TESTING */
 
-#endif/*__MACROS_H__*/
- 
+#endif /*MACROS_H*/
